@@ -1,0 +1,1698 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<process xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="init"
+    xmlns:tns="http://www.zte.com.cn/tosca/nfv/ns"
+    targetNamespace="http://www.zte.com.cn/tosca/nfv/ns"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight"
+    xmlns:si="http://siserver.org/wsdl" 
+    xmlns:sischema="http://siserver.org/schema"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:ode="http://www.apache.org/ode/type/extension">
+
+    <import namespace="http://siserver.org/wsdl" location="invoker.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></import>
+    <import importType="http://schemas.xmlsoap.org/wsdl/" location="init.wsdl"
+        namespace="http://www.zte.com.cn/tosca/nfv/ns" /> <!-- Todo place_holder wsdl and namespace -->
+
+    <extensions>
+        <extension mustUnderstand="yes"
+            namespace="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight" />
+    </extensions>
+
+    <partnerLinks>
+        <partnerLink name="client" initializePartnerRole="yes"
+            partnerLinkType="tns:initPLT" myRole="initProvider"
+            partnerRole="initClient" />
+
+        <partnerLink name="serviceInvokerPL"
+            initializePartnerRole="yes" partnerLinkType="tns:OpenTOSCAServiceInvokerPLT"
+            myRole="ServiceInvokerClient"  partnerRole="ServiceInvoker"  />    
+    </partnerLinks> 
+
+    <variables>
+        <variable name="input" messageType="tns:planInputMessage" />
+        <variable name="output" messageType="tns:planOutputMessage" />
+
+                <variable name="createVLResponse" type="xsd:string" />
+                <variable name="vl_index" type="xsd:string" />
+                <variable name="vnf_index" type="xsd:string" />
+                <variable name="sfc_index" type="xsd:string" />
+                <variable name="vnf_status" type="xsd:string" />
+                <variable name="sfc_status" type="xsd:string" />
+                <variable name="vl_status" type="xsd:string" />
+                <variable name="exec_status" type="xsd:string" />
+                <variable name="createVNFResponse" type="xsd:string" />
+                <variable name="query_vnf_nslcmResponse" type="xsd:string" />
+                <variable name="createSFCResponse" type="xsd:string" />
+                <variable name="querySFCResponse" type="xsd:string" />
+                                <variable name="jobId" type="xsd:string" />
+                <variable name="nsInstanceId" type="xsd:string" />
+                <variable name="object_context" type="xsd:string" />
+                <variable name="vlCount" type="xsd:string" />
+                <variable name="sfcCount" type="xsd:string" />
+                <variable name="vnfCount" type="xsd:string" />
+                <variable name="object_additionalParamForVnf" type="xsd:string" />
+                <variable name="sdnControllerId" type="xsd:string" />
+                <variable name="object_additionalParamForNs" type="xsd:string" />
+            </variables>
+
+    <correlationSets>
+        <correlationSet name="ServiceInvokerCS"
+            properties="tns:ServiceInvokerRequestProperty" />
+    </correlationSets>
+
+
+
+    <sequence>
+        <receive createInstance="yes" name="initiate" operation="initiatePlan"
+            partnerLink="client" portType="tns:initPT" variable="input" />
+
+        <!-- Get values for variables 'instanceDataAPIUrl', 'csarId', 'serviceTemplateId', 
+            'serviceInstanceId' from input message These values are required to read/write 
+            properties of the service instance the plan is working on -->
+        <assign name="initFromInputMsg" validate="no">
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:jobId]]></query>
+                </from>
+                <to variable="jobId" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:nsInstanceId]]></query>
+                </from>
+                <to variable="nsInstanceId" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:object_context]]></query>
+                </from>
+                <to variable="object_context" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:vlCount]]></query>
+                </from>
+                <to variable="vlCount" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:sfcCount]]></query>
+                </from>
+                <to variable="sfcCount" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:vnfCount]]></query>
+                </from>
+                <to variable="vnfCount" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:object_additionalParamForVnf]]></query>
+                </from>
+                <to variable="object_additionalParamForVnf" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:sdnControllerId]]></query>
+                </from>
+                <to variable="sdnControllerId" />
+            </copy>
+                        <copy>
+                <from variable="input" part="payload">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[tns:object_additionalParamForNs]]></query>
+                </from>
+                <to variable="object_additionalParamForNs" />
+            </copy>
+                    </assign>
+
+        <assign name="initFromVarMsg" validate="no">
+                        <copy>
+                                <from>
+                    <literal></literal>
+                </from>
+                                <to variable="createVLResponse" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal>1</literal>
+                </from>
+                                <to variable="vl_index" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal>1</literal>
+                </from>
+                                <to variable="vnf_index" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal>1</literal>
+                </from>
+                                <to variable="sfc_index" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal>active</literal>
+                </from>
+                                <to variable="vnf_status" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal>active</literal>
+                </from>
+                                <to variable="sfc_status" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal>active</literal>
+                </from>
+                                <to variable="vl_status" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal>active</literal>
+                </from>
+                                <to variable="exec_status" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal></literal>
+                </from>
+                                <to variable="createVNFResponse" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal></literal>
+                </from>
+                                <to variable="query_vnf_nslcmResponse" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal></literal>
+                </from>
+                                <to variable="createSFCResponse" />
+            </copy>
+                        <copy>
+                                <from>
+                    <literal></literal>
+                </from>
+                                <to variable="querySFCResponse" />
+            </copy>
+                    </assign>
+        
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="While_WhileTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <while name="While">
+        <condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            $vl_index&lt;=$vlCount and $vl_status='active'
+        </condition>
+                <sequence name="While_WhileBranch_Sequence">
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="createVL" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+            </variables>
+    
+    <sequence name="createVL_Sequence">
+        <!-- build url start -->
+        <assign name="createVL_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/vls</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="createVL_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="nsInstanceId">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"nsInstanceId":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_context">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"context":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_additionalParamForVnf">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"additionalParamForVnf":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_additionalParamForNs">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"additionalParamForNs":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="vl_index">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"vlIndex":"',$temp,'"')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='createVLResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+                <assign name="createVL_Response_result">
+            <copy>
+                <from variable="createVLResponse">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                    <![CDATA[//*[local-name()="result"]/text()]]>
+                    </query>
+                </from>
+                <to variable="vl_status"/>
+            </copy>
+        </assign>
+                            </sequence>
+</scope>
+
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="Assign_vl_index_AssignTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <assign name="Assign_vl_index_Assign">
+            <copy>
+                    <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            <![CDATA[$vl_index+1]]>
+            </from>
+                    <to variable="vl_index"/>
+        </copy>
+            <copy>
+                    <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            <![CDATA[concat(translate($vl_status,'0',''), 'active')]]>
+            </from>
+                    <to variable="vl_status"/>
+        </copy>
+        </assign>
+</scope>
+
+                    <wait name="Wait">
+                <for><![CDATA['PT01M30.0S']]></for>
+            </wait>
+        </sequence>
+    </while>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!-- do nothing -->
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="jobstatus" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+                <!--temp var for response-->
+        <variable name="jobstatusResponse" type="xsd:string" />
+            </variables>
+    
+    <sequence name="jobstatus_Sequence">
+        <!-- build url start -->
+        <assign name="jobstatus_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+                <copy>
+                                    <from variable="jobId">
+                </from>
+                                    <to variable="temp"/>
+            </copy>
+        
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat(substring-before($url,'{jobId}'), $temp, substring-after($url,'{jobId}'))]]>
+                </from>
+                <to variable="url"></to>
+            </copy>
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="jobstatus_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="vl_status">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"errcode":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                            <from>
+                    <literal>20</literal>
+                </from>
+                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"progress":"',$temp,'"')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='jobstatusResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+        </sequence>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="While_WhileTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <while name="While">
+        <condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            $vnf_index&lt;=$vnfCount and $vl_status='active' and $vnf_status='active'
+        </condition>
+                <sequence name="While_WhileBranch_Sequence">
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="createVNF" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+            </variables>
+    
+    <sequence name="createVNF_Sequence">
+        <!-- build url start -->
+        <assign name="createVNF_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="createVNF_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="nsInstanceId">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"nsInstanceId":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_context">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"context":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_additionalParamForVnf">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"additionalParamForVnf":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_additionalParamForNs">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"additionalParamForNs":',$temp)]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='createVNFResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+                        </sequence>
+</scope>
+
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="RepeatUntil_RepeatTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <repeatUntil name="RepeatUntil">
+                <sequence name="RepeatUntil_RepeatBranch_Sequence">
+                                        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="query_vnf_nslcm" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+            </variables>
+    
+    <sequence name="query_vnf_nslcm_Sequence">
+        <!-- build url start -->
+        <assign name="query_vnf_nslcm_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs/{vnfInstId}</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+                <copy>
+                                    <from variable="createVNFResponse">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                    <![CDATA[//*[local-name()="vnfInstId"]/text()]]>
+                    </query>
+                </from>
+                                    <to variable="temp"/>
+            </copy>
+        
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat(substring-before($url,'{vnfInstId}'), $temp, substring-after($url,'{vnfInstId}'))]]>
+                </from>
+                <to variable="url"></to>
+            </copy>
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="query_vnf_nslcm_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:GET contentType="application/json" accept="application/json" uri="$bpelvar[url]" response='query_vnf_nslcmResponse'></bpel4RestLight:GET>
+        </extensionActivity>
+            
+                        <assign name="query_vnf_nslcm_Response_vnfStatus">
+            <copy>
+                <from variable="query_vnf_nslcmResponse">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                    <![CDATA[//*[local-name()="vnfStatus"]/text()]]>
+                    </query>
+                </from>
+                <to variable="vnf_status"/>
+            </copy>
+        </assign>
+                    </sequence>
+</scope>
+
+                            <wait name="Wait">
+                <for><![CDATA['PT01M30.0S']]></for>
+            </wait>
+        </sequence>
+        <condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            $vnf_status='active' or $vnf_status='failed'
+        </condition>
+    </repeatUntil>
+</scope>
+
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!-- do nothing -->
+
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="Assign_vnf_index_AssignTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <assign name="Assign_vnf_index_Assign">
+            <copy>
+                    <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            <![CDATA[$vnf_index+1]]>
+            </from>
+                    <to variable="vnf_index"/>
+        </copy>
+        </assign>
+</scope>
+
+                    <wait name="Wait">
+                <for><![CDATA['PT01M30.0S']]></for>
+            </wait>
+        </sequence>
+    </while>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!-- do nothing -->
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="jobstatus" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+                <!--temp var for response-->
+        <variable name="jobstatusResponse" type="xsd:string" />
+            </variables>
+    
+    <sequence name="jobstatus_Sequence">
+        <!-- build url start -->
+        <assign name="jobstatus_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+                <copy>
+                                    <from variable="jobId">
+                </from>
+                                    <to variable="temp"/>
+            </copy>
+        
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat(substring-before($url,'{jobId}'), $temp, substring-after($url,'{jobId}'))]]>
+                </from>
+                <to variable="url"></to>
+            </copy>
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="jobstatus_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="vnf_status">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"errcode":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                            <from>
+                    <literal>60</literal>
+                </from>
+                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"progress":"',$temp,'"')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='jobstatusResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+        </sequence>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="While_WhileTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <while name="While">
+        <condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            $sfc_index&lt;=$sfcCount and $vl_status='active' and $vnf_status='active' and $sfc_status='active'
+        </condition>
+                <sequence name="While_WhileBranch_Sequence">
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="createSFC" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+            </variables>
+    
+    <sequence name="createSFC_Sequence">
+        <!-- build url start -->
+        <assign name="createSFC_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="createSFC_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="nsInstanceId">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"nsInstanceId":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_context">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"context":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="sdnControllerId">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"sdnControllerId":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_additionalParamForVnf">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"additionalParamForVnf":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="object_additionalParamForNs">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"additionalParamForNs":',$temp,',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                                            <from variable="sfc_index">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"fpindex":"',$temp,'"')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='createSFCResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+                        </sequence>
+</scope>
+
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="RepeatUntil_RepeatTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <repeatUntil name="RepeatUntil">
+                <sequence name="RepeatUntil_RepeatBranch_Sequence">
+                                        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="querySFC" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+            </variables>
+    
+    <sequence name="querySFC_Sequence">
+        <!-- build url start -->
+        <assign name="querySFC_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs/{sfcInstId}</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+                <copy>
+                                    <from variable="createSFCResponse">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                    <![CDATA[//*[local-name()="sfcInstId"]/text()]]>
+                    </query>
+                </from>
+                                    <to variable="temp"/>
+            </copy>
+        
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat(substring-before($url,'{sfcInstId}'), $temp, substring-after($url,'{sfcInstId}'))]]>
+                </from>
+                <to variable="url"></to>
+            </copy>
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="querySFC_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:GET contentType="application/json" accept="application/json" uri="$bpelvar[url]" response='querySFCResponse'></bpel4RestLight:GET>
+        </extensionActivity>
+            
+                <assign name="querySFC_Response_sfcStatus">
+            <copy>
+                <from variable="querySFCResponse">
+                    <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                    <![CDATA[//*[local-name()="sfcStatus"]/text()]]>
+                    </query>
+                </from>
+                <to variable="sfc_status"/>
+            </copy>
+        </assign>
+                            </sequence>
+</scope>
+
+                            <wait name="Wait">
+                <for><![CDATA['PT01M30.0S']]></for>
+            </wait>
+        </sequence>
+        <condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            $sfc_status='active' or $sfc_status='failed'
+        </condition>
+    </repeatUntil>
+</scope>
+
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!-- do nothing -->
+
+                    <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="Assign_sfc_index_AssignTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <assign name="Assign_sfc_index_Assign">
+            <copy>
+                    <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            <![CDATA[$sfc_index+1]]>
+            </from>
+                    <to variable="sfc_index"/>
+        </copy>
+        </assign>
+</scope>
+
+                    <wait name="Wait">
+                <for><![CDATA['PT01M30.0S']]></for>
+            </wait>
+        </sequence>
+    </while>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!-- do nothing -->
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="jobstatus" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+                <!--temp var for response-->
+        <variable name="jobstatusResponse" type="xsd:string" />
+            </variables>
+    
+    <sequence name="jobstatus_Sequence">
+        <!-- build url start -->
+        <assign name="jobstatus_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+                <copy>
+                                    <from variable="jobId">
+                </from>
+                                    <to variable="temp"/>
+            </copy>
+        
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat(substring-before($url,'{jobId}'), $temp, substring-after($url,'{jobId}'))]]>
+                </from>
+                <to variable="url"></to>
+            </copy>
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="jobstatus_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="sfc_status">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"errcode":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                            <from>
+                    <literal>80</literal>
+                </from>
+                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"progress":"',$temp,'"')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='jobstatusResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+        </sequence>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="Assign_all_stauts_AssignTask" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <assign name="Assign_all_stauts_Assign">
+            <copy>
+                    <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+            <![CDATA[starts-with($vl_status,'active') and contains($vnf_status,'active') and contains($sfc_status,'active')]]>
+            </from>
+                    <to variable="exec_status"/>
+        </copy>
+        </assign>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="post_do" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+                <!--temp var for response-->
+        <variable name="post_doResponse" type="xsd:string" />
+            </variables>
+    
+    <sequence name="post_do_Sequence">
+        <!-- build url start -->
+        <assign name="post_do_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/{nsInstanceId}/postdeal</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+                <copy>
+                                    <from variable="nsInstanceId">
+                </from>
+                                    <to variable="temp"/>
+            </copy>
+        
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat(substring-before($url,'{nsInstanceId}'), $temp, substring-after($url,'{nsInstanceId}'))]]>
+                </from>
+                <to variable="url"></to>
+            </copy>
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="post_do_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="exec_status">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"status":"',$temp,'"')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='post_doResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+        </sequence>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<scope name="jobstatus" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- add by qinlihan   add rest Components -->
+    <variables>
+        <variable name="request" type="xsd:string" />
+        <variable name="url" type="xsd:string" />
+        <variable name="temp" type="xsd:string" />
+                <!--temp var for response-->
+        <variable name="jobstatusResponse" type="xsd:string" />
+            </variables>
+    
+    <sequence name="jobstatus_Sequence">
+        <!-- build url start -->
+        <assign name="jobstatus_URL">
+            <copy>
+                <from>
+                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                </from>
+                <to variable="url"></to>
+            </copy>
+
+                <copy>
+                                    <from variable="jobId">
+                </from>
+                                    <to variable="temp"/>
+            </copy>
+        
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat(substring-before($url,'{jobId}'), $temp, substring-after($url,'{jobId}'))]]>
+                </from>
+                <to variable="url"></to>
+            </copy>
+        
+                </assign>
+        <!-- build url end -->
+    
+        <!-- build request start -->
+        <assign name="jobstatus_Request">
+                    <copy>
+                <from>
+                    <literal>{</literal>
+                </from>
+                <to variable="request"></to>
+            </copy>
+        
+                    <copy>
+                                            <from variable="exec_status">
+                </from>
+                                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"errcode":"',$temp,'"',',')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                            <from>
+                    <literal>100</literal>
+                </from>
+                            <to variable="temp"/>
+            </copy>
+            
+            <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                                <![CDATA[concat($request,'"progress":"',$temp,'"')]]>
+                                </from>
+                <to variable="request"></to>
+            </copy>
+                    <copy>
+                <from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                <![CDATA[concat($request,'}')]]>
+                </from>
+                <to variable="request"></to>
+            </copy>
+            </assign>
+        <!-- build request end -->
+
+            <extensionActivity>
+            <bpel4RestLight:POST contentType="application/json" accept="application/json" request='request' response='jobstatusResponse' uri="$bpelvar[url]"></bpel4RestLight:POST>
+        </extensionActivity>
+            
+        </sequence>
+</scope>
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+        <!--
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!-- do nothing -->
+
+        <!--"/src/main/resources/templates/bpel_management_activity_scope_template.xml"-->
+    </sequence>
+</process>

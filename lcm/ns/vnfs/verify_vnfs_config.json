@@ -1,0 +1,13 @@
+{
+  "labVimId":"1111",
+  "additionalParamForVnf":[
+    {
+      "vnfProfileId":"2222",
+      "additionalParam":{
+        "vnfmInstanceId":"vnfmid_4",
+        "inputs":{"vnf_param1": "inputs_11", "vnf_param2": "inputs_22"},
+        "vnfdId":"777"
+      }
+    }
+  ]
+}

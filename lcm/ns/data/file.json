@@ -1,0 +1,821 @@
+[
+    {
+        "connections": [],
+        "type": "",
+        "id": "element4"
+    },
+    {
+        "name": "createVL",
+        "position": {
+            "left": 141.5,
+            "top": 157
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element169"
+        ],
+        "id": "element7",
+        "publicInterface": "vls Resource.2",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/vls",
+        "path": {},
+        "query": {},
+        "body": {
+            "vnfInstanceData": {
+                "type": "string",
+                "value": ""
+            },
+            "additionalParamForVnf": {
+                "type": "plan",
+                "value": "StartEvent.object_additionalParamForVnf"
+            },
+            "nsInstanceId": {
+                "type": "plan",
+                "value": "StartEvent.nsInstanceId"
+            },
+            "flavourId": {
+                "type": "string",
+                "value": ""
+            },
+            "pnfInfo": {
+                "type": "string",
+                "value": ""
+            },
+            "extNSVirtualLink": {
+                "type": "string",
+                "value": ""
+            },
+            "additionalParamForNs": {
+                "type": "plan",
+                "value": "StartEvent.object_additionalParamForNs"
+            },
+            "context": {
+                "type": "plan",
+                "value": "StartEvent.object_context"
+            },
+            "sapData": {
+                "type": "string",
+                "value": ""
+            },
+            "nestedNsInstanceId": {
+                "type": "string",
+                "value": ""
+            },
+            "jobId": {
+                "type": "string",
+                "value": ""
+            },
+            "locationConstraints": {
+                "type": "string",
+                "value": ""
+            },
+            "vlIndex": {
+                "type": "plan",
+                "value": "StartEvent.vl_index"
+            }
+        },
+        "output": {
+            "vlId": {
+                "type": "topology",
+                "value": ""
+            },
+            "result": {
+                "type": "plan",
+                "value": "StartEvent.vl_status"
+            },
+            "detail": {
+                "type": "topology",
+                "value": ""
+            }
+        }
+    },
+    {
+        "name": "StartEvent",
+        "position": {
+            "left": 64,
+            "top": 74
+        },
+        "type": "StartEvent",
+        "connections": [
+            "element173"
+        ],
+        "id": "element27",
+        "output": {
+            "vlCount": {
+                "type": "string",
+                "value": ""
+            },
+            "vnfCount": {
+                "type": "string",
+                "value": ""
+            },
+            "sfcCount": {
+                "type": "string",
+                "value": ""
+            },
+            "object_context": {
+                "type": "string",
+                "value": ""
+            },
+            "nsInstanceId": {
+                "type": "string",
+                "value": ""
+            },
+            "object_additionalParamForNs": {
+                "type": "string",
+                "value": ""
+            },
+            "object_additionalParamForVnf": {
+                "type": "string",
+                "value": ""
+            },
+            "jobId": {
+                "type": "string",
+                "value": ""
+            },
+            "sdnControllerId": {
+                "type": "string",
+                "value": ""
+            }
+        },
+        "variable": {
+            "vl_index": {
+                "type": "string",
+                "value": "1"
+            },
+            "vnf_index": {
+                "type": "string",
+                "value": "1"
+            },
+            "sfc_index": {
+                "type": "string",
+                "value": "1"
+            },
+            "vnf_status": {
+                "type": "string",
+                "value": "active"
+            },
+            "sfc_status": {
+                "type": "string",
+                "value": "active"
+            },
+            "vl_status": {
+                "type": "string",
+                "value": "active"
+            },
+            "exec_status": {
+                "type": "string",
+                "value": "active"
+            }
+        }
+    },
+    {
+        "name": "EndEvent",
+        "position": {
+            "left": 872.5,
+            "top": 183
+        },
+        "type": "EndEvent",
+        "connections": [],
+        "id": "element31"
+    },
+    {
+        "name": "Variable",
+        "position": {
+            "left": 321,
+            "top": 112
+        },
+        "type": "Variable",
+        "connections": [],
+        "id": "element166"
+    },
+    {
+        "name": "Assign_vl_index",
+        "position": {
+            "left": 124.5,
+            "top": 257
+        },
+        "type": "Assign",
+        "connections": [
+            "element177"
+        ],
+        "id": "element169",
+        "params": {
+            "StartEvent.vl_index": {
+                "type": "expression",
+                "value": "$vl_index+1",
+                "extension": ""
+            },
+            "StartEvent.vl_status": {
+                "type": "expression",
+                "value": "concat(translate($vl_status,'0',''), 'active')",
+                "extension": ""
+            }
+        }
+    },
+    {
+        "name": "While",
+        "position": {
+            "left": 164.5,
+            "top": 74
+        },
+        "type": "While",
+        "connections": [
+            "element7"
+        ],
+        "id": "element173",
+        "condition": "$vl_index&lt;=$vlCount and $vl_status='active'"
+    },
+    {
+        "name": "End",
+        "position": {
+            "left": 164.5,
+            "top": 337
+        },
+        "type": "Loop",
+        "connections": [
+            "element150"
+        ],
+        "id": "element177"
+    },
+    {
+        "name": "While",
+        "position": {
+            "left": 273.5,
+            "top": 110
+        },
+        "type": "While",
+        "connections": [
+            "element23"
+        ],
+        "id": "element19",
+        "condition": "$vnf_index&lt;=$vnfCount and $vl_status='active' and $vnf_status='active'"
+    },
+    {
+        "name": "createVNF",
+        "position": {
+            "left": 358.5,
+            "top": 106
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element45"
+        ],
+        "id": "element23",
+        "publicInterface": "vnfs Resource.1",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs",
+        "path": {},
+        "query": {},
+        "body": {
+            "vnfInstanceData": {
+                "type": "string",
+                "value": ""
+            },
+            "vnfIndex": {
+                "type": "plan",
+                "value": "StartEvent.vnf_index"
+            },
+            "additionalParamForVnf": {
+                "type": "plan",
+                "value": "StartEvent.object_additionalParamForVnf"
+            },
+            "nsInstanceId": {
+                "type": "plan",
+                "value": "StartEvent.nsInstanceId"
+            },
+            "flavourId": {
+                "type": "string",
+                "value": ""
+            },
+            "pnfInfo": {
+                "type": "string",
+                "value": ""
+            },
+            "extNSVirtualLink": {
+                "type": "string",
+                "value": ""
+            },
+            "additionalParamForNs": {
+                "type": "plan",
+                "value": "StartEvent.object_additionalParamForNs"
+            },
+            "context": {
+                "type": "plan",
+                "value": "StartEvent.object_context"
+            },
+            "sapData": {
+                "type": "string",
+                "value": ""
+            },
+            "nestedNsInstanceId": {
+                "type": "string",
+                "value": ""
+            },
+            "jobId": {
+                "type": "string",
+                "value": ""
+            },
+            "locationConstraints": {
+                "type": "string",
+                "value": ""
+            }
+        },
+        "output": {
+            "vnfInstId": {
+                "type": "topology",
+                "value": ""
+            },
+            "jobId": {
+                "type": "topology",
+                "value": ""
+            }
+        }
+    },
+    {
+        "name": "Assign_vnf_index",
+        "position": {
+            "left": 342,
+            "top": 389.5
+        },
+        "type": "Assign",
+        "connections": [
+            "element53"
+        ],
+        "id": "element39",
+        "params": {
+            "StartEvent.vnf_index": {
+                "type": "expression",
+                "value": "$vnf_index+1",
+                "extension": ""
+            }
+        }
+    },
+    {
+        "name": "RepeatUntil",
+        "position": {
+            "left": 385,
+            "top": 183
+        },
+        "type": "RepeatUntil",
+        "connections": [
+            "element57"
+        ],
+        "id": "element45",
+        "condition": "$vnf_status='active' or $vnf_status='failed'"
+    },
+    {
+        "name": "End",
+        "position": {
+            "left": 385,
+            "top": 337
+        },
+        "type": "Loop",
+        "connections": [
+            "element39"
+        ],
+        "id": "element49"
+    },
+    {
+        "name": "End",
+        "position": {
+            "left": 385,
+            "top": 447
+        },
+        "type": "Loop",
+        "connections": [
+            "element318"
+        ],
+        "id": "element53"
+    },
+    {
+        "name": "query_vnf nslcm",
+        "position": {
+            "left": 345,
+            "top": 257
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element49"
+        ],
+        "id": "element57",
+        "publicInterface": "vnfs Resource.3",
+        "method": "GET",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs/{vnfInstId}",
+        "path": {
+            "vnfInstId": {
+                "type": "plan",
+                "value": "createVNF.vnfInstId"
+            }
+        },
+        "query": {},
+        "body": {},
+        "output": {
+            "vnfInstId": {
+                "type": "topology",
+                "value": ""
+            },
+            "vnfName": {
+                "type": "topology",
+                "value": ""
+            },
+            "vnfStatus": {
+                "type": "plan",
+                "value": "StartEvent.vnf_status"
+            }
+        }
+    },
+    {
+        "name": "While",
+        "position": {
+            "left": 510.5,
+            "top": 110
+        },
+        "type": "While",
+        "connections": [
+            "element160"
+        ],
+        "id": "element156",
+        "condition": "$sfc_index&lt;=$sfcCount and $vl_status='active' and $vnf_status='active' and $sfc_status='active'"
+    },
+    {
+        "name": "createSFC",
+        "position": {
+            "left": 600.5,
+            "top": 106
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element187"
+        ],
+        "id": "element160",
+        "publicInterface": "sfcs Resource.1",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs",
+        "path": {},
+        "query": {},
+        "body": {
+            "sdnControllerId": {
+                "type": "plan",
+                "value": "StartEvent.sdnControllerId"
+            },
+            "vnfInstanceData": {
+                "type": "string",
+                "value": ""
+            },
+            "additionalParamForVnf": {
+                "type": "plan",
+                "value": "StartEvent.object_additionalParamForVnf"
+            },
+            "nsInstanceId": {
+                "type": "plan",
+                "value": "StartEvent.nsInstanceId"
+            },
+            "additionalParamForNs": {
+                "type": "plan",
+                "value": "StartEvent.object_additionalParamForNs"
+            },
+            "context": {
+                "type": "plan",
+                "value": "StartEvent.object_context"
+            },
+            "sapData": {
+                "type": "string",
+                "value": ""
+            },
+            "fpindex": {
+                "type": "plan",
+                "value": "StartEvent.sfc_index"
+            }
+        },
+        "output": {
+            "sfcInstId": {
+                "type": "topology",
+                "value": ""
+            },
+            "jobId": {
+                "type": "topology",
+                "value": ""
+            }
+        }
+    },
+    {
+        "name": "RepeatUntil",
+        "position": {
+            "left": 627,
+            "top": 183
+        },
+        "type": "RepeatUntil",
+        "connections": [
+            "element191"
+        ],
+        "id": "element187",
+        "condition": "$sfc_status='active' or $sfc_status='failed'"
+    },
+    {
+        "name": "querySFC",
+        "position": {
+            "left": 602,
+            "top": 257
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element201"
+        ],
+        "id": "element191",
+        "publicInterface": "sfcs Resource.0",
+        "method": "GET",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs/{sfcInstId}",
+        "path": {
+            "sfcInstId": {
+                "type": "plan",
+                "value": "createSFC.sfcInstId"
+            }
+        },
+        "query": {},
+        "body": {},
+        "output": {
+            "sfcName": {
+                "type": "topology",
+                "value": ""
+            },
+            "sfcInstId": {
+                "type": "topology",
+                "value": ""
+            },
+            "sfcStatus": {
+                "type": "plan",
+                "value": "StartEvent.sfc_status"
+            }
+        }
+    },
+    {
+        "name": "End",
+        "position": {
+            "left": 627,
+            "top": 315
+        },
+        "type": "Loop",
+        "connections": [
+            "element205"
+        ],
+        "id": "element201"
+    },
+    {
+        "name": "Assign_sfc_index",
+        "position": {
+            "left": 585,
+            "top": 389.5
+        },
+        "type": "Assign",
+        "connections": [
+            "element228"
+        ],
+        "id": "element205",
+        "params": {
+            "StartEvent.sfc_index": {
+                "type": "expression",
+                "value": "$sfc_index+1",
+                "extension": ""
+            }
+        }
+    },
+    {
+        "name": "End",
+        "position": {
+            "left": 627,
+            "top": 447
+        },
+        "type": "Loop",
+        "connections": [
+            "element356"
+        ],
+        "id": "element228"
+    },
+    {
+        "name": "jobstatus",
+        "position": {
+            "left": 251,
+            "top": 333
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element19"
+        ],
+        "id": "element150",
+        "publicInterface": "jobstatus.0",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "path": {
+            "jobId": {
+                "type": "plan",
+                "value": "StartEvent.jobId"
+            }
+        },
+        "query": {},
+        "body": {
+            "progress": {
+                "type": "string",
+                "value": "20"
+            },
+            "errcode": {
+                "type": "plan",
+                "value": "StartEvent.vl_status"
+            },
+            "desc": {
+                "type": "string",
+                "value": ""
+            }
+        },
+        "output": {}
+    },
+    {
+        "name": "jobstatus",
+        "position": {
+            "left": 488,
+            "top": 443
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element156"
+        ],
+        "id": "element318",
+        "publicInterface": "jobstatus.0",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "path": {
+            "jobId": {
+                "type": "plan",
+                "value": "StartEvent.jobId"
+            }
+        },
+        "query": {},
+        "body": {
+            "progress": {
+                "type": "string",
+                "value": "60"
+            },
+            "errcode": {
+                "type": "plan",
+                "value": "StartEvent.vnf_status"
+            },
+            "desc": {
+                "type": "string",
+                "value": ""
+            }
+        },
+        "output": {}
+    },
+    {
+        "name": "jobstatus",
+        "position": {
+            "left": 604.5,
+            "top": 512.5
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element386"
+        ],
+        "id": "element356",
+        "publicInterface": "jobstatus.0",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "path": {
+            "jobId": {
+                "type": "plan",
+                "value": "StartEvent.jobId"
+            }
+        },
+        "query": {},
+        "body": {
+            "progress": {
+                "type": "string",
+                "value": "80"
+            },
+            "errcode": {
+                "type": "plan",
+                "value": "StartEvent.sfc_status"
+            },
+            "desc": {
+                "type": "string",
+                "value": ""
+            }
+        },
+        "output": {}
+    },
+    {
+        "name": "post_do",
+        "position": {
+            "left": 731.5,
+            "top": 106
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element369"
+        ],
+        "id": "element360",
+        "publicInterface": "ns postdeal.0",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/{nsInstanceId}/postdeal",
+        "path": {
+            "nsInstanceId": {
+                "type": "plan",
+                "value": "StartEvent.nsInstanceId"
+            }
+        },
+        "query": {},
+        "body": {
+            "status": {
+                "type": "plan",
+                "value": "StartEvent.exec_status"
+            }
+        },
+        "output": {}
+    },
+    {
+        "name": "jobstatus",
+        "position": {
+            "left": 850,
+            "top": 106
+        },
+        "type": "RestTask",
+        "microservice": "nslcm",
+        "connections": [
+            "element31"
+        ],
+        "id": "element369",
+        "publicInterface": "jobstatus.0",
+        "method": "POST",
+        "accept": "application/json",
+        "contentType": "application/json",
+        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "path": {
+            "jobId": {
+                "type": "plan",
+                "value": "StartEvent.jobId"
+            }
+        },
+        "query": {},
+        "body": {
+            "progress": {
+                "type": "string",
+                "value": "100"
+            },
+            "errcode": {
+                "type": "plan",
+                "value": "StartEvent.exec_status"
+            },
+            "desc": {
+                "type": "string",
+                "value": ""
+            }
+        },
+        "output": {}
+    },
+    {
+        "name": "Assign_all_stauts",
+        "position": {
+            "left": 710,
+            "top": 512.5
+        },
+        "type": "Assign",
+        "connections": [
+            "element360"
+        ],
+        "id": "element386",
+        "params": {
+            "StartEvent.exec_status": {
+                "type": "expression",
+                "value": "starts-with($vl_status,'active') and contains($vnf_status,'active') and contains($sfc_status,'active')",
+                "extension": ""
+            }
+        }
+    }
+]

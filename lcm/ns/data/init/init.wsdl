@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2016 ZTE Corporation.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<definitions name="init"
+    targetNamespace="http://www.zte.com.cn/tosca/nfv/ns"
+    xmlns:tns="http://www.zte.com.cn/tosca/nfv/ns"
+    xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop"
+    xmlns:si="http://siserver.org/wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+
+    <import namespace="http://siserver.org/wsdl" location="invoker.wsdl" />
+    <types>
+        <schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+            targetNamespace="http://www.zte.com.cn/tosca/nfv/ns"
+            xmlns="http://www.w3.org/2001/XMLSchema">
+            <element name="planInput">
+                <complexType>
+                    <sequence>
+                                                    <element name="jobId" type="string" />
+                                                    <element name="nsInstanceId" type="string" />
+                                                    <element name="object_context" type="string" />
+                                                    <element name="vlCount" type="string" />
+                                                    <element name="sfcCount" type="string" />
+                                                    <element name="vnfCount" type="string" />
+                                                    <element name="object_additionalParamForVnf" type="string" />
+                                                    <element name="sdnControllerId" type="string" />
+                                                    <element name="object_additionalParamForNs" type="string" />
+                                            </sequence>
+                </complexType>
+            </element>
+            <element name="planOutput">
+                <complexType>
+                    <sequence>
+                        <element name="correlationId" type="string" />
+                        <!-- Relevant if build plan was executed that created a new service 
+                            instance -->
+                        <element name="serviceInstanceId" type="string" />
+                        
+                                            </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
+    <message name="planInputMessage">
+        <part name="payload" element="tns:planInput" />
+    </message>
+    <message name="planOutputMessage">
+        <part name="payload" element="tns:planOutput" />
+    </message>
+
+
+    <plnk:partnerLinkType name="initPLT">
+        <plnk:role name="initProvider" portType="tns:initPT" />
+        <plnk:role name="initClient" portType="tns:initClientCallbackPT" />
+    </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="OpenTOSCAServiceInvokerPLT">
+        <plnk:role name="ServiceInvokerClient" portType="si:CallbackPortType" />
+        <plnk:role name="ServiceInvoker" portType="si:InvokePortType" />
+    </plnk:partnerLinkType>
+
+    <vprop:property name="ServiceInvokerRequestProperty"
+        type="xsd:string" />
+
+    <vprop:propertyAlias messageType="si:invokeOperationAsyncMessage"
+        part="invokeOperationAsync" propertyName="tns:ServiceInvokerRequestProperty">
+        <vprop:query><![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+    </vprop:propertyAlias>
+
+    <vprop:propertyAlias messageType="si:invokeResponse"
+        part="invokeResponse" propertyName="tns:ServiceInvokerRequestProperty">
+        <vprop:query><![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+    </vprop:propertyAlias>
+
+    <!-- Port type provides the operation to the client for starting the plan 
+        plan -->
+    <portType name="initPT">
+        <operation name="initiatePlan">
+            <input message="tns:planInputMessage" />
+        </operation>
+    </portType>
+
+    <portType name="initClientCallbackPT">
+        <operation name="onResult">
+            <input message="tns:planOutputMessage" />
+        </operation>
+    </portType>
+
+
+
+
+    <binding name="initPTBinding" type="tns:initPT">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="initiatePlan">
+            <soap:operation
+                soapAction="http://www.zte.com.cn/tosca/nfv/ns/initiate" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+        </operation>
+    </binding>
+    <binding name="initClientPTBinding" type="tns:initClientCallbackPT">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="onResult">
+            <soap:operation
+                soapAction="http://www.zte.com.cn/tosca/nfv/ns/onResult" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+        </operation>
+    </binding>
+
+
+    <service name="initService">
+        <port name="initPort" binding="tns:initPTBinding">
+            <soap:address location="http://localhost:8080/init" />
+        </port>
+    </service>
+
+    <service name="initClientService">
+        <port name="initClientPort" binding="tns:initClientPTBinding">
+            <soap:address location="http://localhost:8080/initClient" />
+        </port>
+    </service>
+
+    <service name="initSICallback">
+        <port binding="si:CallbackBinding" name="initSICallbackPort">
+            <soap:address location="http://localhost:9763/services/initSICallback/"/>
+        </port>
+    </service>
+</definitions>

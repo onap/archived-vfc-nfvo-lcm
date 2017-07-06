@@ -1,0 +1,26 @@
+# rest framework
+Django==1.9.6
+djangorestframework==3.3.3
+
+# for access MySQL
+MySQL-python==1.2.5
+
+# redis cache
+redis==2.10.5
+
+# for access redis cache
+redisco==0.1.4
+django-redis-cache==0.13.1
+
+# for call rest api
+httplib2==0.9.2
+
+# for call openstack api
+python-keystoneclient==3.6.0
+python-glanceclient==2.5.0
+python-neutronclient==6.0.0
+
+# for unit test
+coverage==4.2
+mock==2.0.0
+unittest_xml_reporting==1.12.0
