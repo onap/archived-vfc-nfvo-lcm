@@ -52,5 +52,5 @@
             </includes>
         </fileSet>
     </fileSets>
-    <baseDirectory>nfvo/lcm</baseDirectory>
+    <baseDirectory>vfc/nfvo/lcm</baseDirectory>
 </assembly>
