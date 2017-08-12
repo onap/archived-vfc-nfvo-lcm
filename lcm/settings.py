@@ -19,6 +19,7 @@ import redisco
 
 from lcm.pub.config.config import REDIS_HOST, REDIS_PORT, REDIS_PASSWD
 from lcm.pub.config.config import DB_NAME, DB_IP, DB_USER, DB_PASSWD, DB_PORT
+from lcm.pub.config import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -100,6 +101,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
 
+config.CATALOG_ROOT_PATH = os.path.join(STATICFILES_DIRS[0], "catalog")
+config.CATALOG_URL_PATH = "static/catalog"
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -131,7 +135,6 @@ LOGGING = {
 }
 
 if 'test' in sys.argv:
-    from lcm.pub.config import config
     config.REG_TO_MSB_WHEN_START = False
     DATABASES = {}
     DATABASES['default'] = {

@@ -51,3 +51,8 @@ REG_TO_MSB_REG_PARAM = {
 
 # delete image from vim option when delete csar
 IGNORE_DEL_IMG_WEHN_DEL_CSAR = True
+
+# catalog path(values is defined in settings.py)
+CATALOG_ROOT_PATH = None
+CATALOG_URL_PATH = None
+
