@@ -24,6 +24,7 @@ from lcm.ns.ns_create import CreateNSService
 from lcm.ns.ns_get import GetNSInfoService
 from lcm.ns.ns_instant import InstantNSService
 from lcm.ns.ns_manual_scale import NSManualScaleService
+from lcm.ns.ns_heal import NSHealService
 from lcm.ns.ns_terminate import TerminateNsService, DeleteNsService
 from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
@@ -75,6 +76,20 @@ class TerminateNSView(APIView):
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         ret = {'jobId': job_id}
         logger.debug("Leave TerminateNSView::post ret=%s", ret)
+        return Response(data=ret, status=status.HTTP_202_ACCEPTED)
+
+
+class NSHealView(APIView):
+    def post(self, request, ns_instance_id):
+        logger.debug("Enter HealNSView::post %s", request.data)
+        job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
+        try:
+            NSHealService(ns_instance_id, request.data, job_id).start()
+        except Exception as e:
+            logger.error("Exception in HealNSView: %s", e.message)
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        ret = {'jobId': job_id}
+        logger.debug("Leave HealNSView::post ret=%s", ret)
         return Response(data=ret, status=status.HTTP_202_ACCEPTED)
 
 

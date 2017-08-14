@@ -28,6 +28,7 @@ from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
 from lcm.ns.vnfs.scale_vnfs import NFManualScaleService
+from lcm.ns.vnfs.heal_vnfs import NFHealService
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
 
@@ -293,6 +294,46 @@ class TestScaleVnfViews(TestCase):
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200']
         }
         NFManualScaleService(self.nf_inst_id, req_data).run()
+        nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
+        if nsIns:
+            self.failUnlessEqual(1, 1)
+        else:
+            self.failUnlessEqual(1, 0)
+
+
+class TestHealVnfViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.ns_inst_id = str(uuid.uuid4())
+        self.nf_inst_id = str(uuid.uuid4())
+
+        NSInstModel(id=self.ns_inst_id, name="ns_name").save()
+        NfInstModel.objects.create(nfinstid=self.nf_inst_id, nf_name='name_1', vnf_id='1',
+                                   vnfm_inst_id='1', ns_inst_id='111,2-2-2',
+                                   max_cpu='14', max_ram='12296', max_hd='101', max_shd="20", max_net=10,
+                                   status='active', mnfinstid=self.nf_uuid, package_id='pkg1',
+                                   vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
+                                              '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
+                                              '"productType": "CN","vnfType": "PGW",'
+                                              '"description": "PGW VNFD description",'
+                                              '"isShared":true,"vnfExtendType":"driver"}}')
+
+    def tearDown(self):
+        NSInstModel.objects.all().delete()
+        NfInstModel.objects.all().delete()
+
+    def test_heal_vnf(self, mock_call_req):
+
+        req_data = {
+            "action": "vmReset",
+            "affectedvm": {
+                "vmid": 1,
+                "vduid": 1,
+                "vmname": "name",
+            }
+        }
+
+        NFHealService(self.ns_inst_id, req_data).run()
         nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
         if nsIns:
             self.failUnlessEqual(1, 1)

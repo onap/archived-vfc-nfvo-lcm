@@ -67,3 +67,13 @@ def send_nf_scaling_request(vnfm_inst_id, vnf_inst_id, req_param):
         logger.error("Failed to send nf scale req:%s,%s", ret[2], ret[1])
         raise NSLCMException('Failed to send nf scale request to VNFM(%s)' % vnfm_inst_id)
     return json.JSONDecoder().decode(ret[1])
+
+
+def send_nf_heal_request(vnfm_inst_id, vnf_inst_id, req_param):
+    vnfm = get_vnfm_by_id(vnfm_inst_id)
+    uri = "/openoapi/%s/v1/%s/vnfs/%s/heal" % (vnfm["type"], vnfm_inst_id, vnf_inst_id)
+    ret = req_by_msb(uri, "POST", req_param)
+    if ret[0] > 0:
+        logger.error("Failed to send nf heal req:%s,%s", ret[2], ret[1])
+        raise NSLCMException('Failed to send nf heal request to VNFM(%s)' % vnfm_inst_id)
+    return json.JSONDecoder().decode(ret[1])

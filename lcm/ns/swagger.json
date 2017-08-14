@@ -510,6 +510,51 @@
                 }
             }
         },
+        "/ns/{ns_instance_id}/heal": {
+            "post": {
+                "tags": [
+                    "ns heal"
+                ],
+                "summary": "ns heal",
+                "description": "ns heal",
+                "operationId": "ns_heal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "Identifier of the NS instance.",
+                        "name": "ns_instance_id",
+                        "in": "path"
+                    },
+                    {
+                        "in": "body",
+                        "name": "healVnfData",
+                        "description": "healVnfData",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/healVnfDataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/healVnfDataResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "the url is invalid"
+                    }
+                }
+            }
+        },
         "/mandb/{modelName}": {
             "get": {
                 "tags": [
@@ -1001,6 +1046,44 @@
             "type": "object",
             "properties": {
                 "jobID": {
+                    "type": "string"
+                }
+            }
+        },
+        "healVnfDataRequest": {
+            "type": "object",
+            "properties": {
+                "vnfInstanceId": {
+                    "type": "string"
+                },
+                "cause": {
+                    "type": "string"
+                },
+                "additionalParams": {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string"
+                        },
+                        "actionvminfo": {
+                            "type": "object",
+                            "properties": {
+                                "vmid": {
+                                    "type": "string"
+                                },
+                                "vmname": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "healVnfDataResponse": {
+            "type": "object",
+            "properties": {
+                "jobId": {
                     "type": "string"
                 }
             }
