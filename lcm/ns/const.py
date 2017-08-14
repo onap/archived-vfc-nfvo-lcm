@@ -16,4 +16,5 @@ from lcm.pub.utils.enumutil import enum
 OWNER_TYPE = enum(VNF=0, VNFM=1, NS=2)
 
 NS_INST_STATUS = enum(EMPTY='empty', INSTANTIATING='instantiating', TERMINATING='terminating',
-                      ACTIVE='active', FAILED='failed', INACTIVE='inactive', UPDATING='updating', SCALING='scaling')
+                      ACTIVE='active', FAILED='failed', INACTIVE='inactive', UPDATING='updating', SCALING='scaling',
+                      HEALING='healing')

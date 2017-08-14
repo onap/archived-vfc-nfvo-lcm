@@ -15,7 +15,7 @@ from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView, SwaggerJsonView, NSInstPostDealView, \
-    NSManualScaleView
+    NSManualScaleView, NSHealView
 
 urlpatterns = patterns('',
                        url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
@@ -29,6 +29,8 @@ urlpatterns = patterns('',
                            NSInstPostDealView.as_view()),
                        url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$',
                            NSManualScaleView.as_view()),
+                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$',
+                           NSHealView.as_view())
                        )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

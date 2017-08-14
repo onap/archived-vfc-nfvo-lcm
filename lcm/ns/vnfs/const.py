@@ -14,7 +14,7 @@
 from lcm.pub.utils.enumutil import enum
 
 VNF_STATUS = enum(NULL='null', INSTANTIATING="instantiating", INACTIVE='inactive', ACTIVE="active", FAILED="failed",
-                  TERMINATING="terminating", SCALING="scaling")
+                  TERMINATING="terminating", SCALING="scaling", HEALING="healing")
 INST_TYPE = enum(VNF=0, VNFM=1)
 INST_TYPE_NAME = enum(VNF='VNF', VNFM='VNFM')
 PACKAGE_TYPE = enum(VNFD='VNFD', NSD='NSD')
