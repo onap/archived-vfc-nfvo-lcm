@@ -467,5 +467,5 @@ class TestNfPackage(TestCase):
         self.assertEqual(1, len(resp.data["csars"]))
         self.assertEqual("1", resp.data["csars"][0]["csarId"])
         self.assertEqual("2", resp.data["csars"][0]["vnfdId"])
-"""        
+"""       
         
