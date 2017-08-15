@@ -87,7 +87,7 @@ class TestVlViews(TestCase):
             "nsInstanceId": self.ns_inst_id,
             "context": json.JSONEncoder().encode(self.context),
             "vlindex": vl_id}
-        response = self.client.post("/openoapi/nslcm/v1/ns/vls", data=req_data)
+        response = self.client.post("/api/nslcm/v1/ns/vls", data=req_data)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual(0, response.data["result"])
 
@@ -104,7 +104,7 @@ class TestVlViews(TestCase):
                                          '{"test":"test_name","name":"vim_name","type":"type_name","url":"url_add"'
                                          ',"userName":"user_name","password":"password","tenant":"tenant"}']
         mock_create_network.return_value = [1, (1)]
-        response = self.client.post("/openoapi/nslcm/v1/ns/vls", data=req_data)
+        response = self.client.post("/api/nslcm/v1/ns/vls", data=req_data)
         retinfo = {"detail": "vl instantiation failed, detail message: Send post vl request to vim failed."}
         self.assertEqual(retinfo["detail"], response.data["detail"])
 
@@ -134,7 +134,7 @@ class TestVlDetailViews(TestCase):
         mock_req_by_rest.return_value = [0,
                                          '{"test":"test_name","name":"vim_name","type":"type_name","url":"url_add"'
                                          ',"userName":"user_name","password":"password","tenant":"tenant"}']
-        response = self.client.delete("/openoapi/nslcm/v1/ns/vls/%s" % self.vl_inst_id)
+        response = self.client.delete("/api/nslcm/v1/ns/vls/%s" % self.vl_inst_id)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         expect_resp_data = {"result": 0, "detail": "delete vl success"}
         self.assertEqual(expect_resp_data, response.data)
@@ -144,16 +144,16 @@ class TestVlDetailViews(TestCase):
         if VLInstModel.objects.filter(vlinstanceid=self.vl_inst_id):
             self.fail()
 
-        response = self.client.delete("/openoapi/nslcm/v1/ns/vls/%s" % "notExist")
+        response = self.client.delete("/api/nslcm/v1/ns/vls/%s" % "notExist")
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         expect_resp_data = {"result": 0, "detail": "vl is not exist or has been already deleted"}
         self.assertEqual(expect_resp_data, response.data)
 
     def test_query_vl(self):
-        response = self.client.get("/openoapi/nslcm/v1/ns/vls/%s" % self.vl_inst_id)
+        response = self.client.get("/api/nslcm/v1/ns/vls/%s" % self.vl_inst_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         expect_resp_data = {'vlId': self.vl_inst_id, 'vlName': self.vl_name, 'vlStatus': "active"}
         self.assertEqual(expect_resp_data, response.data)
 
-        response = self.client.get("/openoapi/nslcm/v1/ns/vls/%s" % "notExist")
+        response = self.client.get("/api/nslcm/v1/ns/vls/%s" % "notExist")
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_vims():
-    ret = req_by_msb("/openoapi/extsys/v1/vims", "GET")
+    ret = req_by_msb("/api/extsys/v1/vims", "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query vims from extsys.")
@@ -30,7 +30,7 @@ def get_vims():
 
 
 def get_vim_by_id(vim_id):
-    ret = req_by_msb("/openoapi/extsys/v1/vims/%s" % vim_id, "GET")
+    ret = req_by_msb("/api/extsys/v1/vims/%s" % vim_id, "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query vim(%s) from extsys." % vim_id)
@@ -38,7 +38,7 @@ def get_vim_by_id(vim_id):
 
 
 def get_sdn_controller_by_id(sdn_ontroller_id):
-    ret = req_by_msb("/openoapi/extsys/v1/sdncontrollers/%s" % sdn_ontroller_id, "GET")
+    ret = req_by_msb("/api/extsys/v1/sdncontrollers/%s" % sdn_ontroller_id, "GET")
     if ret[0] != 0:
         logger.error("Failed to query sdn ontroller(%s) from extsys. detail is %s.", sdn_ontroller_id, ret[1])
         raise NSLCMException("Failed to query sdn ontroller(%s) from extsys." % sdn_ontroller_id)
@@ -46,7 +46,7 @@ def get_sdn_controller_by_id(sdn_ontroller_id):
 
 
 def get_vnfm_by_id(vnfm_inst_id):
-    uri = '/openoapi/extsys/v1/vnfms/%s' % vnfm_inst_id
+    uri = '/api/extsys/v1/vnfms/%s' % vnfm_inst_id
     ret = req_by_msb(uri, "GET")
     if ret[0] > 0:
         logger.error('Send get VNFM information request to extsys failed.')
@@ -54,7 +54,7 @@ def get_vnfm_by_id(vnfm_inst_id):
     return json.JSONDecoder().decode(ret[1])
 
 def select_vnfm(vnfm_type, vim_id):
-    uri = '/openoapi/extsys/v1/vnfms'
+    uri = '/api/extsys/v1/vnfms'
     ret = req_by_msb(uri, "GET")
     if ret[0] > 0:
         logger.error("Failed to call %s: %s", uri, ret[1])

@@ -42,7 +42,7 @@ class TestGetVnfViews(TestCase):
         NfInstModel.objects.all().delete()
 
     def test_get_vnf(self):
-        response = self.client.get("/openoapi/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id)
+        response = self.client.get("/api/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id)
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
         context = json.loads(response.content)
         self.failUnlessEqual(self.nf_inst_id, context['vnfInstId'])
@@ -74,7 +74,7 @@ class TestCreateVnfViews(TestCase):
 
     @mock.patch.object(CreateVnfs, 'run')
     def test_create_vnf(self, mock_run):
-        response = self.client.post("/openoapi/nslcm/v1/ns/vnfs", data=self.data)
+        response = self.client.post("/api/nslcm/v1/ns/vnfs", data=self.data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
         context = json.loads(response.content)
         self.assertTrue(NfInstModel.objects.filter(nfinstid=context['vnfInstId']).exists())
@@ -82,15 +82,15 @@ class TestCreateVnfViews(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_create_vnf_thread(self, mock_call_req):
         mock_vals = {
-            "/openoapi/ztevmanagerdriver/v1/1/vnfs":
+            "/api/ztevmanagerdriver/v1/1/vnfs":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), '200'],
-            "/openoapi/extsys/v1/vnfms/1":
+            "/api/extsys/v1/vnfms/1":
                 [0, json.JSONEncoder().encode({"name": 'vnfm1'}), '200'],
-            "/openoapi/resmgr/v1/vnf":
+            "/api/resmgr/v1/vnf":
                 [0, json.JSONEncoder().encode({}), '200'],
-            "/openoapi/resmgr/v1/vnfinfo":
+            "/api/resmgr/v1/vnfinfo":
                 [0, json.JSONEncoder().encode({}), '200'],
-            "/openoapi/ztevmanagerdriver/v1/jobs/" + self.job_id + "&responseId=0":
+            "/api/ztevmanagerdriver/v1/jobs/" + self.job_id + "&responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
                                                                       "status": JOB_MODEL_STATUS.FINISHED,
@@ -149,7 +149,7 @@ class TestTerminateVnfViews(TestCase):
             "terminationType": "forceful",
             "gracefulTerminationTimeout": "600"}
 
-        response = self.client.post("/openoapi/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id, data=req_data)
+        response = self.client.post("/api/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id, data=req_data)
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
 
     @mock.patch.object(restcall, "call_req")
@@ -163,13 +163,13 @@ class TestTerminateVnfViews(TestCase):
             self.failUnlessEqual(1, 0)
 
         mock_vals = {
-            "/openoapi/ztevmanagerdriver/v1/1/vnfs/111/terminate":
+            "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-            "/openoapi/extsys/v1/vnfms/1":
+            "/api/extsys/v1/vnfms/1":
                 [0, json.JSONEncoder().encode({"name": 'vnfm1', "type": 'ztevmanagerdriver'}), '200'],
-            "/openoapi/resmgr/v1/vnf/1":
+            "/api/resmgr/v1/vnf/1":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-            "/openoapi/ztevmanagerdriver/v1/1/jobs/" + job_id + "?responseId=0":
+            "/api/ztevmanagerdriver/v1/1/jobs/" + job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({"jobId": job_id,
                                                "responsedescriptor": {"progress": "100",
                                                                       "status": JOB_MODEL_STATUS.FINISHED,
@@ -287,9 +287,9 @@ class TestScaleVnfViews(TestCase):
 
 
         mock_vals = {
-            "/openoapi/ztevmanagerdriver/v1/1/vnfs/111/terminate":
+            "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-            "/openoapi/ztevmanagerdriver/v1/1/vnfs/111/terminate":
+            "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200']
         }
         NFManualScaleService(self.nf_inst_id, req_data).run()

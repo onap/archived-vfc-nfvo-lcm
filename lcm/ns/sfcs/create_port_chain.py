@@ -58,7 +58,7 @@ class CreatePortChain(object):
             "symmetric": self.symmetric
         }
 
-        # url = "/openoapi/sdncdriver/v1.0/createchain"
+        # url = "/api/sdncdriver/v1.0/createchain"
         # req_param = json.JSONEncoder.encoding(data)
         # ret = req_by_msb(url, "POST", req_param)
         # ret = req_by_msb("OPENAPI_CREATE_SERVICE_PORT_CHAIN",data)
@@ -75,7 +75,7 @@ class CreatePortChain(object):
         #     try:
         #         logger.warn("query sdncontroller by id begins:")
         #
-        #         url = "/openoapi/extsys/v1/sdncontrollers/%s" % (self.sdnControllerId)
+        #         url = "/api/extsys/v1/sdncontrollers/%s" % (self.sdnControllerId)
         #         ret = req_by_msb(url, "GET")
         #         if ret[0] > 0:
         #             logger.error('query sdncontroller failed.')

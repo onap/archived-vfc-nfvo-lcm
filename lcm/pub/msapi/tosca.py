@@ -23,7 +23,7 @@ def tosca_plan(uri, inputs):
     """
     content = {"uri": uri, "inputs": inputs}
     content_str = json.JSONEncoder().encode(content)
-    ret = req_by_msb("/openoapi/tosca/v1/indirect/instance", "POST", content_str)
+    ret = req_by_msb("/api/tosca/v1/indirect/instance", "POST", content_str)
     if ret[0] != 0:
         raise NSLCMException("status code is %s, detail is %s.", ret[2], ret[1])
     if ret[2] != '200':

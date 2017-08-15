@@ -76,7 +76,7 @@ class CreateFlowClassifier(object):
             "dest_ip_range": self.concat_str(self.dest_ip_range)
         }
         # req_param = json.JSONEncoder().encoding(data)
-        # url = "/openoapi/sdncdriver/v1.0/createflowclassfier"
+        # url = "/api/sdncdriver/v1.0/createflowclassfier"
         # ret = req_by_msb(url,"POST", data)
         # if ret[0] > 0:
         #     logger.error('Send Flow Classifier request to Driver failed.')

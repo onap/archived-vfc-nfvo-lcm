@@ -4,7 +4,7 @@
         "version": "1.0.0",
         "title": "ZTE vManager Service rest API"
     },
-    "basePath": "/openoapi/nslcm/v1",
+    "basePath": "/api/nslcm/v1",
     "tags": [
         {
             "name": "lcm Resource"

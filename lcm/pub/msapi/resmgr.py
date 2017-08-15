@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_vl(req_param):
-    ret = req_by_msb("/openoapi/resmgr/v1/vl", "POST", json.JSONEncoder().encode(req_param))
+    ret = req_by_msb("/api/resmgr/v1/vl", "POST", json.JSONEncoder().encode(req_param))
     if ret[0] != 0:
         logger.error("Failed to create vl to resmgr. detail is %s.", ret[1])
         #raise NSLCMException('Failed to create vl to resmgr.')
@@ -30,14 +30,14 @@ def create_vl(req_param):
 
 
 def delete_vl(vl_inst_id):
-    ret = req_by_msb("/openoapi/resmgr/v1/vl/%s" % vl_inst_id, "DELETE")
+    ret = req_by_msb("/api/resmgr/v1/vl/%s" % vl_inst_id, "DELETE")
     if ret[0] != 0:
         logger.error("Failed to delete vl(%s) to resmgr. detail is %s.", vl_inst_id, ret[1])
         #raise NSLCMException("Failed to delete vl(%s) to resmgr." % vl_inst_id)
 
 
 def delete_sfc(sfc_inst_id):
-    ret = req_by_msb("/openoapi/resmgr/v1/sfc/%s" % sfc_inst_id, "DELETE")
+    ret = req_by_msb("/api/resmgr/v1/sfc/%s" % sfc_inst_id, "DELETE")
     if ret[0] != 0:
         logger.error("Failed to delete sfc(%s) to resmgr. detail is %s.", sfc_inst_id, ret[1])
         #raise NSLCMException("Failed to delete sfc(%s) to resmgr." % sfc_inst_id)
@@ -45,7 +45,7 @@ def delete_sfc(sfc_inst_id):
 
 def grant_vnf(req_param):
     grant_data = json.JSONEncoder().encode(req_param)
-    ret = req_by_msb("/openoapi/resmgr/v1/resource/grant", "PUT", grant_data)
+    ret = req_by_msb("/api/resmgr/v1/resource/grant", "PUT", grant_data)
     if ret[0] != 0:
         logger.error("Failed to grant vnf to resmgr. detail is %s.", ret[1])
         #raise NSLCMException('Failed to grant vnf to resmgr.')
@@ -76,7 +76,7 @@ def grant_vnf(req_param):
 
 
 def create_vnf(data):
-    uri = '/openoapi/resmgr/v1/vnf'
+    uri = '/api/resmgr/v1/vnf'
     req_param = json.JSONEncoder().encode({
         'orchVnfInstanceId': data['nf_inst_id'],
         'vnfInstanceId': data['vnfm_nf_inst_id'],
@@ -100,7 +100,7 @@ def create_vnf(data):
 
 
 def create_vnf_creation_info(data):
-    uri = '/openoapi/resmgr/v1/vnfinfo'
+    uri = '/api/resmgr/v1/vnfinfo'
     req_param = json.JSONEncoder().encode({
         'vnfInstanceId': data['nf_inst_id'],
         'nsId': data['ns_inst_id'],
@@ -114,7 +114,7 @@ def create_vnf_creation_info(data):
 
 
 def terminate_vnf(vnf_inst_id):
-    uri = '/openoapi/resmgr/v1/vnf/%s' % vnf_inst_id
+    uri = '/api/resmgr/v1/vnf/%s' % vnf_inst_id
     req_param = {}
     ret = req_by_msb(uri, "DELETE", json.dumps(req_param))
     if ret[0] > 0:

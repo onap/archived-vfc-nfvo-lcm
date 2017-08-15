@@ -37,11 +37,11 @@
 #             "context": json.dumps(nsd_model)
 #         }
 #         mock_vals = {
-#             "/openoapi/extsys/v1/sdncontrollers/test":
+#             "/api/extsys/v1/sdncontrollers/test":
 #                 [0, json.JSONEncoder().encode({"url": "url_1"}), '200'],
-#             "/openoapi/sdncdriver/v1.0/createflowclassfier":
+#             "/api/sdncdriver/v1.0/createflowclassfier":
 #                 [0, json.JSONEncoder().encode({"id": "test_id_1"}), '200'],
-#             "/openoapi/microservices/v1/services":
+#             "/api/microservices/v1/services":
 #                 [0, None, '200']
 #
 #         }
@@ -50,7 +50,7 @@
 #             return mock_vals[args[4]]
 #
 #         mock_call_req.side_effect = side_effect
-#         resp = self.client.post("/openoapi/nslcm/v1/ns/create_flow_classifier", data)
+#         resp = self.client.post("/api/nslcm/v1/ns/create_flow_classifier", data)
 #         ret = FPInstModel.objects.get(fpinstid="fp_inst_1")
 #         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 #         self.assertEqual("test_id_1", ret.flowclassifiers)

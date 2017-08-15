@@ -17,14 +17,14 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from lcm.ns.vnfs.views import NfView, NfDetailView, NfGrant, LcmNotify, NfScaleView, NfVerifyView
 
 urlpatterns = patterns('',
-                       url(r'^openoapi/nslcm/v1/ns/vnfs$', NfView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)$', NfDetailView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/grantvnf$', NfGrant.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/(?P<vnfmid>[0-9a-zA-Z_-]+)'
+                       url(r'^api/nslcm/v1/ns/vnfs$', NfView.as_view()),
+                       url(r'^api/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)$', NfDetailView.as_view()),
+                       url(r'^api/nslcm/v1/ns/grantvnf$', NfGrant.as_view()),
+                       url(r'^api/nslcm/v1/ns/(?P<vnfmid>[0-9a-zA-Z_-]+)'
                            r'/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$',
                            LcmNotify.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)/scaling$', NfScaleView.as_view()),
-                       url(r'^openoapi/nslcm/v1/vnfonboarding$', NfVerifyView.as_view()),
+                       url(r'^api/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)/scaling$', NfScaleView.as_view()),
+                       url(r'^api/nslcm/v1/vnfonboarding$', NfVerifyView.as_view()),
                        )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

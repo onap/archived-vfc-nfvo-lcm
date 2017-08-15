@@ -160,7 +160,7 @@ class TestNfPackage(TestCase):
 
     @mock.patch.object(NfOnBoardingThread, 'run')
     def test_nf_pkg_on_boarding_normal(self, mock_run):
-        resp = self.client.post("/openoapi/nslcm/v1/vnfpackage", {
+        resp = self.client.post("/api/nslcm/v1/vnfpackage", {
             "csarId": "1",
             "vimIds": ["1"]
             }, format='json')
@@ -190,10 +190,10 @@ class TestNfPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_nf_on_boarding_when_nfd_already_exists(self, mock_call_req):
         mock_vals = {
-            "/openoapi/catalog/v1/csars/2":
+            "/api/catalog/v1/csars/2":
                 [0, json.JSONEncoder().encode({
                     "onBoardState": "onBoardFailed", "processState": "deleteFailed"}), '200'],
-            "/openoapi/catalog/v1/servicetemplates/queryingrawdata":
+            "/api/catalog/v1/servicetemplates/queryingrawdata":
                 [0, json.JSONEncoder().encode(self.vnfd_raw_data), '200']}
 
         def side_effect(*args):
@@ -213,22 +213,22 @@ class TestNfPackage(TestCase):
                                               mock__init__, mock_download_file_from_http, mock_call_req):
         mock_download_file_from_http.return_value = True, "/root/package"
         mock_vals = {
-            "/openoapi/catalog/v1/csars/2":
+            "/api/catalog/v1/csars/2":
                 [0, json.JSONEncoder().encode({
                     "onBoardState": "onBoardFailed", "processState": "deleteFailed"}), '200'],
-            "/openoapi/catalog/v1/servicetemplates/queryingrawdata":
+            "/api/catalog/v1/servicetemplates/queryingrawdata":
                 [0, json.JSONEncoder().encode(self.vnfd_raw_data), '200'],
-            "/openoapi/catalog/v1/csars/2/files?relativePath=/SoftwareImages/image-lb":
+            "/api/catalog/v1/csars/2/files?relativePath=/SoftwareImages/image-lb":
                 [0, json.JSONEncoder().encode({
                     "csar_file_info": [{"downloadUri": "8"}, {"localPath": "9"}]}), '200'],
-            "/openoapi/extsys/v1/vims":
+            "/api/extsys/v1/vims":
                 [0, json.JSONEncoder().encode([{
                     "vimId": "1", "type": VIM_OPENSTACK,
                     "url": "/root/package", "userName": "tom",
                     "password": "tom", "tenant": "10"}]), '200'],
-            "/openoapi/catalog/v1/csars/2?onBoardState=onBoarded": [0, '{}', 200],
-            "/openoapi/catalog/v1/csars/2?operationalState=Enabled": [0, '{}', 200],
-            "/openoapi/catalog/v1/csars/2?processState=normal": [0, '{}', 200]}
+            "/api/catalog/v1/csars/2?onBoardState=onBoarded": [0, '{}', 200],
+            "/api/catalog/v1/csars/2?operationalState=Enabled": [0, '{}', 200],
+            "/api/catalog/v1/csars/2?processState=normal": [0, '{}', 200]}
         mock_create_image.return_value = [0, {"id": "30", "name": "jerry", "res_type": 0}]
         mock__init__.return_value = None
         mock_get_image.return_value = [0, {"id": "30", "name": "jerry", "size": "60", "status": "active"}]
@@ -251,16 +251,16 @@ class TestNfPackage(TestCase):
         nf_package.SLEEP_INTERVAL_SECONDS = 1
         mock_download_file_from_http.return_value = True, "/root/package"
         mock_vals = {
-            "/openoapi/catalog/v1/csars/3":
+            "/api/catalog/v1/csars/3":
             [0, json.JSONEncoder().encode({"onBoardState": "onBoardFailed",
                                            "processState": "deleteFailed"}), '200'],
-            "/openoapi/catalog/v1/servicetemplates/queryingrawdata":
+            "/api/catalog/v1/servicetemplates/queryingrawdata":
                 [0, json.JSONEncoder().encode(self.vnfd_raw_data), '200'],
-            "/openoapi/catalog/v1/csars/3/files?relativePath=/SoftwareImages/image-lb":
+            "/api/catalog/v1/csars/3/files?relativePath=/SoftwareImages/image-lb":
                 [0, json.JSONEncoder().encode({
                     "csar_file_info": [{"downloadUri": "8"}, {"localPath": "9"}]}), '200'],
-            "/openoapi/catalog/v1/csars/3?processState=onBoardFailed": [0, '{}', 200],
-            "/openoapi/extsys/v1/vims":
+            "/api/catalog/v1/csars/3?processState=onBoardFailed": [0, '{}', 200],
+            "/api/extsys/v1/vims":
                 [0, json.JSONEncoder().encode([{
                     "vimId": "1", "type": VIM_OPENSTACK,
                     "url": "/root/package", "userName": "tom",
@@ -284,16 +284,16 @@ class TestNfPackage(TestCase):
                                                         mock__init__, mock_download_file_from_http, mock_call_req):
         mock_download_file_from_http.return_value = True, "/root/package"
         mock_vals = {
-            "/openoapi/catalog/v1/csars/5":
+            "/api/catalog/v1/csars/5":
                 [0, json.JSONEncoder().encode({
                     "onBoardState": "onBoardFailed", "processState": "deleteFailed"}), '200'],
-            "/openoapi/catalog/v1/servicetemplates/queryingrawdata":
+            "/api/catalog/v1/servicetemplates/queryingrawdata":
                 [0, json.JSONEncoder().encode(self.vnfd_raw_data), '200'],
-            "/openoapi/catalog/v1/csars/5/files?relativePath=/SoftwareImages/image-lb":
+            "/api/catalog/v1/csars/5/files?relativePath=/SoftwareImages/image-lb":
                 [0, json.JSONEncoder().encode({
                     "csar_file_info": [{"downloadUri": "8"}, {"localPath": "9"}]}), '200'],
-            "/openoapi/catalog/v1/csars/5?processState=onBoardFailed": [0, '{}', 200],
-            "/openoapi/extsys/v1/vims":
+            "/api/catalog/v1/csars/5?processState=onBoardFailed": [0, '{}', 200],
+            "/api/extsys/v1/vims":
                 [0, json.JSONEncoder().encode([{
                     "vimId": "1", "type": VIM_OPENSTACK,
                     "url": "/root/package", "userName": "tom",
@@ -321,7 +321,7 @@ class TestNfPackage(TestCase):
         VnfPackageFileModel(id="1", filename="filename", imageid="00001",
                             vimid="1", vimuser="001", tenant="12", status="1", vnfpid="13").save()
         NfInstModel(nfinstid="1", mnfinstid="001", nf_name="name", package_id="13").save()
-        resp = self.client.get("/openoapi/nslcm/v1/vnfpackage/13")
+        resp = self.client.get("/api/nslcm/v1/vnfpackage/13")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         expect_data = {
             "csarId": '13',
@@ -394,15 +394,15 @@ class TestNfPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_delete_csarr_when_exception(self, mock_call_req, mock_delete_image, mock_init_):
         mock_vals = {
-            ("/openoapi/catalog/v1/csars/1", "DELETE"):
+            ("/api/catalog/v1/csars/1", "DELETE"):
                 [1, "{}", "400"],
-            ("/openoapi/catalog/v1/csars/1?processState=deleting", "PUT"):
+            ("/api/catalog/v1/csars/1?processState=deleting", "PUT"):
                 [0, "{}", "200"],
-            ("/openoapi/catalog/v1/csars/1?processState=deleteFailed", "PUT"):
+            ("/api/catalog/v1/csars/1?processState=deleteFailed", "PUT"):
                 [0, "{}", "200"],
-            ("/openoapi/catalog/v1/csars/1", "GET"):
+            ("/api/catalog/v1/csars/1", "GET"):
                 [0, json.JSONEncoder().encode({"processState": "normal"}), "200"],
-            ("/openoapi/extsys/v1/vims", "GET"):
+            ("/api/extsys/v1/vims", "GET"):
                 [0, json.JSONEncoder().encode([{"vimId": "002",
                                                 "url": "url_test",
                                                 "userName": "test01",
@@ -425,15 +425,15 @@ class TestNfPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_delete_csar_when_successfully(self, mock_call_req, mock_delete_image, mock_init_):
         mock_vals = {
-            ("/openoapi/catalog/v1/csars/1", "DELETE"):
+            ("/api/catalog/v1/csars/1", "DELETE"):
                 [0, json.JSONEncoder().encode({"successfully": "successfully"}), "200"],
-            ("/openoapi/catalog/v1/csars/1?processState=deleting", "PUT"):
+            ("/api/catalog/v1/csars/1?processState=deleting", "PUT"):
                 [0, json.JSONEncoder().encode({"successfully": "successfully"}), "200"],
-            ("/openoapi/catalog/v1/csars/1?processState=deleteFailed", "PUT"):
+            ("/api/catalog/v1/csars/1?processState=deleteFailed", "PUT"):
                 [0, json.JSONEncoder().encode({"successfully": "successfully"}), "200"],
-            ("/openoapi/catalog/v1/csars/1", "GET"):
+            ("/api/catalog/v1/csars/1", "GET"):
                 [0, json.JSONEncoder().encode({"notProcessState": "notProcessState"}), "200"],
-            ("/openoapi/extsys/v1/vims", "GET"):
+            ("/api/extsys/v1/vims", "GET"):
                 [0, json.JSONEncoder().encode([{
                     "vimId": "002",
                     "url": "url_test",
@@ -462,7 +462,7 @@ class TestNfPackage(TestCase):
     
     def test_get_nf_csars_normal(self):
         NfPackageModel(uuid="01", nfpackageid="1", vnfdid="2").save()
-        resp = self.client.get("/openoapi/nslcm/v1/vnfpackage")
+        resp = self.client.get("/api/nslcm/v1/vnfpackage")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(1, len(resp.data["csars"]))
         self.assertEqual("1", resp.data["csars"][0]["csarId"])

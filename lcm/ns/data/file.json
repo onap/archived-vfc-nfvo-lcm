@@ -20,7 +20,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/vls",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/ns/vls",
         "path": {},
         "query": {},
         "body": {
@@ -270,7 +270,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/ns/vnfs",
         "path": {},
         "query": {},
         "body": {
@@ -410,7 +410,7 @@
         "method": "GET",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs/{vnfInstId}",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/ns/vnfs/{vnfInstId}",
         "path": {
             "vnfInstId": {
                 "type": "plan",
@@ -463,7 +463,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/ns/sfcs",
         "path": {},
         "query": {},
         "body": {
@@ -540,7 +540,7 @@
         "method": "GET",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs/{sfcInstId}",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/ns/sfcs/{sfcInstId}",
         "path": {
             "sfcInstId": {
                 "type": "plan",
@@ -623,7 +623,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}",
         "path": {
             "jobId": {
                 "type": "plan",
@@ -663,7 +663,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}",
         "path": {
             "jobId": {
                 "type": "plan",
@@ -703,7 +703,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}",
         "path": {
             "jobId": {
                 "type": "plan",
@@ -743,7 +743,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/ns/{nsInstanceId}/postdeal",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/ns/{nsInstanceId}/postdeal",
         "path": {
             "nsInstanceId": {
                 "type": "plan",
@@ -775,7 +775,7 @@
         "method": "POST",
         "accept": "application/json",
         "contentType": "application/json",
-        "url": "http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}",
+        "url": "http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}",
         "path": {
             "jobId": {
                 "type": "plan",

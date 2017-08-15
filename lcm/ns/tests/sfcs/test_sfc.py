@@ -53,7 +53,7 @@
 #             "sdncontrollerid": "sdnControllerId_1"
 #         }
 #
-#         resp = self.client.post("/openoapi/nslcm/v1/ns/sfc_instance", data, format='json')
+#         resp = self.client.post("/api/nslcm/v1/ns/sfc_instance", data, format='json')
 #         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 #
 #     @mock.patch.object(extsys, "get_sdn_controller_by_id")
@@ -66,7 +66,7 @@
 #         }
 #         mock_create_flow_classfier.return_value = [0, json.dumps({'id': '1'})]
 #         mock_get_sdn_controller_by_id.return_value = json.loads('{"test":"test_name","url":"url_add"}')
-#         resp = self.client.post("/openoapi/nslcm/v1/ns/create_flow_classifier", data)
+#         resp = self.client.post("/api/nslcm/v1/ns/create_flow_classifier", data)
 #         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 #
 #     @mock.patch.object(extsys, "get_sdn_controller_by_id")
@@ -83,7 +83,7 @@
 #         mock_create_port_pair.return_value = [0, json.dumps({'id': '1'})]
 #         mock_create_port_pair_group.return_value = [0, json.dumps({'id': '1'})]
 #         mock_get_sdn_controller_by_id.return_value = json.loads('{"test":"test_name","url":"url_add"}')
-#         resp = self.client.post("/openoapi/nslcm/v1/ns/create_port_pair_group", data)
+#         resp = self.client.post("/api/nslcm/v1/ns/create_port_pair_group", data)
 #         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 #
 #     @mock.patch.object(extsys, "get_sdn_controller_by_id")
@@ -99,7 +99,7 @@
 #         self.update_fp_inst_data()
 #         mock_create_port_chain.return_value = [0, json.dumps({'id': '1'})]
 #         mock_get_sdn_controller_by_id.return_value = json.loads('{"test":"test_name","url":"url_add"}')
-#         resp = self.client.post("/openoapi/nslcm/v1/ns/create_port_chain", data)
+#         resp = self.client.post("/api/nslcm/v1/ns/create_port_chain", data)
 #         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 #
 #     # @mock.patch.object(restcall, 'call_req')
@@ -112,7 +112,7 @@
 #     #         "sdncontrollerid": "sdnControllerId_1"
 #     #     }
 #     #
-#     #     resp = self.client.post("/openoapi/nslcm/v1/ns/sfc", data, format='json')
+#     #     resp = self.client.post("/api/nslcm/v1/ns/sfc", data, format='json')
 #     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
 #
 #     def update_fp_inst_data(self):

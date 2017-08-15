@@ -139,7 +139,7 @@ class NSInstPostDealView(APIView):
             "fileUri":file_url
         }
         req_param = json.JSONEncoder().encode(input_data)
-        policy_engine_url = 'openoapi/polengine/v1/policyinfo'
+        policy_engine_url = 'api/polengine/v1/policyinfo'
         ret = req_by_msb(policy_engine_url, "POST", req_param)
         if ret[0] != 0:
             logger.error("Failed to send ns policy req")

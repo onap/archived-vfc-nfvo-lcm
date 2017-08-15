@@ -18,12 +18,12 @@ from lcm.ns.sfcs.detail_views import SfcDetailView
 from lcm.ns.sfcs.views import SfcView, SfcInstanceView, PortPairGpView, FlowClaView, PortChainView
 
 urlpatterns = patterns('',
-                       url(r'^openoapi/nslcm/v1/ns/sfcs$', SfcView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/sfcs/(?P<sfc_inst_id>[0-9a-zA-Z_-]+)$', SfcDetailView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/sfc_instance$', SfcInstanceView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/create_port_pair_group$', PortPairGpView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/create_flow_classifier$', FlowClaView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/create_port_chain$', PortChainView.as_view()),
+                       url(r'^api/nslcm/v1/ns/sfcs$', SfcView.as_view()),
+                       url(r'^api/nslcm/v1/ns/sfcs/(?P<sfc_inst_id>[0-9a-zA-Z_-]+)$', SfcDetailView.as_view()),
+                       url(r'^api/nslcm/v1/ns/sfc_instance$', SfcInstanceView.as_view()),
+                       url(r'^api/nslcm/v1/ns/create_port_pair_group$', PortPairGpView.as_view()),
+                       url(r'^api/nslcm/v1/ns/create_flow_classifier$', FlowClaView.as_view()),
+                       url(r'^api/nslcm/v1/ns/create_port_chain$', PortChainView.as_view()),
                        )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -37,13 +37,13 @@ class TestNsInstant(TestCase):
     def test_ns_instant_ok(self, mock_convert_nsd_model, mock_call_req):
         mock_convert_nsd_model.return_value = self.context
         mock_vals = {
-            "/openoapi/catalog/v1/csars/7/files?relativePath=abc.yaml":
+            "/api/catalog/v1/csars/7/files?relativePath=abc.yaml":
                 [0, '{"downloadUri":"http://test.yaml", "localPath":"./test.yaml"}', '200'],
-            "/openoapi/tosca/v1/indirect/plan":
+            "/api/tosca/v1/indirect/plan":
                 [0, '{"description":"", "metadata":{}, "nodes":[]}', '200'],
-            "/openoapi/catalog/v1/servicetemplates/2/operations":
+            "/api/catalog/v1/servicetemplates/2/operations":
                 [0, '[{"name":"LCM", "processId":"{http://www.open-o.org/tosca/nfv/2015/12}init-16"}]', '200'],
-            "/openoapi/wso2bpel/v1/process/instance":
+            "/api/wso2bpel/v1/process/instance":
                 [0, '{"status": 1}', '200']}
 
         def side_effect(*args):
@@ -56,10 +56,10 @@ class TestNsInstant(TestCase):
                 'nsInstanceId': "123", 'instanceId': "234", 'resourceUrl': "", 'callbackId': "",
                 'additionalParamForVnf': "[{\"b\":1},{\"c\":{\"d\":\"2\"}}]",
                 'additionalParamForNs': "[{\"a\":3},{\"e\":{\"f\":\"4\"}}]", 'flavorParams': ""}
-        resp = self.client.post("/openoapi/nslcm/v1/ns/123/instantiate", data, format='json')
+        resp = self.client.post("/api/nslcm/v1/ns/123/instantiate", data, format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
     """
     
     def test_swagger_ok(self):
-        resp = self.client.get("/openoapi/nslcm/v1/swagger.json", format='json')
+        resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)

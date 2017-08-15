@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 def send_nf_init_request(vnfm_inst_id, req_param):
     vnfm = get_vnfm_by_id(vnfm_inst_id)
-    uri = '/openoapi/%s/v1/%s/vnfs' % (vnfm["type"], vnfm_inst_id)
+    uri = '/api/%s/v1/%s/vnfs' % (vnfm["type"], vnfm_inst_id)
     ret = req_by_msb(uri, "POST", req_param)
     if ret[0] != 0:
         logger.error("Failed to send nf init req:%s,%s", ret[2], ret[1])
@@ -33,7 +33,7 @@ def send_nf_init_request(vnfm_inst_id, req_param):
 
 def send_nf_terminate_request(vnfm_inst_id, vnf_inst_id, req_param):
     vnfm = get_vnfm_by_id(vnfm_inst_id)
-    uri = '/openoapi/%s/v1/%s/vnfs/%s/terminate' % (vnfm["type"], vnfm_inst_id, vnf_inst_id)
+    uri = '/api/%s/v1/%s/vnfs/%s/terminate' % (vnfm["type"], vnfm_inst_id, vnf_inst_id)
     ret = req_by_msb(uri, "POST", req_param)
     if ret[0] > 0:
         logger.error("Failed to send nf terminate req:%s,%s", ret[2], ret[1])
@@ -43,7 +43,7 @@ def send_nf_terminate_request(vnfm_inst_id, vnf_inst_id, req_param):
 def query_vnfm_job(vnfm_inst_id, job_id, response_id=0):
     vnfm = get_vnfm_by_id(vnfm_inst_id)
     retry_time = 3
-    uri = '/openoapi/%s/v1/%s/jobs/%s?responseId=%s' % (vnfm["type"], 
+    uri = '/api/%s/v1/%s/jobs/%s?responseId=%s' % (vnfm["type"], 
         vnfm_inst_id, job_id, response_id)
     while retry_time > 0:
         rsp = req_by_msb(uri, "GET")
@@ -61,7 +61,7 @@ def query_vnfm_job(vnfm_inst_id, job_id, response_id=0):
 
 def send_nf_scaling_request(vnfm_inst_id, vnf_inst_id, req_param):
     vnfm = get_vnfm_by_id(vnfm_inst_id)
-    uri = '/openoapi/%s/v1/%s/vnfs/%s/scale' % (vnfm["type"], vnfm_inst_id, vnf_inst_id)
+    uri = '/api/%s/v1/%s/vnfs/%s/scale' % (vnfm["type"], vnfm_inst_id, vnf_inst_id)
     ret = req_by_msb(uri, "POST", req_param)
     if ret[0] > 0:
         logger.error("Failed to send nf scale req:%s,%s", ret[2], ret[1])

@@ -61,7 +61,7 @@ class VerifyVnfs(threading.Thread):
             "csarId":self.data["PackageID"],
             "labVimId":ignore_case_get(self.verify_config, "labVimId")
         }
-        ret = req_by_msb("/openoapi/nslcm/v1/vnfpackage", "POST", json.JSONEncoder().encode(onboarding_data))
+        ret = req_by_msb("/api/nslcm/v1/vnfpackage", "POST", json.JSONEncoder().encode(onboarding_data))
         if ret[0] != 0:
             raise NSLCMException("Failed to call vnf onboarding: %s" % ret[1])
         rsp_data = json.JSONDecoder().decode(ret[1])
@@ -79,7 +79,7 @@ class VerifyVnfs(threading.Thread):
             "additionalParamForVnf": vnf_param,
             "vnfIndex": "1"
         }
-        ret = req_by_msb("/openoapi/nslcm/v1/ns/vnfs", "POST", json.JSONEncoder().encode(inst_data))
+        ret = req_by_msb("/api/nslcm/v1/ns/vnfs", "POST", json.JSONEncoder().encode(inst_data))
         if ret[0] != 0:
             raise NSLCMException("Failed to call inst vnf: %s" % ret[1])
         rsp_data = json.JSONDecoder().decode(ret[1])
@@ -115,7 +115,7 @@ class VerifyVnfs(threading.Thread):
             "terminationType": "forceful",
             "gracefulTerminationTimeout": "600"
         }
-        ret = req_by_msb("/openoapi/nslcm/v1/ns/vnfs/%s" % self.vnf_inst_id, "POST", json.JSONEncoder().encode(term_data))
+        ret = req_by_msb("/api/nslcm/v1/ns/vnfs/%s" % self.vnf_inst_id, "POST", json.JSONEncoder().encode(term_data))
         if ret[0] != 0:
             raise NSLCMException("Failed to call term vnf: %s" % ret[1])
         rsp_data = json.JSONDecoder().decode(ret[1])
@@ -136,7 +136,7 @@ class VerifyVnfs(threading.Thread):
         while count < retry_count:
             count = count + 1
             time.sleep(interval_second)
-            ret = req_by_msb("/openoapi/nslcm/v1/jobs/%s?responseId=%s" % (job_id, response_id), "GET")
+            ret = req_by_msb("/api/nslcm/v1/jobs/%s?responseId=%s" % (job_id, response_id), "GET")
             if ret[0] != 0:
                 logger.error("Failed to query job: %s:%s", ret[2], ret[1])
                 continue

@@ -28,5 +28,5 @@ class JobsViewTest(TestCase):
     def test_job(self):
         JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
         JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst').save()
-        response = self.client.get("/openoapi/nslcm/v1/jobs/%s" % self.job_id)
+        response = self.client.get("/api/nslcm/v1/jobs/%s" % self.job_id)
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)

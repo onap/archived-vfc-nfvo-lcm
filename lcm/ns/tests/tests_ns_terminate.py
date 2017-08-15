@@ -54,10 +54,10 @@ class TestTerminateNsViews(TestCase):
         req_data = {
             "terminationType": "forceful",
             "gracefulTerminationTimeout": "600"}
-        response = self.client.post("/openoapi/nslcm/v1/ns/%s/terminate" % self.ns_inst_id, data=req_data)
+        response = self.client.post("/api/nslcm/v1/ns/%s/terminate" % self.ns_inst_id, data=req_data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
-        response = self.client.delete("/openoapi/nslcm/v1/ns/%s" % self.ns_inst_id)
+        response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
         self.failUnlessEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     @mock.patch.object(restcall, "call_req")
@@ -65,13 +65,13 @@ class TestTerminateNsViews(TestCase):
         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
 
         mock_vals = {
-            "/openoapi/nslcm/v1/ns/vls/1":
+            "/api/nslcm/v1/ns/vls/1":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/openoapi/nslcm/v1/ns/sfcs/1":
+            "/api/nslcm/v1/ns/sfcs/1":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/openoapi/nslcm/v1/ns/vnfs/1":
+            "/api/nslcm/v1/ns/vnfs/1":
                 [0, json.JSONEncoder().encode({}), '200'],
-            "/openoapi/ztevmanagerdriver/v1/jobs/" + self.job_id + "&responseId=0":
+            "/api/ztevmanagerdriver/v1/jobs/" + self.job_id + "&responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
                                                                       "status": JOB_MODEL_STATUS.FINISHED,

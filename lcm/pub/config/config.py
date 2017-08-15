@@ -35,11 +35,11 @@ DB_PASSWD = "inventory"
 
 # [register]
 REG_TO_MSB_WHEN_START = True
-REG_TO_MSB_REG_URL = "/openoapi/microservices/v1/services"
+REG_TO_MSB_REG_URL = "/api/microservices/v1/services"
 REG_TO_MSB_REG_PARAM = {
     "serviceName": "nslcm",
     "version": "v1",
-    "url": "/openoapi/nslcm/v1",
+    "url": "/api/nslcm/v1",
     "protocol": "REST",
     "visualRange": "1",
     "nodes": [{

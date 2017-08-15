@@ -19,7 +19,7 @@ from lcm.pub.utils.restcall import req_by_msb
 
 def workflow_run(content):
     content_str = json.JSONEncoder().encode(content)
-    ret = req_by_msb("/openoapi/wso2bpel/v1/process/instance", "POST", content_str)
+    ret = req_by_msb("/api/wso2bpel/v1/process/instance", "POST", content_str)
     if ret[0] != 0:
         raise NSLCMException("Status code is %s, detail is %s.", ret[2], ret[1])
     return json.JSONDecoder().decode(ret[1])

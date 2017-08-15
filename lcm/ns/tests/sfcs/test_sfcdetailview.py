@@ -40,7 +40,7 @@ class TestSfcDetailViews(TestCase):
     
     
     def test_sfc_delete_failed(self):
-        response = self.client.delete("/openoapi/nslcm/v1/ns/sfcs/%s" % "notExist")
+        response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % "notExist")
         expect_resp_data = {"result": 0, "detail": "sfc is not exist or has been already deleted"}
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertEqual(expect_resp_data, response.data)
@@ -65,13 +65,13 @@ class TestSfcDetailViews(TestCase):
                     sfcid="10", flowclassifiers="11",
                     portpairgroups=json.JSONEncoder().encode([{"groupid":"98","portpair":"99"}])
                     ).save()
-        response = self.client.delete("/openoapi/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
+        response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
         expect_resp_data = {"result": 0, "detail": "delete sfc success"}
         self.assertEqual(expect_resp_data, response.data)
 
     def test_sfc_get_failed(self):
         sfc_inst_id="10"
-        response = self.client.get("/openoapi/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
+        response = self.client.get("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
     def test_sfc_get_success(self):
@@ -80,7 +80,7 @@ class TestSfcDetailViews(TestCase):
                     symmetric="5", policyinfo="6", forworderpaths="7", status="8", sdncontrollerid="9",
                     sfcid="10", flowclassifiers="11",
                     portpairgroups="12").save()
-        response = self.client.get("/openoapi/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
+        response = self.client.get("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
         expect_resp_data={'sfcName': 'xxx', 'sfcInstId': '10', 'sfcStatus': '8'}
         self.assertEqual(expect_resp_data, response.data)
 

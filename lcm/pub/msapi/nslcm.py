@@ -22,14 +22,14 @@ logger = logging.getLogger(__name__)
 def call_from_ns_cancel_resource(res_type, instid):
     method = "DELETE"
     if res_type == 'vl':
-        uri = '/openoapi/nslcm/v1/ns/vls/%s' % instid
+        uri = '/api/nslcm/v1/ns/vls/%s' % instid
 
     elif res_type == 'sfc':
-        uri = '/openoapi/nslcm/v1/ns/sfcs/%s' % instid
+        uri = '/api/nslcm/v1/ns/sfcs/%s' % instid
     else:
         # vnf
         method = "POST"
-        uri = '/openoapi/nslcm/v1/ns/vnfs/%s' % instid
+        uri = '/api/nslcm/v1/ns/vnfs/%s' % instid
     req_param = {}
     ret = req_by_msb(uri, method, json.dumps(req_param))
     logger.info("[NS terminate] call vnfm [%s] result:%s" % (res_type, ret))

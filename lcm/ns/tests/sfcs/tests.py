@@ -50,7 +50,7 @@ class TestSfcDetailViews(TestCase):
     @mock.patch.object(restcall, "call_req")
     def test_delete_sfc(self, mock_req_by_rest):
         mock_req_by_rest.return_value = [0, '{"test":"test_name","url":"url_add"}']
-        response = self.client.delete("/openoapi/nslcm/v1/ns/sfcs/%s" % self.sfc_inst_id)
+        response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % self.sfc_inst_id)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         expect_resp_data = {"result": 0, "detail": "delete sfc success"}
         self.assertEqual(expect_resp_data, response.data)
@@ -60,18 +60,18 @@ class TestSfcDetailViews(TestCase):
         if FPInstModel.objects.filter(fpinstid=self.sfc_inst_id):
             self.fail()
 
-        response = self.client.delete("/openoapi/nslcm/v1/ns/sfcs/%s" % "notExist")
+        response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % "notExist")
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         expect_resp_data = {"result": 0, "detail": "sfc is not exist or has been already deleted"}
         self.assertEqual(expect_resp_data, response.data)
 
     def test_query_sfc(self):
-        response = self.client.get("/openoapi/nslcm/v1/ns/sfcs/%s" % self.sfc_inst_id)
+        response = self.client.get("/api/nslcm/v1/ns/sfcs/%s" % self.sfc_inst_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         expect_resp_data = {'sfcInstId': self.sfc_inst_id,
                             'sfcStatus': self.status,
                             'sfcName': "xxx"}
         self.assertEqual(expect_resp_data, response.data)
 
-        response = self.client.get("/openoapi/nslcm/v1/ns/sfcs/%s" % "notExist")
+        response = self.client.get("/api/nslcm/v1/ns/sfcs/%s" % "notExist")
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)

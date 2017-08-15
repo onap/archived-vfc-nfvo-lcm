@@ -61,13 +61,13 @@
 #             "context": json.dumps(nsd_model)
 #         }
 #         mock_vals = {
-#             "/openoapi/extsys/v1/sdncontrollers/sdn_controller_1":
+#             "/api/extsys/v1/sdncontrollers/sdn_controller_1":
 #                 [0, json.JSONEncoder().encode({"url": "url_1"}), '200'],
-#             "/openoapi/sdncdriver/v1.0/createportpair":
+#             "/api/sdncdriver/v1.0/createportpair":
 #                 [0, json.JSONEncoder().encode({"id": "createportpair_id"}), '200'],
-#             "/openoapi/sdncdriver/v1.0/createportpairgroup":
+#             "/api/sdncdriver/v1.0/createportpairgroup":
 #                 [0, json.JSONEncoder().encode({"id": "createportpairgroup_id"}), '200'],
-#             "/openoapi/microservices/v1/services":
+#             "/api/microservices/v1/services":
 #                 [0, None, '200']
 #         }
 #
@@ -75,7 +75,7 @@
 #             return mock_vals[args[4]]
 #
 #         mock_call_req.side_effect = side_effect
-#         resp = self.client.post("/openoapi/nslcm/v1/ns/create_port_pair_group", data)
+#         resp = self.client.post("/api/nslcm/v1/ns/create_port_pair_group", data)
 #         rest = json.loads(FPInstModel.objects.get(fpinstid="fp_inst_1").portpairgroups)[0]
 #         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 #         self.assertEqual("createportpairgroup_id", rest["groupid"])

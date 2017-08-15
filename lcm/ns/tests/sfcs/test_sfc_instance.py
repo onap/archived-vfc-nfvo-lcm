@@ -38,7 +38,7 @@
 #             "fpindex": "fpd_1",
 #             "sdncontrollerid": "sdnControllerId_1"
 #         }
-#         resp = self.client.post("/openoapi/nslcm/v1/ns/sfc_instance", data, format='json')
+#         resp = self.client.post("/api/nslcm/v1/ns/sfc_instance", data, format='json')
 #
 #         vnffg = VNFFGInstModel.objects.get(vnffginstid="vnffg_inst_1")
 #         ret = FPInstModel.objects.get(fpinstid=resp.data["fpinstid"])

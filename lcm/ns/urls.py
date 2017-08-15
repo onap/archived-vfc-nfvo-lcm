@@ -18,16 +18,16 @@ from lcm.ns.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView
     NSManualScaleView
 
 urlpatterns = patterns('',
-                       url(r'^openoapi/nslcm/v1/ns$', CreateNSView.as_view()),
-                       url(r'^openoapi/nslcm/v1/swagger.json$', SwaggerJsonView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$',
+                       url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
+                       url(r'^api/nslcm/v1/swagger.json$', SwaggerJsonView.as_view()),
+                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$',
                            NSInstView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$',
+                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$',
                            TerminateNSView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', NSDetailView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$',
+                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', NSDetailView.as_view()),
+                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$',
                            NSInstPostDealView.as_view()),
-                       url(r'^openoapi/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$',
+                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$',
                            NSManualScaleView.as_view()),
                        )
 

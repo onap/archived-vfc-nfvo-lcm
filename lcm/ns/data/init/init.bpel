@@ -273,7 +273,7 @@
         <assign name="createVL_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/vls</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/ns/vls</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -473,7 +473,7 @@
         <assign name="jobstatus_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -600,7 +600,7 @@
         <assign name="createVNF_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/ns/vnfs</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -734,7 +734,7 @@
         <assign name="query_vnf_nslcm_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/vnfs/{vnfInstId}</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/ns/vnfs/{vnfInstId}</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -912,7 +912,7 @@
         <assign name="jobstatus_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -1039,7 +1039,7 @@
         <assign name="createSFC_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/ns/sfcs</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -1197,7 +1197,7 @@
         <assign name="querySFC_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/sfcs/{sfcInstId}</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/ns/sfcs/{sfcInstId}</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -1375,7 +1375,7 @@
         <assign name="jobstatus_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -1510,7 +1510,7 @@
         <assign name="post_do_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/ns/{nsInstanceId}/postdeal</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/ns/{nsInstanceId}/postdeal</literal>
                 </from>
                 <to variable="url"></to>
             </copy>
@@ -1602,7 +1602,7 @@
         <assign name="jobstatus_URL">
             <copy>
                 <from>
-                    <literal>http://127.0.0.1:80/openoapi/nslcm/v1/jobs/{jobId}</literal>
+                    <literal>http://127.0.0.1:80/api/nslcm/v1/jobs/{jobId}</literal>
                 </from>
                 <to variable="url"></to>
             </copy>

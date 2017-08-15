@@ -25,6 +25,7 @@ class NSDModel(models.Model):
     description = models.CharField(db_column='DESCRIPTION', max_length=200, null=True, blank=True)
     version = models.CharField(db_column='VERSION', max_length=200, null=True, blank=True)
     nsd_model = models.TextField(db_column='NSDMODEL', max_length=65535, null=True, blank=True)
+    nsd_path = models.CharField(db_column='NSDPATH', max_length=300, null=True, blank=True)
 
 
 class NSInstModel(models.Model):
@@ -55,6 +56,7 @@ class NfPackageModel(models.Model):
     vnfdversion = models.CharField(db_column='VNFDVERSION', max_length=255)
     vnfversion = models.CharField(db_column='VNFVERSION', max_length=255)
     vnfdmodel = models.TextField(db_column='VNFDMODEL', max_length=65535, blank=True, null=True)
+    vnfd_path = models.CharField(db_column='VNFDPATH', max_length=300, null=True, blank=True)
 
     class Meta:
         db_table = 'NFVO_NFPACKAGE'

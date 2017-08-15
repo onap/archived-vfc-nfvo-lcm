@@ -22,25 +22,25 @@ logger = logging.getLogger(__name__)
 
 
 def delete_port_chain(req_param):
-    url = "/openoapi/sdncdriver/v1/delchain"
+    url = "/api/sdncdriver/v1/delchain"
     str = "delete port chain"
     delete_func(req_param, url, str)
 
 
 def delete_flow_classifier(req_param):
-    url = "/openoapi/sdncdriver/v1/delclassifier"
+    url = "/api/sdncdriver/v1/delclassifier"
     str = "delete flow classifier"
     delete_func(req_param, url, str)
 
 
 def delete_port_pair_group(req_param):
-    url = "/openoapi/sdncdriver/v1/delportpairgroup"
+    url = "/api/sdncdriver/v1/delportpairgroup"
     str = "delete port pair"
     delete_func(req_param, url, str)
 
 
 def delete_port_pair(req_param):
-    url = "/openoapi/sdncdriver/v1/delportpair"
+    url = "/api/sdncdriver/v1/delportpair"
     str = "delete port pair"
     delete_func(req_param, url, str)
 
@@ -53,25 +53,25 @@ def delete_func(req_param, url, str):
 
 
 def create_flow_classfier(data):
-    url = "/openoapi/ztesdncdriver/v1/createflowclassfier"
+    url = "/api/ztesdncdriver/v1/createflowclassfier"
     str = "create flow classfier"
     return create(data, url, str)
 
 
 def create_port_pair(data):
-    url = "/openoapi/ztesdncdriver/v1/createportpair"
+    url = "/api/ztesdncdriver/v1/createportpair"
     str = "create port pair"
     return create(data, url, str)
 
 
 def create_port_pair_group(data):
-    url = "/openoapi/ztesdncdriver/v1/createportpairgroup"
+    url = "/api/ztesdncdriver/v1/createportpairgroup"
     str = "create port pair group"
     return create(data, url, str)
 
 
 def create_port_chain(data):
-    url = "/openoapi/ztesdncdriver/v1/createportchain"
+    url = "/api/ztesdncdriver/v1/createportchain"
     str = "create port chain"
     return create(data, url, str)
 

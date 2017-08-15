@@ -28,7 +28,7 @@ P_STATUS_DELETING, P_STATUS_DELETEFAILED = "deleting", "deleteFailed"
 
 
 def query_csar_from_catalog(csar_id, key=''):
-    ret = req_by_msb("/openoapi/catalog/v1/csars/%s" % csar_id, "GET")
+    ret = req_by_msb("/api/catalog/v1/csars/%s" % csar_id, "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         if ret[2] == '404':
@@ -40,7 +40,7 @@ def query_csar_from_catalog(csar_id, key=''):
 
 def query_rawdata_from_catalog(csar_id, input_parameters=[]):
     req_param = json.JSONEncoder().encode({"csarId": csar_id, "inputParameters": input_parameters})
-    ret = req_by_msb("/openoapi/catalog/v1/servicetemplates/queryingrawdata", "POST", req_param)
+    ret = req_by_msb("/api/catalog/v1/servicetemplates/queryingrawdata", "POST", req_param)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query rawdata of CSAR(%s) from catalog." % csar_id)
@@ -48,7 +48,7 @@ def query_rawdata_from_catalog(csar_id, input_parameters=[]):
 
 
 def set_csar_state(csar_id, prop, val):
-    ret = req_by_msb("/openoapi/catalog/v1/csars/%s?%s=%s" % (csar_id, prop, val), "PUT")
+    ret = req_by_msb("/api/catalog/v1/csars/%s?%s=%s" % (csar_id, prop, val), "PUT")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         return [1, "Failed to set %s to %s of CSAR(%s)." % (prop, val, csar_id)]
@@ -56,7 +56,7 @@ def set_csar_state(csar_id, prop, val):
 
 
 def delete_csar_from_catalog(csar_id):
-    ret = req_by_msb("/openoapi/catalog/v1/csars/%s" % csar_id, "DELETE")
+    ret = req_by_msb("/api/catalog/v1/csars/%s" % csar_id, "DELETE")
     if ret[0] != 0 and ret[2] != '404':
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         set_csar_state(csar_id, "processState", P_STATUS_DELETEFAILED)
@@ -65,7 +65,7 @@ def delete_csar_from_catalog(csar_id):
 
 
 def get_download_url_from_catalog(csar_id, relative_path):
-    ret = req_by_msb("/openoapi/catalog/v1/csars/%s/files?relativePath=%s" % (csar_id, relative_path), "GET")
+    ret = req_by_msb("/api/catalog/v1/csars/%s/files?relativePath=%s" % (csar_id, relative_path), "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to get download url of CSAR(%s)." % csar_id)
@@ -74,7 +74,7 @@ def get_download_url_from_catalog(csar_id, relative_path):
 
 
 def get_process_id(name, srv_template_id):
-    ret = req_by_msb('/openoapi/catalog/v1/servicetemplates/%s/operations' % srv_template_id, 'GET')
+    ret = req_by_msb('/api/catalog/v1/servicetemplates/%s/operations' % srv_template_id, 'GET')
     if ret[0] != 0:
         raise NSLCMException('Failed to get service[%s,%s] process id' % (name, srv_template_id))
     items = json.JSONDecoder().decode(ret[1])
@@ -84,7 +84,7 @@ def get_process_id(name, srv_template_id):
     raise NSLCMException('service[%s,%s] process id not exist' % (name, srv_template_id))
 
 def get_servicetemplate_id(nsd_id):
-    ret = req_by_msb('/openoapi/catalog/v1/servicetemplates', 'GET')
+    ret = req_by_msb('/api/catalog/v1/servicetemplates', 'GET')
     if ret[0] != 0:
         raise NSLCMException('Failed to get servicetemplates info')
     stpls = json.JSONDecoder().decode(ret[1])
@@ -94,7 +94,7 @@ def get_servicetemplate_id(nsd_id):
     raise NSLCMException('servicetemplate(%s) does not exist.' % nsd_id)
     
 def get_servicetemplate(nsd_id):
-    ret = req_by_msb('/openoapi/catalog/v1/servicetemplates', 'GET')
+    ret = req_by_msb('/api/catalog/v1/servicetemplates', 'GET')
     if ret[0] != 0:
         raise NSLCMException('Failed to get servicetemplates info')
     stpls = json.JSONDecoder().decode(ret[1])
