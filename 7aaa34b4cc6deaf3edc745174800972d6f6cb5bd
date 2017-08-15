@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a437d4f_7563201b",
+        "filename": "lcm/ns/tests/test_ns_heal.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2017-08-15T09:40:29Z",
+      "side": 1,
+      "message": "I think the licnese info in this file is incorrect.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 32
+      },
+      "revId": "7aaa34b4cc6deaf3edc745174800972d6f6cb5bd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_55681cf5",
+        "filename": "lcm/ns/tests/test_ns_heal.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2017-08-15T09:40:29Z",
+      "side": 1,
+      "message": "openoapi should be replaced by api.",
+      "range": {
+        "startLine": 40,
+        "startChar": 38,
+        "endLine": 40,
+        "endChar": 46
+      },
+      "revId": "7aaa34b4cc6deaf3edc745174800972d6f6cb5bd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_1514d4f3",
         "filename": "lcm/ns/tests/test_ns_heal.py",
         "patchSetId": 1
