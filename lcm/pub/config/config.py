@@ -29,9 +29,9 @@ REDIS_PASSWD = ''
 # [mysql]
 DB_IP = "127.0.0.1"
 DB_PORT = 3306
-DB_NAME = "inventory"
-DB_USER = "inventory"
-DB_PASSWD = "inventory"
+DB_NAME = "vfcnfvolcm"
+DB_USER = "vfcnfvolcm"
+DB_PASSWD = "vfcnfvolcm"
 
 # [register]
 REG_TO_MSB_WHEN_START = True
@@ -55,4 +55,13 @@ IGNORE_DEL_IMG_WEHN_DEL_CSAR = True
 # catalog path(values is defined in settings.py)
 CATALOG_ROOT_PATH = None
 CATALOG_URL_PATH = None
+
+# [sdc config]
+SDC_BASE_URL = "https://127.0.0.1:1234/api"
+SDC_USER = "admin"
+SDC_PASSWD = "admin"
+
+
+
+
 
