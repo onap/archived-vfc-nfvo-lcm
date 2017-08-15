@@ -17,15 +17,15 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from lcm.packages import views
 
 urlpatterns = [
-    url(r'^api/nslcm/v1/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)$', views.ns_access_csar, name='ns_access_csar'),
-    url(r'^api/nslcm/v1/nspackage$', views.ns_on_boarding, name='ns_on_boarding'),
-    url(r'^api/nslcm/v1/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)/deletionpending$',
+    url(r'^api/nslcm/v0/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)$', views.ns_access_csar, name='ns_access_csar'),
+    url(r'^api/nslcm/v0/nspackage$', views.ns_on_boarding, name='ns_on_boarding'),
+    url(r'^api/nslcm/v0/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)/deletionpending$',
         views.ns_delete_pending_csar, name='ns_delete_pending_csar'),
-    url(r'^api/nslcm/v1/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)/(?P<operation>(disabled|enabled))$',
+    url(r'^api/nslcm/v0/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)/(?P<operation>(disabled|enabled))$',
         views.ns_set_state_csar, name='ns_set_state_csar'),
-    url(r'^api/nslcm/v1/vnfpackage/(?P<csarId>[0-9a-zA-Z\-\_]+)$', views.nf_access_csar, name='nf_access_csar'),
-    url(r'^api/nslcm/v1/vnfpackage$', views.nf_on_boarding, name='nf_on_boarding'),
-    url(r'^api/nslcm/v1/vnfpackage/(?P<csarId>[0-9a-zA-Z\-\_]+)/deletionpending$',
+    url(r'^api/nslcm/v0/vnfpackage/(?P<csarId>[0-9a-zA-Z\-\_]+)$', views.nf_access_csar, name='nf_access_csar'),
+    url(r'^api/nslcm/v0/vnfpackage$', views.nf_on_boarding, name='nf_on_boarding'),
+    url(r'^api/nslcm/v0/vnfpackage/(?P<csarId>[0-9a-zA-Z\-\_]+)/deletionpending$',
         views.nf_delete_pending_csar, name='nf_delete_pending_csar'), ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -144,7 +144,7 @@ class TestNsPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_ns_pkg_on_boarding_when_on_boarded(self, mock_call_req):
         mock_call_req.return_value = [0, json.JSONEncoder().encode({"onBoardState": "onBoarded"}), '200']
-        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
+        resp = self.client.post("/api/nslcm/v0/nspackage", {"csarId": "1"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(1) already onBoarded.", resp.data["statusDescription"])
@@ -163,7 +163,7 @@ class TestNsPackage(TestCase):
         mock_call_req.side_effect = side_effect
 
         NSDModel(id="1", nsd_id="2").save()
-        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "2"}, format='json')
+        resp = self.client.post("/api/nslcm/v0/nspackage", {"csarId": "2"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("NSD(2) already exists.", resp.data["statusDescription"])
@@ -182,7 +182,7 @@ class TestNsPackage(TestCase):
             return mock_vals[args[4]]
         mock_call_req.side_effect = side_effect
 
-        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "3"}, format='json')
+        resp = self.client.post("/api/nslcm/v0/nspackage", {"csarId": "3"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("VNF package(3) is not onBoarded.", resp.data["statusDescription"])
@@ -204,7 +204,7 @@ class TestNsPackage(TestCase):
         mock_call_req.side_effect = side_effect
 
         NfPackageModel(uuid="1", nfpackageid="5", vnfdid="6").save()
-        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "4"}, format='json')
+        resp = self.client.post("/api/nslcm/v0/nspackage", {"csarId": "4"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("VNF package(5) is not onBoarded on catalog.", resp.data["statusDescription"])
@@ -236,7 +236,7 @@ class TestNsPackage(TestCase):
         mock_call_req.side_effect = side_effect
 
         NfPackageModel(uuid="1", nfpackageid="6", vnfdid="7").save()
-        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "5"}, format='json')
+        resp = self.client.post("/api/nslcm/v0/nspackage", {"csarId": "5"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("CSAR(5) onBoarded successfully.", resp.data["statusDescription"])
@@ -248,7 +248,7 @@ class TestNsPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_delete_csar_when_id_not_exist(self, mock_call_req):
         mock_call_req.return_value = [0, "", '204']
-        resp = self.client.delete("/api/nslcm/v1/nspackage/6")
+        resp = self.client.delete("/api/nslcm/v0/nspackage/6")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("Delete CSAR(6) successfully.", resp.data["statusDescription"])
@@ -260,7 +260,7 @@ class TestNsPackage(TestCase):
         NSDModel(id="7", nsd_id="2").save()
         NSInstModel(id="1", nspackage_id="7").save()
 
-        resp = self.client.delete("/api/nslcm/v1/nspackage/7")
+        resp = self.client.delete("/api/nslcm/v0/nspackage/7")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("Set deletionPending to True of CSAR(7) successfully.",
@@ -272,14 +272,14 @@ class TestNsPackage(TestCase):
 
         NSDModel(id="8", nsd_id="2").save()
 
-        resp = self.client.delete("/api/nslcm/v1/nspackage/8")
+        resp = self.client.delete("/api/nslcm/v0/nspackage/8")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("Delete CSAR(8) successfully.", resp.data["statusDescription"])
 
     ###############################################################################################################
     def test_delete_pending_csar_when_id_not_exist(self):
-        resp = self.client.delete("/api/nslcm/v1/nspackage/9/deletionpending")
+        resp = self.client.delete("/api/nslcm/v0/nspackage/9/deletionpending")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("Delete pending CSAR(9) successfully.", resp.data["statusDescription"])
@@ -288,7 +288,7 @@ class TestNsPackage(TestCase):
     def test_delete_pending_csar_when_pending_is_false(self, mock_call_req):
         mock_call_req.return_value = [0, '{"deletionPending": "false"}', '200']
         NSDModel(id="10", nsd_id="2").save()
-        resp = self.client.delete("/api/nslcm/v1/nspackage/10/deletionpending")
+        resp = self.client.delete("/api/nslcm/v0/nspackage/10/deletionpending")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(10) need not to be deleted.", resp.data["statusDescription"])
@@ -298,7 +298,7 @@ class TestNsPackage(TestCase):
         mock_call_req.return_value = [0, '{"deletionPending": "true"}', '200']
         NSDModel(id="11", nsd_id="2").save()
         NSInstModel(id="1", nspackage_id="11").save()
-        resp = self.client.delete("/api/nslcm/v1/nspackage/11/deletionpending")
+        resp = self.client.delete("/api/nslcm/v0/nspackage/11/deletionpending")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(11) is in using, cannot be deleted.", resp.data["statusDescription"])
@@ -309,7 +309,7 @@ class TestNsPackage(TestCase):
             [0, '{"deletionPending": "true"}', '200'],
             [0, "OK", '204']]
         NSDModel(id="12", nsd_id="2").save()
-        resp = self.client.delete("/api/nslcm/v1/nspackage/12/deletionpending")
+        resp = self.client.delete("/api/nslcm/v0/nspackage/12/deletionpending")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("Delete CSAR(12) successfully.", resp.data["statusDescription"])
@@ -337,7 +337,7 @@ class TestNsPackage(TestCase):
         NSInstModel(id="1", nspackage_id="13", name="11").save()
         NSInstModel(id="2", nspackage_id="13", name="22").save()
 
-        resp = self.client.get("/api/nslcm/v1/nspackage/13")
+        resp = self.client.get("/api/nslcm/v0/nspackage/13")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         expect_data = {"nsInstanceInfo": [{"nsInstanceId": "1", "nsInstanceName": "11"},
                                           {"nsInstanceId": "2", "nsInstanceName": "22"}], "csarId": "13",
@@ -351,7 +351,7 @@ class TestNsPackage(TestCase):
 
     ###############################################################################################################
     def test_disable_csar_when_id_not_exist_table(self):
-        resp = self.client.put("/api/nslcm/v1/nspackage/14/disabled")
+        resp = self.client.put("/api/nslcm/v0/nspackage/14/disabled")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(14) does not exist.", resp.data["statusDescription"])
@@ -360,7 +360,7 @@ class TestNsPackage(TestCase):
     def test_disable_csar_when_csar_is_disabled(self, mock_call_req):
         NSDModel(id="15", nsd_id="2").save()
         mock_call_req.return_value = [0, json.JSONEncoder().encode({"operationalState": "Disabled"}), '200']
-        resp = self.client.put("/api/nslcm/v1/nspackage/15/disabled")
+        resp = self.client.put("/api/nslcm/v0/nspackage/15/disabled")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(15) already disabled.", resp.data["statusDescription"])
@@ -378,14 +378,14 @@ class TestNsPackage(TestCase):
             return mock_vals[args[4]]
         mock_call_req.side_effect = side_effect
 
-        resp = self.client.put("/api/nslcm/v1/nspackage/16/disabled")
+        resp = self.client.put("/api/nslcm/v0/nspackage/16/disabled")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("Set operationState to Disabled of CSAR(16) successfully.", resp.data["statusDescription"])
 
     ###############################################################################################################
     def test_enable_csar_when_id_not_exist_table(self):
-        resp = self.client.put("/api/nslcm/v1/nspackage/17/enabled")
+        resp = self.client.put("/api/nslcm/v0/nspackage/17/enabled")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(17) does not exist.", resp.data["statusDescription"])
@@ -394,7 +394,7 @@ class TestNsPackage(TestCase):
     def test_enable_csar_when_csar_is_enabled(self, mock_call_req):
         NSDModel(id="18", nsd_id="2").save()
         mock_call_req.return_value = [0, json.JSONEncoder().encode({"operationalState": "Enabled"}), '200']
-        resp = self.client.put("/api/nslcm/v1/nspackage/18/enabled")
+        resp = self.client.put("/api/nslcm/v0/nspackage/18/enabled")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(18) already enabled.", resp.data["statusDescription"])
@@ -412,7 +412,7 @@ class TestNsPackage(TestCase):
             return mock_vals[args[4]]
         mock_call_req.side_effect = side_effect
 
-        resp = self.client.put("/api/nslcm/v1/nspackage/19/enabled")
+        resp = self.client.put("/api/nslcm/v0/nspackage/19/enabled")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("Set operationState to Enabled of CSAR(19) successfully.", resp.data["statusDescription"])

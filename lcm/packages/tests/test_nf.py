@@ -160,7 +160,7 @@ class TestNfPackage(TestCase):
 
     @mock.patch.object(NfOnBoardingThread, 'run')
     def test_nf_pkg_on_boarding_normal(self, mock_run):
-        resp = self.client.post("/api/nslcm/v1/vnfpackage", {
+        resp = self.client.post("/api/nslcm/v0/vnfpackage", {
             "csarId": "1",
             "vimIds": ["1"]
             }, format='json')
@@ -190,7 +190,7 @@ class TestNfPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_nf_on_boarding_when_nfd_already_exists(self, mock_call_req):
         mock_vals = {
-            "/api/catalog/v1/csars/2":
+            "/api/catalog/v0/csars/2":
                 [0, json.JSONEncoder().encode({
                     "onBoardState": "onBoardFailed", "processState": "deleteFailed"}), '200'],
             "/api/catalog/v1/servicetemplates/queryingrawdata":
@@ -321,7 +321,7 @@ class TestNfPackage(TestCase):
         VnfPackageFileModel(id="1", filename="filename", imageid="00001",
                             vimid="1", vimuser="001", tenant="12", status="1", vnfpid="13").save()
         NfInstModel(nfinstid="1", mnfinstid="001", nf_name="name", package_id="13").save()
-        resp = self.client.get("/api/nslcm/v1/vnfpackage/13")
+        resp = self.client.get("/api/nslcm/v0/vnfpackage/13")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         expect_data = {
             "csarId": '13',
@@ -462,7 +462,7 @@ class TestNfPackage(TestCase):
     
     def test_get_nf_csars_normal(self):
         NfPackageModel(uuid="01", nfpackageid="1", vnfdid="2").save()
-        resp = self.client.get("/api/nslcm/v1/vnfpackage")
+        resp = self.client.get("/api/nslcm/v0/vnfpackage")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(1, len(resp.data["csars"]))
         self.assertEqual("1", resp.data["csars"][0]["csarId"])
