@@ -21,10 +21,21 @@ from rest_framework.response import Response
 
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.syscomm import fun_name
-from lcm.packages import ns_package, nf_package
+from lcm.packages import ns_package, nf_package, sdc_ns_package
 
 logger = logging.getLogger(__name__)
 
+@api_view(http_method_names=['POST'])
+def ns_distribute(request, *args, **kwargs):
+    csar_id = ignore_case_get(request.data, "csarId")
+    logger.info("Enter %s, method is %s, csar_id is %s", fun_name(), request.method, csar_id)
+    ret = sdc_ns_package.ns_on_distribute(csar_id)
+    logger.info("Leave %s, Return value is %s", fun_name(), ret)
+    if ret[0] != 0:
+        return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(data=ret[1], status=status.HTTP_202_ACCEPTED)
+
+####################################################################################################    
 
 @api_view(http_method_names=['POST'])
 def ns_on_boarding(request, *args, **kwargs):
