@@ -21,7 +21,7 @@ from rest_framework.response import Response
 
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.syscomm import fun_name
-from lcm.packages import ns_package, nf_package, sdc_ns_package
+from lcm.packages import ns_package, nf_package, sdc_ns_package, sdc_nf_package
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,25 @@ def ns_distribute(request, *args, **kwargs):
     if ret[0] != 0:
         return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data=ret[1], status=status.HTTP_202_ACCEPTED)
+
+####################################################################################################    
+
+@api_view(http_method_names=['POST', 'GET'])
+def nf_distribute(request, *args, **kwargs):
+    logger.info("Enter %s%s, method is %s", fun_name(), request.data, request.method)
+    if request.method == 'GET':
+        ret = sdc_nf_package.SdcNfPackage().get_csars()
+        logger.debug("csars=%s", ret)
+        return Response(data=ret, status=status.HTTP_200_OK)
+    csar_id = ignore_case_get(request.data, "csarId")
+    vim_ids = ignore_case_get(request.data, "vimIds")
+    lab_vim_id = ignore_case_get(request.data, "labVimId")
+    job_id = str(uuid.uuid4())
+    sdc_nf_package.SdcNfDistributeThread(csar_id, vim_ids, lab_vim_id, job_id).start()
+    ret = {"jobId": job_id}
+    logger.info("Leave %s, Return value is %s", fun_name(), ret)
+    return Response(data=ret, status=status.HTTP_202_ACCEPTED)
+
 
 ####################################################################################################    
 
