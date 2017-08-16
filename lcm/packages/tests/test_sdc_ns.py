@@ -483,6 +483,33 @@ class TestSdcNsPackage(TestCase):
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("CSAR(8) is in using, cannot be deleted.", resp.data["statusDescription"])
 
+    def test_ns_pkg_get_all(self):
+        NSDModel(id="13", nsd_id="2", vendor="3", version="4").save()
+
+        resp = self.client.get("/api/nslcm/v1/nspackage")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual({"csars": [{"csarId":"13", "nsdId": "2"}]}, resp.data)
+
+    def test_ns_pkg_get_one(self):
+        NSDModel(id="14", nsd_id="2", vendor="3", version="4").save()
+        NSInstModel(id="1", nspackage_id="14", name="11").save()
+
+        resp = self.client.get("/api/nslcm/v1/nspackage/14")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual({"csarId": "14", 
+            "packageInfo": {
+                "nsdId": "2",
+                "nsdProvider": "3",
+                "nsdVersion": "4"
+            }, 
+            "nsInstanceInfo": [{
+                "nsInstanceId": "1", "nsInstanceName": "11"
+            }]}, resp.data)
+
+
+        
+
+
 
 
 
