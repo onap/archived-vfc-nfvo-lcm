@@ -11,24 +11,42 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from os import R_OK, access
 
+from lcm.pub.exceptions import NSLCMException
 
 def parse_nsd_model(path, input_parameters):
-    check_file_exist(path)
-    nsd_tpl = parse_nsd_csar(path, input_parameters)
+    isexist = check_file_exist(path)
+    if isexist:
+        nsd_tpl = parse_nsd_csar(path, input_parameters)
+    else:
+        raise NSLCMException('%s is not exist.' % path)
     return nsd_tpl
 
 
 def parse_vnfd_model(path, input_parameters):
-    check_file_exist(path)
-    vnfd_tpl = parse_vnfd_csar(path, input_parameters)
+    isexist = check_file_exist(path)
+    if isexist:
+        vnfd_tpl = parse_vnfd_csar(path, input_parameters)
+    else:
+        raise NSLCMException('%s is not exist.' % path)
     return vnfd_tpl
 
 def check_file_exist(path):
-    pass
+    if path.exists(path) and path.isfile(path) and access(path, R_OK):
+        return True
+    else:
+        return False
 
 def parse_nsd_csar(path, input_parameters=[], a_file=True):
-    pass
+    nsd_object = None
+    from toscaparser.tosca_template import ToscaTemplate
+    nsd_object = ToscaTemplate(path, input_parameters)
+    return nsd_object
+
 
 def parse_vnfd_csar(path, input_parameters=[], a_file=True):
-    pass
+    vnfd_object = None
+    from toscaparser.tosca_template import ToscaTemplate
+    vnfd_object = ToscaTemplate(path, input_parameters)
+    return vnfd_object
