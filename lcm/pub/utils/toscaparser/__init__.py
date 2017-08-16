@@ -12,8 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from lcm.pub.utils.toscaparser.convert import convert_nsd, convert_vnfd
+from lcm.pub.utils.toscaparser.parser import parse_nsd_model, parse_vnfd_model
+
+
 def parse_nsd(path, input_parameters=[]):
-    pass
+    nsd_object = parse_nsd_model(path, input_parameters=[])
+    nsd_json = convert_nsd(nsd_object)
+    return nsd_json
 
 def parse_vnfd(path, input_parameters=[]):
-    pass
+    vnfd_object = parse_vnfd_model(path, input_parameters=[])
+    vnfd_json = convert_vnfd(vnfd_object)
+    return vnfd_json

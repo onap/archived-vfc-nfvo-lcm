@@ -11,3 +11,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+
+def parse_nsd_model(path, input_parameters):
+    check_file_exist(path)
+    nsd_tpl = parse_nsd_csar(path, input_parameters)
+    return nsd_tpl
+
+
+def parse_vnfd_model(path, input_parameters):
+    check_file_exist(path)
+    vnfd_tpl = parse_vnfd_csar(path, input_parameters)
+    return vnfd_tpl
+
+def check_file_exist(path):
+    pass
+
+def parse_nsd_csar(path, input_parameters=[], a_file=True):
+    pass
+
+def parse_vnfd_csar(path, input_parameters=[], a_file=True):
+    pass
