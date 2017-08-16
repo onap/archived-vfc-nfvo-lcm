@@ -16,7 +16,7 @@ import json
 import logging
 
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.restcall import call_req, rest_no_auth
+from lcm.pub.utils import restcall
 from lcm.pub.config.config import SDC_BASE_URL, SDC_USER, SDC_PASSWD
 
 logger = logging.getLogger(__name__)
@@ -25,10 +25,10 @@ ASSETTYPE_RESOURCES = "resources"
 ASSETTYPE_SERVICES = "services"
 
 def call_sdc(resource, method, content=''):
-    return call_req(base_url=SDC_BASE_URL, 
+    return restcall.call_req(base_url=SDC_BASE_URL, 
         user=SDC_USER, 
         passwd=SDC_PASSWD, 
-        auth_type=rest_no_auth, 
+        auth_type=restcall.rest_no_auth, 
         resource=resource, 
         method=method, 
         content=content)
@@ -59,7 +59,7 @@ def delete_artifact(asset_type, asset_id, artifact_id):
     return json.JSONDecoder().decode(ret[1])
 
 def download_artifacts(download_url, local_path):
-    ret = call_req(base_url=download_url, 
+    ret = restcall.call_req(base_url=download_url, 
         user=SDC_USER, 
         passwd=SDC_PASSWD, 
         auth_type=rest_no_auth, 

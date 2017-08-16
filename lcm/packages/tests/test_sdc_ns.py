@@ -17,8 +17,9 @@ from rest_framework import status
 from django.test import TestCase
 from django.test import Client
 
-from lcm.pub.utils import restcall
+from lcm.pub.utils import restcall, toscaparser
 from lcm.pub.database.models import NSDModel, NSInstModel, NfPackageModel
+from lcm.pub.msapi import sdc
 
 
 class TestSdcNsPackage(TestCase):
@@ -229,43 +230,6 @@ class TestSdcNsPackage(TestCase):
                     ],
                     "type": "tosca.nodes.nfv.ext.zte.VNF.VFW",
                     "networks": []
-                },
-                {
-                    "vnf_id": "VNAT",
-                    "description": "",
-                    "properties": {
-                        "NatIpRange": "192.167.0.10-192.168.0.20",
-                        "plugin_info": "vbrasplugin_1.0",
-                        "vendor": "zte",
-                        "is_shared": False ,
-                        "adjust_vnf_capacity": True,
-                        "name": "VNAT",
-                        "id": "vcpe_vnat_zte_1",
-                        "vnf_extend_type": "driver",
-                        "csarVersion": "v1.0",
-                        "csarType": "NFAR",
-                        "csarProvider": "ZTE",
-                        "version": "1.0",
-                        "nsh_aware": True,
-                        "cross_dc": False ,
-                        "vnf_type": "VNAT",
-                        "vmnumber_overquota_alarm": True,
-                        "vnfd_version": "1.0.0",
-                        "externalPluginManageNetworkName": "vlan_4007_plugin_net",
-                        "request_reclassification": False 
-                    },
-                    "dependencies": [
-                        {
-                            "key_name": "vnat_ctrl_by_manager_cp",
-                            "vl_id": "ext_mnet_net"
-                        },
-                        {
-                            "key_name": "vnat_data_cp",
-                            "vl_id": "sfc_data_network"
-                        }
-                    ],
-                    "type": "tosca.nodes.nfv.ext.zte.VNF.VNAT",
-                    "networks": []
                 }
             ],
             "ns_exposed": {
@@ -428,3 +392,63 @@ class TestSdcNsPackage(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
         self.assertEqual("NS CSAR(1) already exists.", resp.data["statusDescription"])
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_ns_pkg_distribute_when_csar_not_exist(self, mock_call_req):
+        mock_call_req.return_value = [0, "[]", '200']
+        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("failed", resp.data["status"])
+        self.assertEqual("Failed to query artifact(services,1) from sdc.", resp.data["statusDescription"])
+
+    @mock.patch.object(restcall, 'call_req')
+    @mock.patch.object(sdc, 'download_artifacts')
+    @mock.patch.object(toscaparser, 'parse_nsd')
+    def test_ns_pkg_distribute_when_nsd_already_exists(self, 
+        mock_parse_nsd, mock_download_artifacts, mock_call_req):
+        mock_parse_nsd.return_value = json.JSONEncoder().encode(self.nsd_data)
+        mock_download_artifacts.return_value = "/home/vcpe.csar"
+        mock_call_req.return_value = [0, json.JSONEncoder().encode([{
+            "uuid": "1",
+            "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/vcpe.csar"
+            }]), '200']
+        NSDModel(id="2", nsd_id="VCPE_NS").save()
+        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("failed", resp.data["status"])
+        self.assertEqual("NSD(VCPE_NS) already exists.", resp.data["statusDescription"])
+
+    @mock.patch.object(restcall, 'call_req')
+    @mock.patch.object(sdc, 'download_artifacts')
+    @mock.patch.object(toscaparser, 'parse_nsd')
+    def test_ns_pkg_distribute_when_nf_not_distributed(self, 
+        mock_parse_nsd, mock_download_artifacts, mock_call_req):
+        mock_parse_nsd.return_value = json.JSONEncoder().encode(self.nsd_data)
+        mock_download_artifacts.return_value = "/home/vcpe.csar"
+        mock_call_req.return_value = [0, json.JSONEncoder().encode([{
+            "uuid": "1",
+            "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/vcpe.csar"
+            }]), '200']
+        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("failed", resp.data["status"])
+        self.assertEqual("VNF package(vcpe_vfw_zte_1_0) is not distributed.", resp.data["statusDescription"])
+
+    @mock.patch.object(restcall, 'call_req')
+    @mock.patch.object(sdc, 'download_artifacts')
+    @mock.patch.object(toscaparser, 'parse_nsd')
+    def test_ns_pkg_distribute_when_successfully(self, 
+        mock_parse_nsd, mock_download_artifacts, mock_call_req):
+        mock_parse_nsd.return_value = json.JSONEncoder().encode(self.nsd_data)
+        mock_download_artifacts.return_value = "/home/vcpe.csar"
+        mock_call_req.return_value = [0, json.JSONEncoder().encode([{
+            "uuid": "1",
+            "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/vcpe.csar"
+            }]), '200']
+        NfPackageModel(uuid="1", nfpackageid="1", vnfdid="vcpe_vfw_zte_1_0").save()
+        resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("success", resp.data["status"])
+        self.assertEqual("CSAR(1) distributed successfully.", resp.data["statusDescription"])
+
+
