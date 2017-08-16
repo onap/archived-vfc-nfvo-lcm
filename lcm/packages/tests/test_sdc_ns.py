@@ -451,4 +451,42 @@ class TestSdcNsPackage(TestCase):
         self.assertEqual("success", resp.data["status"])
         self.assertEqual("CSAR(1) distributed successfully.", resp.data["statusDescription"])
 
+    ###############################################################################################################
+    def test_ns_pkg_force_delete(self):
+        NfPackageModel(uuid="1", nfpackageid="1", vnfdid="vcpe_vfw_zte_1_0").save()
+        NSDModel(id="8", nsd_id="2").save()
+        resp = self.client.delete("/api/nslcm/v1/nspackage/8force")
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("success", resp.data["status"])
+        self.assertEqual("Delete CSAR(8) successfully.", resp.data["statusDescription"])
+
+    def test_ns_pkg_normal_delete(self):
+        NSDModel(id="8", nsd_id="2").save()
+        resp = self.client.delete("/api/nslcm/v1/nspackage/8")
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("success", resp.data["status"])
+        self.assertEqual("Delete CSAR(8) successfully.", resp.data["statusDescription"])
+
+    def test_ns_pkg_force_delete(self):
+        NSInstModel(id="1", nspackage_id="8").save()
+        NSDModel(id="8", nsd_id="2").save()
+        resp = self.client.delete("/api/nslcm/v1/nspackage/8force")
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("success", resp.data["status"])
+        self.assertEqual("Delete CSAR(8) successfully.", resp.data["statusDescription"])
+
+    def test_ns_pkg_when_in_using(self):
+        NSInstModel(id="1", nspackage_id="8").save()
+        NSDModel(id="8", nsd_id="2").save()
+        resp = self.client.delete("/api/nslcm/v1/nspackage/8")
+        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual("failed", resp.data["status"])
+        self.assertEqual("CSAR(8) is in using, cannot be deleted.", resp.data["statusDescription"])
+
+
+
+
+
+
+
 

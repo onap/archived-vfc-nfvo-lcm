@@ -135,6 +135,7 @@ class SdcNsPackage(object):
             if NSInstModel.objects.filter(nspackage_id=csar_id):
                 raise NSLCMException("CSAR(%s) is in using, cannot be deleted." % csar_id)
         NSDModel.objects.filter(id=csar_id).delete()
+        return [0, "Delete CSAR(%s) successfully." % csar_id]
 
 
     def get_csars(self):

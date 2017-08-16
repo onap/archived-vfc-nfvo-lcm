@@ -25,21 +25,45 @@ from lcm.packages import ns_package, nf_package, sdc_ns_package, sdc_nf_package
 
 logger = logging.getLogger(__name__)
 
-@api_view(http_method_names=['POST'])
-def ns_distribute(request, *args, **kwargs):
+@api_view(http_method_names=['POST', 'GET'])
+def ns_distribute_get(request, *args, **kwargs):
+    logger.debug("Enter %s, method is %s", fun_name(), request.method)
+    if request.method == 'GET':
+        ret = sdc_ns_package.SdcNsPackage().get_csars()
+        logger.debug("csars=%s", ret)
+        return Response(data=ret, status=status.HTTP_200_OK)
     csar_id = ignore_case_get(request.data, "csarId")
-    logger.info("Enter %s, method is %s, csar_id is %s", fun_name(), request.method, csar_id)
+    logger.debug("csar_id is %s", csar_id)
     ret = sdc_ns_package.ns_on_distribute(csar_id)
-    logger.info("Leave %s, Return value is %s", fun_name(), ret)
+    logger.debug("Leave %s, Return value is %s", fun_name(), ret)
     if ret[0] != 0:
         return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data=ret[1], status=status.HTTP_202_ACCEPTED)
 
+@api_view(http_method_names=['GET', 'DELETE'])
+def ns_rd_csar(request, *args, **kwargs):
+    csar_id = ignore_case_get(kwargs, "csarId")
+    logger.info("Enter %s, method is %s, csar_id is %s", fun_name(), request.method, csar_id)
+    ret, normal_status = None, None
+    if request.method == 'GET':
+        ret = sdc_ns_package.ns_get_csar(csar_id)
+        normal_status = status.HTTP_200_OK
+    else:
+        force_delete = csar_id.endswith("force")
+        if force_delete:
+            csar_id = csar_id[:-5]
+        ret = sdc_ns_package.ns_delete_csar(csar_id, force_delete)
+        normal_status = status.HTTP_202_ACCEPTED
+    logger.info("Leave %s, Return value is %s", fun_name(), str(ret))
+    if ret[0] != 0:
+        return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(data=ret[1], status=normal_status)
+
 ####################################################################################################    
 
 @api_view(http_method_names=['POST', 'GET'])
-def nf_distribute(request, *args, **kwargs):
-    logger.info("Enter %s%s, method is %s", fun_name(), request.data, request.method)
+def nf_distribute_get(request, *args, **kwargs):
+    logger.debug("Enter %s%s, method is %s", fun_name(), request.data, request.method)
     if request.method == 'GET':
         ret = sdc_nf_package.SdcNfPackage().get_csars()
         logger.debug("csars=%s", ret)
@@ -50,7 +74,7 @@ def nf_distribute(request, *args, **kwargs):
     job_id = str(uuid.uuid4())
     sdc_nf_package.SdcNfDistributeThread(csar_id, vim_ids, lab_vim_id, job_id).start()
     ret = {"jobId": job_id}
-    logger.info("Leave %s, Return value is %s", fun_name(), ret)
+    logger.debug("Leave %s, Return value is %s", fun_name(), ret)
     return Response(data=ret, status=status.HTTP_202_ACCEPTED)
 
 
