@@ -66,19 +66,41 @@ def ns_rd_csar(request, *args, **kwargs):
 @api_view(http_method_names=['POST', 'GET'])
 def nf_distribute_get(request, *args, **kwargs):
     logger.debug("Enter %s%s, method is %s", fun_name(), request.data, request.method)
+    ret, normal_status = None, None
     if request.method == 'GET':
-        ret = sdc_nf_package.SdcNfPackage().get_csars()
-        logger.debug("csars=%s", ret)
-        return Response(data=ret, status=status.HTTP_200_OK)
-    csar_id = ignore_case_get(request.data, "csarId")
-    vim_ids = ignore_case_get(request.data, "vimIds")
-    lab_vim_id = ignore_case_get(request.data, "labVimId")
-    job_id = str(uuid.uuid4())
-    sdc_nf_package.SdcNfDistributeThread(csar_id, vim_ids, lab_vim_id, job_id).start()
-    ret = {"jobId": job_id}
+        ret = sdc_nf_package.nf_get_csars()
+        normal_status = status.HTTP_200_OK
+    else:
+        csar_id = ignore_case_get(request.data, "csarId")
+        vim_ids = ignore_case_get(request.data, "vimIds")
+        lab_vim_id = ignore_case_get(request.data, "labVimId")
+        job_id = str(uuid.uuid4())
+        sdc_nf_package.SdcNfDistributeThread(csar_id, vim_ids, lab_vim_id, job_id).start()
+        ret = [0, {"jobId": job_id}]
+        normal_status = status.HTTP_202_ACCEPTED
     logger.debug("Leave %s, Return value is %s", fun_name(), ret)
-    return Response(data=ret, status=status.HTTP_202_ACCEPTED)
+    if ret[0] != 0:
+        return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(data=ret[1], status=normal_status)
 
+@api_view(http_method_names=['GET', 'DELETE'])
+def nf_rd_csar(request, *args, **kwargs):
+    csar_id = ignore_case_get(kwargs, "csarId")
+    logger.info("Enter %s, method is %s, csar_id is %s", fun_name(), request.method, csar_id)
+    ret, normal_status = None, None
+    if request.method == 'GET':
+        ret = sdc_nf_package.nf_get_csar(csar_id)
+        normal_status = status.HTTP_200_OK
+    else:
+        force_delete = csar_id.endswith("force")
+        if force_delete:
+            csar_id = csar_id[:-5]
+        ret = sdc_nf_package.nf_delete_csar(csar_id, force_delete)
+        normal_status = status.HTTP_202_ACCEPTED
+    logger.info("Leave %s, Return value is %s", fun_name(), str(ret))
+    if ret[0] != 0:
+        return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(data=ret[1], status=normal_status)
 
 ####################################################################################################    
 

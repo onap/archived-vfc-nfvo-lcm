@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^api/nslcm/v1/nspackage$', views.ns_distribute_get, name='ns_distribute_get'),
     url(r'^api/nslcm/v1/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)$', views.ns_rd_csar, name='ns_rd_csar'),
     url(r'^api/nslcm/v1/vnfpackage$', views.nf_distribute_get, name='nf_distribute_get'),
+    url(r'^api/nslcm/v1/vnfpackage/(?P<csarId>[0-9a-zA-Z\-\_]+)$', views.nf_rd_csar, name='nf_rd_csar'),
     #########################################################################################
     url(r'^api/nslcm/v0/nspackage/(?P<csarId>[0-9a-zA-Z\-\_]+)$', views.ns_access_csar, name='ns_access_csar'),
     url(r'^api/nslcm/v0/nspackage$', views.ns_on_boarding, name='ns_on_boarding'),

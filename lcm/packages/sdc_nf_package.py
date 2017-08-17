@@ -34,6 +34,29 @@ logger = logging.getLogger(__name__)
 
 JOB_ERROR = 255
 
+def nf_get_csars():
+    ret = None
+    try:
+        ret = SdcNfPackage().get_csars()
+    except NSLCMException as e:
+        return [1, e.message]
+    except:
+        logger.error(traceback.format_exc())
+        return [1, str(sys.exc_info())]
+    return ret
+
+def nf_get_csar(csar_id):
+    ret = None
+    try:
+        ret = SdcNfPackage().get_csar(csar_id)
+    except NSLCMException as e:
+        return [1, e.message]
+    except:
+        logger.error(traceback.format_exc())
+        return [1, str(sys.exc_info())]
+    return ret
+
+#####################################################################################
 
 class SdcNfDistributeThread(threading.Thread):
     """
@@ -158,14 +181,14 @@ class SdcNfPackage(object):
         pass
 
     def get_csars(self):
-        ret = {"csars": []}
+        csars = {"csars": []}
         nf_pkgs = NfPackageModel.objects.filter()
         for nf_pkg in nf_pkgs:
-            ret["csars"].append({
+            csars["csars"].append({
                 "csarId": nf_pkg.nfpackageid,
                 "vnfdId": nf_pkg.vnfdid
             })
-        return ret
+        return [0, csars]
         
     def get_csar(self, csar_id):
         pkg_info = {}
