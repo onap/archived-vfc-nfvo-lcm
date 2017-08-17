@@ -323,7 +323,33 @@ class TestNfPackage(TestCase):
         SdcNfPkgDeleteThread(csar_id="3", job_id="2", force_delete=False).run()
         self.assert_job_result("2", 255, "NfInst by csar(3) exists, cannot delete.")
     """
-    
+
+    def test_nf_pkg_get_all(self):
+        NfPackageModel(uuid="3", nfpackageid="3", vnfdid="4").save()
+
+        resp = self.client.get("/api/nslcm/v1/vnfpackage")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual({"csars": [{"csarId":"3", "vnfdId": "4"}]}, resp.data)
+
+    def test_nf_pkg_get_one(self):
+        NfPackageModel(uuid="4", nfpackageid="4", vnfdid="5", 
+        	vendor="6", vnfdversion="7", vnfversion="8").save()
+        NfInstModel(nfinstid="1", package_id="4", nf_name="3").save()
+
+        resp = self.client.get("/api/nslcm/v1/vnfpackage/4")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual({"csarId": "4", 
+            "packageInfo": {
+                "vnfdId": "5",
+                "vnfdProvider": "6",
+                "vnfdVersion": "7",
+                "vnfVersion": "8"
+            }, 
+            "imageInfo": [],
+            "vnfInstanceInfo": [{
+                "vnfInstanceId": "1", "vnfInstanceName": "3"
+            }]}, resp.data)
+
 
 
 
