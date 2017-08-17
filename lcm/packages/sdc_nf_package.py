@@ -28,7 +28,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.config.config import CATALOG_ROOT_PATH
 from lcm.pub.msapi.extsys import get_vims
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.utils import toscautil
+from lcm.pub.utils import toscaparser
 from lcm.pub.msapi import sdc
 
 logger = logging.getLogger(__name__)
@@ -96,8 +96,8 @@ class SdcNfDistributeThread(threading.Thread):
         if NfPackageModel.objects.filter(nfpackageid=self.csar_id):
             raise NSLCMException("NF CSAR(%s) already exists." % self.csar_id)
 
-        artifact = sdc.get_artifact(sdc.ASSETTYPE_RESOURCES, csar_id)
-        local_path = os.path.join(CATALOG_ROOT_PATH, csar_id)
+        artifact = sdc.get_artifact(sdc.ASSETTYPE_RESOURCES, self.csar_id)
+        local_path = os.path.join(CATALOG_ROOT_PATH, self.csar_id)
         local_file_name = sdc.download_artifacts(artifact["toscaModelURL"], local_path)
         
         vnfd_json = toscaparser.parse_vnfd(local_file_name)
