@@ -29,6 +29,7 @@ from lcm.pub.config.config import CATALOG_ROOT_PATH
 from lcm.pub.msapi.extsys import get_vims
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils import toscautil
+from lcm.pub.msapi import sdc
 
 logger = logging.getLogger(__name__)
 
@@ -94,18 +95,33 @@ class SdcNfDistributeThread(threading.Thread):
 
         if NfPackageModel.objects.filter(nfpackageid=self.csar_id):
             raise NSLCMException("NF CSAR(%s) already exists." % self.csar_id)
+
         artifact = sdc.get_artifact(sdc.ASSETTYPE_RESOURCES, csar_id)
-        download_artifacts(artifact["toscaModelURL"], "TODO:Local Path")
+        local_path = os.path.join(CATALOG_ROOT_PATH, csar_id)
+        local_file_name = sdc.download_artifacts(artifact["toscaModelURL"], local_path)
+        
+        vnfd_json = toscaparser.parse_vnfd(local_file_name)
+        vnfd = json.JSONDecoder().decode(vnfd_json)
+
+        nfd_id = vnfd["metadata"]["id"]
+        if NfPackageModel.objects.filter(vnfdid=nfd_id):
+            raise NSLCMException("NFD(%s) already exists." % nfd_id)
 
         JobUtil.add_job_status(self.job_id, 30, "Save CSAR(%s) to database." % self.csar_id)
+
+        vnfd_ver = vnfd["metadata"].get("vnfd_version")
+        if not vnfd_ver:
+            vnfd_ver = vnfd["metadata"].get("vnfdVersion", "undefined")
         NfPackageModel(
-            uuid=csar_id,
-            nfpackageid=csar_id,
-            vnfdid="TODO",
-            vendor="TODO",
-            vnfdversion="TODO",
-            vnfversion="TODO",
-            vnfdmodel="TODO").save()
+            uuid=self.csar_id,
+            nfpackageid=self.csar_id,
+            vnfdid=nfd_id,
+            vendor=vnfd["metadata"].get("vendor", "undefined"),
+            vnfdversion=vnfd_ver,
+            vnfversion=vnfd["metadata"].get("version", "undefined"),
+            vnfdmodel=vnfd_json,
+            vnfd_path=local_file_name
+            ).save()
 
         JobUtil.add_job_status(self.job_id, 100, "CSAR(%s) distribute successfully." % self.csar_id)
 
