@@ -11,6 +11,68 @@
         }
     ],
     "paths": {
+        "/nspackage": {
+            "get": {
+                "tags": [
+                    "ns package Resource"
+                ],
+                "summary": "query ns package info",
+                "description": "query ns package info",
+                "operationId": "query_ns_package",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/NsPackageListInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "ns package Resource"
+                ],
+                "summary": "ns package distribute",
+                "description": "ns package distribute",
+                "operationId": "ns_pkg_distribute",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "distribute request param",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsPkgPostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/NsPkgPostResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/ns/vls": {
             "post": {
                 "tags": [
@@ -687,6 +749,36 @@
         }
     },
     "definitions": {
+        "NsPkgPostRequest": {
+            "type": "object",
+            "properties": {
+                "csarId": {
+                    "type": "string"
+                }
+            }
+        },
+        "NsPkgPostResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "statusDescription": {
+                    "type": "string"
+                },
+                "errorCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "NsPackageListInfo": {
+            "type": "object",
+            "properties": {
+                "csars": {
+                    "type": "string"
+                }
+            }
+        },
         "VlPostRequest": {
             "type": "object",
             "properties": {
