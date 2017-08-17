@@ -171,17 +171,16 @@ class SdcNfPkgDeleteThread(threading.Thread):
             NfInstModel.objects.filter(package_id=self.csar_id).delete()
         else:
             if NfInstModel.objects.filter(package_id=self.csar_id):
-                raise NSLCMException("NfInst(%s) exists, cannot delete." % self.csar_id)
+                raise NSLCMException("NfInst by csar(%s) exists, cannot delete." % self.csar_id)
 
         JobUtil.add_job_status(self.job_id, 50, "Delete CSAR(%s) from Database." % self.csar_id)
 
-        VnfPackageFileModel.objects.filter(vnfpid=csar_id).delete()
-        NfPackageModel.objects.filter(nfpackageid=csar_id).delete()
+        NfPackageModel.objects.filter(nfpackageid=self.csar_id).delete()
 
         JobUtil.add_job_status(self.job_id, 80, "Delete local CSAR(%s) file." % self.csar_id)
 
         csar_save_path = os.path.join(CATALOG_ROOT_PATH, self.csar_id)
-        fileutil.delete_dirs(self.csar_save_path)
+        fileutil.delete_dirs(csar_save_path)
 
         JobUtil.add_job_status(self.job_id, 100, "Delete CSAR(%s) successfully." % self.csar_id)
 
