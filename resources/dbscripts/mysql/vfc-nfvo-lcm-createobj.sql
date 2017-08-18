@@ -268,3 +268,10 @@ CREATE TABLE t_lcm_inputParam_mapping (
 	CONSTRAINT t_lcm_inputParam_mapping PRIMARY KEY(serviceId,inputKey),
 	CONSTRAINT t_lcm_inputParam_mapping FOREIGN KEY (serviceId) REFERENCES t_lcm_servicebaseinfo (serviceId)
 ); 
+
+DROP TABLE IF EXISTS NFVO_WF_PLAN;
+CREATE TABLE NFVO_WF_PLAN (
+  `DEPLOYEDID` varchar(255) NOT NULL PRIMARY KEY, 
+  `PROCESSID` varchar(255) NOT NULL, 
+  `PLANNAME` varchar(255) NOT NULL
+);

@@ -302,4 +302,11 @@ class ServiceBaseInfoModel(models.Model):
     creator = models.CharField(db_column='creator', max_length=50)
     create_time = models.BigIntegerField(db_column='createTime', max_length=20)
     
- 
+class WFPlanModel(models.Model):
+    class Meta:
+        db_table = 'NFVO_WF_PLAN'
+
+    deployed_id = models.CharField(db_column='DEPLOYEDID', max_length=255, primary_key=True)
+    process_id = models.CharField(db_column='PROCESSID', max_length=255)
+    plan_name = models.CharField(db_column='PLANNAME', max_length=255)
+    
