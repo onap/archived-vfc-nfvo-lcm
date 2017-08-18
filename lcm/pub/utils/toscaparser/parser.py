@@ -14,6 +14,7 @@
 from os import R_OK, access
 
 from lcm.pub.exceptions import NSLCMException
+from toscaparser.tosca_template import ToscaTemplate
 
 def parse_nsd_model(path, input_parameters):
     isexist = check_file_exist(path)
@@ -40,13 +41,11 @@ def check_file_exist(path):
 
 def parse_nsd_csar(path, input_parameters=[], a_file=True):
     nsd_object = None
-    from toscaparser.tosca_template import ToscaTemplate
     nsd_object = ToscaTemplate(path, input_parameters)
     return nsd_object
 
 
 def parse_vnfd_csar(path, input_parameters=[], a_file=True):
     vnfd_object = None
-    from toscaparser.tosca_template import ToscaTemplate
     vnfd_object = ToscaTemplate(path, input_parameters)
     return vnfd_object

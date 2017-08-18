@@ -15,15 +15,11 @@ import json
 
 from lcm.pub.utils.toscaparser.convert import convert_nsd, convert_vnfd
 from lcm.pub.utils.toscaparser.etsinsdinfomodel import EtsiNsdInfoModel
+from lcm.pub.utils.toscaparser.etsivnfdinfomodel import EtsiVnfdInfoModel
 from lcm.pub.utils.toscaparser.parser import parse_nsd_model, parse_vnfd_model
 
 
 def parse_nsd(path, input_parameters=[]):
-    '''
-    nsd_object = parse_nsd_model(path, input_parameters=[])
-    nsd_json = convert_nsd(nsd_object)
-    return nsd_json
-    '''
     tosca_obj = EtsiNsdInfoModel(path, input_parameters)
     strResponse = json.dumps(tosca_obj, default=lambda obj: obj.__dict__)
     strResponse = strResponse.replace(': null', ': ""')
@@ -31,7 +27,8 @@ def parse_nsd(path, input_parameters=[]):
 
 
 def parse_vnfd(path, input_parameters=[]):
-    vnfd_object = parse_vnfd_model(path, input_parameters=[])
-    vnfd_json = convert_vnfd(vnfd_object)
-    return vnfd_json
+    tosca_obj = EtsiVnfdInfoModel(path, input_parameters)
+    strResponse = json.dumps(tosca_obj, default=lambda obj: obj.__dict__)
+    strResponse = strResponse.replace(': null', ': ""')
+    return strResponse
 
