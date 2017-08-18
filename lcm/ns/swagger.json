@@ -211,6 +211,76 @@
                 }
             }
         },
+        "/vnfpackage/{csarId}": {
+            "get": {
+                "tags": [
+                    "nf package Resource"
+                ],
+                "summary": "query one nf package info",
+                "description": "query one nf package info",
+                "operationId": "query_one_nf_package",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "csarId",
+                        "in": "path",
+                        "description": "csar id of nf package",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/NfPackageInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "nf package Resource"
+                ],
+                "summary": "delete nf pkg",
+                "description": "delete nf pkg",
+                "operationId": "delete_nf_pkg",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "csarId",
+                        "in": "path",
+                        "description": "csar id of nf package",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/NfPkgPostResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error"
+                    }
+                }
+            }
+        },
         "/ns/vls": {
             "post": {
                 "tags": [
@@ -982,6 +1052,52 @@
             }
         },
         "NfPkgListInfo": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
+        },
+        "NfPackageInfo": {
+            "type": "object",
+            "properties": {
+                "csarId": {
+                    "type": "string"
+                },
+                "packageInfo": {
+                    "$ref": "#/definitions/NfPkgDetailInfo"
+                },
+                "imageInfo": {
+                    "$ref": "#/definitions/NfPkgImgInfo"
+                },
+                "vnfInstanceInfo": {
+                    "$ref": "#/definitions/NfInstListInfo"
+                }
+            }
+        },
+        "NfPkgDetailInfo": {
+            "type": "object",
+            "properties": {
+                "vnfdId": {
+                    "type": "string"
+                },
+                "vnfdProvider": {
+                    "type": "string"
+                },
+                "vnfdVersion": {
+                    "type": "string"
+                },
+                "vnfVersion": {
+                    "type": "string"
+                }
+            }
+        },
+        "NfInstListInfo": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
+        },
+        "NfPkgImgInfo": {
             "type": "array",
             "items": {
                 "type": "object"
