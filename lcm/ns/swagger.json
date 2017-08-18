@@ -146,6 +146,71 @@
                 }
             }
         },
+        "/vnfpackage": {
+            "get": {
+                "tags": [
+                    "nf package Resource"
+                ],
+                "summary": "query nf package info",
+                "description": "query nf package info",
+                "operationId": "query_nf_package",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/NfPackageListInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "nf package Resource"
+                ],
+                "summary": "nf package distribute",
+                "description": "nf package distribute",
+                "operationId": "nf_pkg_distribute",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "distribute request param",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NfPkgPostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/NfPkgPostResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error"
+                    }
+                }
+            }
+        },
         "/ns/vls": {
             "post": {
                 "tags": [
@@ -887,6 +952,36 @@
             }
         },
         "NsInstListInfo": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
+        },
+        "NfPkgPostRequest": {
+            "type": "object",
+            "properties": {
+                "csarId": {
+                    "type": "string"
+                }
+            }
+        },
+        "NfPkgPostResponse": {
+            "type": "object",
+            "properties": {
+                "jobId": {
+                    "type": "string"
+                }
+            }
+        },
+        "NfPackageListInfo": {
+            "type": "object",
+            "properties": {
+                "csars": {
+                    "$ref": "#/definitions/NfPkgListInfo"
+                }
+            }
+        },
+        "NfPkgListInfo": {
             "type": "array",
             "items": {
                 "type": "object"
