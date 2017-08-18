@@ -69,6 +69,79 @@
                         "schema": {
                             "$ref": "#/definitions/NsPkgPostResponse"
                         }
+                    },
+                    "500": {
+                        "description": "internal error"
+                    }
+                }
+            }
+        },
+        "/nspackage/{csarId}": {
+            "get": {
+                "tags": [
+                    "ns package Resource"
+                ],
+                "summary": "query one ns package info",
+                "description": "query one ns package info",
+                "operationId": "query_one_ns_package",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "csarId",
+                        "in": "path",
+                        "description": "csar id of ns package",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/NsPackageInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "ns package Resource"
+                ],
+                "summary": "delete ns pkg",
+                "description": "delete ns pkg",
+                "operationId": "delete_ns_pkg",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "csarId",
+                        "in": "path",
+                        "description": "csar id of ns package",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/NsPkgPostResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error"
                     }
                 }
             }
@@ -775,8 +848,48 @@
             "type": "object",
             "properties": {
                 "csars": {
+                    "$ref": "#/definitions/NsPkgListInfo"
+                }
+            }
+        },
+        "NsPkgListInfo": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
+        },
+        "NsPackageInfo": {
+            "type": "object",
+            "properties": {
+                "csarId": {
+                    "type": "string"
+                },
+                "packageInfo": {
+                    "$ref": "#/definitions/NsPkgDetailInfo"
+                },
+                "nsInstanceInfo": {
+                    "$ref": "#/definitions/NsInstListInfo"
+                }
+            }
+        },
+        "NsPkgDetailInfo": {
+            "type": "object",
+            "properties": {
+                "nsdId": {
+                    "type": "string"
+                },
+                "nsdProvider": {
+                    "type": "string"
+                },
+                "nsdVersion": {
                     "type": "string"
                 }
+            }
+        },
+        "NsInstListInfo": {
+            "type": "array",
+            "items": {
+                "type": "object"
             }
         },
         "VlPostRequest": {
