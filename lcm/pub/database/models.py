@@ -308,5 +308,7 @@ class WFPlanModel(models.Model):
 
     deployed_id = models.CharField(db_column='DEPLOYEDID', max_length=255, primary_key=True)
     process_id = models.CharField(db_column='PROCESSID', max_length=255)
+    status = models.CharField(db_column='STATUS', max_length=255)
+    message = models.CharField(db_column='MESSAGE', max_length=1024)
     plan_name = models.CharField(db_column='PLANNAME', max_length=255)
     
