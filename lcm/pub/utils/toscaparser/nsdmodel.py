@@ -1,6 +1,6 @@
 import functools
 
-from lcm.pub.utils.toscaparser.baseinfomodel import BaseInfoModel
+from lcm.pub.utils.toscaparser.basemodel import BaseInfoModel
 
 
 class EtsiNsdInfoModel(BaseInfoModel):
