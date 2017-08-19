@@ -1,4 +1,6 @@
+import copy
 import os
+import shutil
 import urllib
 
 from toscaparser.tosca_template import ToscaTemplate
@@ -7,8 +9,6 @@ from lcm.pub.utils.toscaparser.dataentityext import DataEntityExt
 
 
 class BaseInfoModel(object):
-    def __init__(self, path, params):
-        pass
 
     def buildToscaTemplate(self, path, params):
         file_name = None
@@ -44,17 +44,11 @@ class BaseInfoModel(object):
             print "-----------------------------"
             return tosca_tpl
         finally:
-            pass
-            # if tosca_tpl != None and hasattr(tosca_tpl, "temp_dir") and os.path.exists(tosca_tpl.temp_dir):
-            #     try:
-            #         shutil.rmtree(tosca_tpl.temp_dir)
-            #     except Exception, e:
-            #         pass
-            #         # if tosca_tpl != None and tosca_tpl.temp_dir != None and os.path.exists(tosca_tpl.temp_dir):
-            #         #     try:
-            #         #         shutil.rmtree(tosca_tpl.temp_dir)
-            #         #     except Exception, e:
-            #         #         pass
+            if tosca_tpl != None and hasattr(tosca_tpl, "temp_dir") and os.path.exists(tosca_tpl.temp_dir):
+                try:
+                    shutil.rmtree(tosca_tpl.temp_dir)
+                except Exception, e:
+                    pass
 
     def _check_download_file(self, path):
         if (path.startswith("ftp") or path.startswith("sftp")):
@@ -103,3 +97,7 @@ class BaseInfoModel(object):
         else:
             self.ftp_get(userName, userPwd, hostIp, hostPort, remoteFileName, localFileName)
         return localFileName
+
+    def buidMetadata(self, tosca):
+        if 'metadata' in tosca.tpl:
+            self.metadata = copy.deepcopy(tosca.tpl['metadata'])
