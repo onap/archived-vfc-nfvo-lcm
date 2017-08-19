@@ -53,7 +53,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
         ret['properties'] = self.verify_properties(props, inputs, parsed_params)
         ret['requirements'] = self.build_requirements(nodeTemplate)
         self.buildCapabilities(nodeTemplate, inputs, ret)
-        # self.buildArtifacts(nodeTemplate, inputs, ret)
-        # interfaces = self.build_interfaces(nodeTemplate)
-        # if interfaces: ret['interfaces'] = interfaces
+        self.buildArtifacts(nodeTemplate, inputs, ret)
+        interfaces = self.build_interfaces(nodeTemplate)
+        if interfaces: ret['interfaces'] = interfaces
         return ret
