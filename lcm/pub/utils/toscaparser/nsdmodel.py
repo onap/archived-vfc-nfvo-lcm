@@ -43,14 +43,14 @@ class EtsiNsdInfoModel(BaseInfoModel):
 
     def buildNode(self, nodeTemplate, inputs, parsed_params):
         ret ={}
-        # ret['name'] = nodeTemplate.name
-        # ret['nodeType'] = nodeTemplate.type
-        # if 'description' in nodeTemplate.entity_tpl:
-        #     ret['description'] = nodeTemplate.entity_tpl['description']
-        # else:
-        #     ret['description'] = ''
-        # props = self.buildProperties(nodeTemplate, parsed_params)
-        # ret['properties'] = self.verify_properties(props, inputs, parsed_params)
+        ret['name'] = nodeTemplate.name
+        ret['nodeType'] = nodeTemplate.type
+        if 'description' in nodeTemplate.entity_tpl:
+            ret['description'] = nodeTemplate.entity_tpl['description']
+        else:
+            ret['description'] = ''
+        props = self.buildProperties(nodeTemplate, parsed_params)
+        ret['properties'] = self.verify_properties(props, inputs, parsed_params)
         # ret['requirements'] = self.build_requirements(nodeTemplate)
         # self.buildCapabilities(nodeTemplate, inputs, ret)
         # self.buildArtifacts(nodeTemplate, inputs, ret)

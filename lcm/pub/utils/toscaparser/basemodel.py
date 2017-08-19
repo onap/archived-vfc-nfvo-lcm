@@ -3,6 +3,7 @@ import os
 import shutil
 import urllib
 
+from toscaparser.functions import GetInput
 from toscaparser.tosca_template import ToscaTemplate
 
 from lcm.pub.utils.toscaparser.dataentityext import DataEntityExt
@@ -101,3 +102,55 @@ class BaseInfoModel(object):
     def buidMetadata(self, tosca):
         if 'metadata' in tosca.tpl:
             self.metadata = copy.deepcopy(tosca.tpl['metadata'])
+
+        def buildProperties(self, nodeTemplate, parsed_params):
+            properties = {}
+            isMappingParams = parsed_params and len(parsed_params) > 0
+            for k, item in nodeTemplate.get_properties().items():
+                properties[k] = item.value
+                if isinstance(item.value, GetInput):
+                    if item.value.result() and isMappingParams:
+                        properties[k] = DataEntityExt.validate_datatype(item.type, item.value.result())
+                    else:
+                        tmp = {}
+                        tmp[item.value.name] = item.value.input_name
+                        properties[k] = tmp
+            if 'attributes' in nodeTemplate.entity_tpl:
+                for k, item in nodeTemplate.entity_tpl['attributes'].items():
+                    properties[k] = str(item)
+            return properties
+
+    def buildProperties(self, nodeTemplate, parsed_params):
+        properties = {}
+        isMappingParams = parsed_params and len(parsed_params) > 0
+        for k, item in nodeTemplate.get_properties().items():
+            properties[k] = item.value
+            if isinstance(item.value, GetInput):
+                if item.value.result() and isMappingParams:
+                    properties[k] = DataEntityExt.validate_datatype(item.type, item.value.result())
+                else:
+                    tmp = {}
+                    tmp[item.value.name] = item.value.input_name
+                    properties[k] = tmp
+        if 'attributes' in nodeTemplate.entity_tpl:
+            for k, item in nodeTemplate.entity_tpl['attributes'].items():
+                properties[k] = str(item)
+        return properties
+
+
+    def verify_properties(self, props, inputs, parsed_params):
+        ret_props = {}
+        if (props and len(props) > 0):
+            for key, value in props.items():
+                ret_props[key] = self._verify_value(value, inputs, parsed_params)
+                #                 if isinstance(value, str):
+                #                     ret_props[key] = self._verify_string(inputs, parsed_params, value);
+                #                     continue
+                #                 if isinstance(value, list):
+                #                     ret_props[key] = map(lambda x: self._verify_dict(inputs, parsed_params, x), value)
+                #                     continue
+                #                 if isinstance(value, dict):
+                #                     ret_props[key] = self._verify_map(inputs, parsed_params, value)
+                #                     continue
+                #                 ret_props[key] = value
+        return ret_props
