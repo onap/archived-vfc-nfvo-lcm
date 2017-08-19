@@ -1,5 +1,7 @@
 import copy
+import json
 import os
+import re
 import shutil
 import urllib
 
@@ -154,3 +156,23 @@ class BaseInfoModel(object):
                 #                     continue
                 #                 ret_props[key] = value
         return ret_props
+
+    def build_requirements(self, node_template):
+        rets = []
+        for req in node_template.requirements:
+            for req_name, req_value in req.items():
+                if (isinstance(req_value, dict)):
+                    if ('node' in req_value and req_value['node'] not in node_template.templates):
+                        continue  # No target requirement for aria parser, not add to result.
+                rets.append({req_name : req_value})
+        return rets
+
+    def buildCapabilities(self, nodeTemplate, inputs, ret):
+        capabilities = json.dumps(nodeTemplate.entity_tpl.get('capabilities', None))
+        match = re.findall(r'\{"get_input":\s*"([\w|\-]+)"\}',capabilities)
+        for m in match:
+            aa= [input_def for input_def in inputs
+                 if m == input_def.name][0]
+            capabilities = re.sub(r'\{"get_input":\s*"([\w|\-]+)"\}', json.dumps(aa.default), capabilities,1)
+        if capabilities != 'null':
+            ret['capabilities'] = json.loads(capabilities)
