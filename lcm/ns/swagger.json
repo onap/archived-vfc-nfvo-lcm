@@ -2,12 +2,12 @@
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "ZTE vManager Service rest API"
+        "title": "ONAP VFC Service Rest API"
     },
     "basePath": "/api/nslcm/v1",
     "tags": [
         {
-            "name": "lcm Resource"
+            "name": "vfc nslcm resource"
         }
     ],
     "paths": {
@@ -675,20 +675,13 @@
                         "name": "nsInstanceId",
                         "in": "path"
                     },
-					{
-                        "required": true,
-                        "type": "Enum",
-                        "description": "",
-                        "name": "scaleType",
-                        "in": "body"
-                    },
                     {
                         "in": "body",
-                        "name": "scaleNsData",
-                        "description": "scaleNsData",
+                        "name": "ScaleNSRequest",
+                        "description": "Scale NS Request Body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ScaleNsData"
+                            "$ref": "#/definitions/ScaleNsRequest"
                         }
                     }
                 ],
@@ -1417,9 +1410,12 @@
                 }
             }
         },
-        "ScaleNsData": {
+        "ScaleNsRequest": {
             "type": "object",
             "properties": {
+                "scaleType":{
+                    "type": "string"
+                },
                 "scaleNsByStepsData": {
                     "$ref": "#/definitions/ScaleNsByStepsData"
                 }
@@ -1429,7 +1425,7 @@
             "type": "object",
             "properties": {
                 "scalingDirection": {
-                    "type": "Enum"
+                    "type": "string"
                 },
                 "aspectId": {
                     "type": "string"
