@@ -136,6 +136,7 @@ LOGGING = {
 
 if 'test' in sys.argv:
     config.REG_TO_MSB_WHEN_START = False
+    config.DEPLOY_WORKFLOW_WHEN_START = False
     DATABASES = {}
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',

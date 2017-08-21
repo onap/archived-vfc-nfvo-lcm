@@ -14,6 +14,7 @@
 
 from django.conf.urls import include, url
 from lcm.pub.config.config import REG_TO_MSB_WHEN_START, REG_TO_MSB_REG_URL, REG_TO_MSB_REG_PARAM
+from lcm.pub.config.config import DEPLOY_WORKFLOW_WHEN_START
 
 urlpatterns = [
     url(r'^', include('lcm.samples.urls')),
@@ -31,3 +32,8 @@ if REG_TO_MSB_WHEN_START:
     import json
     from lcm.pub.utils.restcall import req_by_msb
     req_by_msb(REG_TO_MSB_REG_URL, "POST", json.JSONEncoder().encode(REG_TO_MSB_REG_PARAM))
+
+# deploy workflow when startup
+if DEPLOY_WORKFLOW_WHEN_START:
+    from lcm.workflows import auto_deploy
+    auto_deploy.deploy_workflow_on_startup()
