@@ -191,3 +191,41 @@ class BaseInfoModel(object):
         if 'interfaces' in node_template.entity_tpl:
             return node_template.entity_tpl['interfaces']
         return None
+
+    def isVnf(self, node):
+        return node['nodeType'].upper().find('.VNF.') >= 0 or node['nodeType'].upper().endswith('.VNF')
+
+    def isPnf(self, node):
+        return node['nodeType'].upper().find('.PNF.') >= 0 or node['nodeType'].upper().endswith('.PNF')
+
+    def get_requirement_node_name(self, req_value):
+        return self.get_prop_from_obj(req_value, 'node')
+
+    def get_prop_from_obj(self, obj, prop):
+        if isinstance(obj, str):
+            return obj
+        if (isinstance(obj, dict) and prop in obj):
+            return obj[prop]
+        return None
+
+    def getNodeDependencys(self, node):
+        return self.getRequirementByName(node, 'dependency')
+
+    def getRequirementByName(self, node, requirementName):
+        requirements = []
+        if 'requirements' in node:
+            for item in node['requirements']:
+                for key, value in item.items():
+                    if key == requirementName:
+                        requirements.append(value)
+        return requirements
+
+    def get_networks(self, node):
+        rets = []
+        if 'requirements' in node:
+            for item in node['requirements']:
+                for key, value in item.items():
+                    if key.upper().find('VIRTUALLINK') >=0:
+                        rets.append({"key_name":key, "vl_id":self.get_requirement_node_name(value)})
+        return rets
+
