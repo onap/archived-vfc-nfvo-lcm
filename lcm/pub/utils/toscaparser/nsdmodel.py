@@ -21,7 +21,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.pnfs = self._get_all_pnf(nodeTemplates)
         self.vls = self.get_all_vl(nodeTemplates)
         self.cps = self.get_all_cp(nodeTemplates)
-        # self.routers = self.get_all_router(nodeTemplates)
+        self.routers = self.get_all_router(nodeTemplates)
         # self.fps = self._get_all_fp(nodeTemplates)
         # self.vnffgs = self._get_all_vnffg(tosca.topology_template.groups)
         # self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
@@ -169,3 +169,36 @@ class EtsiNsdInfoModel(BaseInfoModel):
             if self.isPnf(node):
                 return node_id
         return ""
+
+    def get_all_router(self, nodeTemplates):
+        rets = []
+        for node in nodeTemplates:
+            if self._isRouter(node):
+                ret = {}
+                ret['router_id'] = node['name']
+                ret['description'] = node['description']
+                ret['properties'] = node['properties']
+                ret['external_vl_id'] = self._get_router_external_vl_id(node)
+                ret['external_ip_addresses'] = self._get_external_ip_addresses(node)
+
+                rets.append(ret)
+        return rets
+
+    def _isRouter(self, node):
+        return node['nodeType'].upper().find('.ROUTER.') >= 0 or node['nodeType'].upper().endswith('.ROUTER')
+
+    def _get_router_external_vl(self, node):
+        return self.getRequirementByName(node, 'external_virtual_link')
+
+    def _get_router_external_vl_id(self, node):
+        ids = map(lambda x: self.get_requirement_node_name(x), self._get_router_external_vl(node))
+        if len(ids) > 0:
+            return ids[0]
+        return ""
+
+    def _get_external_ip_addresses(self, node):
+        external_vls = self._get_router_external_vl(node)
+        if len(external_vls) > 0:
+            if 'relationship' in external_vls[0] and 'properties' in external_vls[0]['relationship'] and 'router_ip_address' in external_vls[0]['relationship']['properties']:
+                return external_vls[0]['relationship']['properties']['router_ip_address']
+        return []
