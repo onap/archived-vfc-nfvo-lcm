@@ -14,9 +14,12 @@
 
 import unittest
 import json
+import mock
+import os
 from django.test import Client
 from rest_framework import status
 
+from lcm.pub.utils import restcall
 
 class WorkflowViewTest(unittest.TestCase):
     def setUp(self):
@@ -25,7 +28,14 @@ class WorkflowViewTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_deploy_workflow(self):
+    @mock.patch.object(restcall, 'upload_by_msb')
+    def test_deploy_workflow(self, mock_upload_by_msb):
+        mock_upload_by_msb.return_value = [0, json.JSONEncoder().encode({
+            "status": "1",
+            "message": "2",
+            "deployedId": "3",
+            "processId": "4"
+            }), '202']
         response = self.client.post("/api/nslcm/v1/workflow", 
-            {"filePath": "/home/init.zip"}, format='json')
+            {"filePath": os.path.abspath(__file__)}, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.content)

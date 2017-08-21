@@ -14,7 +14,7 @@
 import json
 
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.restcall import req_by_msb
+from lcm.pub.utils import restcall
 
 """
 Input:
@@ -29,13 +29,15 @@ Output:
     "processId": "string" 
 }
 """
-def deploy_workflow(content):
-    content_str = json.JSONEncoder().encode(content)
-    ret = req_by_msb("/api/workflow/v1/package", "POST", content_str)
+def deploy_workflow(file_path):
+    file_name = file_path.split("/")[-1]
+    file_data = {
+        'file': open(file_path, 'rb'), 
+        'filename': file_name}
+    ret = restcall.upload_by_msb("api/workflow/v1/package", "POST", file_data)
     if ret[0] != 0:
         raise NSLCMException("Status code is %s, detail is %s.", ret[2], ret[1])
     return json.JSONDecoder().decode(ret[1])
-
 
 """
 Input:
