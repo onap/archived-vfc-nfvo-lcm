@@ -19,8 +19,8 @@ class EtsiNsdInfoModel(BaseInfoModel):
 
         self.vnfs = self._get_all_vnf(nodeTemplates)
         self.pnfs = self._get_all_pnf(nodeTemplates)
-        # self.vls = self.get_all_vl(nodeTemplates)
-        # self.cps = self.get_all_cp(nodeTemplates)
+        self.vls = self.get_all_vl(nodeTemplates)
+        self.cps = self.get_all_cp(nodeTemplates)
         # self.routers = self.get_all_router(nodeTemplates)
         # self.fps = self._get_all_fp(nodeTemplates)
         # self.vnffgs = self._get_all_vnffg(tosca.topology_template.groups)
@@ -99,3 +99,73 @@ class EtsiNsdInfoModel(BaseInfoModel):
                             if req_node_name != None and req_node_name == node['name']:
                                 cps.append(tmpnode)
         return cps
+
+    def get_all_vl(self, nodeTemplates):
+        vls = []
+        for node in nodeTemplates:
+            if self.isVl(node):
+                vl = {}
+                vl['vl_id'] = node['name']
+                vl['description'] = node['description']
+                vl['properties'] = node['properties']
+                vl['route_external'] = False
+                vl['route_id'] = self._get_vl_route_id(node)
+                vls.append(vl)
+            if self._isExternalVL(node):
+                vl = {}
+                vl['vl_id'] = node['name']
+                vl['description'] = node['description']
+                vl['properties'] = node['properties']
+                vl['route_external'] = True
+                vls.append(vl)
+        return vls
+
+    def _get_vl_route_id(self, node):
+        route_ids = map(lambda x: self.get_requirement_node_name(x),
+                        self.getRequirementByName(node, 'virtual_route'))
+        if len(route_ids) > 0:
+            return route_ids[0]
+        return ""
+
+    def _isExternalVL(self, node):
+        return node['nodeType'].upper().find('.ROUTEEXTERNALVL') >= 0
+
+    def get_all_cp(self, nodeTemplates):
+        cps = []
+        for node in nodeTemplates:
+            if self.isCp(node):
+                cp = {}
+                cp['cp_id'] = node['name']
+                cp['cpd_id'] = node['name']
+                cp['description'] = node['description']
+                cp['properties'] = node['properties']
+                cp['vl_id'] = self.get_node_vl_id(node)
+                binding_node_ids = map(lambda x: self.get_requirement_node_name(x), self.getVirtualbindings(node))
+                #                 cp['vnf_id'] = self._filter_vnf_id(binding_node_ids, nodeTemplates)
+                cp['pnf_id'] = self._filter_pnf_id(binding_node_ids, nodeTemplates)
+                vls = self.buil_cp_vls(node)
+                if len(vls) > 1:
+                    cp['vls'] = vls
+                cps.append(cp)
+        return cps
+
+    def buil_cp_vls(self, node):
+        return map(lambda x: self._build_cp_vl(x), self.getVirtualLinks(node))
+
+    def _build_cp_vl(self, req):
+        cp_vl = {}
+        cp_vl['vl_id'] = self.get_prop_from_obj(req, 'node')
+        relationship = self.get_prop_from_obj(req, 'relationship')
+        if relationship != None:
+            properties = self.get_prop_from_obj(relationship, 'properties')
+            if properties != None and isinstance(properties, dict):
+                for key, value in properties.items():
+                    cp_vl[key] = value
+        return cp_vl
+
+    def _filter_pnf_id(self, node_ids, node_templates):
+        for node_id in node_ids:
+            node = self.get_node_by_name(node_templates, node_id)
+            if self.isPnf(node):
+                return node_id
+        return ""

@@ -105,23 +105,6 @@ class BaseInfoModel(object):
         if 'metadata' in tosca.tpl:
             self.metadata = copy.deepcopy(tosca.tpl['metadata'])
 
-        def buildProperties(self, nodeTemplate, parsed_params):
-            properties = {}
-            isMappingParams = parsed_params and len(parsed_params) > 0
-            for k, item in nodeTemplate.get_properties().items():
-                properties[k] = item.value
-                if isinstance(item.value, GetInput):
-                    if item.value.result() and isMappingParams:
-                        properties[k] = DataEntityExt.validate_datatype(item.type, item.value.result())
-                    else:
-                        tmp = {}
-                        tmp[item.value.name] = item.value.input_name
-                        properties[k] = tmp
-            if 'attributes' in nodeTemplate.entity_tpl:
-                for k, item in nodeTemplate.entity_tpl['attributes'].items():
-                    properties[k] = str(item)
-            return properties
-
     def buildProperties(self, nodeTemplate, parsed_params):
         properties = {}
         isMappingParams = parsed_params and len(parsed_params) > 0
@@ -198,6 +181,13 @@ class BaseInfoModel(object):
     def isPnf(self, node):
         return node['nodeType'].upper().find('.PNF.') >= 0 or node['nodeType'].upper().endswith('.PNF')
 
+    def isCp(self, node):
+        return node['nodeType'].upper().find('.CP.') >= 0 or node['nodeType'].upper().endswith('.CP')
+
+    def isVl(self, node):
+        return node['nodeType'].upper().find('.VIRTUALLINK.') >= 0 or node['nodeType'].upper().find('.VL.') >= 0 or \
+               node['nodeType'].upper().endswith('.VIRTUALLINK') or node['nodeType'].upper().endswith('.VL')
+
     def get_requirement_node_name(self, req_value):
         return self.get_prop_from_obj(req_value, 'node')
 
@@ -210,6 +200,13 @@ class BaseInfoModel(object):
 
     def getNodeDependencys(self, node):
         return self.getRequirementByName(node, 'dependency')
+
+    def getVirtualLinks(self, node):
+        return self.getRequirementByName(node, 'virtualLink')
+
+    def getVirtualbindings(self, node):
+        return self.getRequirementByName(node, 'virtualbinding')
+
 
     def getRequirementByName(self, node, requirementName):
         requirements = []
@@ -229,3 +226,42 @@ class BaseInfoModel(object):
                         rets.append({"key_name":key, "vl_id":self.get_requirement_node_name(value)})
         return rets
 
+    def _verify_value(self, value, inputs, parsed_params):
+        if isinstance(value, str):
+            return self._verify_string(inputs, parsed_params, value)
+        if isinstance(value, list) or isinstance(value, dict):
+            return self._verify_object(value, inputs, parsed_params)
+        return value
+
+    def _verify_object(self, value, inputs, parsed_params):
+        s = self._verify_string(inputs, parsed_params, json.dumps(value))
+        return json.loads(s)
+
+    def _get_input_name(self, getInput):
+        input_name = getInput.split(':')[1]
+        input_name = input_name.strip()
+        return input_name.replace('"', '').replace('}', '')
+
+    def _verify_string(self, inputs, parsed_params, value):
+        getInputs = re.findall(r'{"get_input": "[a-zA-Z_0-9]+"}', value)
+        for getInput in getInputs:
+            input_name = self._get_input_name(getInput)
+            if parsed_params and input_name in parsed_params:
+                value = value.replace(getInput, json.dumps(parsed_params[input_name]))
+            else:
+                for input_def in inputs:
+                    if input_def.default and input_name == input_def.name:
+                        value = value.replace(getInput, json.dumps(input_def.default))
+        return value
+
+    def get_node_vl_id(self, node):
+        vl_ids = map(lambda x: self.get_requirement_node_name(x), self.getVirtualLinks(node))
+        if len(vl_ids) > 0:
+            return vl_ids[0]
+        return ""
+
+    def get_node_by_name(self, node_templates, name):
+        for node in node_templates:
+            if node['name'] == name:
+                return node
+        return None
