@@ -44,7 +44,12 @@ class WorkflowViewTest(unittest.TestCase):
         self.assertEqual(1, len(WFPlanModel.objects.filter(deployed_id="3")))
 
     @mock.patch.object(restcall, 'upload_by_msb')
-    def test_force_deploy_workflow(self, mock_upload_by_msb):
+    @mock.patch.object(restcall, 'call_req')
+    def test_force_deploy_workflow(self, mock_call_req, mock_upload_by_msb):
+        mock_call_req.return_value = [0, json.JSONEncoder().encode({
+            "status": "1",
+            "message": "2"
+            }), '202']
         mock_upload_by_msb.return_value = [0, json.JSONEncoder().encode({
             "status": "2",
             "message": "3",

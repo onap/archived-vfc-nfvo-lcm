@@ -37,7 +37,10 @@ def deploy_workflow(request, *args, **kwargs):
         force_deploy = ignore_case_get(request.data, "forceDeploy")
         logger.debug("file_path is %s, force_deploy is %s", file_path, force_deploy)
         if force_deploy.upper() == "TRUE":
-            WFPlanModel.objects.filter().delete()
+            plans = WFPlanModel.objects.filter()
+            if len(plans) > 0:
+                activiti.undeploy_workflow(plans[0].deployed_id)
+                plans.delete()
         else:
             if WFPlanModel.objects.filter():
                 logger.warn("Already deployed.")

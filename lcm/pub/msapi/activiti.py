@@ -51,7 +51,7 @@ Output:
 """
 def undeploy_workflow(deploy_id):
     uri = "api/workflow/v1/package/{deployId}".format(deployId=deploy_id)
-    ret = req_by_msb(uri, "DELETE")
+    ret = restcall.req_by_msb(uri, "DELETE")
     if ret[0] != 0:
         raise NSLCMException("Status code is %s, detail is %s.", ret[2], ret[1])
     return json.JSONDecoder().decode(ret[1])
@@ -72,7 +72,7 @@ Output:
 """
 def exec_workflow(content):
     content_str = json.JSONEncoder().encode(content)
-    ret = req_by_msb("api/workflow/v1/process/instance", "POST", content_str)
+    ret = restcall.req_by_msb("api/workflow/v1/process/instance", "POST", content_str)
     if ret[0] != 0:
         raise NSLCMException("Status code is %s, detail is %s.", ret[2], ret[1])
     return json.JSONDecoder().decode(ret[1])
