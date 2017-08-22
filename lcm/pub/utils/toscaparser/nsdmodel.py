@@ -22,13 +22,8 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.vls = self.get_all_vl(nodeTemplates)
         self.cps = self.get_all_cp(nodeTemplates)
         self.routers = self.get_all_router(nodeTemplates)
-        # self.fps = self._get_all_fp(nodeTemplates)
-        # self.vnffgs = self._get_all_vnffg(tosca.topology_template.groups)
-        # self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
-        # self.ns_exposed = self.get_all_endpoint_exposed(tosca.topology_template)
-        # self.policies = self._get_policies_scaling(tosca.topology_template.policies)
-        # self.ns_flavours = self.get_all_flavour(tosca.topology_template.groups)
-        # self.nested_ns = self.get_all_nested_ns(nodeTemplates)
+        self.fps = self._get_all_fp(nodeTemplates)
+
 
     def buildInputs(self, top_inputs):
         ret = {}
@@ -202,3 +197,41 @@ class EtsiNsdInfoModel(BaseInfoModel):
             if 'relationship' in external_vls[0] and 'properties' in external_vls[0]['relationship'] and 'router_ip_address' in external_vls[0]['relationship']['properties']:
                 return external_vls[0]['relationship']['properties']['router_ip_address']
         return []
+
+    def _get_all_fp(self, nodeTemplates):
+        fps = []
+        for node in nodeTemplates:
+            if self._isFp(node):
+                fp = {}
+                fp['fp_id'] = node['name']
+                fp['description'] = node['description']
+                fp['properties'] = node['properties']
+                fp['forwarder_list'] = self._getForwarderList(node, nodeTemplates)
+
+                fps.append(fp)
+        return fps
+
+    def _isFp(self, node):
+        return node['nodeType'].upper().find('.FP.') >= 0 or node['nodeType'].upper().find('.SFP.') >= 0 or node[
+            'nodeType'].upper().endswith('.FP') or node['nodeType'].upper().endswith('.SFP')
+
+    def _getForwarderList(self, node, node_templates):
+        forwarderList = []
+        if 'requirements' in node:
+            for item in node['requirements']:
+                for key, value in item.items():
+                    if key == 'forwarder':
+                        tmpnode = self.get_node_by_req(node_templates, value)
+                        type = 'cp' if self.isCp(tmpnode) else 'vnf'
+                        req_node_name = self.get_requirement_node_name(value)
+                        if isinstance(value, dict) and 'capability' in value:
+                            forwarderList.append(
+                                {"type": type, "node_name": req_node_name, "capability": value['capability']})
+                        else:
+                            forwarderList.append({"type": type, "node_name": req_node_name, "capability": ""})
+
+        return forwarderList
+
+    def get_node_by_req(self, node_templates, req):
+        req_node_name = self.get_requirement_node_name(req)
+        return self.get_node_by_name(node_templates, req_node_name)
