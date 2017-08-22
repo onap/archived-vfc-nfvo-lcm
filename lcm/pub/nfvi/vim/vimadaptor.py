@@ -35,10 +35,7 @@ class VimAdaptor:
     def create_api(self, connectInfo):
         vimtype = connectInfo['vimtype'] if 'vimtype' in connectInfo else None
         logger.info("call %s, vimtype=%s" % (fun_name(), vimtype))
-        if vimtype == const.VIM_OPENSTACK:
-            from lcm.pub.nfvi.vim.api.openstack.api import OpenstackApi
-            self.apiImpl = OpenstackApi()
-        elif vimtype == const.VIM_VMWARE:
+        if vimtype in (const.VIM_OPENSTACK, const.VIM_VMWARE):
             from lcm.pub.nfvi.vim.api.multivim.api import MultiVimApi
             self.apiImpl = MultiVimApi()
         else:
