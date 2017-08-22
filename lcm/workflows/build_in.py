@@ -17,9 +17,11 @@ import traceback
 from lcm.pub.utils.syscomm import fun_name
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
+from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
 
+RESULT_OK, RESULT_NG = "0", "1"
 
 """
 format of input_data
@@ -46,23 +48,48 @@ def run_ns_instantiate(input_data):
     vnf_count = ignore_case_get(input_data, "vnfCount")
     sfc_count = ignore_case_get(input_data, "sfcCount")
     sdnc_id = ignore_case_get(input_data, "sdnControllerId")
-    update_job()
+    
+    update_job(job_id, 10, "0", "Start to create VL")
     for i in range(vl_count):
-        create_vl()
-    wait_until_job_done()
-    update_job()
+        create_vl(ns_inst_id, i + 1, nsd_json, ns_param_json)
+
+    update_job(job_id, 30, "0", "Start to create VNF")
     for i in range(vnf_count):
         create_vnf()
     wait_until_job_done()
-    update_job()
+
+    update_job(job_id, 70, "0", "Start to create SFC")
     for i in range(sfc_count):
         create_sfc()
     wait_until_job_done()
-    update_job()
 
-def create_vl():
-    # TODO:
-    pass
+    update_job(job_id, 90, "0", "Start to post deal")
+    post_deal()
+
+    update_job(job_id, 100, "0", "Create NS successfully.")
+
+def create_vl(ns_inst_id, vl_index, nsd, ns_param):
+    uri = "api/nslcm/v1/ns/vls"
+    data = json.JSONEncoder().encode({
+        "nsInstanceId": ns_inst_id,
+        "vlIndex": vl_index,
+        "context": nsd,
+        "additionalParamForNs": ns_param
+    })
+
+    ret = restcall.req_by_msb(uri, "POST", data)
+    if ret[0] != 0:
+        logger.error("Failed to call create_vl(%s): %s", vl_index, ret[1])
+        raise NSLCMException("Failed to call create_vl(index is %s)" % vl_index)
+
+    result = str(ret[1]["result"])
+    detail = ret[1]["detail"]
+    vl_id = ret[1]["vlId"]
+    if result != RESULT_OK:
+        logger.error("Failed to create VL(%s): %s", vl_id, detail)
+        raise NSLCMException("Failed to create VL(%s)" % vl_id)
+
+    logger.debug("Create VL(%s) successfully.", vl_id)
 
 def create_vnf():
     # TODO:
@@ -72,9 +99,18 @@ def create_sfc():
     # TODO:
     pass
 
-def update_job():
+def post_deal():
     # TODO:
-    pass
+    pass    
+
+def update_job(job_id, progress, errcode, desc):
+    uri = "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id)
+    data = json.JSONEncoder().encode({
+        "progress": progress,
+        "errcode": errcode,
+        "desc": desc
+    })
+    restcall.req_by_msb(uri, "POST", data)  
 
 def wait_until_job_done():
     # TODO:
