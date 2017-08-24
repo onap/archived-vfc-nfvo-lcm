@@ -68,18 +68,19 @@ def run_ns_instantiate(input_data):
         wait_until_jobs_done(job_id, jobs)
 
         update_job(job_id, 90, "0", "Start to post deal")
-        post_deal()
+        post_deal(ns_inst_id, "true")
 
         update_job(job_id, 100, "0", "Create NS successfully.")
     except NSLCMException as e:
         logger.error("Failded to Create NS: %s", e.message)
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        post_deal(ns_inst_id, "false")
     except:
         logger.error(traceback.format_exc())
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        post_deal(ns_inst_id, "false")
     finally:
         g_jobs_status.pop(job_id)
-
 
 
 def create_vl(ns_inst_id, vl_index, nsd, ns_param):
@@ -142,9 +143,16 @@ def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
     logger.debug("Create SFC(%s) started.", sfc_inst_id)
     return sfc_inst_id, job_id, fp_index - 1
 
-def post_deal():
-    # TODO:
-    pass    
+def post_deal(ns_inst_id, status):
+    uri = "/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id) 
+    data = json.JSONEncoder().encode({
+        "status": status
+    })
+
+    ret = restcall.req_by_msb(uri, "POST", data)
+    if ret[0] != 0:
+        logger.error("Failed to call post_deal(%s): %s", ns_inst_id, ret[1])
+    logger.debug("Call post_deal(%s) successfully.", ns_inst_id)
 
 def update_job(job_id, progress, errcode, desc):
     uri = "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id)
