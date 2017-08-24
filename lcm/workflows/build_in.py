@@ -64,8 +64,8 @@ def run_ns_instantiate(input_data):
         wait_until_jobs_done(job_id, jobs)
 
         update_job(job_id, 70, "0", "Start to create SFC")
-        for i in range(sfc_count):
-            create_sfc()
+        jobs = [create_sfc(ns_inst_id, i + 1, nsd_json, sdnc_id) for i in range(sfc_count)] 
+        wait_until_jobs_done(job_id, jobs)
 
         update_job(job_id, 90, "0", "Start to post deal")
         post_deal()
@@ -123,9 +123,24 @@ def create_vnf(ns_inst_id, vnf_index, nf_param):
     logger.debug("Create VNF(%s) started.", vnf_inst_id)
     return vnf_inst_id, job_id, vnf_index - 1
 
-def create_sfc():
-    # TODO:
-    pass
+def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
+    uri = "/ns/sfcs"
+    data = json.JSONEncoder().encode({
+        "nsInstanceId": ns_inst_id,
+        "context": nsd_json,
+        "fpindex": fp_index,
+        "sdnControllerId": sdnc_id
+    })
+
+    ret = restcall.req_by_msb(uri, "POST", data)
+    if ret[0] != 0:
+        logger.error("Failed to call create_sfc(%s): %s", fp_index, ret[1])
+        raise NSLCMException("Failed to call create_sfc(index is %s)" % fp_index)
+
+    sfc_inst_id = ret[1]["sfcInstId"]
+    job_id = ret[1]["jobId"]
+    logger.debug("Create SFC(%s) started.", sfc_inst_id)
+    return sfc_inst_id, job_id, fp_index - 1
 
 def post_deal():
     # TODO:
