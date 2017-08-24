@@ -1,0 +1,237 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "ONAP VFC Service SFC Rest API"
+    },
+    "basePath": "/api/nslcm/v1",
+    "paths": {
+        "/ns/sfcs": {
+            "post": {
+                "tags": [
+                    "sfc"
+                ],
+                "summary": "sfc create",
+                "description": "",
+                "operationId": "create_sfc",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "request param",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SfcPostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/SfcPostResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ns/sfcs/{sfcInstId}": {
+            "get": {
+                "tags": [
+                    "sfc"
+                ],
+                "summary": "query the specified sfc info",
+                "description": "",
+                "operationId": "query_sfc",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "sfcInstId",
+                        "in": "path",
+                        "description": "sfc instance id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/SfcInfo"
+                        }
+                    },
+                    "404": {
+                        "description": "the sfc instance id is wrong"
+                    },
+                    "500": {
+                        "description": "the url is invalid"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "sfc"
+                ],
+                "summary": "delete sfc",
+                "description": "",
+                "operationId": "delete_sfc",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "",
+                        "name": "sfcInstId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/DeleteResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "the sfc instance id is wrong"
+                    },
+                    "500": {
+                        "description": "the url is invalid"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        
+        "SfcPostRequest": {
+            "type": "object",
+            "properties": {
+                "jobId": {
+                    "type": "string"
+                },
+                "nsInstanceId": {
+                    "type": "string"
+                },
+                "sapData": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "vnfInstanceData": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "additionalParamForNs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "additionalParamForVnf": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "sdnControllerId": {
+                    "type": "string"
+                },
+                "context": {
+                    "type": "string"
+                },
+                "fpindex": {
+                    "type": "string"
+                }
+            }
+        },
+        "SfcPostResponse": {
+            "type": "object",
+            "properties": {
+                "sfcInstId": {
+                    "type": "string"
+                },
+                "jobId": {
+                    "type": "string"
+                }
+            }
+        },
+        "VlInfo": {
+            "type": "object",
+            "properties": {
+                "vlId": {
+                    "type": "string"
+                },
+                "vlName": {
+                    "type": "string"
+                },
+                "vlStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "VnfInfo": {
+            "type": "object",
+            "properties": {
+                "vnfInstId": {
+                    "type": "string"
+                },
+                "vnfName": {
+                    "type": "string"
+                },
+                "vnfStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        
+        "DeleteResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                },
+                "detail": {
+                    "type": "string"
+                }
+            }
+        },        
+        "SfcInfo": {
+            "type": "object",
+            "properties": {
+                "sfcInstId": {
+                    "type": "string"
+                },
+                "sfcName": {
+                    "type": "string"
+                },
+                "sfcStatus": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

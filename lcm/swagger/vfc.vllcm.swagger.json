@@ -1,0 +1,238 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "ONAP VFC Service Internal Rest API"
+    },
+    "basePath": "/api/nslcm/v1",
+    "paths": {
+        "/ns/vls": {
+            "post": {
+                "tags": [
+                    "vl"
+                ],
+                "summary": "vl create",
+                "description": "",
+                "operationId": "create_vl",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "instantiate request param",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/VlPostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/VlPostResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ns/vls/{vlId}": {
+            "get": {
+                "tags": [
+                    "vl"
+                ],
+                "summary": "query the specified vl info",
+                "description": "",
+                "operationId": "query_vl",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "vlId",
+                        "in": "path",
+                        "description": "vl instance id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/VlInfo"
+                        }
+                    },
+                    "404": {
+                        "description": "the vl instance id is wrong"
+                    },
+                    "500": {
+                        "description": "the url is invalid"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "vl"
+                ],
+                "summary": "delete vl",
+                "description": "",
+                "operationId": "delete_vl",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "",
+                        "name": "vlId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/DeleteVlResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "the vl instance id is wrong"
+                    },
+                    "500": {
+                        "description": "the url is invalid"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "VlPostRequest": {
+            "type": "object",
+            "properties": {
+                "jobId": {
+                    "type": "string"
+                },
+                "nsInstanceId": {
+                    "type": "string"
+                },
+                "flavourId": {
+                    "type": "string"
+                },
+                "sapData": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "pnfInfo": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "vnfInstanceData": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "nestedNsInstanceId": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "locationConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "additionalParamForNs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "additionalParamForVnf": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "extNSVirtualLink": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "context": {
+                    "type": "string"
+                },
+                "vlIndex": {
+                    "type": "string"
+                }
+            }
+        },
+        "VlPostResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                },
+                "detail": {
+                    "type": "string"
+                },
+                "vlId": {
+                    "type": "string"
+                }
+            }
+        },
+        "VlInfo": {
+            "type": "object",
+            "properties": {
+                "vlId": {
+                    "type": "string"
+                },
+                "vlName": {
+                    "type": "string"
+                },
+                "vlStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "DeleteVlResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                },
+                "detail": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

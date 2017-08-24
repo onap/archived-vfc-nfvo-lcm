@@ -1,0 +1,232 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "ONAP VFC Service Internal Rest API"
+    },
+    "basePath": "/api/nslcm/v1",
+    "paths": {
+        "/ns/vnfs": {
+            "post": {
+                "tags": [
+                    "vnf"
+                ],
+                "summary": "vnf create",
+                "description": "",
+                "operationId": "create_vnf",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "instantiate request param",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/VnfPostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/VnfPostResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ns/vnfs/{vnfInstId}": {
+            "get": {
+                "tags": [
+                    "vnf"
+                ],
+                "summary": "query the specified vnf info",
+                "description": "",
+                "operationId": "query_vnf",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "vnfInstId",
+                        "in": "path",
+                        "description": "vnf instance id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/VnfInfo"
+                        }
+                    },
+                    "404": {
+                        "description": "the vnf instance id is wrong"
+                    },
+                    "500": {
+                        "description": "the url is invalid"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "vnf"
+                ],
+                "summary": "delete vnf",
+                "description": "",
+                "operationId": "delete_vnf",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "required": true,
+                        "type": "string",
+                        "description": "",
+                        "name": "vnfInstId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/DeleteResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "the vl instance id is wrong"
+                    },
+                    "500": {
+                        "description": "the url is invalid"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "VnfPostRequest": {
+            "type": "object",
+            "properties": {
+                "jobId": {
+                    "type": "string"
+                },
+                "nsInstanceId": {
+                    "type": "string"
+                },
+                "flavourId": {
+                    "type": "string"
+                },
+                "sapData": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "pnfInfo": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "vnfInstanceData": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "nestedNsInstanceId": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "locationConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "additionalParamForNs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "additionalParamForVnf": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "extNSVirtualLink": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "context": {
+                    "type": "string"
+                },
+                "vnfIndex": {
+                    "type": "string"
+                }
+            }
+        },
+        "VnfPostResponse": {
+            "type": "object",
+            "properties": {
+                "vnfInstId": {
+                    "type": "string"
+                },
+                "jobId": {
+                    "type": "string"
+                }
+            }
+        },
+
+        "VnfInfo": {
+            "type": "object",
+            "properties": {
+                "vnfInstId": {
+                    "type": "string"
+                },
+                "vnfName": {
+                    "type": "string"
+                },
+                "vnfStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "DeleteResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                },
+                "detail": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
