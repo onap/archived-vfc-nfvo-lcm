@@ -25,6 +25,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.fps = self._get_all_fp(nodeTemplates)
         self.vnffgs = self._get_all_vnffg(tosca.topology_template.groups)
         self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
+        self.ns_exposed = self.get_all_endpoint_exposed(tosca.topology_template)
 
 
     def buildInputs(self, top_inputs):
@@ -273,3 +274,30 @@ class EtsiNsdInfoModel(BaseInfoModel):
     def _isServerGroup(self, group):
         return group.type.upper().find('.AFFINITYORANTIAFFINITYGROUP.') >= 0 or group.type.upper().endswith(
             '.AFFINITYORANTIAFFINITYGROUP')
+
+    def get_all_endpoint_exposed(self, topo_tpl):
+        if 'substitution_mappings' in topo_tpl.tpl:
+            external_cps = self._get_external_cps(topo_tpl.tpl['substitution_mappings'])
+            forward_cps = self._get_forward_cps(topo_tpl.tpl['substitution_mappings'])
+            return {"external_cps": external_cps, "forward_cps": forward_cps}
+        return {}
+
+    def _get_external_cps(self, subs_mappings):
+        external_cps = []
+        if 'requirements' in subs_mappings:
+            for key, value in subs_mappings['requirements'].items():
+                if isinstance(value, list) and len(value) > 0:
+                    external_cps.append({"key_name": key, "cpd_id": value[0]})
+                else:
+                    external_cps.append({"key_name": key, "cpd_id": value})
+        return external_cps
+
+    def _get_forward_cps(self, subs_mappings):
+        forward_cps = []
+        if 'capabilities' in subs_mappings:
+            for key, value in subs_mappings['capabilities'].items():
+                if isinstance(value, list) and len(value) > 0:
+                    forward_cps.append({"key_name": key, "cpd_id": value[0]})
+                else:
+                    forward_cps.append({"key_name": key, "cpd_id": value})
+        return forward_cps
