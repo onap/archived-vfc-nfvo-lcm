@@ -19,7 +19,6 @@ from lcm.ns.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView
 
 urlpatterns = patterns('',
                        url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
-                       url(r'^api/nslcm/v1/swagger.json$', SwaggerJsonView.as_view()),
                        url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$',
                            NSInstView.as_view()),
                        url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$',

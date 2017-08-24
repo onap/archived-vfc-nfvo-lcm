@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^', include('lcm.ns.urls')),
     url(r'^', include('lcm.jobs.urls')),
     url(r'^', include('lcm.workflows.urls')),
+    url(r'^', include('lcm.swagger.urls')),
 ]
 
 # regist to MSB when startup
