@@ -23,6 +23,8 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.cps = self.get_all_cp(nodeTemplates)
         self.routers = self.get_all_router(nodeTemplates)
         self.fps = self._get_all_fp(nodeTemplates)
+        self.vnffgs = self._get_all_vnffg(tosca.topology_template.groups)
+        self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
 
 
     def buildInputs(self, top_inputs):
@@ -235,3 +237,39 @@ class EtsiNsdInfoModel(BaseInfoModel):
     def get_node_by_req(self, node_templates, req):
         req_node_name = self.get_requirement_node_name(req)
         return self.get_node_by_name(node_templates, req_node_name)
+
+    def _get_all_vnffg(self, groups):
+        vnffgs = []
+        for group in groups:
+            if self._isVnffg(group):
+                vnffg = {}
+                vnffg['vnffg_id'] = group.name
+                vnffg['description'] = group.description
+                if 'properties' in group.tpl:
+                    vnffg['properties'] = group.tpl['properties']
+                vnffg['members'] = group.members
+
+                vnffgs.append(vnffg)
+        return vnffgs
+
+    def _isVnffg(self, group):
+        return group.type.upper().find('.VNFFG.') >= 0 or group.type.upper().find(
+            '.SFC.') >= 0 or group.type.upper().endswith('.VNFFG') or group.type.upper().endswith('.SFC')
+
+    def get_all_server_group(self, groups):
+        rets = []
+        for group in groups:
+            if self._isServerGroup(group):
+                ret = {}
+                ret['group_id'] = group.name
+                ret['description'] = group.description
+                if 'properties' in group.tpl:
+                    ret['properties'] = group.tpl['properties']
+                ret['members'] = group.members
+
+                rets.append(ret)
+        return rets
+
+    def _isServerGroup(self, group):
+        return group.type.upper().find('.AFFINITYORANTIAFFINITYGROUP.') >= 0 or group.type.upper().endswith(
+            '.AFFINITYORANTIAFFINITYGROUP')
