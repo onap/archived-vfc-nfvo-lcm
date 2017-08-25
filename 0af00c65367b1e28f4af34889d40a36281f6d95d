@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_20e541a8",
+        "filename": "lcm/ns/tests/test_ns_heal.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-25T02:57:02Z",
+      "side": 1,
+      "message": "I think these two cases need to be deleted, they are no difference with test case \"test_ns_heal_empty_post\", because you mocked the start function of the thread, those two cases will not increase the line coverage,",
+      "range": {
+        "startLine": 139,
+        "startChar": 4,
+        "endLine": 161,
+        "endChar": 63
+      },
+      "revId": "0af00c65367b1e28f4af34889d40a36281f6d95d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_606d8932",
+        "filename": "lcm/ns/tests/vnfs/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-25T02:57:02Z",
+      "side": 1,
+      "message": "This assert should be deleted, because heal vnf does not affect the existence of vnf",
+      "range": {
+        "startLine": 331,
+        "startChar": 7,
+        "endLine": 336,
+        "endChar": 38
+      },
+      "revId": "0af00c65367b1e28f4af34889d40a36281f6d95d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_20778104",
+        "filename": "lcm/ns/tests/vnfs/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-25T02:57:02Z",
+      "side": 1,
+      "message": "This assert should be deleted too",
+      "range": {
+        "startLine": 374,
+        "startChar": 8,
+        "endLine": 378,
+        "endChar": 38
+      },
+      "revId": "0af00c65367b1e28f4af34889d40a36281f6d95d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
