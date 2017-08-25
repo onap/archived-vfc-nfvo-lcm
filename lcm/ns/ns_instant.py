@@ -21,7 +21,7 @@ import uuid
 from rest_framework import status
 
 from lcm.pub.database.models import DefPkgMappingModel, ServiceBaseInfoModel, InputParamMappingModel
-from lcm.pub.database.models import NSInstModel, NfPackageModel, VNFFGInstModel
+from lcm.pub.database.models import NSInstModel, NfPackageModel, VNFFGInstModel, WFPlanModel
 from lcm.pub.msapi.catalog import get_process_id, get_download_url_from_catalog
 from lcm.pub.msapi.catalog import query_rawdata_from_catalog, get_servicetemplate_id, get_servicetemplate
 from lcm.pub.msapi.wso2bpel import workflow_run
@@ -32,6 +32,7 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.config.config import WORKFLOW_OPTION
 from lcm.workflows import build_in
+from lcm.pub.msapi import activiti
 
 logger = logging.getLogger(__name__)
 
@@ -148,16 +149,31 @@ class InstantNSService(object):
 
         ret = workflow_run(data)
         logger.info("ns-instant(%s) workflow result:%s" % (self.ns_inst_id, ret))
-        JobUtil.add_job_status(job_id, 10, 'NS inst(%s) workflow started: %s' % (
+        JobUtil.add_job_status(job_id, 10, 'NS inst(%s) wso2 workflow started: %s' % (
             self.ns_inst_id, ret.get('status')))
         if ret.get('status') == 1:
             return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
         return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def start_activiti_workflow(self):
-        pass
+    def start_activiti_workflow(self, job_id, plan_input):
+        plans = WFPlanModel.objects.filter()
+        if not plans:
+            raise NSLCMException("No plan is found, you should deploy plan first!")
+        data = {
+            "processId": plans[0].process_id, 
+            "params": plan_input 
+        }
+        ret = activiti.exec_workflow(data)
+        logger.info("ns-instant(%s) workflow result:%s" % (self.ns_inst_id, ret))
+        JobUtil.add_job_status(job_id, 10, 'NS inst(%s) activiti workflow started: %s' % (
+            self.ns_inst_id, ret.get('status')))
+        if ret.get('status') == 1:
+            return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+        return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)      
 
     def start_buildin_workflow(self, job_id, plan_input):
+        JobUtil.add_job_status(job_id, 10, 'NS inst(%s) buildin workflow started.' % 
+            self.ns_inst_id)
         build_in.run_ns_instantiate(plan_input)
         return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
 
