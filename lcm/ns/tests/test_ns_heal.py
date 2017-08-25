@@ -13,48 +13,85 @@
 # limitations under the License.
 
 import mock
-import uuid
+
 from rest_framework import status
 from django.test import TestCase
 from django.test import Client
-from lcm.pub.database.models import NSDModel, NSInstModel
+from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.ns.const import NS_INST_STATUS
 from lcm.pub.utils import restcall
+from lcm.pub.exceptions import NSLCMException
 from lcm.ns.ns_heal import NSHealService
 
 
 class TestHealNsViews(TestCase):
     def setUp(self):
-        self.nsd_id = str(uuid.uuid4())
-        self.ns_package_id = str(uuid.uuid4())
-        self.ns_inst_id = str(uuid.uuid4())
+
+        self.ns_inst_id = '1'
+        self.nf_inst_id = '1'
+        self.nf_uuid = '1-1-1'
+
         self.job_id = JobUtil.create_job("NS", JOB_TYPE.HEAL_VNF, self.ns_inst_id)
-        NSDModel(id=self.ns_package_id, nsd_id=self.nsd_id, name='name').save()
 
         self.client = Client()
-        self.context = '{"vnfs": ["a", "b"], "sfcs": ["c"], "vls": ["d", "e", "f"]}'
-        NSInstModel(id=self.ns_inst_id, name="abc", nspackage_id="7", nsd_id="111").save()
+
+        model = '{"metadata": {"vnfdId": "1","vnfdName": "PGW001","vnfProvider": "zte","vnfdVersion": "V00001",' \
+                '"vnfVersion": "V5.10.20","productType": "CN","vnfType": "PGW",' \
+                '"description": "PGW VNFD description","isShared":true,"vnfExtendType":"driver"}}'
+        NSInstModel(id=self.ns_inst_id, name="ns_name", status='null').save()
+        NfInstModel.objects.create(nfinstid=self.nf_inst_id, nf_name='name_1', vnf_id='1',
+                                   vnfm_inst_id='1', ns_inst_id=self.ns_inst_id,
+                                   max_cpu='14', max_ram='12296', max_hd='101', max_shd="20", max_net=10,
+                                   status='null', mnfinstid=self.nf_uuid, package_id='pkg1',
+                                   vnfd_model=model)
 
     def tearDown(self):
         NSInstModel.objects.filter().delete()
+        NfInstModel.objects.filter().delete()
 
     @mock.patch.object(NSHealService, 'run')
-    def test_ns_heal(self, mock_run):
+    def test_heal_vnf_url(self, mock_run):
         data = {
-            'nsdid': self.nsd_id,
-            'nsname': 'ns',
-            'description': 'description'}
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.nsd_id, data=data)
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+            "healVnfData": {
+                "vnfInstanceId": self.nf_inst_id,
+                "cause": "vm is down",
+                "additionalParams": {
+                    "action": "restartvm",
+                    "actionvminfo": {
+                        "vmid": "33",
+                        "vmname": "xgw-smp11"
+                    }
+                }
+            }
+        }
 
-    @mock.patch.object(restcall, 'call_req')
-    def test_ns_heal_thread(self, mock_call):
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertIsNotNone(response.data)
+        self.assertIn("jobId", response.data)
+        self.assertNotIn("error", response.data)
+
+        response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+    @mock.patch.object(NSHealService, 'start')
+    @mock.patch.object(NSHealService, 'wait_job_finish')
+    @mock.patch.object(NSHealService, 'update_job')
+    def test_ns_manual_scale_thread(self, mock_start, mock_wait, mock_update):
 
         data = {
-            'nsdid': self.nsd_id,
-            'nsname': 'ns',
-            'description': 'description'
+            "healVnfData": {
+                "vnfInstanceId": self.nf_inst_id,
+                "cause": "vm is down",
+                "additionalParams": {
+                    "action": "restartvm",
+                    "actionvminfo": {
+                        "vmid": "33",
+                        "vmname": "xgw-smp11"
+                    }
+                }
+            }
         }
 
         NSHealService(self.ns_inst_id, data, self.job_id).run()
@@ -63,3 +100,63 @@ class TestHealNsViews(TestCase):
     def test_swagger_ok(self):
         resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    @mock.patch.object(NSHealService, "start")
+    def test_ns_heal_non_existing_ns(self, mock_start):
+        mock_start.side_effect = NSLCMException("NS Not Found")
+
+        ns_inst_id = "2"
+
+        data = {
+            "healVnfData": {
+                "vnfInstanceId": self.nf_inst_id,
+                "cause": "vm is down",
+                "additionalParams": {
+                    "action": "restartvm",
+                    "actionvminfo": {
+                        "vmid": "33",
+                        "vmname": "xgw-smp11"
+                    }
+                }
+            }
+        }
+
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=data)
+        self.assertEqual(response.data["error"], "NS Not Found")
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)
+
+    @mock.patch.object(NSHealService, "start")
+    def test_ns_heal_empty_post(self, mock_start):
+        mock_start.side_effect = NSLCMException("healVnfData parameter does not exist or value is incorrect.")
+
+        data = {}
+
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
+        self.assertEqual(response.data["error"], "healVnfData parameter does not exist or value is incorrect.")
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @mock.patch.object(NSHealService, "start")
+    def test_ns_heal_empty_additional_params(self, mock_start):
+        mock_start.side_effect = NSLCMException("additionalParams parameter does not exist or value incorrect.")
+
+        data = {
+            "healVnfData": {
+                "vnfInstanceId": self.nf_inst_id,
+                "cause": "vm is down",
+            }
+        }
+
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
+        self.assertEqual(response.data["error"], "additionalParams parameter does not exist or value incorrect.")
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)
+
+    @mock.patch.object(NSHealService, "start")
+    def test_ns_heal_error_in_response(self, mock_start):
+        mock_start.side_effect = NSLCMException("healVnfData parameter does not exist or value is incorrect.")
+
+        data = {}
+
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
+        self.assertIn("error", response.data)

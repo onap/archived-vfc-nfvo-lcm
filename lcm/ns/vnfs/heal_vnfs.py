@@ -54,8 +54,8 @@ class NFHealService(threading.Thread):
 
     def do_biz(self):
         self.update_job(1, desc='nf heal start')
-        self.update_nf_status(VNF_STATUS.HEALING)
         self.get_and_check_params()
+        self.update_nf_status(VNF_STATUS.HEALING)
         self.send_nf_healing_request()
         self.update_nf_status(VNF_STATUS.ACTIVE)
         self.update_job(100, desc='nf heal success')

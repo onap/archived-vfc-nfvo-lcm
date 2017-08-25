@@ -326,21 +326,58 @@ class TestHealVnfViews(TestCase):
     @mock.patch.object(restcall, "call_req")
     def test_heal_vnf(self, mock_call_req):
 
+        job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, self.nf_inst_id)
+
+        nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
+
+        if nfinst:
+            self.failUnlessEqual(1, 1)
+        else:
+            self.failUnlessEqual(1, 0)
+
+        mock_vals = {
+            "/api/ztevmanagerdriver/v1/1/vnfs/111/heal":
+                [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
+            "/api/extsys/v1/vnfms/1":
+                [0, json.JSONEncoder().encode({"name": 'vnfm1', "type": 'ztevmanagerdriver'}), '200'],
+            "/api/resmgr/v1/vnf/1":
+                [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
+            "/api/ztevmanagerdriver/v1/1/jobs/" + job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode({"jobId": job_id,
+                                               "responsedescriptor": {"progress": "100",
+                                                                      "status": JOB_MODEL_STATUS.FINISHED,
+                                                                      "responseid": "3",
+                                                                      "statusdescription": "creating",
+                                                                      "errorcode": "0",
+                                                                      "responsehistorylist": [
+                                                                          {"progress": "0",
+                                                                           "status": JOB_MODEL_STATUS.PROCESSING,
+                                                                           "responseid": "2",
+                                                                           "statusdescription": "creating",
+                                                                           "errorcode": "0"}]}}), '200']}
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+
         req_data = {
             "action": "vmReset",
             "affectedvm": {
-                "vmid": 1,
-                "vduid": 1,
+                "vmid": "1",
+                "vduid": "1",
                 "vmname": "name",
             }
         }
 
-        NFHealService(self.ns_inst_id, req_data).run()
+        NFHealService(self.nf_inst_id, req_data).run()
         nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
         if nsIns:
             self.failUnlessEqual(1, 1)
         else:
             self.failUnlessEqual(1, 0)
+
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.ACTIVE)
 
 vnfd_model_dict = {
     'local_storages': [],
