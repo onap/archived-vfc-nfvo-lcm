@@ -63,6 +63,9 @@ SDC_PASSWD = "admin"
 
 # [workflow]
 DEPLOY_WORKFLOW_WHEN_START = True
+# Support option: activiti/wso2/buildin
+WORKFLOW_OPTION = "activiti"
+
 
 
 
