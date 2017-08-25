@@ -63,9 +63,13 @@ def run_ns_instantiate(input_data):
         jobs = [create_vnf(ns_inst_id, i + 1, vnf_param_json) for i in range(vnf_count)] 
         wait_until_jobs_done(job_id, jobs)
 
+        [confirm_vnf_status(inst_id) for inst_id, _, _ in jobs]
+
         update_job(job_id, 70, "0", "Start to create SFC")
         jobs = [create_sfc(ns_inst_id, i + 1, nsd_json, sdnc_id) for i in range(sfc_count)] 
         wait_until_jobs_done(job_id, jobs)
+
+        [confirm_sfc_status(inst_id) for inst_id, _, _ in jobs]
 
         update_job(job_id, 90, "0", "Start to post deal")
         post_deal(ns_inst_id, "true")
@@ -224,5 +228,28 @@ def wait_until_jobs_done(g_job_id, jobs):
     if g_job_id in g_jobs_status:
         if sum(g_jobs_status[g_job_id]) > 0:
             raise NSLCMException("Some jobs failed!")
+
+def confirm_vnf_status(vnf_inst_id):
+    uri = "api/nslcm/v1/ns/vnfs/{vnfInstId}".format(vnfInstId=vnf_inst_id)
+    ret = restcall.req_by_msb(uri, "GET")
+    if ret[0] != 0:
+        raise NSLCMException("Failed to call get_vnf(%s)" % vnf_inst_id)
+    vnf_status = ret[1]["vnfStatus"]
+    if vnf_status != "active":
+        raise NSLCMException("Status of VNF(%s) is not active" % vnf_inst_id)
+
+def confirm_sfc_status(sfc_inst_id):
+    uri = "api/nslcm/v1/ns/sfcs/{sfcInstId}".format(sfcInstId=sfc_inst_id)
+    ret = restcall.req_by_msb(uri, "GET")
+    if ret[0] != 0:
+        raise NSLCMException("Failed to call get_sfc(%s)" % sfc_inst_id)
+    sfc_status = ret[1]["sfcStatus"]
+    if sfc_status != "active":
+        raise NSLCMException("Status of SFC(%s) is not active" % sfc_inst_id)
+
+
+
+
+
       
 
