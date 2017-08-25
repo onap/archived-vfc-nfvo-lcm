@@ -30,6 +30,8 @@ from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils import toscautil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.config.config import WORKFLOW_OPTION
+from lcm.workflows import build_in
 
 logger = logging.getLogger(__name__)
 
@@ -125,24 +127,40 @@ class InstantNSService(object):
                     nsinstid=self.ns_inst_id,
                     endpointnumber=0).save()
 
-            servicetemplate_id = get_servicetemplate_id(ns_inst.nsd_id)
-            process_id = get_process_id('init', servicetemplate_id)
-            data = {"processId": process_id, "params": {"planInput": plan_input}}
-            logger.debug('ns-instant(%s) workflow data:%s' % (self.ns_inst_id, data))
+            if WORKFLOW_OPTION == "wso2":
+                return self.start_wso2_workflow(job_id, ns_inst, plan_input)
+            elif WORKFLOW_OPTION == "activiti":
+                return self.start_activiti_workflow()
+            else:
+                return self.start_buildin_workflow(job_id, plan_input)
 
-            ret = workflow_run(data)
-            logger.info("ns-instant(%s) workflow result:%s" % (self.ns_inst_id, ret))
-            JobUtil.add_job_status(job_id, 10, 'NS inst(%s) workflow started: %s' % (
-                self.ns_inst_id, ret.get('status')))
-            if ret.get('status') == 1:
-                return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
-            return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("ns-instant(%s) workflow error:%s" % (self.ns_inst_id, e.message))
             JobUtil.add_job_status(job_id, 255, 'NS instantiation failed: %s' % e.message)
             return dict(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
+    
+    def start_wso2_workflow(self, job_id, ns_inst, plan_input):
+        servicetemplate_id = get_servicetemplate_id(ns_inst.nsd_id)
+        process_id = get_process_id('init', servicetemplate_id)
+        data = {"processId": process_id, "params": {"planInput": plan_input}}
+        logger.debug('ns-instant(%s) workflow data:%s' % (self.ns_inst_id, data))
+
+        ret = workflow_run(data)
+        logger.info("ns-instant(%s) workflow result:%s" % (self.ns_inst_id, ret))
+        JobUtil.add_job_status(job_id, 10, 'NS inst(%s) workflow started: %s' % (
+            self.ns_inst_id, ret.get('status')))
+        if ret.get('status') == 1:
+            return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+        return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def start_activiti_workflow(self):
+        pass
+
+    def start_buildin_workflow(self, job_id, plan_input):
+        build_in.run_ns_instantiate(plan_input)
+        return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+
     def get_vnf_vim_id(self, vim_id, location_constraints, vnfdid):
         for location in location_constraints:
             if "vnfProfileId" in location and vnfdid == location["vnfProfileId"]:
