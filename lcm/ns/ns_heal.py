@@ -19,7 +19,7 @@ import datetime
 import time
 
 from lcm.ns.const import NS_INST_STATUS
-from lcm.pub.database.models import JobModel, NSInstModel
+from lcm.pub.database.models import JobModel, NSInstModel, NfInstModel
 from lcm.ns.vnfs.heal_vnfs import NFHealService
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
@@ -49,13 +49,17 @@ class NSHealService(threading.Thread):
 
     def do_biz(self):
         self.update_job(1, desc='ns heal start')
-        self.update_ns_status(NS_INST_STATUS.HEALING)
         self.get_and_check_params()
+        self.update_ns_status(NS_INST_STATUS.HEALING)
         self.do_vnfs_heal()
         self.update_ns_status(NS_INST_STATUS.ACTIVE)
         self.update_job(100, desc='ns heal success')
 
     def get_and_check_params(self):
+        ns_info = NSInstModel.objects.filter(id=self.ns_instance_id)
+        if not ns_info:
+            logger.error('NS [id=%s] does not exist' % self.ns_instance_id)
+            raise NSLCMException('NS [id=%s] does not exist' % self.ns_instance_id)
         self.heal_vnf_data = ignore_case_get(self.request_data, 'healVnfData')
         if not self.heal_vnf_data:
             logger.error('healVnfData parameter does not exist or value is incorrect.')

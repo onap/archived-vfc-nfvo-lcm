@@ -30,6 +30,7 @@ from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
 from lcm.ns.vnfs.scale_vnfs import NFManualScaleService
 from lcm.ns.vnfs.heal_vnfs import NFHealService
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.exceptions import NSLCMException
 
 
 class TestGetVnfViews(TestCase):
@@ -308,6 +309,8 @@ class TestHealVnfViews(TestCase):
         self.nf_inst_id = str(uuid.uuid4())
         self.nf_uuid = '111'
 
+        self.job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, self.nf_inst_id)
+
         NSInstModel(id=self.ns_inst_id, name="ns_name").save()
         NfInstModel.objects.create(nfinstid=self.nf_inst_id, nf_name='name_1', vnf_id='1',
                                    vnfm_inst_id='1', ns_inst_id='111,2-2-2',
@@ -326,21 +329,63 @@ class TestHealVnfViews(TestCase):
     @mock.patch.object(restcall, "call_req")
     def test_heal_vnf(self, mock_call_req):
 
+
+        mock_vals = {
+            "/api/ztevmanagerdriver/v1/1/vnfs/111/heal":
+                [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
+            "/api/extsys/v1/vnfms/1":
+                [0, json.JSONEncoder().encode({"name": 'vnfm1', "type": 'ztevmanagerdriver'}), '200'],
+            "/api/resmgr/v1/vnf/1":
+                [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
+            "/api/ztevmanagerdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode({"jobId": self.job_id,
+                                               "responsedescriptor": {"progress": "100",
+                                                                      "status": JOB_MODEL_STATUS.FINISHED,
+                                                                      "responseid": "3",
+                                                                      "statusdescription": "creating",
+                                                                      "errorcode": "0",
+                                                                      "responsehistorylist": [
+                                                                          {"progress": "0",
+                                                                           "status": JOB_MODEL_STATUS.PROCESSING,
+                                                                           "responseid": "2",
+                                                                           "statusdescription": "creating",
+                                                                           "errorcode": "0"}]}}), '200']}
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+
         req_data = {
             "action": "vmReset",
             "affectedvm": {
-                "vmid": 1,
-                "vduid": 1,
+                "vmid": "1",
+                "vduid": "1",
                 "vmname": "name",
             }
         }
 
-        NFHealService(self.ns_inst_id, req_data).run()
-        nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-        if nsIns:
-            self.failUnlessEqual(1, 1)
-        else:
-            self.failUnlessEqual(1, 0)
+        NFHealService(self.nf_inst_id, req_data).run()
+
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.ACTIVE)
+
+    @mock.patch.object(NFHealService, "run")
+    def test_heal_vnf_non_existing_vnf(self, mock_biz):
+        mock_biz.side_effect = NSLCMException("VNF Not Found")
+
+        nf_inst_id = "1"
+
+        req_data = {
+            "action": "vmReset",
+            "affectedvm": {
+                "vmid": "1",
+                "vduid": "1",
+                "vmname": "name",
+            }
+        }
+
+        self.assertRaises(NSLCMException, NFHealService(nf_inst_id, req_data).run)
+        self.assertEqual(len(NfInstModel.objects.filter(nfinstid=nf_inst_id)), 0)
 
 vnfd_model_dict = {
     'local_storages': [],
