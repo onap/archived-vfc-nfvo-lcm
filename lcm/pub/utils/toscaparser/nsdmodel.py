@@ -26,6 +26,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.vnffgs = self._get_all_vnffg(tosca.topology_template.groups)
         self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
         self.ns_exposed = self.get_all_endpoint_exposed(tosca.topology_template)
+        self.policies = self._get_policies_scaling(tosca.topology_template.policies)
 
 
     def buildInputs(self, top_inputs):
@@ -301,3 +302,27 @@ class EtsiNsdInfoModel(BaseInfoModel):
                 else:
                     forward_cps.append({"key_name": key, "cpd_id": value})
         return forward_cps
+
+    def _get_policies_scaling(self, top_policies):
+        policies_scaling = []
+        scaling_policies = self.get_scaling_policies(top_policies)
+        if len(scaling_policies) > 0:
+            policies_scaling.append({"scaling": scaling_policies})
+        return policies_scaling
+
+    def get_policies_by_keyword(self, top_policies, keyword):
+        ret = []
+        for policy in top_policies:
+            if policy.type.upper().find(keyword) >= 0:
+                tmp = {}
+                tmp['policy_id'] = policy.name
+                tmp['description'] = policy.description
+                if 'properties' in policy.entity_tpl:
+                    tmp['properties'] = policy.entity_tpl['properties']
+                tmp['targets'] = policy.targets
+                ret.append(tmp)
+
+        return ret
+
+    def get_scaling_policies(self, top_policies):
+        return self.get_policies_by_keyword(top_policies, '.SCALING')
