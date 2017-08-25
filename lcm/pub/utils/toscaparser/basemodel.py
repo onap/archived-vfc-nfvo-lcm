@@ -188,6 +188,9 @@ class BaseInfoModel(object):
         return node['nodeType'].upper().find('.VIRTUALLINK.') >= 0 or node['nodeType'].upper().find('.VL.') >= 0 or \
                node['nodeType'].upper().endswith('.VIRTUALLINK') or node['nodeType'].upper().endswith('.VL')
 
+    def isService(self, node):
+        return node['nodeType'].upper().find('.SERVICE.') >= 0 or node['nodeType'].upper().endswith('.SERVICE')
+
     def get_requirement_node_name(self, req_value):
         return self.get_prop_from_obj(req_value, 'node')
 
