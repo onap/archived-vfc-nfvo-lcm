@@ -254,7 +254,7 @@ class TestNfPackage(TestCase):
             "vimIds": ["1"]
             }, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
-    """
+    
     def test_nf_pkg_distribute_when_csar_already_exist(self):
         NfPackageModel(uuid="1", nfpackageid="1", vnfdid="vcpe_vfw_zte_1_0").save()
         SdcNfDistributeThread(csar_id="1",
@@ -297,7 +297,6 @@ class TestNfPackage(TestCase):
                            lab_vim_id="",
                            job_id="4").run()
         self.assert_job_result("4", 100, "CSAR(1) distribute successfully.")
-    """
 
     ###############################################################################################################
 
@@ -305,7 +304,7 @@ class TestNfPackage(TestCase):
     def test_nf_pkg_delete_normal(self, mock_run):
         resp = self.client.delete("/api/nslcm/v1/vnfpackage/1")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
-    """
+    
     def test_nf_pkg_normal_delete(self):
         NfPackageModel(uuid="2", nfpackageid="2", vnfdid="vcpe_vfw_zte_1_0").save()
         SdcNfPkgDeleteThread(csar_id="2", job_id="2", force_delete=False).run()
@@ -322,7 +321,6 @@ class TestNfPackage(TestCase):
         NfInstModel(nfinstid="3", package_id="3").save()
         SdcNfPkgDeleteThread(csar_id="3", job_id="2", force_delete=False).run()
         self.assert_job_result("2", 255, "NfInst by csar(3) exists, cannot delete.")
-    """
 
     def test_nf_pkg_get_all(self):
         NfPackageModel(uuid="3", nfpackageid="3", vnfdid="4").save()
