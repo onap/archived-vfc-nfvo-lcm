@@ -64,7 +64,9 @@ class SwaggerJsonView(APIView):
         json_data_temp = json.JSONDecoder().decode(f.read())
         f.close()
 
+        json_data_jobtemp=json_data["paths"]["/jobs/{jobId}"]
         json_data["paths"].update(json_data_temp["paths"])
+        json_data["paths"]["/jobs/{jobId}"].update(json_data_jobtemp)
         json_data["definitions"].update(json_data_temp["definitions"])
 
         return Response(json_data)

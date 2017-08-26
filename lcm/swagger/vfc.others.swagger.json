@@ -108,7 +108,40 @@
                     }
                 }
             }
+        },
+        "/jobs/{jobId}": {
+          "post": {
+            "tags": [
+              "job"
+            ],
+            "summary": "jobstatus",
+            "description": "",
+            "operationId": "post_jobprogress",
+            "parameters": [
+              {
+                "required": true,
+                "type": "string",
+                "description": "",
+                "name": "jobId",
+                "in": "path"
+              },
+              {
+                "in": "body",
+                "name": "body",
+                "description": "request param",
+                "required": true,
+                "schema": {
+                  "$ref": "#/definitions/JobProgressRequest"
+                }
+              }
+            ],
+            "responses": {
+              "202": {
+                "description": ""
+              }
+            }
         }
+      }
     },
     "definitions": {
 
@@ -120,9 +153,20 @@
                 }
             }
         },
-
- 
-
+        "JobProgressRequest": {
+          "type": "object",
+          "properties": {
+            "progress": {
+              "type": "string"
+            },
+            "desc": {
+              "type": "string"
+            },
+            "errcode": {
+              "type": "string"
+            }
+          }
+        },
         "TableInfo": {
             "type": "object",
             "properties": {

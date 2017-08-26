@@ -249,34 +249,35 @@
       }
     },
     "/jobs/{jobId}": {
-      "post": {
+      "get": {
         "tags": [
           "job"
         ],
         "summary": "jobstatus",
         "description": "",
-        "operationId": "jobstatus",
+        "operationId": "get_jobstatus",
         "parameters": [
           {
             "required": true,
             "type": "string",
-            "description": "",
+            "description": "job Id",
             "name": "jobId",
             "in": "path"
           },
           {
-            "in": "body",
-            "name": "body",
-            "description": "request param",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/JobProgressRequest"
-            }
+            "type": "string",
+            "description": "job response message id",
+            "name": "responseId",
+            "in": "query"
           }
         ],
         "responses": {
           "202": {
-            "description": ""
+            "description": "",
+             "schema": {
+              "$ref": "#/definitions/JobDetailInfo"
+            }
           }
         }
       }
@@ -410,20 +411,7 @@
         }
       }
     },
-    "JobProgressRequest": {
-      "type": "object",
-      "properties": {
-        "progress": {
-          "type": "string"
-        },
-        "desc": {
-          "type": "string"
-        },
-        "errcode": {
-          "type": "string"
-        }
-      }
-    },
+   
     "NsInfo": {
       "type": "object",
       "properties": {
@@ -531,6 +519,61 @@
         "nfp": {
           "type": "string"
         }
+      }
+    },
+    "jobResponseInfo": {
+       "type": "object",
+       "properties": {
+          "status": {
+            "type": "string"
+          },
+         "progress":{
+            "type": "string"
+         },
+         "statusDescription": {
+            "type": "string"
+         },
+         "errorCode": {
+            "type": "string"
+         },
+         "responseId": {
+            "type": "string"
+        }
+       }
+    },
+    "JobDetailInfo":{
+      "type": "object",
+      "properties": {
+            "jobId": {
+               "type": "string"
+             },
+            "responseDescriptor": 
+            {
+                "type":"object",
+                "properties": {
+                    "status": {
+                       "type": "string"
+                    },
+                    "progress":{
+                       "type": "string"
+                    },
+                    "statusDescription": {
+                       "type": "string"
+                    },
+                    "errorCode": {
+                       "type": "string"
+                    },
+                    "responseId": {
+                       "type": "string"
+                    },
+                    "responseHistoryList": {
+                        "type": "array",
+                        "items": {
+                           "$ref": "#/definitions/jobResponseInfo"
+                        }
+                    }
+                }
+           }
       }
     }
   }
