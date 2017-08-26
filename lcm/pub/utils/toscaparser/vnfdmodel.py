@@ -17,6 +17,7 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
                             tosca.nodetemplates)
 
         self.services = self._get_all_services(nodeTemplates)
+        self.vcloud = self._get_all_vcloud(nodeTemplates)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -34,3 +35,23 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
 
                 ret.append(service)
         return ret
+
+    def _get_all_vcloud(self, nodeTemplates):
+        rets = []
+        for node in nodeTemplates:
+            if self._isVcloud(node):
+                ret = {}
+                if 'vdc_name' in node['properties']:
+                    ret['vdc_name'] = node['properties']['vdc_name']
+                else:
+                    ret['vdc_name'] = ""
+                if 'storage_clusters' in node['properties']:
+                    ret['storage_clusters'] = node['properties']['storage_clusters']
+                else:
+                    ret['storage_clusters'] = []
+
+                rets.append(ret)
+        return rets
+
+    def _isVcloud(self, node):
+        return node['nodeType'].upper().find('.VCLOUD.') >= 0 or node['nodeType'].upper().endswith('.VCLOUD')
