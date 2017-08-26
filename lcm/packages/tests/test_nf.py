@@ -165,7 +165,7 @@ class TestNfPackage(TestCase):
             "vimIds": ["1"]
             }, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
-"""
+
     @mock.patch.object(restcall, 'call_req')
     def test_nf_pkg_on_boarding_when_on_boarded(self, mock_call_req):
         mock_call_req.return_value = [0, json.JSONEncoder().encode({"onBoardState": "onBoarded"}), '200']
@@ -190,7 +190,7 @@ class TestNfPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_nf_on_boarding_when_nfd_already_exists(self, mock_call_req):
         mock_vals = {
-            "/api/catalog/v0/csars/2":
+            "/api/catalog/v1/csars/2":
                 [0, json.JSONEncoder().encode({
                     "onBoardState": "onBoardFailed", "processState": "deleteFailed"}), '200'],
             "/api/catalog/v1/servicetemplates/queryingrawdata":
@@ -467,5 +467,5 @@ class TestNfPackage(TestCase):
         self.assertEqual(1, len(resp.data["csars"]))
         self.assertEqual("1", resp.data["csars"][0]["csarId"])
         self.assertEqual("2", resp.data["csars"][0]["vnfdId"])
-"""       
+       
         
