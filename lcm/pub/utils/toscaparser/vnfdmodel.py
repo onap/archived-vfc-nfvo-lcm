@@ -18,6 +18,7 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
 
         self.services = self._get_all_services(nodeTemplates)
         self.vcloud = self._get_all_vcloud(nodeTemplates)
+        self.vcenter = self._get_all_vcenter(nodeTemplates)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -55,3 +56,28 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
 
     def _isVcloud(self, node):
         return node['nodeType'].upper().find('.VCLOUD.') >= 0 or node['nodeType'].upper().endswith('.VCLOUD')
+
+    def _get_all_vcenter(self, nodeTemplates):
+        rets = []
+        for node in nodeTemplates:
+            if self._isVcenter(node):
+                ret = {}
+                if 'compute_clusters' in node['properties']:
+                    ret['compute_clusters'] = node['properties']['compute_clusters']
+                else:
+                    ret['compute_clusters'] = []
+                if 'storage_clusters' in node['properties']:
+                    ret['storage_clusters'] = node['properties']['storage_clusters']
+                else:
+                    ret['storage_clusters'] = []
+                if 'network_clusters' in node['properties']:
+                    ret['network_clusters'] = node['properties']['network_clusters']
+                else:
+                    ret['network_clusters'] = []
+
+                rets.append(ret)
+        return rets
+
+    def _isVcenter(self, node):
+        return node['nodeType'].upper().find('.VCENTER.') >= 0 or node['nodeType'].upper().endswith('.VCENTER')
+    
