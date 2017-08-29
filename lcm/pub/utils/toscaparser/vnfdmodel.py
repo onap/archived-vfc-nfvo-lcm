@@ -19,6 +19,7 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.services = self._get_all_services(nodeTemplates)
         self.vcloud = self._get_all_vcloud(nodeTemplates)
         self.vcenter = self._get_all_vcenter(nodeTemplates)
+        self.image_files = self._get_all_image_file(nodeTemplates)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -80,4 +81,19 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
 
     def _isVcenter(self, node):
         return node['nodeType'].upper().find('.VCENTER.') >= 0 or node['nodeType'].upper().endswith('.VCENTER')
-    
+
+    def _get_all_image_file(self, nodeTemplates):
+        rets = []
+        for node in nodeTemplates:
+            if self._isImageFile(node):
+                ret = {}
+                ret['image_file_id'] = node['name']
+                if 'description' in node:
+                    ret['description'] = node['description']
+                ret['properties'] = node['properties']
+
+                rets.append(ret)
+        return rets
+
+    def _isImageFile(self, node):
+        return node['nodeType'].upper().find('.IMAGEFILE.') >= 0 or node['nodeType'].upper().endswith('.IMAGEFILE')
