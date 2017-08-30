@@ -56,10 +56,15 @@ IGNORE_DEL_IMG_WEHN_DEL_CSAR = True
 CATALOG_ROOT_PATH = None
 CATALOG_URL_PATH = None
 
+# [aai config]
+AAI_BASE_URL = "https://127.0.0.1:8443/api/aai/v1"
+AAI_USER = "AAI"
+AAI_PASSWD = "AAI"
+
 # [sdc config]
-SDC_BASE_URL = "https://127.0.0.1:1234/api"
-SDC_USER = "admin"
-SDC_PASSWD = "admin"
+SDC_BASE_URL = "https://127.0.0.1:8443/api/sdc/v1"
+SDC_USER = "SDC"
+SDC_PASSWD = "SDC"
 
 # [workflow]
 DEPLOY_WORKFLOW_WHEN_START = True
