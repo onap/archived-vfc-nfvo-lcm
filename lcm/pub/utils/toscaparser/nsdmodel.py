@@ -27,6 +27,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
         self.ns_exposed = self.get_all_endpoint_exposed(tosca.topology_template)
         self.policies = self._get_policies_scaling(tosca.topology_template.policies)
+        self.ns_flavours = self.get_all_flavour(tosca.topology_template.groups)
 
 
     def buildInputs(self, top_inputs):
@@ -326,3 +327,20 @@ class EtsiNsdInfoModel(BaseInfoModel):
 
     def get_scaling_policies(self, top_policies):
         return self.get_policies_by_keyword(top_policies, '.SCALING')
+
+    def get_all_flavour(self, groups):
+        rets = []
+        for group in groups:
+            if self._isFlavour(group):
+                ret = {}
+                ret['flavour_id'] = group.name
+                ret['description'] = group.description
+                if 'properties' in group.tpl:
+                    ret['properties'] = group.tpl['properties']
+                ret['members'] = group.members
+
+                rets.append(ret)
+        return rets
+
+    def _isFlavour(self, group):
+        return group.type.upper().find('FLAVOUR') >= 0
