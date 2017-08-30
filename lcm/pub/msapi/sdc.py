@@ -25,13 +25,17 @@ ASSETTYPE_RESOURCES = "resources"
 ASSETTYPE_SERVICES = "services"
 
 def call_sdc(resource, method, content=''):
+    additional_headers = {
+        'X-ECOMP-InstanceID': 'VFC-NFVO-LCM'
+    }
     return restcall.call_req(base_url=SDC_BASE_URL, 
         user=SDC_USER, 
         passwd=SDC_PASSWD, 
         auth_type=restcall.rest_no_auth, 
         resource=resource, 
         method=method, 
-        content=content)
+        content=content,
+        additional_headers=additional_headers)
 
 def get_artifacts(asset_type):
     resource = "/sdc/v1/catalog/{assetType}"
