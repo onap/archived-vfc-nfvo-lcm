@@ -29,7 +29,8 @@ HTTP_404_NOTFOUND, HTTP_403_FORBIDDEN, HTTP_401_UNAUTHORIZED, HTTP_400_BADREQUES
 logger = logging.getLogger(__name__)
 
 
-def call_req(base_url, user, passwd, auth_type, resource, method, content=''):
+def call_req(base_url, user, passwd, auth_type, resource, method, 
+    content='', additional_headers={}):
     callid = str(uuid.uuid1())
     logger.debug("[%s]call_req('%s','%s','%s',%s,'%s','%s','%s')" % (
         callid, base_url, user, passwd, auth_type, resource, method, content))
@@ -41,6 +42,8 @@ def call_req(base_url, user, passwd, auth_type, resource, method, content=''):
         if user:
             headers['Authorization'] = 'Basic ' + ('%s:%s' % (user, passwd)).encode("base64")
         ca_certs = None
+        if additional_headers:
+            headers.update(additional_headers)
         for retry_times in range(3):
             http = httplib2.Http(ca_certs=ca_certs, disable_ssl_certificate_validation=(auth_type == rest_no_auth))
             http.follow_all_redirects = True

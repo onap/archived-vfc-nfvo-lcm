@@ -14,6 +14,7 @@
 
 import json
 import logging
+import uuid
 
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
@@ -23,11 +24,17 @@ logger = logging.getLogger(__name__)
 
 
 def call_aai(resource, method, content=''):
+    additional_headers = {
+        'X-FromAppId': 'VFC-NFVO-LCM',
+        'X-TransactionId': str(uuid.uuid1())
+    }
     return restcall.call_req(base_url=AAI_BASE_URL, 
         user=AAI_USER, 
         passwd=AAI_PASSWD, 
         auth_type=restcall.rest_no_auth, 
         resource=resource, 
         method=method, 
-        content=content)
+        content=content,
+        additional_headers=additional_headers)
+
 
