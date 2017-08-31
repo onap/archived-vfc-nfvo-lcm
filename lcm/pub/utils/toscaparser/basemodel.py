@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import copy
+import ftplib
 import json
 import os
 import re
 import shutil
 import urllib
 
+import paramiko
 from toscaparser.functions import GetInput
 from toscaparser.tosca_template import ToscaTemplate
 
@@ -114,6 +116,32 @@ class BaseInfoModel(object):
         else:
             self.ftp_get(userName, userPwd, hostIp, hostPort, remoteFileName, localFileName)
         return localFileName
+
+    def sftp_get(self, userName, userPwd, hostIp, hostPort, remoteFileName, localFileName):
+        # return
+        t = None
+        try:
+            t = paramiko.Transport(hostIp, int(hostPort))
+            t.connect(username=userName, password=userPwd)
+            sftp = paramiko.SFTPClient.from_transport(t)
+            sftp.get(remoteFileName, localFileName)
+        finally:
+            if t != None:
+                t.close()
+
+
+    def ftp_get(self, userName, userPwd, hostIp, hostPort, remoteFileName, localFileName):
+        f = None
+        try:
+            ftp = ftplib.FTP()
+            ftp.connect(hostIp, hostPort)
+            ftp.login(userName, userPwd)
+            f = open(localFileName, 'wb')
+            ftp.retrbinary('RETR ' + remoteFileName, f.write, 1024)
+            f.close()
+        finally:
+            if f != None:
+                f.close()
 
     def buidMetadata(self, tosca):
         if 'metadata' in tosca.tpl:
@@ -282,3 +310,19 @@ class BaseInfoModel(object):
             if node['name'] == name:
                 return node
         return None
+
+    def get_all_nested_ns(self, nodes):
+        nss = []
+        for node in nodes:
+            if self.is_nested_ns(node):
+                ns = {}
+                ns['ns_id'] = node['name']
+                ns['description'] = node['description']
+                ns['properties'] = node['properties']
+                ns['networks'] = self.get_networks(node)
+
+                nss.append(ns)
+        return nss
+
+    def is_nested_ns(self, node):
+        return node['nodeType'].upper().find('.NS.') >= 0 or node['nodeType'].upper().endswith('.NS')

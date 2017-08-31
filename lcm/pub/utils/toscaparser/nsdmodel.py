@@ -42,6 +42,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.ns_exposed = self.get_all_endpoint_exposed(tosca.topology_template)
         self.policies = self._get_policies_scaling(tosca.topology_template.policies)
         self.ns_flavours = self.get_all_flavour(tosca.topology_template.groups)
+        self.nested_ns = self.get_all_nested_ns(nodeTemplates)
 
 
     def buildInputs(self, top_inputs):
