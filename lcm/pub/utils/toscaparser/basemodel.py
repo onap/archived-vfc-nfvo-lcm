@@ -268,3 +268,4 @@ class BaseInfoModel(object):
             if node['name'] == name:
                 return node
         return None
+    

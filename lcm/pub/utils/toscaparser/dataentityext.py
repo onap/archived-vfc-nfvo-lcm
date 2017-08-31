@@ -16,8 +16,8 @@ from toscaparser.elements.constraints import Schema
 from toscaparser.common.exception import ExceptionCollector
 
 class DataEntityExt(object):
+
     '''A complex data value entity ext.'''
-    
     @staticmethod
     def validate_datatype(type, value, entry_schema=None, custom_def=None):
         if value:
@@ -31,4 +31,3 @@ class DataEntityExt(object):
     
             return DataEntity.validate_datatype(type, value, entry_schema, custom_def)
         return value
-
