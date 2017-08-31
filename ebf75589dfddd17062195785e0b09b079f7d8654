@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_4a65f2df",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T01:10:49Z",
+      "side": 1,
+      "message": "Need to add redis-server start scripts: \"redis-server \u0026\"",
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_aaa57e05",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T01:10:49Z",
+      "side": 1,
+      "message": "This should be replaced by run lcm/resources/bin/initDB.sh in the source directory: \"./resources/bin/initDB.sh root rootpass 3306 127.0.0.1\"",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 98
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_6aaf96e4",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T01:10:49Z",
+      "side": 1,
+      "message": "Need Add sed scripts for run.sh and stop.sh in source code directory.\nYou can ref test/csit/docker/nfvo-lcm/instance-config.sh in open-o to see which var need to be replaced.",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 6
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
