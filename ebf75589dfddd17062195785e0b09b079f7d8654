@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_3e554cc6",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_6a89d6c9",
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_2afcee3d",
         "filename": "docker/Dockerfile",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2017-08-31T06:58:39Z",
       "side": 1,
       "message": "Need add get binary zip from nexus script",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 14
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1e5288dd",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_2afcee3d",
       "range": {
         "startLine": 18,
         "startChar": 0,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_fe5ea4e8",
+        "filename": "docker/build_lcm_container.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_aa9fbe02",
+      "range": {
+        "startLine": 15,
+        "startChar": 110,
+        "endLine": 15,
+        "endChar": 113
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_eabca66e",
         "filename": "docker/env.list",
         "patchSetId": 2
@@ -76,6 +142,24 @@
       "writtenOn": "2017-08-31T06:58:39Z",
       "side": 1,
       "message": "I think this file is useless because we cannot define those variables before we run docker container",
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_de63e0af",
+        "filename": "docker/env.list",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done. Removed.",
+      "parentUuid": "9a437d4f_eabca66e",
       "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -99,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_be581cfb",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_4a65f2df",
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_aaa57e05",
         "filename": "docker/init_script.sh",
         "patchSetId": 2
@@ -110,6 +212,30 @@
       "writtenOn": "2017-08-31T01:10:49Z",
       "side": 1,
       "message": "This should be replaced by run lcm/resources/bin/initDB.sh in the source directory: \"./resources/bin/initDB.sh root rootpass 3306 127.0.0.1\"",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 98
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_9e5d58ec",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_aaa57e05",
       "range": {
         "startLine": 5,
         "startChar": 0,
@@ -145,6 +271,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_7e72b47d",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_6aaf96e4",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 6
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_cac1e2e5",
         "filename": "docker/init_script.sh",
         "patchSetId": 2
@@ -156,6 +306,30 @@
       "writtenOn": "2017-08-31T06:58:39Z",
       "side": 1,
       "message": "Can you tell me why not use run.sh?",
+      "range": {
+        "startLine": 28,
+        "startChar": 3,
+        "endLine": 29,
+        "endChar": 40
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5e6ff092",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 991
+      },
+      "writtenOn": "2017-08-31T22:55:44Z",
+      "side": 1,
+      "message": "Done. Using run.sh now.",
+      "parentUuid": "9a437d4f_cac1e2e5",
       "range": {
         "startLine": 28,
         "startChar": 3,
