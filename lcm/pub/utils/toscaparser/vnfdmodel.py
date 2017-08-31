@@ -21,6 +21,7 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.vcenter = self._get_all_vcenter(nodeTemplates)
         self.image_files = self._get_all_image_file(nodeTemplates)
         self.local_storages = self._get_all_local_storage(nodeTemplates)
+        self.volume_storages = self._get_all_volume_storage(nodeTemplates)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -115,3 +116,22 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
     def _isLocalStorage(self, node):
         return node['nodeType'].upper().find('.LOCALSTORAGE.') >= 0 or node['nodeType'].upper().endswith(
             '.LOCALSTORAGE')
+
+    def _get_all_volume_storage(self, nodeTemplates):
+        rets = []
+        for node in nodeTemplates:
+            if self._isVolumeStorage(node):
+                ret = {}
+                ret['volume_storage_id'] = node['name']
+                if 'description' in node:
+                    ret['description'] = node['description']
+                ret['properties'] = node['properties']
+                ret['image_file'] = map(lambda x: self.get_requirement_node_name(x),
+                                        self.getRequirementByName(node, 'image_file'))
+
+                rets.append(ret)
+        return rets
+
+    def _isVolumeStorage(self, node):
+        return node['nodeType'].upper().find('.VOLUMESTORAGE.') >= 0 or node['nodeType'].upper().endswith(
+            '.VOLUMESTORAGE')
