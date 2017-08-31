@@ -49,8 +49,9 @@ class TestTerminateNsViews(TestCase):
         NSInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
 
-    @mock.patch.object(TerminateNsService, 'do_biz')
+    @mock.patch.object(TerminateNsService, 'run')
     def test_terminate_vnf_url(self, mock_run):
+        mock_run.re.return_value = None
         req_data = {
             "terminationType": "forceful",
             "gracefulTerminationTimeout": "600"}
@@ -60,7 +61,7 @@ class TestTerminateNsViews(TestCase):
         response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
         self.failUnlessEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
-    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(restcall, 'call_req')
     def test_terminate_vnf(self, mock_call_req):
         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
 
@@ -90,7 +91,7 @@ class TestTerminateNsViews(TestCase):
 
         mock_call_req.side_effect = side_effect
 
-        TerminateNsService(self.nf_inst_id, "forceful", "600", job_id).start()
+        TerminateNsService(self.nf_inst_id, "forceful", "600", job_id).run()
         nsinst = NSInstModel.objects.get(id=self.ns_inst_id)
         if nsinst:
             self.assertTrue(1, 0)

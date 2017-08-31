@@ -97,10 +97,6 @@ class TestHealNsViews(TestCase):
         NSHealService(self.ns_inst_id, data, self.job_id).run()
         self.assertEqual(NSInstModel.objects.get(id=self.ns_inst_id).status, NS_INST_STATUS.HEALING)
 
-    def test_swagger_ok(self):
-        resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
     @mock.patch.object(NSHealService, "start")
     def test_ns_heal_non_existing_ns(self, mock_start):
         mock_start.side_effect = NSLCMException("NS Not Found")
