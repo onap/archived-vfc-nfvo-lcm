@@ -2,6 +2,86 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a437d4f_6a89d6c9",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T06:58:39Z",
+      "side": 1,
+      "message": "Need to Add a LICENSE file in docker directory",
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_2afcee3d",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T06:58:39Z",
+      "side": 1,
+      "message": "Need add get binary zip from nexus script",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 14
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_aa9fbe02",
+        "filename": "docker/build_lcm_container.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T06:58:39Z",
+      "side": 1,
+      "message": "This should be vfc-nfvo-lcm",
+      "range": {
+        "startLine": 15,
+        "startChar": 110,
+        "endLine": 15,
+        "endChar": 113
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_eabca66e",
+        "filename": "docker/env.list",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T06:58:39Z",
+      "side": 1,
+      "message": "I think this file is useless because we cannot define those variables before we run docker container",
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_4a65f2df",
         "filename": "docker/init_script.sh",
         "patchSetId": 2
@@ -58,6 +138,29 @@
         "startChar": 4,
         "endLine": 24,
         "endChar": 6
+      },
+      "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_cac1e2e5",
+        "filename": "docker/init_script.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-08-31T06:58:39Z",
+      "side": 1,
+      "message": "Can you tell me why not use run.sh?",
+      "range": {
+        "startLine": 28,
+        "startChar": 3,
+        "endLine": 29,
+        "endChar": 40
       },
       "revId": "ebf75589dfddd17062195785e0b09b079f7d8654",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
