@@ -16,7 +16,7 @@ if [ $HTTPS_PROXY ]; then
 fi
 
 function build_lcm {
-    docker build ${PROXY_ARGS} --build-arg MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} -t ${ORG}/${PROJECT}/${IMAGE}:${VERSION} -t ${ORG}/${PROJECT}/${IMAGE}:latest .
+    docker build ${PROXY_ARGS} -t ${ORG}/${PROJECT}/${IMAGE}:${VERSION} -t ${ORG}/${PROJECT}/${IMAGE}:latest .
 }
 
 function push_lcm {

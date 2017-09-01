@@ -10,6 +10,7 @@ function start_redis_server {
 }
 
 function start_mysql {
+    su mysql -c /usr/bin/mysqld_safe &
     service mysql start
     # Wait for mysql to initialize; Set mysql root password
     for i in {1..10}; do
@@ -23,23 +24,7 @@ function create_database {
     bash initDB.sh root $MYSQL_ROOT_PASSWORD 3306 127.0.0.1
 }
 
-function edit_configs {
-    cd /service/vfc/nfvo/lcm/
-    bash docker/instance_config.sh
-}
-
-function start_server {
-    cd /service/vfc/nfvo/lcm/
-    bash run.sh
-}
-
-if [ $MYSQL_ROOT_PASSWORD ]; then
-    install_python_libs
-    start_redis_server
-    start_mysql
-    create_database
-    edit_configs
-    start_server
-else
-    echo "MYSQL_ROOT_PASSWORD environment variable not set."
-fi
+install_python_libs
+start_redis_server
+start_mysql
+create_database
