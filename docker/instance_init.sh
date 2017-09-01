@@ -22,6 +22,7 @@ function start_mysql {
 function create_database {
     cd /service/vfc/nfvo/lcm/resources/bin
     bash initDB.sh root $MYSQL_ROOT_PASSWORD 3306 127.0.0.1
+    cd /service
 }
 
 install_python_libs

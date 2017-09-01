@@ -24,12 +24,12 @@ for i in {1..20}; do
 done
 
 # Configure service based on docker environment variables
-./instance-config.sh
+vfc/nfvo/lcm/docker/instance_config.sh
 
 # microservice-specific one-time initialization
-./instance-init.sh
+vfc/nfvo/lcm/docker/instance_init.sh
 
 date > init.log
 
 # Start the microservice
-./instance-run.sh
+vfc/nfvo/lcm/docker/instance_run.sh
