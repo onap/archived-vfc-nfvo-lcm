@@ -36,6 +36,7 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.image_files = self._get_all_image_file(nodeTemplates)
         self.local_storages = self._get_all_local_storage(nodeTemplates)
         self.volume_storages = self._get_all_volume_storage(nodeTemplates)
+        self.vdus = self._get_all_vdu(nodeTemplates)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -149,3 +150,85 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
     def _isVolumeStorage(self, node):
         return node['nodeType'].upper().find('.VOLUMESTORAGE.') >= 0 or node['nodeType'].upper().endswith(
             '.VOLUMESTORAGE')
+
+    def _get_all_vdu(self, nodeTemplates):
+        rets = []
+        for node in nodeTemplates:
+            if self.isVdu(node):
+                ret = {}
+                ret['vdu_id'] = node['name']
+                if 'description' in node:
+                    ret['description'] = node['description']
+                ret['properties'] = node['properties']
+                ret['image_file'] = self.get_node_image_file(node)
+                local_storages = self.getRequirementByName(node, 'local_storage')
+                ret['local_storages'] = map(lambda x: self.get_requirement_node_name(x), local_storages)
+                volume_storages = self.getRequirementByName(node, 'volume_storage')
+                ret['volume_storages'] = map(functools.partial(self._trans_volume_storage), volume_storages)
+                ret['dependencies'] = map(lambda x: self.get_requirement_node_name(x), self.getNodeDependencys(node))
+
+                nfv_compute = self.getCapabilityByName(node, 'nfv_compute')
+                if nfv_compute != None and 'properties' in nfv_compute:
+                    ret['nfv_compute'] = nfv_compute['properties']
+
+                ret['vls'] = self.get_linked_vl_ids(node, nodeTemplates)
+
+                scalable = self.getCapabilityByName(node, 'scalable')
+                if scalable != None and 'properties' in scalable:
+                    ret['scalable'] = scalable['properties']
+
+                ret['cps'] = self.getVirtalBindingCpIds(node, nodeTemplates)
+                ret['artifacts'] = self._build_artifacts(node)
+
+                rets.append(ret)
+        return rets
+
+    def get_node_image_file(self, node):
+        rets = map(lambda x: self.get_requirement_node_name(x), self.getRequirementByName(node, 'guest_os'))
+        if len(rets) > 0:
+            return rets[0]
+        return ""
+
+    def _trans_volume_storage(self, volume_storage):
+        if isinstance(volume_storage, str):
+            return {"volume_storage_id": volume_storage}
+        else:
+            ret = {}
+            ret['volume_storage_id'] = self.get_requirement_node_name(volume_storage)
+            if 'relationship' in volume_storage and 'properties' in volume_storage['relationship']:
+                if 'location' in volume_storage['relationship']['properties']:
+                    ret['location'] = volume_storage['relationship']['properties']['location']
+                if 'device' in volume_storage['relationship']['properties']:
+                    ret['device'] = volume_storage['relationship']['properties']['device']
+
+            return ret
+
+    def get_linked_vl_ids(self, node, node_templates):
+        vl_ids = []
+        cps = self.getVirtalBindingCps(node, node_templates)
+        for cp in cps:
+            vl_reqs = self.getVirtualLinks(cp)
+            for vl_req in vl_reqs:
+                vl_ids.append(self.get_requirement_node_name(vl_req))
+        return vl_ids
+
+    def _build_artifacts(self, node):
+        rets = []
+        if 'artifacts' in node and len(node['artifacts']) > 0:
+            artifacts = node['artifacts']
+            for name, value in artifacts.items():
+                ret = {}
+                if isinstance(value, dict):
+                    ret['artifact_name'] = name
+                    ret['type'] = value.get('type', '')
+                    ret['file'] = value.get('file', '')
+                    ret['repository'] = value.get('repository', '')
+                    ret['deploy_path'] = value.get('deploy_path', '')
+                else:
+                    ret['artifact_name'] = name
+                    ret['type'] = ''
+                    ret['file'] = value
+                    ret['repository'] = ''
+                    ret['deploy_path'] = ''
+                rets.append(ret)
+        return rets

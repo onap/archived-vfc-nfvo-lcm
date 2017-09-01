@@ -326,3 +326,11 @@ class BaseInfoModel(object):
 
     def is_nested_ns(self, node):
         return node['nodeType'].upper().find('.NS.') >= 0 or node['nodeType'].upper().endswith('.NS')
+
+    def isVdu(self, node):
+        return node['nodeType'].upper().find('.VDU.') >= 0 or node['nodeType'].upper().endswith('.VDU')
+
+    def getCapabilityByName(self, node, capabilityName):
+        if 'capabilities' in node and capabilityName in node['capabilities']:
+            return node['capabilities'][capabilityName]
+        return None
