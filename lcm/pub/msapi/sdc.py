@@ -26,7 +26,7 @@ ASSETTYPE_SERVICES = "services"
 
 def call_sdc(resource, method, content=''):
     additional_headers = {
-        'X-ECOMP-InstanceID': 'VFC-NFVO-LCM'
+        'X-ECOMP-InstanceID': 'VFC'
     }
     return restcall.call_req(base_url=SDC_BASE_URL, 
         user=SDC_USER, 
@@ -37,6 +37,23 @@ def call_sdc(resource, method, content=''):
         content=content,
         additional_headers=additional_headers)
 
+"""
+sample of return value
+[
+    {
+        "uuid": "c94490a0-f7ef-48be-b3f8-8d8662a37236",
+        "invariantUUID": "63eaec39-ffbe-411c-a838-448f2c73f7eb",
+        "name": "underlayvpn",
+        "version": "2.0",
+        "toscaModelURL": "/sdc/v1/catalog/resources/c94490a0-f7ef-48be-b3f8-8d8662a37236/toscaModel",
+        "category": "Volte",
+        "subCategory": "VolteVF",
+        "resourceType": "VF",
+        "lifecycleState": "CERTIFIED",
+        "lastUpdaterUserId": "jh0003"
+    }
+]
+"""
 def get_artifacts(asset_type):
     resource = "/sdc/v1/catalog/{assetType}"
     resource = resource.format(assetType=asset_type)
@@ -63,11 +80,11 @@ def delete_artifact(asset_type, asset_id, artifact_id):
     return json.JSONDecoder().decode(ret[1])
 
 def download_artifacts(download_url, local_path):
-    ret = restcall.call_req(base_url=download_url, 
+    ret = restcall.call_req(base_url=SDC_BASE_URL, 
         user=SDC_USER, 
         passwd=SDC_PASSWD, 
         auth_type=rest_no_auth, 
-        resource="", 
+        resource=download_url, 
         method="GET")
     # TODO:
     
