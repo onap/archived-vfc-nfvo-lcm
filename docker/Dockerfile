@@ -9,8 +9,16 @@ ENV https_proxy $HTTPS_PROXY
 ENV MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD
 
 RUN apt-get update && \
+    apt-get install -y python-devel && \
+    apt-get install -y python-virtualenv && \
+    apt-get install -y python-setuptools && \
     apt-get install -y python-dev && \
     apt-get install -y python-pip && \
+    apt-get install -y openssl-devel && \
+    apt-get install -y mysql-devel && \
+    apt-get install -y gcc && \
+    apt-get install -y libffi-devel && \
+    apt-get install -y redis && \
     apt-get install -y libmysqlclient-dev && \
     apt-get install -y redis-server && \
     apt-get install -y mysql-server && \
