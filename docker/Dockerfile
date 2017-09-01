@@ -2,11 +2,9 @@ FROM ubuntu:14.04
 
 ARG HTTP_PROXY=${HTTP_PROXY}
 ARG HTTPS_PROXY=${HTTPS_PROXY}
-ARG MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
 ENV http_proxy $HTTP_PROXY
 ENV https_proxy $HTTPS_PROXY
-ENV MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD
 
 RUN apt-get update && \
     apt-get install -y python-devel && \
@@ -37,6 +35,5 @@ RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/m
 EXPOSE 8403
 EXPOSE 3306
 
-WORKDIR /
-
-CMD service/vfc/nfvo/lcm/docker/instance_init.sh
+WORKDIR /service
+ENTRYPOINT vfc/nfvo/lcm/docker/docker-entrypoint.sh
