@@ -11,6 +11,11 @@ function start_redis_server {
 
 function start_mysql {
     service mysql start
+    # Wait for mysql to initialize; Set mysql root password
+    for i in {1..10}; do
+        sleep $i
+        bash /usr/bin/mysqladmin -u root password $MYSQL_ROOT_PASSWORD &> /dev/null && break
+    done
 }
 
 function create_database {
