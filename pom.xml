@@ -49,4 +49,51 @@
         </plugin>
       </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.16.5</version>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>onap/vfc/nslcm</name>
+                                    <build>
+                                        <cleanup>try</cleanup>
+                                        <dockerFileDir>${basedir}/docker/</dockerFileDir>
+                                        <dockerFile>${basedir}/docker/Dockerfile</dockerFile>
+                                        <tags>
+                                            <tag>${project.version}-STAGING-latest</tag>
+                                        </tags>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>generate-images</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>push-images</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
