@@ -67,3 +67,26 @@ def query_ns_aai(global_customer_id, service_type, service_instance_id, data):
         raise NSLCMException("Ns instance query exception in AAI")
     return json.JSONDecoder().decode(ret[1])
 
+def create_vnf_aai(vnf_id, data):
+    resource = "/network/generic-vnfs/generic-vnf/%s" % vnf_id
+    ret = call_aai(resource, "PUT", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Vnf instance creation exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
+
+def delete_vnf_aai(vnf_id, data=''):
+    resource = "/network/generic-vnfs/generic-vnf/%s" % vnf_id
+    ret = call_aai(resource, "DELETE", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Vnf instance delete exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
+
+def query_vnf_aai(vnf_id, data):
+    resource = "/network/generic-vnfs/generic-vnf/%s" % vnf_id
+    ret = call_aai(resource, "GET", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Vnf instance query exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
