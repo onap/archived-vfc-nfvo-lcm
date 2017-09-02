@@ -49,8 +49,11 @@ def call_req(base_url, user, passwd, auth_type, resource, method,
             http.follow_all_redirects = True
             try:
                 resp, resp_content = http.request(full_url, method=method.upper(), body=content, headers=headers)
-                resp_status, resp_body = resp['status'], resp_content.decode('UTF-8')
-                logger.debug("[%s][%d]status=%s,resp_body=%s)" % (callid, retry_times, resp_status, resp_body))
+                resp_status, resp_body = resp['status'], resp_content
+                logger.debug("[%s][%d]status=%s)" % (callid, retry_times, resp_status))
+                if headers['accept'] == 'application/json':
+                    resp_body = resp_content.decode('UTF-8')
+                    logger.debug("resp_body=%s", resp_body)
                 if resp_status in status_ok_list:
                     ret = [0, resp_body, resp_status]
                 else:

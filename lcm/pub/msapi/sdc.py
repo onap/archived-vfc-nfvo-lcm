@@ -14,6 +14,7 @@
 
 import json
 import logging
+import os
 
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
@@ -26,7 +27,7 @@ ASSETTYPE_SERVICES = "services"
 
 def call_sdc(resource, method, content=''):
     additional_headers = {
-        'X-ECOMP-InstanceID': 'VFC'
+        'X-ECOMP-InstanceID': 'VFC',
     }
     return restcall.call_req(base_url=SDC_BASE_URL, 
         user=SDC_USER, 
@@ -79,14 +80,27 @@ def delete_artifact(asset_type, asset_id, artifact_id):
         raise NSLCMException("Failed to delete artifacts(%s) from sdc." % artifact_id)
     return json.JSONDecoder().decode(ret[1])
 
-def download_artifacts(download_url, local_path):
+def download_artifacts(download_url, local_path, file_name):
+    additional_headers = {
+        'X-ECOMP-InstanceID': 'VFC',
+        'accept': 'application/octet-stream'
+    }
     ret = restcall.call_req(base_url=SDC_BASE_URL, 
         user=SDC_USER, 
         passwd=SDC_PASSWD, 
         auth_type=rest_no_auth, 
         resource=download_url, 
-        method="GET")
-    # TODO:
+        method="GET",
+        additional_headers=additional_headers)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Failed to download %s from sdc." % download_url)
+    local_file_name = os.path.join(local_path, file_name)
+    local_file = open(local_file_name, 'wb')
+    local_file.write(ret[1])
+    local_file.close()
+    return local_file_name
+
     
 
     
