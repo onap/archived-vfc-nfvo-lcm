@@ -90,3 +90,33 @@ def query_vnf_aai(vnf_id, data):
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vnf instance query exception in AAI")
     return json.JSONDecoder().decode(ret[1])
+
+def create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
+    resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
+               "%s/tenants/tenant/%s/vservers/vserver/%s" % \
+               (cloud_owner, cloud_region_id, tenant_id, vserver_id)
+    ret = call_aai(resource, "PUT", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Vserver creation exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
+
+def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
+    resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
+               "%s/tenants/tenant/%s/vservers/vserver/%s" % \
+               (cloud_owner, cloud_region_id, tenant_id, vserver_id)
+    ret = call_aai(resource, "DELETE", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Vserver delete exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
+
+def query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
+    resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
+               "%s/tenants/tenant/%s/vservers/vserver/%s" % \
+               (cloud_owner, cloud_region_id, tenant_id, vserver_id)
+    ret = call_aai(resource, "GET", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Vserver query exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
