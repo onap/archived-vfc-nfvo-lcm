@@ -22,21 +22,20 @@ logger = logging.getLogger(__name__)
 
 
 class GetNSInfoService(object):
-    def __init__(self, ns_inst_id=None):
-        self.ns_inst_id = ns_inst_id
+    def __init__(self, nsfilter=None):
+        self.ns_filter=nsfilter
 
     def get_ns_info(self):
-        try:
-            if self.ns_inst_id:
-                return self.get_single_ns_info(self.ns_inst_id)
-            else:
-                return self.get_total_ns_info()
-        except:
-            logger.error(traceback.format_exc())
-            return None if self.ns_inst_id else []
+        if self.ns_filter:
+            if ("ns_inst_id" in self.ns_filter):
+                ns_inst_id = self.ns_filter["ns_inst_id"]
+                ns_inst_infos = NSInstModel.objects.filter(id=ns_inst_id)
+            if ("csarId" in self.ns_filter):
+                csar_id = self.ns_filter["csarId"]
+                ns_inst_infos = NSInstModel.objects.filter(nsd_id=csar_id)
+        else:
+            ns_inst_infos = NSInstModel.objects.all()
 
-    def get_total_ns_info(self):
-        ns_inst_infos = NSInstModel.objects.all()
         ns_info_list = []
         for info in ns_inst_infos:
             ret = self.get_single_ns_info(info.id)

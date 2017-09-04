@@ -38,7 +38,14 @@ logger = logging.getLogger(__name__)
 class CreateNSView(APIView):
     def get(self, request):
         logger.debug("CreateNSView::get")
-        ret = GetNSInfoService().get_ns_info()
+        filter=None
+        csarId = ignore_case_get(request.META, 'csarId')
+        if csarId:
+            filter ={
+            "csarId":csarId
+            }
+
+        ret = GetNSInfoService(filter).get_ns_info()
         logger.debug("CreateNSView::get::ret=%s", ret)
         return Response(data=ret, status=status.HTTP_200_OK)
 
@@ -96,7 +103,8 @@ class NSHealView(APIView):
 class NSDetailView(APIView):
     def get(self, request, ns_instance_id):
         logger.debug("Enter NSDetailView::get ns(%s)", ns_instance_id)
-        ret = GetNSInfoService(ns_instance_id).get_ns_info()
+        ns_filter ={"ns_inst_id":ns_instance_id}
+        ret = GetNSInfoService(ns_filter).get_ns_info()
         if not ret:
             return Response(status=status.HTTP_404_NOT_FOUND)
         logger.debug("Leave NSDetailView::get::ret=%s", ret)

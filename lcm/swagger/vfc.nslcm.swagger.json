@@ -56,13 +56,21 @@
         ],
         "summary": "ns get",
         "description": "ns get",
-        "operationId": "ns_get",
-        "parameters": [],
+        "operationId": "ns_instantces_get",
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "job response message id",
+            "name": "csarId",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/NsInfo"
+              "$ref": "#/definitions/NsInstancesInfo"
             }
           }
         }
@@ -225,6 +233,23 @@
       }
     },
     "/ns/{ns_instance_id}": {
+      "get": {
+        "tags": [
+          "ns"
+        ],
+        "summary": "ns get",
+        "description": "ns get",
+        "operationId": "ns_instance_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/NsInstanceInfo"
+            }
+          }
+        }
+      },      
       "delete": {
         "tags": [
           "ns"
@@ -411,8 +436,13 @@
         }
       }
     },
-   
-    "NsInfo": {
+    "NsInstancesInfo":{
+      "type": "array",
+      "items": {
+            "$ref": "#/definitions/NsInstanceInfo"
+      }
+    },
+    "NsInstanceInfo": {
       "type": "object",
       "properties": {
         "nsInstanceId": {
