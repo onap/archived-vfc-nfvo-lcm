@@ -86,7 +86,7 @@ class TestCreateVnfViews(TestCase):
         mock_vals = {
             "/api/ztevmanagerdriver/v1/1/vnfs":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), '200'],
-            "/api/extsys/v1/vnfms/1":
+            "/api/aai-esr-server/v1/vnfms/1":
                 [0, json.JSONEncoder().encode({"name": 'vnfm1'}), '200'],
             "/api/resmgr/v1/vnf":
                 [0, json.JSONEncoder().encode({}), '200'],
@@ -167,7 +167,7 @@ class TestTerminateVnfViews(TestCase):
         mock_vals = {
             "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-            "/api/extsys/v1/vnfms/1":
+            "/api/aai-esr-server/v1/vnfms/1":
                 [0, json.JSONEncoder().encode({"name": 'vnfm1', "type": 'ztevmanagerdriver'}), '200'],
             "/api/resmgr/v1/vnf/1":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
@@ -337,7 +337,7 @@ class TestHealVnfViews(TestCase):
         mock_vals = {
             "/api/ztevmanagerdriver/v1/1/vnfs/111/heal":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/api/extsys/v1/vnfms/1":
+            "/api/aai-esr-server/v1/vnfms/1":
                 [0, json.JSONEncoder().encode({"name": 'vnfm1', "type": 'ztevmanagerdriver'}), '200'],
             "/api/resmgr/v1/vnf/1":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],

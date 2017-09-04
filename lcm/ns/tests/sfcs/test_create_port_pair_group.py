@@ -61,7 +61,7 @@
 #             "context": json.dumps(nsd_model)
 #         }
 #         mock_vals = {
-#             "/api/extsys/v1/sdncontrollers/sdn_controller_1":
+#             "/api/aai-esr-server/v1/sdncontrollers/sdn_controller_1":
 #                 [0, json.JSONEncoder().encode({"url": "url_1"}), '200'],
 #             "/api/sdncdriver/v1.0/createportpair":
 #                 [0, json.JSONEncoder().encode({"id": "createportpair_id"}), '200'],

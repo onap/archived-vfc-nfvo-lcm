@@ -221,7 +221,7 @@ class TestNfPackage(TestCase):
             "/api/catalog/v1/csars/2/files?relativePath=/SoftwareImages/image-lb":
                 [0, json.JSONEncoder().encode({
                     "csar_file_info": [{"downloadUri": "8"}, {"localPath": "9"}]}), '200'],
-            "/api/extsys/v1/vims":
+            "/api/aai-esr-server/v1/vims":
                 [0, json.JSONEncoder().encode([{
                     "vimId": "1", "type": VIM_OPENSTACK,
                     "url": "/root/package", "userName": "tom",
@@ -260,7 +260,7 @@ class TestNfPackage(TestCase):
                 [0, json.JSONEncoder().encode({
                     "csar_file_info": [{"downloadUri": "8"}, {"localPath": "9"}]}), '200'],
             "/api/catalog/v1/csars/3?processState=onBoardFailed": [0, '{}', 200],
-            "/api/extsys/v1/vims":
+            "/api/aai-esr-server/v1/vims":
                 [0, json.JSONEncoder().encode([{
                     "vimId": "1", "type": VIM_OPENSTACK,
                     "url": "/root/package", "userName": "tom",
@@ -293,7 +293,7 @@ class TestNfPackage(TestCase):
                 [0, json.JSONEncoder().encode({
                     "csar_file_info": [{"downloadUri": "8"}, {"localPath": "9"}]}), '200'],
             "/api/catalog/v1/csars/5?processState=onBoardFailed": [0, '{}', 200],
-            "/api/extsys/v1/vims":
+            "/api/aai-esr-server/v1/vims":
                 [0, json.JSONEncoder().encode([{
                     "vimId": "1", "type": VIM_OPENSTACK,
                     "url": "/root/package", "userName": "tom",
@@ -402,7 +402,7 @@ class TestNfPackage(TestCase):
                 [0, "{}", "200"],
             ("/api/catalog/v1/csars/1", "GET"):
                 [0, json.JSONEncoder().encode({"processState": "normal"}), "200"],
-            ("/api/extsys/v1/vims", "GET"):
+            ("/api/aai-esr-server/v1/vims", "GET"):
                 [0, json.JSONEncoder().encode([{"vimId": "002",
                                                 "url": "url_test",
                                                 "userName": "test01",
@@ -433,7 +433,7 @@ class TestNfPackage(TestCase):
                 [0, json.JSONEncoder().encode({"successfully": "successfully"}), "200"],
             ("/api/catalog/v1/csars/1", "GET"):
                 [0, json.JSONEncoder().encode({"notProcessState": "notProcessState"}), "200"],
-            ("/api/extsys/v1/vims", "GET"):
+            ("/api/aai-esr-server/v1/vims", "GET"):
                 [0, json.JSONEncoder().encode([{
                     "vimId": "002",
                     "url": "url_test",
