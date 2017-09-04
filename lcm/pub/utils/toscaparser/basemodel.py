@@ -334,3 +334,9 @@ class BaseInfoModel(object):
         if 'capabilities' in node and capabilityName in node['capabilities']:
             return node['capabilities'][capabilityName]
         return None
+
+    def get_node_vdu_id(self, node):
+        vdu_ids = map(lambda x: self.get_requirement_node_name(x), self.getVirtualbindings(node))
+        if len(vdu_ids) > 0:
+            return vdu_ids[0]
+        return ""

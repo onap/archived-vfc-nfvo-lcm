@@ -294,6 +294,10 @@ class TestScaleVnfViews(TestCase):
             "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200']
         }
+        def side_effect(*args):
+            return mock_vals[args[4]]
+        mock_call_req.side_effect = side_effect
+
         NFManualScaleService(self.nf_inst_id, req_data).run()
         nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
         if nsIns:

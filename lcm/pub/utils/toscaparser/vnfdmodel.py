@@ -37,6 +37,8 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.local_storages = self._get_all_local_storage(nodeTemplates)
         self.volume_storages = self._get_all_volume_storage(nodeTemplates)
         self.vdus = self._get_all_vdu(nodeTemplates)
+        self.vls = self.get_all_vl(nodeTemplates)
+        self.cps = self.get_all_cp(nodeTemplates)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -232,3 +234,20 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
                     ret['deploy_path'] = ''
                 rets.append(ret)
         return rets
+
+    def get_all_cp(self, nodeTemplates):
+        cps = []
+        for node in nodeTemplates:
+            if self.isCp(node):
+                cp = {}
+                cp['cp_id'] = node['name']
+                cp['cpd_id'] = node['name']
+                cp['description'] = node['description']
+                cp['properties'] = node['properties']
+                cp['vl_id'] = self.get_node_vl_id(node)
+                cp['vdu_id'] = self.get_node_vdu_id(node)
+                vls = self.buil_cp_vls(node)
+                if len(vls) > 1:
+                    cp['vls'] = vls
+                cps.append(cp)
+        return cps
