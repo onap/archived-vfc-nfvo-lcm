@@ -39,6 +39,7 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.vdus = self._get_all_vdu(nodeTemplates)
         self.vls = self.get_all_vl(nodeTemplates)
         self.cps = self.get_all_cp(nodeTemplates)
+        self.plugins = self.get_all_plugin(nodeTemplates)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -251,3 +252,20 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
                     cp['vls'] = vls
                 cps.append(cp)
         return cps
+
+    def get_all_plugin(self, node_templates):
+        plugins = []
+        for node in node_templates:
+            if self._isPlugin(node):
+                plugin = {}
+                plugin['plugin_id'] = node['name']
+                plugin['description'] = node['description']
+                plugin['properties'] = node['properties']
+                if 'interfaces' in node:
+                    plugin['interfaces'] = node['interfaces']
+
+                plugins.append(plugin)
+        return plugins
+
+    def _isPlugin(self, node):
+        return node['nodeType'].lower().find('.plugin.') >= 0 or node['nodeType'].lower().endswith('.plugin')
