@@ -4,7 +4,7 @@ cd /service/vfc/nfvo/lcm
 chmod +x run.sh
 ./run.sh
 
-while [ ! -f logs/nfvo_lcm.log ]; do
+while [ ! -f logs/runtime_lcm.log ]; do
     sleep 1
 done
-tail -F logs/nfvo_lcm.log
+tail -F logs/runtime_lcm.log
