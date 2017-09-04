@@ -75,7 +75,7 @@ class CreatePortChain(object):
         #     try:
         #         logger.warn("query sdncontroller by id begins:")
         #
-        #         url = "/api/extsys/v1/sdncontrollers/%s" % (self.sdnControllerId)
+        #         url = "/api/aai-esr-server/v1/sdncontrollers/%s" % (self.sdnControllerId)
         #         ret = req_by_msb(url, "GET")
         #         if ret[0] > 0:
         #             logger.error('query sdncontroller failed.')

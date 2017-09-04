@@ -37,7 +37,7 @@
 #             "context": json.dumps(nsd_model)
 #         }
 #         mock_vals = {
-#             "/api/extsys/v1/sdncontrollers/test":
+#             "/api/aai-esr-server/v1/sdncontrollers/test":
 #                 [0, json.JSONEncoder().encode({"url": "url_1"}), '200'],
 #             "/api/sdncdriver/v1.0/createflowclassfier":
 #                 [0, json.JSONEncoder().encode({"id": "test_id_1"}), '200'],
