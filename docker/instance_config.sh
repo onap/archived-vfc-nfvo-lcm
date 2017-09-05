@@ -31,7 +31,7 @@ sed -i "s|DB_PASSWD.*|DB_PASSWD = 'vfcnfvolcm'|" vfc/nfvo/lcm/lcm/pub/config/con
 
 # Configure MYSQL
 if [ -z "$MYSQL_ADDR" ]; then
-    export MYSQL_IP=`hostname -i`
+    export MYSQL_IP=127.0.0.1
     export MYSQL_PORT=3306
     export MYSQL_ADDR=$MYSQL_IP:$MYSQL_PORT
 else
