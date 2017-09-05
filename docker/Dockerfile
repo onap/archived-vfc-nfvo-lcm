@@ -24,8 +24,7 @@ RUN apt-get update && \
     apt-get install -y curl && \
     apt-get install -y build-essential && \
     apt-get install -y libssl-dev && \
-    apt-get install -y libffi-dev && \
-    yes | pip install cryptography
+    apt-get install -y libffi-dev
 
 ADD . /service
 WORKDIR /service
@@ -34,6 +33,9 @@ WORKDIR /service
 RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.lcm&a=vfc-nfvo-lcm&v=LATEST&e=zip' && \
     unzip vfc-nfvo-lcm.zip && \
     rm -rf vfc-nfvo-lcm.zip
+
+WORKDIR /service/vfc/nfvo/lcm
+RUN pip install -r requirements.txt
 
 EXPOSE 8403
 EXPOSE 3306

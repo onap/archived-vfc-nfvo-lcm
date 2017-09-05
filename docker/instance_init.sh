@@ -1,10 +1,5 @@
 #!/bin/bash
 
-function install_python_libs {
-    cd /service/vfc/nfvo/lcm/
-    pip install -r requirements.txt
-}
-
 function start_redis_server {
     redis-server &
 }
@@ -21,7 +16,6 @@ function create_database {
     cd /service
 }
 
-install_python_libs
 start_redis_server
 start_mysql
 create_database
