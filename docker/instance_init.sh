@@ -5,8 +5,7 @@ function start_redis_server {
 }
 
 function start_mysql {
-    sed -i "s|bind-address.*|# bind-address = 127.0.0.1|" /etc/mysql/my.cnf
-    service mysql restart
+    service mysql start
     sleep 1
 }
 
