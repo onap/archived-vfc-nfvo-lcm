@@ -10,13 +10,9 @@ function start_redis_server {
 }
 
 function start_mysql {
-    su mysql -c /usr/bin/mysqld_safe &
-    service mysql start
-    # Wait for mysql to initialize; Set mysql root password
-    for i in {1..10}; do
-        sleep $i
-        bash /usr/bin/mysqladmin -u root password $MYSQL_ROOT_PASSWORD &> /dev/null && break
-    done
+    sed -i "s|bind-address.*|# bind-address = 127.0.0.1|" /etc/mysql/my.cnf
+    service mysql restart
+    sleep 1
 }
 
 function create_database {
