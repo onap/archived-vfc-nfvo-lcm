@@ -40,6 +40,9 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.vls = self.get_all_vl(nodeTemplates)
         self.cps = self.get_all_cp(nodeTemplates)
         self.plugins = self.get_all_plugin(nodeTemplates)
+        self.routers = self.get_all_router(nodeTemplates)
+        self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
+        self.element_groups = self._get_all_element_group(tosca.topology_template.groups)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -269,3 +272,19 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
 
     def _isPlugin(self, node):
         return node['nodeType'].lower().find('.plugin.') >= 0 or node['nodeType'].lower().endswith('.plugin')
+
+    def _get_all_element_group(self, groups):
+        rets = []
+        for group in groups:
+            if self._isVnfdElementGroup(group):
+                ret = {}
+                ret['group_id'] = group.name
+                ret['description'] = group.description
+                if 'properties' in group.tpl:
+                    ret['properties'] = group.tpl['properties']
+                ret['members'] = group.members
+                rets.append(ret)
+        return rets
+
+    def _isVnfdElementGroup(self, group):
+        return group.type.upper().find('.VNFDELEMENTGROUP.') >= 0 or group.type.upper().endswith('.VNFDELEMENTGROUP')
