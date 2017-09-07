@@ -30,11 +30,11 @@ def call_aai(resource, method, content=''):
         'X-TransactionId': str(uuid.uuid1())
     }
     return restcall.call_req(base_url=AAI_BASE_URL,
-        user=AAI_USER, 
-        passwd=AAI_PASSWD, 
-        auth_type=restcall.rest_no_auth, 
-        resource=resource, 
-        method=method, 
+        user=AAI_USER,
+        passwd=AAI_PASSWD,
+        auth_type=restcall.rest_no_auth,
+        resource=resource,
+        method=method,
         content=content,
         additional_headers=additional_headers)
 
@@ -201,15 +201,15 @@ def convert_vnfm_info(vnfm_info_aai):
     vnfm_info = {
         "vnfmId": vnfm_info_aai["vnfm-id"],
         "name": vnfm_info_aai["vnfm-id"],
-        "type": ignore_case_get(esr_system_info, "type"),
+        "type": ignore_case_get(esr_system_info[0], "type"),
         "vimId": vnfm_info_aai["vim-id"],
-        "vendor": ignore_case_get(esr_system_info, "vendor"),
-        "version": ignore_case_get(esr_system_info, "version"),
+        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+        "version": ignore_case_get(esr_system_info[0], "version"),
         "description": "vnfm",
         "certificateUrl": vnfm_info_aai["certificate-url"],
-        "url": ignore_case_get(esr_system_info, "service-url"),
-        "userName": ignore_case_get(esr_system_info, "service-url"),
-        "password": ignore_case_get(esr_system_info, "service-url"),
+        "url": ignore_case_get(esr_system_info[0], "service-url"),
+        "userName": ignore_case_get(esr_system_info[0], "user-name"),
+        "password": ignore_case_get(esr_system_info[0], "password"),
         "createTime": "2016-07-06 15:33:18"
     }
     return vnfm_info
@@ -258,12 +258,12 @@ def convert_vim_info(vim_info_aai):
     vim_info = {
         "vimId": vim_id,
         "name": vim_id,
-        "url": ignore_case_get(esr_system_info, "service-url"),
-        "userName": ignore_case_get(esr_system_info, "service-url"),
-        "password": ignore_case_get(esr_system_info, "service-url"),
+        "url": ignore_case_get(esr_system_info[0], "service-url"),
+        "userName": ignore_case_get(esr_system_info[0], "user-name"),
+        "password": ignore_case_get(esr_system_info[0], "password"),
         "tenant": ignore_case_get(tenants[0], "tenant-id"),
-        "vendor": ignore_case_get(esr_system_info, "vendor"),
-        "version": ignore_case_get(esr_system_info, "version"),
+        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+        "version": ignore_case_get(esr_system_info[0], "version"),
         "description": "vim",
         "domain": "",
         "type": "openstack",
@@ -284,5 +284,4 @@ def get_vims():
     for vim in vims_aai:
         vim = convert_vim_info(vim)
         vims_info.append(vim)
-
     return vims_info
