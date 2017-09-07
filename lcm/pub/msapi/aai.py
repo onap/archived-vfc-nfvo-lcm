@@ -33,7 +33,7 @@ def call_aai(resource, method, content=''):
         user=AAI_USER,
         passwd=AAI_PASSWD,
         auth_type=restcall.rest_no_auth,
-        resource=resource,
+        resource=resource + "?depth=all",
         method=method,
         content=content,
         additional_headers=additional_headers)
@@ -48,7 +48,7 @@ def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
         raise NSLCMException("Ns instance creation exception in AAI")
     return json.JSONDecoder().decode(ret[1])
 
-def delete_ns_aai(global_customer_id, service_type, service_instance_id, data):
+def delete_ns_aai(global_customer_id, service_type, service_instance_id, data=''):
     resource = "/business/customers/customer/%s/service-subscriptions/service-subscription/" \
                "%s/service-instances/service-instance/%s" % \
                (global_customer_id, service_type, service_instance_id)
@@ -102,7 +102,7 @@ def create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data
         raise NSLCMException("Vserver creation exception in AAI")
     return json.JSONDecoder().decode(ret[1])
 
-def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
+def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data=''):
     resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
                "%s/tenants/tenant/%s/vservers/vserver/%s" % \
                (cloud_owner, cloud_region_id, tenant_id, vserver_id)
@@ -190,14 +190,13 @@ def get_vnfm_by_id(vnfm_inst_id):
     if ret[0] > 0:
         logger.error('Send get VNFM information request to extsys failed.')
         raise NSLCMException('Send get VNFM information request to extsys failed.')
-
     # convert vnfm_info_aai to internal vnfm_info
     vnfm_info_aai = json.JSONDecoder().decode(ret[1])
     vnfm_info = convert_vnfm_info(vnfm_info_aai)
     return vnfm_info
 
 def convert_vnfm_info(vnfm_info_aai):
-    esr_system_info = ignore_case_get(vnfm_info_aai, "esr-system-info")
+    esr_system_info = ignore_case_get(ignore_case_get(vnfm_info_aai, "esr-system-info-list"), "esr-system-info")
     vnfm_info = {
         "vnfmId": vnfm_info_aai["vnfm-id"],
         "name": vnfm_info_aai["vnfm-id"],
@@ -239,7 +238,6 @@ def get_vim_by_id(vim_id):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query vim(%s) from extsys." % vim_id)
-
     # convert vim_info_aai to internal vim_info
     vim_info_aai = json.JSONDecoder().decode(ret[1])
     vim_info = convert_vim_info(vim_info_aai)
@@ -253,7 +251,7 @@ def split_vim_to_owner_region(vim_id):
 
 def convert_vim_info(vim_info_aai):
     vim_id = vim_info_aai["cloud-owner"] + '_' + vim_info_aai["cloud-region-id"]
-    esr_system_info = ignore_case_get(vim_info_aai, "esr-system-info")
+    esr_system_info = ignore_case_get(ignore_case_get(vim_info_aai, "esr-system-info-list"), "esr-system-info")
     # tenants = ignore_case_get(vim_info_aai, "tenants")
     vim_info = {
         "vimId": vim_id,
@@ -278,7 +276,6 @@ def get_vims():
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query vims from extsys.")
-
     # convert vim_info_aai to internal vim_info
     vims_aai = json.JSONDecoder().decode(ret[1])
     vims_info = []
@@ -287,19 +284,19 @@ def get_vims():
         vims_info.append(vim)
     return vims_info
 
+
 def get_sdn_controller_by_id(sdn_ontroller_id):
     ret = call_aai("/external-system/esr-thirdparty-sdnc-list/esr-thirdparty-sdnc/%s" % sdn_ontroller_id, "GET")
     if ret[0] != 0:
         logger.error("Failed to query sdn ontroller(%s) from extsys. detail is %s.", sdn_ontroller_id, ret[1])
         raise NSLCMException("Failed to query sdn ontroller(%s) from extsys." % sdn_ontroller_id)
-
     # convert vim_info_aai to internal vim_info
     sdnc_info_aai = json.JSONDecoder().decode(ret[1])
     sdnc_info = convert_sdnc_info(sdnc_info_aai)
     return sdnc_info
 
 def convert_sdnc_info(sdnc_info_aai):
-    esr_system_info = ignore_case_get(sdnc_info_aai, "esr-system-info")
+    esr_system_info = ignore_case_get(ignore_case_get(sdnc_info_aai, "esr-system-info-list"), "esr-system-info")
     sdnc_info = {
         "sdnControllerId": sdnc_info_aai["thirdparty-sdnc-id"],
         "name": sdnc_info_aai["thirdparty-sdnc-id"],
