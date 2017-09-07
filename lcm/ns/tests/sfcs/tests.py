@@ -49,7 +49,35 @@ class TestSfcDetailViews(TestCase):
 
     @mock.patch.object(restcall, "call_req")
     def test_delete_sfc(self, mock_req_by_rest):
-        mock_req_by_rest.return_value = [0, '{"test":"test_name","url":"url_add"}']
+        sdnc_info = {
+            "thirdparty-sdnc-id": "example-thirdparty-sdnc-id-val-6524",
+            "location": "example-location-val-78867",
+            "product-name": "example-product-name-val-15818",
+            "esr-system-info-list": {
+                "esr-system-info": [
+                    {
+                        "esr-system-info-id": "example-esr-system-info-id-val-24165",
+                        "system-name": "example-system-name-val-77122",
+                        "type": "example-type-val-21280",
+                        "vendor": "example-vendor-val-91275",
+                        "version": "example-version-val-93343",
+                        "service-url": "example-service-url-val-81241",
+                        "user-name": "example-user-name-val-1481",
+                        "password": "example-password-val-976",
+                        "system-type": "example-system-type-val-92280",
+                        "protocal": "example-protocal-val-40984",
+                        "ssl-cacert": "example-ssl-cacert-val-48921",
+                        "ssl-insecure": True,
+                        "ip-address": "example-ip-address-val-1363",
+                        "port": "example-port-val-90119",
+                        "cloud-domain": "example-cloud-domain-val-26113",
+                        "default-tenant": "example-default-tenant-val-5704"
+                    }
+                ]
+            }
+        }
+        mock_req_by_rest.return_value = [0, json.JSONEncoder().encode(sdnc_info), '200']
+        # mock_req_by_rest.return_value = [0, '{"test":"test_name","url":"url_add"}']
         response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % self.sfc_inst_id)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         expect_resp_data = {"result": 0, "detail": "delete sfc success"}

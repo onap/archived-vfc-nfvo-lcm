@@ -16,7 +16,9 @@ import json
 import logging
 
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi.aai import call_aai
 from lcm.pub.utils.restcall import req_by_msb
+from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
 
@@ -38,11 +40,33 @@ def get_vim_by_id(vim_id):
 
 
 def get_sdn_controller_by_id(sdn_ontroller_id):
-    ret = req_by_msb("/api/aai-esr-server/v1/sdncontrollers/%s" % sdn_ontroller_id, "GET")
+    ret = call_aai("/external-system/esr-thirdparty-sdnc-list/esr-thirdparty-sdnc/%s" % sdn_ontroller_id, "GET")
     if ret[0] != 0:
         logger.error("Failed to query sdn ontroller(%s) from extsys. detail is %s.", sdn_ontroller_id, ret[1])
         raise NSLCMException("Failed to query sdn ontroller(%s) from extsys." % sdn_ontroller_id)
-    return json.JSONDecoder().decode(ret[1])
+    # convert vim_info_aai to internal vim_info
+    sdnc_info_aai = json.JSONDecoder().decode(ret[1])
+    sdnc_info = convert_sdnc_info(sdnc_info_aai)
+    return sdnc_info
+
+
+def convert_sdnc_info(sdnc_info_aai):
+    esr_system_info = ignore_case_get(ignore_case_get(sdnc_info_aai, "esr-system-info-list"), "esr-system-info")
+    sdnc_info = {
+        "sdnControllerId": sdnc_info_aai["thirdparty-sdnc-id"],
+        "name": sdnc_info_aai["thirdparty-sdnc-id"],
+        "url": ignore_case_get(esr_system_info[0], "service-url"),
+        "userName": ignore_case_get(esr_system_info[0], "user-name"),
+        "password": ignore_case_get(esr_system_info[0], "password"),
+        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+        "version": ignore_case_get(esr_system_info[0], "version"),
+        "description": "",
+        "protocol": ignore_case_get(esr_system_info[0], "protocal"),
+        "productName": ignore_case_get(sdnc_info_aai, "product-name"),
+        "type": ignore_case_get(esr_system_info[0], "type"),
+        "createTime": "2016-07-18 12:22:53"
+    }
+    return sdnc_info
 
 
 def get_vnfm_by_id(vnfm_inst_id):

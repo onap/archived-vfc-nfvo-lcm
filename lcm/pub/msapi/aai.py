@@ -221,6 +221,7 @@ def select_vnfm(vnfm_type, vim_id):
         logger.error("Failed to call %s: %s", uri, ret[1])
         raise NSLCMException('Failed to get vnfms from extsys.')
     vnfms = json.JSONDecoder().decode(ret[1])
+    vnfms = ignore_case_get(vnfms, "esr-vnfm")
     for vnfm in vnfms:
         esr_system_info = ignore_case_get(vnfm, "esr-system-info")
         type = ignore_case_get(esr_system_info, "type")
@@ -250,7 +251,7 @@ def split_vim_to_owner_region(vim_id):
     return cloud_owner, cloud_region
 
 def convert_vim_info(vim_info_aai):
-    vim_id = vim_info_aai["cloud-owner"] + '_' + vim_info_aai["cloud-region-id"]
+    vim_id = vim_info_aai["cloud-owner"] + "_" + vim_info_aai["cloud-region-id"]
     esr_system_info = ignore_case_get(ignore_case_get(vim_info_aai, "esr-system-info-list"), "esr-system-info")
     # tenants = ignore_case_get(vim_info_aai, "tenants")
     vim_info = {
@@ -278,37 +279,9 @@ def get_vims():
         raise NSLCMException("Failed to query vims from extsys.")
     # convert vim_info_aai to internal vim_info
     vims_aai = json.JSONDecoder().decode(ret[1])
+    vims_aai = ignore_case_get(vims_aai, "cloud-region")
     vims_info = []
     for vim in vims_aai:
         vim = convert_vim_info(vim)
         vims_info.append(vim)
     return vims_info
-
-
-def get_sdn_controller_by_id(sdn_ontroller_id):
-    ret = call_aai("/external-system/esr-thirdparty-sdnc-list/esr-thirdparty-sdnc/%s" % sdn_ontroller_id, "GET")
-    if ret[0] != 0:
-        logger.error("Failed to query sdn ontroller(%s) from extsys. detail is %s.", sdn_ontroller_id, ret[1])
-        raise NSLCMException("Failed to query sdn ontroller(%s) from extsys." % sdn_ontroller_id)
-    # convert vim_info_aai to internal vim_info
-    sdnc_info_aai = json.JSONDecoder().decode(ret[1])
-    sdnc_info = convert_sdnc_info(sdnc_info_aai)
-    return sdnc_info
-
-def convert_sdnc_info(sdnc_info_aai):
-    esr_system_info = ignore_case_get(ignore_case_get(sdnc_info_aai, "esr-system-info-list"), "esr-system-info")
-    sdnc_info = {
-        "sdnControllerId": sdnc_info_aai["thirdparty-sdnc-id"],
-        "name": sdnc_info_aai["thirdparty-sdnc-id"],
-        "url": ignore_case_get(esr_system_info[0], "service-url"),
-        "userName": ignore_case_get(esr_system_info[0], "user-name"),
-        "password": ignore_case_get(esr_system_info[0], "password"),
-        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
-        "version": ignore_case_get(esr_system_info[0], "version"),
-        "description": "",
-        "protocol": ignore_case_get(esr_system_info[0], "protocal"),
-        "productName": ignore_case_get(sdnc_info_aai, "product-name"),
-        "type": ignore_case_get(esr_system_info[0], "type"),
-        "createTime": "2016-07-18 12:22:53"
-    }
-    return sdnc_info
