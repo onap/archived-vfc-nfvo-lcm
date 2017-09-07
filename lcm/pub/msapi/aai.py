@@ -254,19 +254,20 @@ def split_vim_to_owner_region(vim_id):
 def convert_vim_info(vim_info_aai):
     vim_id = vim_info_aai["cloud-owner"] + '_' + vim_info_aai["cloud-region-id"]
     esr_system_info = ignore_case_get(vim_info_aai, "esr-system-info")
-    tenants = ignore_case_get(vim_info_aai, "tenants")
+    # tenants = ignore_case_get(vim_info_aai, "tenants")
     vim_info = {
         "vimId": vim_id,
         "name": vim_id,
         "url": ignore_case_get(esr_system_info[0], "service-url"),
         "userName": ignore_case_get(esr_system_info[0], "user-name"),
         "password": ignore_case_get(esr_system_info[0], "password"),
-        "tenant": ignore_case_get(tenants[0], "tenant-id"),
+        # "tenant": ignore_case_get(tenants[0], "tenant-id"),
+        "tenant": ignore_case_get(esr_system_info[0], "default-tenant"),
         "vendor": ignore_case_get(esr_system_info[0], "vendor"),
         "version": ignore_case_get(esr_system_info[0], "version"),
         "description": "vim",
         "domain": "",
-        "type": "openstack",
+        "type": ignore_case_get(esr_system_info[0], "type"),
         "createTime": "2016-07-18 12:22:53"
     }
     return vim_info
@@ -285,3 +286,32 @@ def get_vims():
         vim = convert_vim_info(vim)
         vims_info.append(vim)
     return vims_info
+
+def get_sdn_controller_by_id(sdn_ontroller_id):
+    ret = call_aai("/external-system/esr-thirdparty-sdnc-list/esr-thirdparty-sdnc/%s" % sdn_ontroller_id, "GET")
+    if ret[0] != 0:
+        logger.error("Failed to query sdn ontroller(%s) from extsys. detail is %s.", sdn_ontroller_id, ret[1])
+        raise NSLCMException("Failed to query sdn ontroller(%s) from extsys." % sdn_ontroller_id)
+
+    # convert vim_info_aai to internal vim_info
+    sdnc_info_aai = json.JSONDecoder().decode(ret[1])
+    sdnc_info = convert_sdnc_info(sdnc_info_aai)
+    return sdnc_info
+
+def convert_sdnc_info(sdnc_info_aai):
+    esr_system_info = ignore_case_get(sdnc_info_aai, "esr-system-info")
+    sdnc_info = {
+        "sdnControllerId": sdnc_info_aai["thirdparty-sdnc-id"],
+        "name": sdnc_info_aai["thirdparty-sdnc-id"],
+        "url": ignore_case_get(esr_system_info[0], "service-url"),
+        "userName": ignore_case_get(esr_system_info[0], "user-name"),
+        "password": ignore_case_get(esr_system_info[0], "password"),
+        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+        "version": ignore_case_get(esr_system_info[0], "version"),
+        "description": "",
+        "protocol": ignore_case_get(esr_system_info[0], "protocal"),
+        "productName": ignore_case_get(sdnc_info_aai, "product-name"),
+        "type": ignore_case_get(esr_system_info[0], "type"),
+        "createTime": "2016-07-18 12:22:53"
+    }
+    return sdnc_info
