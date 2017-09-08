@@ -29,15 +29,15 @@ def call_aai(resource, method, content=''):
         'X-FromAppId': 'VFC-NFVO-LCM',
         'X-TransactionId': str(uuid.uuid1())
     }
-    resource = resource + "?depth=all"
-    return restcall.call_req(base_url=AAI_BASE_URL,
-        user=AAI_USER,
-        passwd=AAI_PASSWD,
-        auth_type=0,
-        resource=resource,
-        method=method,
-        content=content,
-        additional_headers=additional_headers)
+
+    return restcall.call_req(AAI_BASE_URL,
+                             AAI_USER,
+                             AAI_PASSWD,
+                             restcall.rest_no_auth,
+                             resource,
+                             method,
+                             content,
+                             additional_headers)
 
 
 def create_ns_aai(global_customer_id, service_type, service_instance_id, data):

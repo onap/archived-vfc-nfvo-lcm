@@ -23,17 +23,32 @@ from lcm.pub.utils.values import ignore_case_get
 logger = logging.getLogger(__name__)
 
 
+# def get_vims():
+#     ret = req_by_msb("/api/aai-esr-server/v1/vims", "GET")
+#     if ret[0] != 0:
+#         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+#         raise NSLCMException("Failed to query vims from extsys.")
+#     return json.JSONDecoder().decode(ret[1])
+
 def get_vims():
-    ret = req_by_msb("/api/aai-esr-server/v1/vims", "GET")
+    ret = call_aai("/cloud-infrastructure/cloud-regions?depth=all", "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query vims from extsys.")
-    return json.JSONDecoder().decode(ret[1])
+    # convert vim_info_aai to internal vim_info
+    vims_aai = json.JSONDecoder().decode(ret[1])
+    vims_aai = ignore_case_get(vims_aai, "cloud-region")
+    vims_info = []
+    for vim in vims_aai:
+        vim = convert_vim_info(vim)
+        vims_info.append(vim)
+    return vims_info
 
 
 def get_vim_by_id(vim_id):
     cloud_owner, cloud_region = split_vim_to_owner_region(vim_id)
-    ret = call_aai("/cloud-infrastructure/cloud-regions/cloud-region/%s/%s" % (cloud_owner, cloud_region), "GET")
+    ret = call_aai("/cloud-infrastructure/cloud-regions/cloud-region/%s/%s?depth=all"
+                   % (cloud_owner, cloud_region), "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query vim(%s) from extsys." % vim_id)
@@ -71,7 +86,8 @@ def convert_vim_info(vim_info_aai):
 
 
 def get_sdn_controller_by_id(sdn_ontroller_id):
-    ret = call_aai("/external-system/esr-thirdparty-sdnc-list/esr-thirdparty-sdnc/%s" % sdn_ontroller_id, "GET")
+    ret = call_aai("/external-system/esr-thirdparty-sdnc-list/esr-thirdparty-sdnc/%s?depth=all"
+                   % sdn_ontroller_id, "GET")
     if ret[0] != 0:
         logger.error("Failed to query sdn ontroller(%s) from extsys. detail is %s.", sdn_ontroller_id, ret[1])
         raise NSLCMException("Failed to query sdn ontroller(%s) from extsys." % sdn_ontroller_id)
@@ -101,7 +117,7 @@ def convert_sdnc_info(sdnc_info_aai):
 
 
 def get_vnfm_by_id(vnfm_inst_id):
-    uri = '/external-system/esr-vnfm-list/esr-vnfm/%s' % vnfm_inst_id
+    uri = '/external-system/esr-vnfm-list/esr-vnfm/%s?depth=all' % vnfm_inst_id
     ret = call_aai(uri, "GET")
     if ret[0] > 0:
         logger.error('Send get VNFM information request to extsys failed.')
@@ -132,7 +148,7 @@ def convert_vnfm_info(vnfm_info_aai):
 
 
 def select_vnfm(vnfm_type, vim_id):
-    uri = '/external-system/esr-vnfm-list'
+    uri = '/external-system/esr-vnfm-list?depth=all'
     ret = call_aai(uri, "GET")
     if ret[0] > 0:
         logger.error("Failed to call %s: %s", uri, ret[1])
