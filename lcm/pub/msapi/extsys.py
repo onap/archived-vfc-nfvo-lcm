@@ -77,15 +77,40 @@ def get_vnfm_by_id(vnfm_inst_id):
         raise NSLCMException('Send get VNFM information request to extsys failed.')
     return json.JSONDecoder().decode(ret[1])
 
+
+def convert_vnfm_info(vnfm_info_aai):
+    esr_system_info = ignore_case_get(ignore_case_get(vnfm_info_aai, "esr-system-info-list"), "esr-system-info")
+    vnfm_info = {
+        "vnfmId": vnfm_info_aai["vnfm-id"],
+        "name": vnfm_info_aai["vnfm-id"],
+        "type": ignore_case_get(esr_system_info[0], "type"),
+        "vimId": vnfm_info_aai["vim-id"],
+        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+        "version": ignore_case_get(esr_system_info[0], "version"),
+        "description": "vnfm",
+        "certificateUrl": vnfm_info_aai["certificate-url"],
+        "url": ignore_case_get(esr_system_info[0], "service-url"),
+        "userName": ignore_case_get(esr_system_info[0], "user-name"),
+        "password": ignore_case_get(esr_system_info[0], "password"),
+        "createTime": "2016-07-06 15:33:18"
+    }
+    return vnfm_info
+
+
 def select_vnfm(vnfm_type, vim_id):
-    uri = '/api/aai-esr-server/v1/vnfms'
-    ret = req_by_msb(uri, "GET")
+    uri = '/external-system/esr-vnfm-list'
+    ret = call_aai(uri, "GET")
     if ret[0] > 0:
         logger.error("Failed to call %s: %s", uri, ret[1])
         raise NSLCMException('Failed to get vnfms from extsys.')
     vnfms = json.JSONDecoder().decode(ret[1])
+    vnfms = ignore_case_get(vnfms, "esr-vnfm")
     for vnfm in vnfms:
-        if vnfm["type"] == vnfm_type and vnfm["vimId"] == vim_id:
+        esr_system_info = ignore_case_get(vnfm, "esr-system-info")
+        type = ignore_case_get(esr_system_info, "type")
+        vimId = vnfm["vnfm-id"]
+        if type == vnfm_type and vimId == vim_id:
+            # convert vnfm_info_aai to internal vnfm_info
+            vnfm = convert_vnfm_info(vnfm)
             return vnfm
     raise NSLCMException('No vnfm found with %s in vim(%s)' % (vnfm_type, vim_id))
-

@@ -214,25 +214,6 @@ def convert_vnfm_info(vnfm_info_aai):
     return vnfm_info
 
 
-def select_vnfm(vnfm_type, vim_id):
-    uri = '/external-system/esr-vnfm-list'
-    ret = call_aai(uri, "GET")
-    if ret[0] > 0:
-        logger.error("Failed to call %s: %s", uri, ret[1])
-        raise NSLCMException('Failed to get vnfms from extsys.')
-    vnfms = json.JSONDecoder().decode(ret[1])
-    vnfms = ignore_case_get(vnfms, "esr-vnfm")
-    for vnfm in vnfms:
-        esr_system_info = ignore_case_get(vnfm, "esr-system-info")
-        type = ignore_case_get(esr_system_info, "type")
-        vimId = vnfm["vnfm-id"]
-        if type == vnfm_type and vimId == vim_id:
-            # convert vnfm_info_aai to internal vnfm_info
-            vnfm = convert_vnfm_info(vnfm)
-            return vnfm
-    raise NSLCMException('No vnfm found with %s in vim(%s)' % (vnfm_type, vim_id))
-
-
 def get_vim_by_id(vim_id):
     cloud_owner, cloud_region = split_vim_to_owner_region(vim_id)
     ret = call_aai("/cloud-infrastructure/cloud-regions/cloud-region/%s/%s" % (cloud_owner, cloud_region), "GET")
