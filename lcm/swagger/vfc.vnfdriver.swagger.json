@@ -1,0 +1,1191 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "ONAP VNFM Driver Development Related API",
+    "description": "ONAP VNFM Driver Development Related Rest API.",
+    "contact": {
+      "name": "ONAP VFC team",
+      "email": "onap-discuss@lists.onap.org",
+      "url": "https://gerrit.onap.org/r/#/admin/projects/vfc/nfvo/lcm"
+    }
+  },
+  "basePath": "/api",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/{vnfmtype}/v1/{vnfmid}/vnfs": {
+      "post": {
+        "tags": [
+          "VNFMDriver"
+        ],
+        "summary": "vnf create&instantiate",
+        "description": "VNF create&instantiate Rest API should be provided by the VNFM Driver",
+        "operationId": "vnf_instantiate",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmtype should be the SVNFM driver service name",
+            "name": "vnfmtype",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmid should be the VNFM Instantiate ID",
+            "name": "vnfmid",
+            "in": "path"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "instantiate request param",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VnfInstantiateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/VnfInstantiateResponse"
+            }
+          }
+        }
+      }
+    },
+    "/{vnfmtype}/v1/{vnfmid}/vnfs/{vnfInstanceId}/scale": {
+      "post": {
+        "tags": [
+          "VNFMDriver"
+        ],
+        "summary": "vnf Scale",
+        "description": "VNF Scale Rest API should be provided by the VNFM Driver",
+        "operationId": "vnf_scale",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmtype should be the SVNFM driver service name",
+            "name": "vnfmtype",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmid should be the VNFM Instantiate ID",
+            "name": "vnfmid",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfInstanceId should be the VNF Instantiate ID",
+            "name": "vnfInstanceId",
+            "in": "path"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "instantiate request param",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VnfScaleRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/JobInfo"
+            }
+          },
+          "404": {
+            "description": "the VNF instance id is wrong"
+          },
+          "500": {
+            "description": "the url is invalid"
+          }
+        }
+      }
+    },
+    "/{vnfmtype}/v1/{vnfmid}/vnfs/{vnfInstanceId}/heal": {
+      "post": {
+        "tags": [
+          "VNFMDriver"
+        ],
+        "summary": "vnf heal",
+        "description": "VNF Heal Rest API should be provided by the VNFM Driver",
+        "operationId": "vnf_heal",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmtype should be the SVNFM driver service name",
+            "name": "vnfmtype",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmid should be the VNFM Instantiate ID",
+            "name": "vnfmid",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfInstanceId should be the VNF Instantiate ID",
+            "name": "vnfInstanceId",
+            "in": "path"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "instantiate request param",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VnfHealRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/JobInfo"
+            }
+          },
+          "404": {
+            "description": "the VNF instance id is wrong"
+          },
+          "500": {
+            "description": "the url is invalid"
+          }
+        }
+      }
+    },   
+    "/{vnfmtype}/v1/{vnfmid}/vnfs/{vnfInstanceId}/terminate": {    
+      "delete": {
+        "tags": [
+          "VNFMDriver"
+        ],
+        "summary": "delete vnf",
+        "description": "VNF terminate Rest API should be provided by the VNFM Driver",
+        "operationId": "delete_vnf",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmtype should be the SVNFM driver service name",
+            "name": "vnfmtype",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmid should be the VNFM Instantiate ID",
+            "name": "vnfmid",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfInstanceId should be the VNF Instantiate ID",
+            "name": "vnfInstanceId",
+            "in": "path"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "instantiate request param",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VnfTerminateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JobInfo"
+            }
+          },
+          "404": {
+            "description": "the VNF instance id is wrong"
+          },
+          "500": {
+            "description": "the url is invalid"
+          }
+        }
+      }
+    },
+    "/{vnfmtype}/v1/{vnfmid}/vnfs/{vnfInstanceId}": {
+      "get": {
+        "tags": [
+          "VNFMDriver"
+        ],
+        "summary": "query the specified vnf info",
+        "description": "",
+        "operationId": "query_vnf",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmtype should be the SVNFM driver service name",
+            "name": "vnfmtype",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmid should be the VNFM Instantiate ID",
+            "name": "vnfmid",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfInstanceId should be the VNF Instantiate ID",
+            "name": "vnfInstanceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VnfInfo"
+            }
+          },
+          "404": {
+            "description": "the vnf instance id is wrong"
+          },
+          "500": {
+            "description": "the url is invalid"
+          }
+        }
+      }
+    }, 
+    "/nslcm/v1/ns/grantvnf": {
+      "post": {
+        "tags": [
+          "NSLCM"
+        ],
+        "summary": "grantvnf",
+        "description": "Grant VNF, provived by the NSLCM component",
+        "operationId": "grantvnf",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "grantvnf",
+            "description": "Grant VNF Request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GrantVNFRequest"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/GrantVNFResponse"
+            }
+          },
+          "500": {
+            "description": "the url is invalid"
+          }
+        }
+      }
+    },
+    "/nslcm/v1/vnfs/{vnfInstanceId}/Notify": {
+      "post": {
+        "tags": [
+          "NSLCM"
+        ],
+        "summary": "VNF LCM Notification",
+        "description": "VNF LCM Notification API should be provided by NSLCM component",
+        "operationId": "VNF_LCM_Notification",
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "VNF Instance Id",
+            "name": "vnfInstanceId",
+            "in": "path"
+          },
+          {
+            "in": "body",
+            "name": "vnf Notification",
+            "description": "VNF LCM Notification",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VNFLCMNotification"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "500": {
+            "description": "the url is invalid"
+          }
+        }
+      }
+    },
+    "/{vnfmid}/jobs/{jobid}": {
+      "get": {
+        "tags": [
+          "VNFMDriver"
+        ],
+        "summary": "jobstatus",
+        "description": "Job Infomation API should be provided by VNFM Driver",
+        "operationId": "get_jobstatus",
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "job Id",
+            "name": "jobid",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "The value of vnfmid should be the VNFM Instantiate ID",
+            "name": "vnfmid",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "type": "string",
+            "description": "job response message id",
+            "name": "responseId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/JobDetailInfo"
+            }
+          }
+        }
+      }
+    },
+    "/catalog/v1/vnfpackages/{csarId}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "query vnf package info",
+        "description": "query one vnf package info via vnf package csarId",
+        "operationId": "query_vnf_package",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "csarId",
+            "in": "path",
+            "description": "csar id of vnf package",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VnfPkgDetailInfo"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/nslcm/vl/vnfms/{vnfmid}":{
+      "get": {
+        "tags": [
+          "NSLCM"
+        ],
+        "summary": "Query VNFM register info",
+        "description": "query VNFM register info",
+        "operationId": "query_vnfm_info",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vnfmid",
+            "in": "path",
+            "description": "vnfm id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VnfmInfo"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/nslcm/vl/vims/{vimid}":{
+      "get": {
+        "tags": [
+          "NSLCM"
+        ],
+        "summary": "Query VIM register info",
+        "description": "query VIM register info",
+        "operationId": "query_VIM_info",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vimid",
+            "in": "path",
+            "description": "vim id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VimInfo"
+            }
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },    
+  },
+  "definitions": {
+    "jobResponseInfo": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "progress": {
+          "type": "string"
+        },
+        "statusDescription": {
+          "type": "string"
+        },
+        "errorCode": {
+          "type": "string"
+        },
+        "responseId": {
+          "type": "string"
+        }
+      }
+    },
+    "JobDetailInfo": {
+      "type": "object",
+      "properties": {
+        "jobId": {
+          "type": "string"
+        },
+        "responseDescriptor": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "progress": {
+              "type": "string"
+            },
+            "statusDescription": {
+              "type": "string"
+            },
+            "errorCode": {
+              "type": "string"
+            },
+            "responseId": {
+              "type": "string"
+            },
+            "responseHistoryList": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/jobResponseInfo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "GrantVNFRequest": {
+      "type": "object",
+      "properties": {
+        "vnfInstanceId": {
+          "type": "string"
+        },
+        "vnfDescriptorId": {
+          "type": "string"
+        },
+        "lifecycleOperation": {
+          "type": "string",
+          "description": "The value should be Instantiate,Scaleout,Scalein,Scaleup,Scaledown, Heal, Terminal"
+        },
+        "jobId": {
+          "type": "string"
+        },
+        "addResource": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": " The value should be VDU,VL,CP,Strorage."
+            },
+            "resourceDefinitionId": {
+              "type": "string"
+            },
+            "vdu": {
+              "type": "string"
+            }
+          }
+        },
+        "removeResource": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": " The value should be VDU,VL,CP,Strorage."
+            },
+            "resourceDefinitionId": {
+              "type": "string"
+            },
+            "vdu": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalParam": {
+          "type": "object",
+          "description": "The data type is KeyValuePair. Additional parameters passed by the NFVO, specific to the VNF and the LCM operation."
+        }
+      }
+    },
+    "GrantVNFResponse": {
+      "type": "object",
+      "properties": {
+        "vim": {
+          "type": "object",
+          "properties": {
+            "vimInfoId": {
+              "type": "string"
+            },
+            "vimId": {
+              "type": "string"
+            },
+            "interfaceInfo": {
+              "type": "object",
+              "properties": {
+                "vimType": {
+                  "type": "string",
+                  "description": "The vim Type value wil be openstack"
+                },
+                "apiVersion": {
+                  "type": "string",
+                  "description": "The api Version Type value will be "
+                },
+                "protocolType": {
+                  "type": "string",
+                  "description": "The protocol Type value will be http or https"
+                }
+              }
+            },
+            "accessInfo": {
+              "type": "string",
+              "properties": {
+                "tenant": {
+                  "type": "string",
+                  "description": "Tenant Name of tenant"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Username for login"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "Password of login user"
+                }
+              }
+            },
+            "interfaceEndpoint": {
+              "type": "string",
+              "description": "Information about the interface endpoint. It is a URL"
+            }
+          }
+        }
+      }
+    },
+    "VNFLCMNotification": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "vnfInstanceId": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "jobId": {
+          "type": "string"
+        },
+        "affectedVnfc": {
+          "type": "object",
+          "properties": {
+            "vnfcInstanceId": {
+              "type": "string",
+              "description": "Identifier of the VNFC instance"
+            },
+            "vduId": {
+              "type": "string",
+              "description": "Identifier of the VDU in the VNFD"
+            },
+            "changeType": {
+              "type": "string",
+              "description": "Signals the type of change: added,removed, modified"
+            },
+            "vimid": {
+              "type": "string",
+              "description": "Identifier of vim"
+            },
+            "vmid": {
+              "type": "string",
+              "description": "Identifier of virtual machine"
+            },
+            "vmname": {
+              "type": "string",
+              "description": "Name of virtual machine"
+            }
+          }
+        },
+        "affectedVl": {
+          "type": "object",
+          "properties": {
+            "vlInstanceId": {
+              "type": "string",
+              "description": "Identifier of the VL instance"
+            },
+            "vldid": {
+              "type": "string",
+              "description": "Identifier of the VLD in the VNFD"
+            },
+            "changeType": {
+              "type": "string",
+              "description": "Signals the type of change: vl_added,vl_removed,vl_modified"
+            },
+            "networkResource": {
+              "type": "object",
+              "description": "storage Resource",
+              "properties": {
+                "resourceType": {
+                  "type": "string",
+                  "description": "The value should be vm,volume,network,port"
+                },
+                "resourceId": {
+                  "type": "string",
+                  "description": "Identifier of the resource in the scope of the VIM"
+                },
+                "resourceName": {
+                  "type": "string",
+                  "description": "Resource name in the vim"
+                }
+              }
+            }
+          }
+        },
+        "affectedVirtualStorage": {
+          "type": "object",
+          "properties": {
+            "vsInstanceId": {
+              "type": "string",
+              "description": "Identifier of the VL instance"
+            },
+            "vsdId": {
+              "type": "string",
+              "description": "Identifier of the VLD in the VNFD"
+            },
+            "changeType": {
+              "type": "string",
+              "description": "Signals the type of change: vl_added,vl_removed,vl_modified"
+            },
+            "storageResource": {
+              "type": "object",
+              "description": "storage Resource",
+              "properties": {
+                "resourceType": {
+                  "type": "string",
+                  "description": "The value should be vm,volume,network,port"
+                },
+                "resourceId": {
+                  "type": "string",
+                  "description": "Identifier of the resource in the scope of the VIM"
+                },
+                "resourceName": {
+                  "type": "string",
+                  "description": "Resource name in the vim"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "VnfInstantiateRequest": {
+      "type": "object",
+      "properties": {
+        "vnfInstanceName": {
+          "type": "string"
+        },
+        "vnfPackageId": {
+          "type": "string"
+        },
+        "vnfDescriptorId": {
+          "type": "string"
+        },        
+        "vnfInstanceDescription": {
+          "type": "string"
+        },
+        "extVirtualLink": {
+          "type": "array",
+          "items": {
+              "$ref": "#/definitions/extVirtualLinkInfo"
+          }
+        },
+        "additionalParam": {
+          "type": "object"
+        }
+      }
+    },
+    "extVirtualLinkInfo":{
+        "type": "object",
+        "properties": {
+          "vlInstanceId": {
+            "type": "string"
+          },
+          "networkId": {
+            "type": "string"
+          },
+          "cpdId": {
+            "type": "string"
+          },
+          "vim": {
+            "$ref": "#/definitions/vimInfo"
+          }
+        }
+    },
+            
+    "VnfInstantiateResponse": {
+      "type": "object",
+      "properties": {
+        "vnfInstanceId": {
+          "type": "string"
+        },
+        "jobId": {
+          "type": "string"
+        }
+      }
+    },
+    "VnfScaleRequest":{
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The VNF scale type value should be SCALE_OUT, SCALE_IN"
+        },
+        "aspectId":{
+          "type": "string",
+          "description": "Identifies the aspect of the VNF that is requested to be scaled"          
+        },
+        "numberOfSteps": {
+          "type": "string",
+          "description": "Number of scaling steps to be executed as part of this ScaleVnf operation. It shall be a positive number" 
+        },
+        "additionalParam":{
+          "type": "object",
+          "description": "Additional parameters passed by the NFVO as input to the scaling process, specific to the VNF being scaled" 
+        } 
+      }
+    },
+    "VnfHealRequest":{
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "affectedvm": {
+          "type": "object",
+          "properties": {
+            "vimid":{
+              "type": "string"
+            },
+           "vduid": {
+              "type": "string"
+           },
+          "vmname":{
+              "type": "string"
+           }
+          }
+        }
+      }
+    },
+    "VnfTerminateRequest":{
+      "type": "object",
+      "properties": {
+        "terminationType": {
+          "type": "string"
+        },
+        "gracefulTerminationTimeout": {
+          "type": "string"
+        }        
+      }      
+    },
+    "JobInfo": {
+      "type": "object",
+      "properties": {
+        "jobId": {
+          "type": "string"
+        }
+      }
+    },
+    "VnfInfo": {
+      "type": "object",
+      "properties": {
+        "vnfInstanceId": {
+          "type": "string"
+        },
+        "vnfInstanceName": {
+          "type": "string"
+        },
+        "vnfInstanceDescription": {
+          "type": "string"
+        },
+        "vnfdId": {
+          "type": "string"
+        },        
+        "vnfPackageId": {
+          "type": "string"
+        },   
+        "version": {
+          "type": "string"
+        },   
+        "vnfProvider": {
+          "type": "string"
+        },  
+        "vnfType": {
+          "type": "string"
+        },  
+        "vnfStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "vimInfo": {
+          "type": "object",
+          "properties": {
+            "vimInfoId": {
+              "type": "string"
+            },
+            "vimId": {
+              "type": "string"
+            },
+            "interfaceInfo": {
+              "type": "object",
+              "properties": {
+                "vimType": {
+                  "type": "string",
+                  "description": "The vim Type value wil be openstack"
+                },
+                "apiVersion": {
+                  "type": "string",
+                  "description": "The api Version Type value will be "
+                },
+                "protocolType": {
+                  "type": "string",
+                  "description": "The protocol Type value will be http or https"
+                }
+              }
+            },
+            "accessInfo": {
+              "type": "string",
+              "properties": {
+                "tenant": {
+                  "type": "string",
+                  "description": "Tenant Name of tenant"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Username for login"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "Password of login user"
+                }
+              }
+            },
+            "interfaceEndpoint": {
+              "type": "string",
+              "description": "Information about the interface endpoint. It is a URL"
+            }
+          }
+    },
+    "VnfPkgDetailInfo": {
+      "type": "object",
+      "properties": {
+        "csarId": {
+          "type": "string",
+          "description": "vnf package id, UUID"
+        },
+        "packageInfo": {
+          "$ref": "#/definitions/VnfPkgInfo"
+        },
+        "imageInfo": {
+          "$ref": "#/definitions/VnfPkgImgListInfo"
+        },
+        "vnfInstanceInfo": {
+          "$ref": "#/definitions/VnfInstListInfo"
+        }
+      }
+    },
+    "VnfPkgInfo": {
+      "type": "object",
+      "description": "vnf package infomation",
+      "properties": {
+        "csarId": {
+          "type": "string",
+          "description": "vnf package id, UUID"
+        },
+        "vnfdId": {
+          "type": "string",
+          "description": "VNF descriptor ID"
+        },
+        "vnfdProvider": {
+          "type": "string",
+          "description": "VNF descriptor vendor ID"
+        },
+        "vnfdVersion": {
+          "type": "string",
+          "description": "VNF descriptor version"
+        },
+        "vnfVersion": {
+          "type": "string",
+          "description": "VNF Software version"
+        },
+        "downloadUri":{
+          "type": "string",
+          "description": "The download uri of VNF package"
+        }
+      }
+    },
+    "VnfInstListInfo": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/VnfInstInfo"
+      }
+    },
+    "VnfInstInfo": {
+      "type": "object",
+      "properties": {
+        "vnfInstanceId": {
+          "type": "string",
+          "description": "VNF instance ID"
+        },
+        "vnfInstanceName": {
+          "type": "string",
+          "description": "VNF instance name"
+        }
+      }
+    },
+    "VnfPkgImgListInfo": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/VnfPkgImgInfo"
+      }
+    },
+    "VnfPkgImgInfo": {
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "description": "image file name"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "image file path in the csar or image url in external repository"
+        }
+      }
+    },
+    "VnfmInfo": {
+      "type": "object",
+      "properties": {
+        "vnfmId": {
+          "type": "string",
+          "description": "vnfm Id"
+        },
+        "name": {
+          "type": "string",
+          "description": "vnfm name"
+        },
+        "type": {
+          "type": "string",
+          "description": "vnfm type"
+        },  
+        "url": {
+          "type": "string",
+          "description": "vnfm url"
+        },
+        "userName": {
+          "type": "string",
+          "description": "vnfm login username"
+        },
+        "password": {
+          "type": "string",
+          "description": "vnfm login password"
+        },  
+        "vimId": {
+          "type": "string",
+          "description": "vim Id"
+        },
+        "vendor": {
+          "type": "string",
+          "description": "vendor name"
+        },
+        "version": {
+          "type": "string",
+          "description": "vnfm version"
+        }, 
+        "description": {
+          "type": "string",
+          "description": "vnfm description"
+        }, 
+        "certificateUrl": {
+          "type": "string",
+          "description": "vnfm certificate Url"
+        },
+        "createTime": {
+          "type": "string",
+          "description": "vnfm info createTime"
+        }
+      }      
+    },
+    "VimInfo": {
+      "type": "object",
+      "properties": {
+        "vimId": {
+          "type": "string",
+          "description": "vim Id"
+        },
+        "name": {
+          "type": "string",
+          "description": "vnfm name"
+        },
+        "type": {
+          "type": "string",
+          "description": "vnfm type"
+        },  
+        "url": {
+          "type": "string",
+          "description": "vnfm url"
+        },
+        "userName": {
+          "type": "string",
+          "description": "vnfm login username"
+        },
+        "password": {
+          "type": "string",
+          "description": "vnfm login password"
+        },  
+        "vendor": {
+          "type": "string",
+          "description": "vendor name"
+        },
+        "version": {
+          "type": "string",
+          "description": "vnfm version"
+        }, 
+        "description": {
+          "type": "string",
+          "description": "vnfm description"
+        }, 
+        "createTime": {
+          "type": "string",
+          "description": "vnfm info createTime"
+        }
+      }      
+    }
+  }
+}
