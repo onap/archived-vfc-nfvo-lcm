@@ -29,15 +29,15 @@ def call_aai(resource, method, content=''):
         'X-FromAppId': 'VFC-NFVO-LCM',
         'X-TransactionId': str(uuid.uuid1())
     }
-    resource = resource + "?depth=all"
-    return restcall.call_req(base_url=AAI_BASE_URL,
-        user=AAI_USER,
-        passwd=AAI_PASSWD,
-        auth_type=0,
-        resource=resource,
-        method=method,
-        content=content,
-        additional_headers=additional_headers)
+
+    return restcall.call_req(AAI_BASE_URL,
+                             AAI_USER,
+                             AAI_PASSWD,
+                             restcall.rest_no_auth,
+                             resource,
+                             method,
+                             content,
+                             additional_headers)
 
 
 def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
@@ -184,46 +184,3 @@ def delete_ns_relationship(global_customer_id, service_type, service_instance_id
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete ns instance relationship exception in AAI")
     return json.JSONDecoder().decode(ret[1])
-
-
-def split_vim_to_owner_region(vim_id):
-    split_vim = vim_id.split('_')
-    cloud_owner = split_vim[0]
-    cloud_region = "".join(split_vim[1:])
-    return cloud_owner, cloud_region
-
-def convert_vim_info(vim_info_aai):
-    vim_id = vim_info_aai["cloud-owner"] + "_" + vim_info_aai["cloud-region-id"]
-    esr_system_info = ignore_case_get(ignore_case_get(vim_info_aai, "esr-system-info-list"), "esr-system-info")
-    # tenants = ignore_case_get(vim_info_aai, "tenants")
-    vim_info = {
-        "vimId": vim_id,
-        "name": vim_id,
-        "url": ignore_case_get(esr_system_info[0], "service-url"),
-        "userName": ignore_case_get(esr_system_info[0], "user-name"),
-        "password": ignore_case_get(esr_system_info[0], "password"),
-        # "tenant": ignore_case_get(tenants[0], "tenant-id"),
-        "tenant": ignore_case_get(esr_system_info[0], "default-tenant"),
-        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
-        "version": ignore_case_get(esr_system_info[0], "version"),
-        "description": "vim",
-        "domain": "",
-        "type": ignore_case_get(esr_system_info[0], "type"),
-        "createTime": "2016-07-18 12:22:53"
-    }
-    return vim_info
-
-
-def get_vims():
-    ret = call_aai("/cloud-infrastructure/cloud-regions", "GET")
-    if ret[0] != 0:
-        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
-        raise NSLCMException("Failed to query vims from extsys.")
-    # convert vim_info_aai to internal vim_info
-    vims_aai = json.JSONDecoder().decode(ret[1])
-    vims_aai = ignore_case_get(vims_aai, "cloud-region")
-    vims_info = []
-    for vim in vims_aai:
-        vim = convert_vim_info(vim)
-        vims_info.append(vim)
-    return vims_info
