@@ -29,14 +29,16 @@ def call_aai(resource, method, content=''):
         'X-FromAppId': 'VFC-NFVO-LCM',
         'X-TransactionId': str(uuid.uuid1())
     }
+
     return restcall.call_req(base_url=AAI_BASE_URL,
         user=AAI_USER,
         passwd=AAI_PASSWD,
-        auth_type=restcall.rest_no_auth,
-        resource=resource + "?depth=all",
+        auth_type=0,
+        resource=resource,
         method=method,
         content=content,
         additional_headers=additional_headers)
+
 
 def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
     resource = "/business/customers/customer/%s/service-subscriptions/service-subscription/" \
@@ -182,36 +184,6 @@ def delete_ns_relationship(global_customer_id, service_type, service_instance_id
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete ns instance relationship exception in AAI")
     return json.JSONDecoder().decode(ret[1])
-
-
-def get_vnfm_by_id(vnfm_inst_id):
-    uri = '/external-system/esr-vnfm-list/esr-vnfm/%s' % vnfm_inst_id
-    ret = call_aai(uri, "GET")
-    if ret[0] > 0:
-        logger.error('Send get VNFM information request to extsys failed.')
-        raise NSLCMException('Send get VNFM information request to extsys failed.')
-    # convert vnfm_info_aai to internal vnfm_info
-    vnfm_info_aai = json.JSONDecoder().decode(ret[1])
-    vnfm_info = convert_vnfm_info(vnfm_info_aai)
-    return vnfm_info
-
-def convert_vnfm_info(vnfm_info_aai):
-    esr_system_info = ignore_case_get(ignore_case_get(vnfm_info_aai, "esr-system-info-list"), "esr-system-info")
-    vnfm_info = {
-        "vnfmId": vnfm_info_aai["vnfm-id"],
-        "name": vnfm_info_aai["vnfm-id"],
-        "type": ignore_case_get(esr_system_info[0], "type"),
-        "vimId": vnfm_info_aai["vim-id"],
-        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
-        "version": ignore_case_get(esr_system_info[0], "version"),
-        "description": "vnfm",
-        "certificateUrl": vnfm_info_aai["certificate-url"],
-        "url": ignore_case_get(esr_system_info[0], "service-url"),
-        "userName": ignore_case_get(esr_system_info[0], "user-name"),
-        "password": ignore_case_get(esr_system_info[0], "password"),
-        "createTime": "2016-07-06 15:33:18"
-    }
-    return vnfm_info
 
 
 def split_vim_to_owner_region(vim_id):

@@ -101,12 +101,15 @@ def convert_sdnc_info(sdnc_info_aai):
 
 
 def get_vnfm_by_id(vnfm_inst_id):
-    uri = '/api/aai-esr-server/v1/vnfms/%s' % vnfm_inst_id
-    ret = req_by_msb(uri, "GET")
+    uri = '/external-system/esr-vnfm-list/esr-vnfm/%s' % vnfm_inst_id
+    ret = call_aai(uri, "GET")
     if ret[0] > 0:
         logger.error('Send get VNFM information request to extsys failed.')
         raise NSLCMException('Send get VNFM information request to extsys failed.')
-    return json.JSONDecoder().decode(ret[1])
+    # convert vnfm_info_aai to internal vnfm_info
+    vnfm_info_aai = json.JSONDecoder().decode(ret[1])
+    vnfm_info = convert_vnfm_info(vnfm_info_aai)
+    return vnfm_info
 
 
 def convert_vnfm_info(vnfm_info_aai):
