@@ -23,6 +23,42 @@ from lcm.pub.database.models import VLInstModel, NSInstModel, VNFFGInstModel
 from lcm.pub.nfvi.vim import vimadaptor
 from lcm.pub.utils import restcall
 
+vim_info = {"cloud-owner": "example-cloud-owner-val-97336",
+            "cloud-region-id": "example-cloud-region-id-val-35532",
+            "cloud-type": "example-cloud-type-val-18046",
+            "owner-defined-type": "example-owner-defined-type-val-9413",
+            "cloud-region-version": "example-cloud-region-version-val-85706",
+            "identity-url": "example-identity-url-val-71252",
+            "cloud-zone": "example-cloud-zone-val-27112",
+            "complex-name": "example-complex-name-val-85283",
+            "sriov-automation": True,
+            "cloud-extra-info": "example-cloud-extra-info-val-90854",
+            "cloud-epa-caps": "example-cloud-epa-caps-val-2409",
+            "resource-version": "example-resource-version-val-42094",
+            "esr-system-info-list": {
+                "esr-system-info": [
+                    {
+                        "esr-system-info-id": "example-esr-system-info-id-val-7713",
+                        "system-name": "example-system-name-val-19801",
+                        "type": "example-type-val-24477",
+                        "vendor": "example-vendor-val-50079",
+                        "version": "example-version-val-93146",
+                        "service-url": "example-service-url-val-68090",
+                        "user-name": "example-user-name-val-14470",
+                        "password": "example-password-val-84190",
+                        "system-type": "example-system-type-val-42773",
+                        "protocal": "example-protocal-val-85736",
+                        "ssl-cacert": "example-ssl-cacert-val-33989",
+                        "ssl-insecure": True,
+                        "ip-address": "example-ip-address-val-99038",
+                        "port": "example-port-val-27323",
+                        "cloud-domain": "example-cloud-domain-val-55163",
+                        "default-tenant": "example-default-tenant-val-99383",
+                        "resource-version": "example-resource-version-val-15424"
+                    }
+                ]
+            }
+            }
 
 class TestVlViews(TestCase):
     def setUp(self):
@@ -67,9 +103,7 @@ class TestVlViews(TestCase):
                                              "res_type": 1,
                                              "subnet_list": [
                                                  {"id": subnetwork_id, "name": "subnet1", "res_type": 1}]}]
-        mock_req_by_rest.return_value = [0,
-                                         '{"test":"test_name","name":"vim_name","type":"type_name","url":"url_add"'
-                                         ',"userName":"user_name","password":"password","tenant":"tenant"}']
+        mock_req_by_rest.return_value = [0, json.JSONEncoder().encode(vim_info), '200']
 
         self.create_vl(self.vl_id_1)
         self.create_vl(self.vl_id_2)
@@ -100,9 +134,7 @@ class TestVlViews(TestCase):
             "context": json.JSONEncoder().encode(self.context),
             "vlindex": self.vl_id_1}
         mock_uuid4.return_value = '999'
-        mock_req_by_rest.return_value = [0,
-                                         '{"test":"test_name","name":"vim_name","type":"type_name","url":"url_add"'
-                                         ',"userName":"user_name","password":"password","tenant":"tenant"}']
+        mock_req_by_rest.return_value = [0, json.JSONEncoder().encode(vim_info), '200']
         mock_create_network.return_value = [1, (1)]
         response = self.client.post("/api/nslcm/v1/ns/vls", data=req_data)
         retinfo = {"detail": "vl instantiation failed, detail message: Send post vl request to vim failed."}
@@ -131,9 +163,7 @@ class TestVlDetailViews(TestCase):
     @mock.patch.object(vimadaptor.VimAdaptor, "delete_network")
     @mock.patch.object(vimadaptor.VimAdaptor, "delete_subnet")
     def test_delete_vl(self, mock_delete_subnet, mock_delete_network, mock_req_by_rest):
-        mock_req_by_rest.return_value = [0,
-                                         '{"test":"test_name","name":"vim_name","type":"type_name","url":"url_add"'
-                                         ',"userName":"user_name","password":"password","tenant":"tenant"}']
+        mock_req_by_rest.return_value = [0, json.JSONEncoder().encode(vim_info), '200']
         response = self.client.delete("/api/nslcm/v1/ns/vls/%s" % self.vl_inst_id)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         expect_resp_data = {"result": 0, "detail": "delete vl success"}

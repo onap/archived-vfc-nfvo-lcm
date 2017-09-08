@@ -214,17 +214,6 @@ def convert_vnfm_info(vnfm_info_aai):
     return vnfm_info
 
 
-def get_vim_by_id(vim_id):
-    cloud_owner, cloud_region = split_vim_to_owner_region(vim_id)
-    ret = call_aai("/cloud-infrastructure/cloud-regions/cloud-region/%s/%s" % (cloud_owner, cloud_region), "GET")
-    if ret[0] != 0:
-        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
-        raise NSLCMException("Failed to query vim(%s) from extsys." % vim_id)
-    # convert vim_info_aai to internal vim_info
-    vim_info_aai = json.JSONDecoder().decode(ret[1])
-    vim_info = convert_vim_info(vim_info_aai)
-    return vim_info
-
 def split_vim_to_owner_region(vim_id):
     split_vim = vim_id.split('_')
     cloud_owner = split_vim[0]
