@@ -43,6 +43,9 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.routers = self.get_all_router(nodeTemplates)
         self.server_groups = self.get_all_server_group(tosca.topology_template.groups)
         self.element_groups = self._get_all_element_group(tosca.topology_template.groups)
+        self.policies = self._get_policies(tosca.topology_template.policies)
+        self.vnf_exposed = self.get_all_endpoint_exposed(tosca.topology_template)
+        self.vnf_flavours = self.get_all_flavour(tosca.topology_template.groups)
 
 
     def _get_all_services(self, nodeTemplates):
@@ -288,3 +291,13 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
 
     def _isVnfdElementGroup(self, group):
         return group.type.upper().find('.VNFDELEMENTGROUP.') >= 0 or group.type.upper().endswith('.VNFDELEMENTGROUP')
+
+    def _get_policies(self, top_policies):
+        policies = []
+        scaling_policies = self.get_scaling_policies(top_policies)
+        healing_policies = self.get_healing_policies(top_policies)
+        policies.append({"scaling":scaling_policies, 'healing':healing_policies})
+        return policies
+
+    def get_healing_policies(self, top_policies):
+        return self.get_policies_by_keyword(top_policies,'.HEALING')
