@@ -196,13 +196,13 @@
       }
     },   
     "/{vnfmtype}/v1/{vnfmid}/vnfs/{vnfInstanceId}/terminate": {    
-      "delete": {
+      "post": {
         "tags": [
           "VNFMDriver"
         ],
-        "summary": "delete vnf",
-        "description": "VNF terminate Rest API should be provided by the VNFM Driver",
-        "operationId": "delete_vnf",
+        "summary": "terminate&delete vnf",
+        "description": "VNF terminate&delete Rest API should be provided by the VNFM Driver",
+        "operationId": "terminate_vnf",
         "consumes": [
           "application/json"
         ],
