@@ -27,6 +27,8 @@ from lcm.ns.vnfs.scale_vnfs import NFManualScaleService
 from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
 from lcm.ns.vnfs.grant_vnfs import GrantVnfs
 from lcm.ns.vnfs.notify_lcm import NotifyLcm
+from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi.extsys import get_vnfm_by_id
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 
@@ -122,3 +124,17 @@ class NfVerifyView(APIView):
         logger.debug("NfVerifyView--post::%s> %s", job_id, request.data)
         VerifyVnfs(request.data, job_id).start()
         return Response(data={"jobId": job_id}, status=status.HTTP_202_ACCEPTED)
+
+class NfVnfmInfoView(APIView):
+    def get(self, request, vnfmid):
+        logger.debug("NfVnfmInfoView--get::> %s" % vnfmid)
+        try:
+            vnfm_info = get_vnfm_by_id(vnfmid)
+        except NSLCMException as e:
+            logger.error(e.message)
+            return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except:
+            logger.error(traceback.format_exc())
+            return Response(data={'error': 'Failed to get vnfm info.'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data=vnfm_info, status=status.HTTP_200_OK)

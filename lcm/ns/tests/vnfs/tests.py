@@ -419,6 +419,64 @@ class TestHealVnfViews(TestCase):
         self.assertRaises(NSLCMException, NFHealService(nf_inst_id, req_data).run)
         self.assertEqual(len(NfInstModel.objects.filter(nfinstid=nf_inst_id)), 0)
 
+class TestGetVnfmInfoViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.vnfm_id = str(uuid.uuid4())
+
+    def tearDown(self):
+        pass
+
+    @mock.patch.object(restcall, "call_req")
+    def test_get_vnfm_info(self, mock_call_req):
+        vnfm_info_aai = { "vnfm-id": "example-vnfm-id-val-62576",
+                          "vim-id": "example-vim-id-val-35114",
+                          "certificate-url": "example-certificate-url-val-90242",
+                          "esr-system-info-list": {
+                            "esr-system-info": [
+                              {
+                                "esr-system-info-id": "example-esr-system-info-id-val-78484",
+                                "system-name": "example-system-name-val-23790",
+                                "type": "example-type-val-52596",
+                                "vendor": "example-vendor-val-47399",
+                                "version": "example-version-val-42051",
+                                "service-url": "example-service-url-val-10731",
+                                "user-name": "example-user-name-val-65946",
+                                "password": "example-password-val-22505",
+                                "system-type": "example-system-type-val-27221",
+                                "protocal": "example-protocal-val-54632",
+                                "ssl-cacert": "example-ssl-cacert-val-45965",
+                                "ssl-insecure": True,
+                                "ip-address": "example-ip-address-val-19212",
+                                "port": "example-port-val-57641",
+                                "cloud-domain": "example-cloud-domain-val-26296",
+                                "default-tenant": "example-default-tenant-val-87724"
+                              }
+                            ]
+                          }
+                        }
+        r1 = [0, json.JSONEncoder().encode(vnfm_info_aai), '200']
+        mock_call_req.side_effect = [r1]
+        esr_system_info = ignore_case_get(ignore_case_get(vnfm_info_aai, "esr-system-info-list"), "esr-system-info")
+        expect_data = { "vnfmId": vnfm_info_aai["vnfm-id"],
+                        "name": vnfm_info_aai["vnfm-id"],
+                        "type": ignore_case_get(esr_system_info[0], "type"),
+                        "vimId": vnfm_info_aai["vim-id"],
+                        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+                        "version": ignore_case_get(esr_system_info[0], "version"),
+                        "description": "vnfm",
+                        "certificateUrl": vnfm_info_aai["certificate-url"],
+                        "url": ignore_case_get(esr_system_info[0], "service-url"),
+                        "userName": ignore_case_get(esr_system_info[0], "user-name"),
+                        "password": ignore_case_get(esr_system_info[0], "password"),
+                        "createTime": "2016-07-06 15:33:18"
+                    }
+
+        response = self.client.get("/api/nslcm/v1/vnfms/%s" % self.vnfm_id)
+        self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
+        context = json.loads(response.content)
+        self.assertEqual(expect_data, context)
+
 vnfd_model_dict = {
     'local_storages': [],
     'vdus': [
