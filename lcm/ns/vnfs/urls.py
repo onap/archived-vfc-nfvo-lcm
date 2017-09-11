@@ -14,7 +14,8 @@
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from lcm.ns.vnfs.views import NfView, NfDetailView, NfGrant, LcmNotify, NfScaleView, NfVerifyView, NfVnfmInfoView
+from lcm.ns.vnfs.views import NfView, NfDetailView, NfGrant, LcmNotify, NfScaleView, NfVerifyView, NfVnfmInfoView, \
+    NfVimInfoView
 
 urlpatterns = patterns('',
                        url(r'^api/nslcm/v1/ns/vnfs$', NfView.as_view()),
@@ -26,6 +27,7 @@ urlpatterns = patterns('',
                        url(r'^api/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)/scaling$', NfScaleView.as_view()),
                        url(r'^api/nslcm/v1/vnfonboarding$', NfVerifyView.as_view()),
                        url(r'^api/nslcm/v1/vnfms/(?P<vnfmid>[0-9a-zA-Z_-]+)', NfVnfmInfoView.as_view()),
+                       url(r'^api/nslcm/v1/vims/(?P<vimid>[0-9a-zA-Z_-]+)', NfVimInfoView.as_view()),
                        )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

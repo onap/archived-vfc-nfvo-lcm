@@ -28,7 +28,7 @@ from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
 from lcm.ns.vnfs.grant_vnfs import GrantVnfs
 from lcm.ns.vnfs.notify_lcm import NotifyLcm
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi.extsys import get_vnfm_by_id
+from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 
@@ -138,3 +138,17 @@ class NfVnfmInfoView(APIView):
             return Response(data={'error': 'Failed to get vnfm info.'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data=vnfm_info, status=status.HTTP_200_OK)
+
+class NfVimInfoView(APIView):
+    def get(self, request, vimid):
+        logger.debug("NfVimInfoView--get::> %s" % vimid)
+        try:
+            vim_info = get_vim_by_id(vimid)
+        except NSLCMException as e:
+            logger.error(e.message)
+            return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except:
+            logger.error(traceback.format_exc())
+            return Response(data={'error': 'Failed to get vim info.'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data=vim_info, status=status.HTTP_200_OK)
