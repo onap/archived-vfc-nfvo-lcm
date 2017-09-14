@@ -20,6 +20,7 @@ import time
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.database.models import NSInstModel, VLInstModel, FPInstModel, NfInstModel
 from lcm.pub.database.models import DefPkgMappingModel, InputParamMappingModel, ServiceBaseInfoModel
+from lcm.pub.msapi.aai import get_customer_aai, delete_customer_aai
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
@@ -262,6 +263,7 @@ class DeleteNsService(object):
     def do_biz(self):
         try:
             self.delete_ns()
+            self.delete_ns_in_aai()
         except:
             logger.error(traceback.format_exc())
 
@@ -277,3 +279,19 @@ class DeleteNsService(object):
 
         logger.debug("delele ServiceBaseInfoModel(%s)", self.ns_inst_id)
         ServiceBaseInfoModel.objects.filter(service_id=self.ns_inst_id).delete()
+
+    def delete_ns_in_aai(self):
+        logger.debug("DeleteNsService::delete_ns_in_aai::delete ns instance[%s] in aai." % self.ns_inst_id)
+        global_customer_id = "global-customer-id-" + self.ns_inst_id
+
+        # query ns instance in aai, get resource_version
+        customer_info = get_customer_aai(global_customer_id)
+        resource_version = customer_info["resource-version"]
+
+        # delete ns instance from aai
+        resp_data, resp_status = delete_customer_aai(global_customer_id, resource_version)
+        if resp_data:
+            logger.debug("Fail to delete ns instance[%s] from aai, resp_status: [%s]." % (self.ns_inst_id, resp_status))
+        else:
+            logger.debug(
+                "Success to delete ns instance[%s] from aai, resp_status: [%s]." % (self.ns_inst_id, resp_status))

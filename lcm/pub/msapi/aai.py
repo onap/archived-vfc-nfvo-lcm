@@ -49,7 +49,7 @@ def create_customer_aai(global_customer_id, data):
 
 
 def get_customer_aai(global_customer_id):
-    resource = "/business/customers/customer/%s" % global_customer_id
+    resource = "/business/customers/customer/%s?depth=all" % global_customer_id
     ret = call_aai(resource, "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -65,7 +65,7 @@ def delete_customer_aai(global_customer_id, resource_version=""):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Customer delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]), ret[2]
 
 
 def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
