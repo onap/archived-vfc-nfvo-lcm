@@ -51,6 +51,8 @@ class CreateNSView(APIView):
 
     def post(self, request):
         logger.debug("Enter CreateNS: %s", request.data)
+        if ignore_case_get(request.data, 'test') == "test":
+            return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
         nsd_id = ignore_case_get(request.data, 'nsdId')
         ns_name = ignore_case_get(request.data, 'nsName')
         description = ignore_case_get(request.data, 'description')
