@@ -11,12 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
 import uuid
+import mock
 
 from django.test import TestCase, Client
 from rest_framework import status
 
 from lcm.pub.database.models import NSInstModel, NSDModel
+from lcm.pub.utils import restcall
 
 
 class TestNsInstantiate(TestCase):
@@ -30,7 +33,10 @@ class TestNsInstantiate(TestCase):
         NSDModel.objects.all().delete()
         NSInstModel.objects.all().delete()
 
-    def test_create_ns(self):
+    @mock.patch.object(restcall, 'call_req')
+    def test_create_ns(self, mock_call_req):
+        r1_create_ns_to_aai = [0, json.JSONEncoder().encode({}), '201']
+        mock_call_req.side_effect = [r1_create_ns_to_aai]
         data = {
             'nsdid': self.nsd_id,
             'nsname': 'ns',

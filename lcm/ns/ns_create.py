@@ -16,6 +16,7 @@ import uuid
 
 from lcm.pub.database.models import NSDModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi.aai import create_customer_aai
 from lcm.pub.utils.timeutil import now_time
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ class CreateNSService(object):
         self.check_nsd_valid()
         self.check_ns_inst_name_exist()
         self.create_ns_inst()
+        self.create_ns_in_aai()
         logger.debug("CreateNSService::do_biz::ns_inst_id=%s" % self.ns_inst_id)
         return self.ns_inst_id
 
@@ -53,7 +55,37 @@ class CreateNSService(object):
     def create_ns_inst(self):
         self.ns_inst_id = str(uuid.uuid4())
         logger.debug("CreateNSService::create_ns_inst::ns_inst_id=%s" % self.ns_inst_id)
-        NSInstModel(id=self.ns_inst_id, name=self.ns_name, nspackage_id=self.ns_package_id, 
-                    nsd_id=self.nsd_id, description=self.description, status='empty', 
+        NSInstModel(id=self.ns_inst_id, name=self.ns_name, nspackage_id=self.ns_package_id,
+                    nsd_id=self.nsd_id, description=self.description, status='empty',
                     lastuptime=now_time()).save()
 
+    def create_ns_in_aai(self):
+        logger.debug("CreateNSService::create_ns_in_aai::report ns instance[%s] to aai." % self.ns_inst_id)
+        global_customer_id = "global-customer-id-" + self.ns_inst_id
+        data = {
+                "global-customer-id": "global-customer-id-" + self.ns_inst_id,
+                "subscriber-name": "subscriber-name-" + self.ns_inst_id,
+                "subscriber-type": "subscriber-type-" + self.ns_inst_id,
+                "service-subscriptions": {
+                    "service-subscription": [
+                        {
+                            "service-type": "service-type-" + self.ns_inst_id,
+                            "service-instances": {
+                                "service-instance": [
+                                    {
+                                        "service-instance-id": self.ns_inst_id,
+                                        "service-instance-name": self.ns_name,
+                                        "service-type": "service-type-" + self.ns_inst_id,
+                                        "service-role": "service-role-" + self.ns_inst_id
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        resp_data, resp_status = create_customer_aai(global_customer_id, data)
+        if resp_data:
+            logger.debug("Fail to create ns instance[%s] to aai, resp_status: [%s]." % (self.ns_inst_id, resp_status) )
+        else:
+            logger.debug("Success to create ns instance[%s] to aai, resp_status: [%s]." % (self.ns_inst_id, resp_status) )
