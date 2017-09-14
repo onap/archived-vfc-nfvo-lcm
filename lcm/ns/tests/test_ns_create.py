@@ -12,15 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+
 import uuid
 import mock
 
 from django.test import TestCase, Client
 from rest_framework import status
 
+from lcm.ns.ns_create import CreateNSService
+from lcm.pub.exceptions import NSLCMException
 from lcm.pub.database.models import NSInstModel, NSDModel
 from lcm.pub.utils import restcall
-
 
 class TestNsInstantiate(TestCase):
     def setUp(self):
@@ -43,3 +45,29 @@ class TestNsInstantiate(TestCase):
             'description': 'description'}
         response = self.client.post("/api/nslcm/v1/ns", data=data)
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
+
+    @mock.patch.object(CreateNSService, "do_biz")
+    def test_create_ns_empty_data(self, mock_do_biz):
+        mock_do_biz.side_effect = Exception("Exception in CreateNS.")
+
+        data = {}
+
+        response = self.client.post("/api/nslcm/v1/ns", data=data)
+        self.assertEqual(response.data["error"], "Exception in CreateNS.")
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)
+
+    @mock.patch.object(CreateNSService, "do_biz")
+    def test_create_ns_non_existing_nsd(self, mock_do_biz):
+        mock_do_biz.side_effect = NSLCMException("nsd not exists.")
+        new_nsd_id = '1'
+
+        data = {
+            'nsdid': new_nsd_id,
+            'nsname': 'ns',
+            'description': 'description'}
+
+        response = self.client.post("/api/nslcm/v1/ns", data=data)
+        self.assertEqual(response.data["error"], "nsd not exists.")
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)

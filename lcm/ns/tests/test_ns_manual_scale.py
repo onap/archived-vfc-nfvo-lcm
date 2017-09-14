@@ -24,6 +24,7 @@ from lcm.ns.const import NS_INST_STATUS
 from lcm.pub.utils import restcall
 from lcm.pub.utils import toscautil
 from lcm.ns.ns_manual_scale import NSManualScaleService
+from lcm.pub.exceptions import NSLCMException
 
 class TestNsManualScale(TestCase):
     def setUp(self):
@@ -91,3 +92,28 @@ class TestNsManualScale(TestCase):
     def test_swagger_ok(self):
         resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    @mock.patch.object(NSManualScaleService, 'start')
+    def test_ns_manual_scale_empty_data(self, mock_start):
+        mock_start.side_effect = NSLCMException("NS scale failed.")
+
+        data = {}
+
+        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.nsd_id, data=data)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)
+
+    @mock.patch.object(NSManualScaleService, 'start')
+    def test_ns_manual_scale_non_existing_nsd_id(self, mock_start):
+        mock_start.side_effect = NSLCMException("NS scale failed.")
+
+        nsd_id = '1111'
+
+        data = {
+            'nsdid': nsd_id,
+            'nsname': 'ns',
+            'description': 'description'}
+
+        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % nsd_id, data=data)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)

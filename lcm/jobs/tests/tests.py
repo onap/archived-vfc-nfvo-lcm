@@ -30,3 +30,11 @@ class JobsViewTest(TestCase):
         JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst').save()
         response = self.client.get("/api/nslcm/v1/jobs/%s" % self.job_id)
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_non_exiting_job(self):
+        job_id = 'test_new_job_id'
+        JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
+        JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst').save()
+        response = self.client.get("/api/nslcm/v1/jobs/%s" % job_id)
+        self.assertIn('jobId', response.data)
+        self.assertNotIn('responseDescriptor', response.data)
