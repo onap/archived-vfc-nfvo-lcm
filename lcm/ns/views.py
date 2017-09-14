@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+
 import json
 import logging
 import os
@@ -21,16 +23,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.ns.ns_create import CreateNSService
+from lcm.ns.ns_delete import DeleteNsService
 from lcm.ns.ns_get import GetNSInfoService
+from lcm.ns.ns_heal import NSHealService
 from lcm.ns.ns_instant import InstantNSService
 from lcm.ns.ns_manual_scale import NSManualScaleService
-from lcm.ns.ns_heal import NSHealService
-from lcm.ns.ns_terminate import TerminateNsService, DeleteNsService
+from lcm.ns.ns_terminate import TerminateNsService
 from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
-from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.restcall import req_by_msb
-from lcm.pub.exceptions import NSLCMException
+from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
 
