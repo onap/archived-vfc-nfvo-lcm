@@ -45,7 +45,7 @@ def create_customer_aai(global_customer_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Customer creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]), ret[2]
 
 
 def get_customer_aai(global_customer_id):
