@@ -22,6 +22,7 @@ from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYP
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.database.models import NfPackageModel, NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi.aai import create_vnf_aai
 from lcm.pub.msapi.extsys import get_vnfm_by_id
 from lcm.pub.msapi.resmgr import create_vnf, create_vnf_creation_info
 from lcm.pub.msapi.vnfmdriver import send_nf_init_request
@@ -75,6 +76,7 @@ class CreateVnfs(Thread):
             self.wait_vnfm_job_finish()
             self.write_vnf_creation_info()
             self.save_info_to_db()
+            self.create_vnf_in_aai()
         except NSLCMException as e:
             self.vnf_inst_failed_handle(e.message)
         except Exception:
@@ -265,3 +267,20 @@ class CreateVnfs(Thread):
                 raise NSLCMException('Vnffg instance not exist.')
             vnf_list = vnffg_inst_infos[0].vnflist
             vnffg_inst_infos.update(vnf_list=vnf_list + ',' + self.nf_inst_id if vnf_list else self.nf_inst_id)
+
+
+    def create_vnf_in_aai(self):
+        logger.debug("CreateVnfs::create_vnf_in_aai::report vnf instance[%s] to aai." % self.nf_inst_id)
+        data = {
+            "vnf-id": self.nf_inst_id,
+            "vnf-name": self.vnf_inst_name,
+            "vnf-type": "vnf-type-test111",
+            "service-id": self.ns_inst_id,
+            "in-maint": True,
+            "is-closed-loop-disabled": False
+        }
+        resp_data, resp_status = create_vnf_aai(self.nf_inst_id, data)
+        if resp_data:
+            logger.debug("Fail to create vnf instance[%s] to aai, resp_status: [%s]." % (self.nf_inst_id, resp_status))
+        else:
+            logger.debug("Success to create vnf instance[%s] to aai, resp_status: [%s]." % (self.nf_inst_id, resp_status))

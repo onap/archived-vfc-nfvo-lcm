@@ -20,6 +20,7 @@ import threading
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.database.models import NfInstModel
 from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND
+from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.exceptions import NSLCMException
@@ -48,6 +49,7 @@ class TerminateVnfs(threading.Thread):
             self.wait_vnfm_job_finish()
             self.send_terminate_vnf_to_resMgr()
             self.delete_data_from_db()
+            self.delete_vnf_in_aai()
         except NSLCMException as e:
             self.exception(e.message)
         except Exception:
@@ -123,3 +125,18 @@ class TerminateVnfs(threading.Thread):
     def delete_data_from_db(self):
         NfInstModel.objects.filter(nfinstid=self.vnf_inst_id).delete()
         JobUtil.add_job_status(self.job_id, 100, 'vnf terminate success', 0)
+
+    def delete_vnf_in_aai(self):
+        logger.debug("TerminateVnfs::delete_vnf_in_aai::delete vnf instance[%s] in aai." % self.vnf_inst_id)
+
+        # query vnf instance in aai, get resource_version
+        customer_info = query_vnf_aai(self.vnf_inst_id)
+        resource_version = customer_info["resource-version"]
+
+        # delete vnf instance from aai
+        resp_data, resp_status = delete_vnf_aai(self.vnf_inst_id, resource_version)
+        if resp_data:
+            logger.debug("Fail to delete vnf instance[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
+        else:
+            logger.debug(
+                "Success to delete vnf instance[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))

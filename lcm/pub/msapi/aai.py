@@ -76,7 +76,7 @@ def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Ns instance creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]), ret[2]
 
 def delete_ns_aai(global_customer_id, service_type, service_instance_id, resource_version=""):
     resource = "/business/customers/customer/%s/service-subscriptions/service-subscription/" \
@@ -92,7 +92,7 @@ def delete_ns_aai(global_customer_id, service_type, service_instance_id, resourc
 
 def query_ns_aai(global_customer_id, service_type, service_instance_id, data):
     resource = "/business/customers/customer/%s/service-subscriptions/service-subscription/" \
-               "%s/service-instances/service-instance/%s" % \
+               "%s/service-instances/service-instance/%s?depth=all" % \
                (global_customer_id, service_type, service_instance_id)
     ret = call_aai(resource, "GET", data)
     if ret[0] != 0:
@@ -106,7 +106,7 @@ def create_vnf_aai(vnf_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vnf instance creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]), ret[2]
 
 def delete_vnf_aai(vnf_id, resource_version=""):
     resource = "/network/generic-vnfs/generic-vnf/%s" % vnf_id
@@ -118,9 +118,9 @@ def delete_vnf_aai(vnf_id, resource_version=""):
         raise NSLCMException("Vnf instance delete exception in AAI")
     return json.JSONDecoder().decode(ret[1])
 
-def query_vnf_aai(vnf_id, data):
-    resource = "/network/generic-vnfs/generic-vnf/%s" % vnf_id
-    ret = call_aai(resource, "GET", data)
+def query_vnf_aai(vnf_id):
+    resource = "/network/generic-vnfs/generic-vnf/%s?depth=all" % vnf_id
+    ret = call_aai(resource, "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vnf instance query exception in AAI")
@@ -134,7 +134,7 @@ def create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vserver creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]), ret[2]
 
 def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, resource_version=""):
     resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
@@ -150,7 +150,7 @@ def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, reso
 
 def query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
     resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
-               "%s/tenants/tenant/%s/vservers/vserver/%s" % \
+               "%s/tenants/tenant/%s/vservers/vserver/%s?depth=all" % \
                (cloud_owner, cloud_region_id, tenant_id, vserver_id)
     ret = call_aai(resource, "GET", data)
     if ret[0] != 0:
