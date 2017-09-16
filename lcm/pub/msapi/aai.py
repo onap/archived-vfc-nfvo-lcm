@@ -21,6 +21,7 @@ from lcm.pub.config.config import AAI_BASE_URL, AAI_USER, AAI_PASSWD
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -31,13 +32,13 @@ def call_aai(resource, method, content=''):
     }
 
     return restcall.call_req(AAI_BASE_URL,
-                             AAI_USER,
-                             AAI_PASSWD,
-                             restcall.rest_no_auth,
-                             resource,
-                             method,
-                             content,
-                             additional_headers)
+                     AAI_USER,
+                     AAI_PASSWD,
+                     restcall.rest_no_auth,
+                     resource,
+                     method,
+                     content,
+                     additional_headers)
 
 def create_customer_aai(global_customer_id, data):
     resource = "/business/customers/customer/%s" % global_customer_id

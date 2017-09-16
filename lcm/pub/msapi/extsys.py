@@ -109,7 +109,7 @@ def convert_sdnc_info(sdnc_info_aai):
 
 
 def get_vnfm_by_id(vnfm_inst_id):
-    uri = '/external-system/esr-vnfm-list/esr-vnfm/%s?depth=all' % vnfm_inst_id
+    uri = "/external-system/esr-vnfm-list/esr-vnfm/%s?depth=all" % vnfm_inst_id
     ret = call_aai(uri, "GET")
     if ret[0] > 0:
         logger.error('Send get VNFM information request to extsys failed.')
@@ -140,7 +140,7 @@ def convert_vnfm_info(vnfm_info_aai):
 
 
 def select_vnfm(vnfm_type, vim_id):
-    uri = '/external-system/esr-vnfm-list?depth=all'
+    uri = "/external-system/esr-vnfm-list?depth=all"
     ret = call_aai(uri, "GET")
     if ret[0] > 0:
         logger.error("Failed to call %s: %s", uri, ret[1])

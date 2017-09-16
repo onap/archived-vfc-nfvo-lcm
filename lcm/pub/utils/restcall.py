@@ -29,8 +29,7 @@ HTTP_404_NOTFOUND, HTTP_403_FORBIDDEN, HTTP_401_UNAUTHORIZED, HTTP_400_BADREQUES
 logger = logging.getLogger(__name__)
 
 
-def call_req(base_url, user, passwd, auth_type, resource, method, 
-    content='', additional_headers={}):
+def call_req(base_url, user, passwd, auth_type, resource, method, content='', additional_headers={}):
     callid = str(uuid.uuid1())
     logger.debug("[%s]call_req('%s','%s','%s',%s,'%s','%s','%s')" % (
         callid, base_url, user, passwd, auth_type, resource, method, content))
