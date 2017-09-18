@@ -45,6 +45,7 @@ format of input_data
 """
 def run_ns_instantiate(input_data):
     logger.debug("Enter %s, input_data is %s", fun_name(), input_data)
+    ns_instantiate_ok = False
     job_id = ignore_case_get(input_data, "jobId")
     ns_inst_id = ignore_case_get(input_data, "nsInstanceId")
     nsd_json = ignore_case_get(input_data, "object_context")
@@ -76,6 +77,7 @@ def run_ns_instantiate(input_data):
         post_deal(ns_inst_id, "true")
 
         update_job(job_id, 100, "0", "Create NS successfully.")
+        ns_instantiate_ok = True
     except NSLCMException as e:
         logger.error("Failded to Create NS: %s", e.message)
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
@@ -86,6 +88,7 @@ def run_ns_instantiate(input_data):
         post_deal(ns_inst_id, "false")
     finally:
         g_jobs_status.pop(job_id)
+    return ns_instantiate_ok
 
 
 def create_vl(ns_inst_id, vl_index, nsd, ns_param):
@@ -101,6 +104,7 @@ def create_vl(ns_inst_id, vl_index, nsd, ns_param):
     if ret[0] != 0:
         logger.error("Failed to call create_vl(%s): %s", vl_index, ret[1])
         raise NSLCMException("Failed to call create_vl(index is %s)" % vl_index)
+    ret[1] = json.JSONDecoder().decode(ret[1])
 
     result = str(ret[1]["result"])
     detail = ret[1]["detail"]
@@ -112,7 +116,7 @@ def create_vl(ns_inst_id, vl_index, nsd, ns_param):
     logger.debug("Create VL(%s) successfully.", vl_id)
 
 def create_vnf(ns_inst_id, vnf_index, nf_param):
-    uri = "/ns/vnfs"
+    uri = "api/nslcm/v1/ns/vnfs"
     data = json.JSONEncoder().encode({
         "nsInstanceId": ns_inst_id,
         "vnfIndex": vnf_index,
@@ -123,6 +127,7 @@ def create_vnf(ns_inst_id, vnf_index, nf_param):
     if ret[0] != 0:
         logger.error("Failed to call create_vnf(%s): %s", vnf_index, ret[1])
         raise NSLCMException("Failed to call create_vnf(index is %s)" % vnf_index)
+    ret[1] = json.JSONDecoder().decode(ret[1])
 
     vnf_inst_id = ret[1]["vnfInstId"]
     job_id = ret[1]["jobId"]
@@ -130,7 +135,7 @@ def create_vnf(ns_inst_id, vnf_index, nf_param):
     return vnf_inst_id, job_id, vnf_index - 1
 
 def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
-    uri = "/ns/sfcs"
+    uri = "api/nslcm/v1/ns/sfcs"
     data = json.JSONEncoder().encode({
         "nsInstanceId": ns_inst_id,
         "context": nsd_json,
@@ -142,6 +147,7 @@ def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
     if ret[0] != 0:
         logger.error("Failed to call create_sfc(%s): %s", fp_index, ret[1])
         raise NSLCMException("Failed to call create_sfc(index is %s)" % fp_index)
+    ret[1] = json.JSONDecoder().decode(ret[1])
 
     sfc_inst_id = ret[1]["sfcInstId"]
     job_id = ret[1]["jobId"]
@@ -149,7 +155,7 @@ def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
     return sfc_inst_id, job_id, fp_index - 1
 
 def post_deal(ns_inst_id, status):
-    uri = "/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id) 
+    uri = "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id) 
     data = json.JSONEncoder().encode({
         "status": status
     })
@@ -157,7 +163,7 @@ def post_deal(ns_inst_id, status):
     ret = restcall.req_by_msb(uri, "POST", data)
     if ret[0] != 0:
         logger.error("Failed to call post_deal(%s): %s", ns_inst_id, ret[1])
-    logger.debug("Call post_deal(%s) successfully.", ns_inst_id)
+    logger.debug("Call post_deal(%s, %s) successfully.", ns_inst_id, status)
 
 def update_job(job_id, progress, errcode, desc):
     uri = "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id)
@@ -173,10 +179,11 @@ class JobWaitThread(Thread):
     Job Wait 
     """
 
-    def __init__(self, inst_id, job_id, index):
+    def __init__(self, inst_id, job_id, ns_job_id, index):
         Thread.__init__(self)
         self.inst_id = inst_id
         self.job_id = job_id
+        self.ns_job_id = ns_job_id
         self.index = index
         self.retry_count = 60
         self.interval_second = 3
@@ -214,20 +221,21 @@ class JobWaitThread(Thread):
                 break
         if job_timeout:
             logger.error("Job(%s) timeout", self.job_id)
-        if self.job_id in g_jobs_status:
+        if self.ns_job_id in g_jobs_status:
             if job_end_normal:
-                g_jobs_status[self.job_id][self.index] = 0
+                g_jobs_status[self.ns_job_id][self.index] = 0
 
 def wait_until_jobs_done(g_job_id, jobs):
     job_threads = []
     for inst_id, job_id, index in jobs:
-        job_threads.append(JobWaitThread(inst_id, job_id, index))
+        job_threads.append(JobWaitThread(inst_id, job_id, g_job_id, index))
     for t in job_threads:
         t.start()
     for t in job_threads:
         t.join()
     if g_job_id in g_jobs_status:
         if sum(g_jobs_status[g_job_id]) > 0:
+            logger.error("g_jobs_status[%s]: %s", g_job_id, g_jobs_status[g_job_id])
             raise NSLCMException("Some jobs failed!")
 
 def confirm_vnf_status(vnf_inst_id):
@@ -235,6 +243,8 @@ def confirm_vnf_status(vnf_inst_id):
     ret = restcall.req_by_msb(uri, "GET")
     if ret[0] != 0:
         raise NSLCMException("Failed to call get_vnf(%s)" % vnf_inst_id)
+    ret[1] = json.JSONDecoder().decode(ret[1])
+
     vnf_status = ret[1]["vnfStatus"]
     if vnf_status != "active":
         raise NSLCMException("Status of VNF(%s) is not active" % vnf_inst_id)
@@ -244,6 +254,8 @@ def confirm_sfc_status(sfc_inst_id):
     ret = restcall.req_by_msb(uri, "GET")
     if ret[0] != 0:
         raise NSLCMException("Failed to call get_sfc(%s)" % sfc_inst_id)
+    ret[1] = json.JSONDecoder().decode(ret[1])
+
     sfc_status = ret[1]["sfcStatus"]
     if sfc_status != "active":
         raise NSLCMException("Status of SFC(%s) is not active" % sfc_inst_id)
