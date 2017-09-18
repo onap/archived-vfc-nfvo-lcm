@@ -22,8 +22,8 @@ from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYP
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.database.models import NfPackageModel, NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi.aai import create_vnf_aai
-from lcm.pub.msapi.extsys import get_vnfm_by_id
+from lcm.pub.msapi.aai import create_vnf_aai, create_vserver_aai
+from lcm.pub.msapi.extsys import get_vnfm_by_id, split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.msapi.resmgr import create_vnf, create_vnf_creation_info
 from lcm.pub.msapi.vnfmdriver import send_nf_init_request
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil, JOB_TYPE
@@ -77,6 +77,7 @@ class CreateVnfs(Thread):
             self.write_vnf_creation_info()
             self.save_info_to_db()
             self.create_vnf_in_aai()
+            self.create_vserver_in_aai()
         except NSLCMException as e:
             self.vnf_inst_failed_handle(e.message)
         except Exception:
@@ -284,3 +285,33 @@ class CreateVnfs(Thread):
             logger.debug("Fail to create vnf instance[%s] to aai, resp_status: [%s]." % (self.nf_inst_id, resp_status))
         else:
             logger.debug("Success to create vnf instance[%s] to aai, resp_status: [%s]." % (self.nf_inst_id, resp_status))
+
+    def create_vserver_in_aai(self):
+        logger.debug("create_vserver_in_aai start!")
+        cloud_owner, cloud_region_id = split_vim_to_owner_region(self.vim_id)
+
+        # query vim_info from aai
+        vim_info = get_vim_by_id(self.vim_id)
+        tenant_id = vim_info["tenant"]
+        vm_inst_infos = VmInstModel.objects.filter(insttype=INST_TYPE.VNF, instid=self.nf_inst_id)
+        for vm_inst_info in vm_inst_infos:
+            vserver_id = vm_inst_info.resouceid
+            data = {
+                "vserver-id": vm_inst_info.resouceid,
+                "vserver-name": vm_inst_info.vmname,
+                "prov-status": "ACTIVE",
+                "vserver-selflink": "",
+                "in-maint": True,
+                "is-closed-loop-disabled": False
+            }
+
+            # create vserver instance in aai
+            resp_data, resp_status = create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data)
+            if resp_data:
+                logger.debug(
+                    "Fail to create vserver instance[%s] to aai, resp_status: [%s]." % (vserver_id, resp_status))
+            else:
+                logger.debug(
+                    "Success to create vserver instance[%s] to aai, resp_status: [%s]." % (vserver_id, resp_status))
+
+        logger.debug("create_vserver_in_aai end!")

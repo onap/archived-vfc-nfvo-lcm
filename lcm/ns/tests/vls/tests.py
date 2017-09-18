@@ -53,7 +53,7 @@ vim_info = {"cloud-owner": "example-cloud-owner-val-97336",
                         "ip-address": "example-ip-address-val-99038",
                         "port": "example-port-val-27323",
                         "cloud-domain": "example-cloud-domain-val-55163",
-                        "default-tenant": "example-default-tenant-val-99383",
+                        "default-tenant": "admin",
                         "resource-version": "example-resource-version-val-15424"
                     }
                 ]
