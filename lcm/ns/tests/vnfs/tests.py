@@ -18,6 +18,7 @@ import mock
 from django.test import TestCase, Client
 from rest_framework import status
 
+from lcm.ns.tests.vls.tests import vim_info
 from lcm.ns.vnfs import create_vnfs
 from lcm.ns.vnfs.const import VNF_STATUS
 from lcm.ns.vnfs.create_vnfs import CreateVnfs
@@ -84,14 +85,27 @@ class TestCreateVnfViews(TestCase):
         self.ns_inst_id = str(uuid.uuid4())
         self.job_id = str(uuid.uuid4())
         self.data = {
-            'nsInstanceId': self.ns_inst_id,
-            'additionalParamForNs': {"inputs": json.dumps({})},
-            'additionalParamForVnf': [{
-                'vnfprofileid': 'VBras',
-                'additionalparam': {
-                    'inputs': json.dumps({'vnf_param1': '11', 'vnf_param2': '22'}),
-                    'vnfminstanceid': "1"}}],
-            'vnfIndex': '1'}
+            "nsInstanceId": self.ns_inst_id,
+            "additionalParamForNs": {
+                "inputs": json.dumps({
+
+                })
+            },
+            "additionalParamForVnf": [
+                {
+                    "vnfprofileid": "VBras",
+                    "additionalparam": {
+                        "inputs": json.dumps({
+                            "vnf_param1": "11",
+                            "vnf_param2": "22"
+                        }),
+                        "vnfminstanceid": "1",
+                        "vimId": "zte_test"
+                    }
+                }
+            ],
+            "vnfIndex": "1"
+        }
         self.client = Client()
         NfPackageModel(uuid=str(uuid.uuid4()), nfpackageid='package_id1', vnfdid='zte_vbras', vendor='zte',
                        vnfdversion='1.0.0', vnfversion='1.0.0', vnfdmodel=json.dumps(vnfd_model_dict)).save()
@@ -112,16 +126,23 @@ class TestCreateVnfViews(TestCase):
 
     @mock.patch.object(restcall, 'call_req')
     def test_create_vnf_thread(self, mock_call_req):
+        nf_inst_id, job_id = create_vnfs.prepare_create_params()
         mock_vals = {
             "/api/ztevmanagerdriver/v1/1/vnfs":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), '200'],
-            "/external-system/esr-vnfm-list/esr-vnfm/1":
+            "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
                 [0, json.JSONEncoder().encode(vnfm_info), '200'],
             "/api/resmgr/v1/vnf":
                 [0, json.JSONEncoder().encode({}), '200'],
             "/api/resmgr/v1/vnfinfo":
                 [0, json.JSONEncoder().encode({}), '200'],
-            "/api/ztevmanagerdriver/v1/jobs/" + self.job_id + "&responseId=0":
+            "/network/generic-vnfs/generic-vnf/%s" % nf_inst_id:
+                [0, json.JSONEncoder().encode({}), '201'],
+            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test?depth=all":
+                [0, json.JSONEncoder().encode(vim_info), '201'],
+            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1":
+                [0, json.JSONEncoder().encode({}), '201'],
+            "/api/ztevmanagerdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
                                                                       "status": JOB_MODEL_STATUS.FINISHED,
@@ -142,7 +163,6 @@ class TestCreateVnfViews(TestCase):
                 'additional_param_for_ns': ignore_case_get(self.data, 'additionalParamForNs'),
                 'additional_param_for_vnf': ignore_case_get(self.data, 'additionalParamForVnf'),
                 'vnf_index': ignore_case_get(self.data, 'vnfIndex')}
-        nf_inst_id, job_id = create_vnfs.prepare_create_params()
         CreateVnfs(data, nf_inst_id, job_id).run()
         self.assertTrue(NfInstModel.objects.get(nfinstid=nf_inst_id).status, VNF_STATUS.ACTIVE)
 
@@ -453,52 +473,50 @@ class TestGetVnfmInfoViews(TestCase):
 
     @mock.patch.object(restcall, "call_req")
     def test_get_vnfm_info(self, mock_call_req):
-        vnfm_info_aai = \
-            {
-                "vnfm-id": "example-vnfm-id-val-62576",
-                "vim-id": "example-vim-id-val-35114",
-                "certificate-url": "example-certificate-url-val-90242",
-                "esr-system-info-list": {
-                    "esr-system-info": [
-                        {
-                            "esr-system-info-id": "example-esr-system-info-id-val-78484",
-                            "system-name": "example-system-name-val-23790",
-                            "type": "example-type-val-52596",
-                            "vendor": "example-vendor-val-47399",
-                            "version": "example-version-val-42051",
-                            "service-url": "example-service-url-val-10731",
-                            "user-name": "example-user-name-val-65946",
-                            "password": "example-password-val-22505",
-                            "system-type": "example-system-type-val-27221",
-                            "protocal": "example-protocal-val-54632",
-                            "ssl-cacert": "example-ssl-cacert-val-45965",
-                            "ssl-insecure": True,
-                            "ip-address": "example-ip-address-val-19212",
-                            "port": "example-port-val-57641",
-                            "cloud-domain": "example-cloud-domain-val-26296",
-                            "default-tenant": "example-default-tenant-val-87724"
-                        }
-                    ]
-                }
+        vnfm_info_aai = {
+            "vnfm-id": "example-vnfm-id-val-62576",
+            "vim-id": "example-vim-id-val-35114",
+            "certificate-url": "example-certificate-url-val-90242",
+            "esr-system-info-list": {
+                "esr-system-info": [
+                    {
+                        "esr-system-info-id": "example-esr-system-info-id-val-78484",
+                        "system-name": "example-system-name-val-23790",
+                        "type": "example-type-val-52596",
+                        "vendor": "example-vendor-val-47399",
+                        "version": "example-version-val-42051",
+                        "service-url": "example-service-url-val-10731",
+                        "user-name": "example-user-name-val-65946",
+                        "password": "example-password-val-22505",
+                        "system-type": "example-system-type-val-27221",
+                        "protocal": "example-protocal-val-54632",
+                        "ssl-cacert": "example-ssl-cacert-val-45965",
+                        "ssl-insecure": True,
+                        "ip-address": "example-ip-address-val-19212",
+                        "port": "example-port-val-57641",
+                        "cloud-domain": "example-cloud-domain-val-26296",
+                        "default-tenant": "example-default-tenant-val-87724"
+                    }
+                ]
             }
+        }
         r1 = [0, json.JSONEncoder().encode(vnfm_info_aai), '200']
         mock_call_req.side_effect = [r1]
         esr_system_info = ignore_case_get(ignore_case_get(vnfm_info_aai, "esr-system-info-list"), "esr-system-info")
-        expect_data = \
-            {
-                "vnfmId": vnfm_info_aai["vnfm-id"],
-                "name": vnfm_info_aai["vnfm-id"],
-                "type": ignore_case_get(esr_system_info[0], "type"),
-                "vimId": vnfm_info_aai["vim-id"],
-                "vendor": ignore_case_get(esr_system_info[0], "vendor"),
-                "version": ignore_case_get(esr_system_info[0], "version"),
-                "description": "vnfm",
-                "certificateUrl": vnfm_info_aai["certificate-url"],
-                "url": ignore_case_get(esr_system_info[0], "service-url"),
-                "userName": ignore_case_get(esr_system_info[0], "user-name"),
-                "password": ignore_case_get(esr_system_info[0], "password"),
-                "createTime": "2016-07-06 15:33:18"
-            }
+        expect_data = {
+            "vnfmId": vnfm_info_aai["vnfm-id"],
+            "name": vnfm_info_aai["vnfm-id"],
+            "type": ignore_case_get(esr_system_info[0], "type"),
+            "vimId": vnfm_info_aai["vim-id"],
+            "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+            "version": ignore_case_get(esr_system_info[0], "version"),
+            "description": "vnfm",
+            "certificateUrl": vnfm_info_aai["certificate-url"],
+            "url": ignore_case_get(esr_system_info[0], "service-url"),
+            "userName": ignore_case_get(esr_system_info[0], "user-name"),
+            "password": ignore_case_get(esr_system_info[0], "password"),
+            "createTime": "2016-07-06 15:33:18"
+        }
 
         response = self.client.get("/api/nslcm/v1/vnfms/%s" % self.vnfm_id)
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
@@ -518,22 +536,21 @@ class TestGetVimInfoViews(TestCase):
         r1 = [0, json.JSONEncoder().encode(vim_info_aai), '200']
         mock_call_req.side_effect = [r1]
         esr_system_info = ignore_case_get(ignore_case_get(vim_info_aai, "esr-system-info-list"), "esr-system-info")
-        expect_data = \
-            {
-                "vimId": self.vim_id,
-                "name": self.vim_id,
-                "url": ignore_case_get(esr_system_info[0], "service-url"),
-                "userName": ignore_case_get(esr_system_info[0], "user-name"),
-                "password": ignore_case_get(esr_system_info[0], "password"),
-                # "tenant": ignore_case_get(tenants[0], "tenant-id"),
-                "tenant": ignore_case_get(esr_system_info[0], "default-tenant"),
-                "vendor": ignore_case_get(esr_system_info[0], "vendor"),
-                "version": ignore_case_get(esr_system_info[0], "version"),
-                "description": "vim",
-                "domain": "",
-                "type": ignore_case_get(esr_system_info[0], "type"),
-                "createTime": "2016-07-18 12:22:53"
-            }
+        expect_data = {
+            "vimId": self.vim_id,
+            "name": self.vim_id,
+            "url": ignore_case_get(esr_system_info[0], "service-url"),
+            "userName": ignore_case_get(esr_system_info[0], "user-name"),
+            "password": ignore_case_get(esr_system_info[0], "password"),
+            # "tenant": ignore_case_get(tenants[0], "tenant-id"),
+            "tenant": ignore_case_get(esr_system_info[0], "default-tenant"),
+            "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+            "version": ignore_case_get(esr_system_info[0], "version"),
+            "description": "vim",
+            "domain": "",
+            "type": ignore_case_get(esr_system_info[0], "type"),
+            "createTime": "2016-07-18 12:22:53"
+        }
 
         response = self.client.get("/api/nslcm/v1/vims/%s" % self.vim_id)
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
