@@ -14,6 +14,7 @@
 import logging
 import uuid
 
+from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import NSDModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_customer_aai
@@ -34,7 +35,8 @@ class CreateNSService(object):
         self.check_nsd_valid()
         self.check_ns_inst_name_exist()
         self.create_ns_inst()
-        self.create_ns_in_aai()
+        if REPORT_TO_AAI:
+            self.create_ns_in_aai()
         logger.debug("CreateNSService::do_biz::ns_inst_id=%s" % self.ns_inst_id)
         return self.ns_inst_id
 

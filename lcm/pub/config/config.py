@@ -60,6 +60,7 @@ CATALOG_URL_PATH = None
 AAI_BASE_URL = "https://127.0.0.1:8443/aai/v11"
 AAI_USER = "AAI"
 AAI_PASSWD = "AAI"
+REPORT_TO_AAI = False
 
 # [sdc config]
 SDC_BASE_URL = "https://127.0.0.1:8443/api/sdc/v1"

@@ -23,42 +23,43 @@ from lcm.pub.database.models import VLInstModel, NSInstModel, VNFFGInstModel
 from lcm.pub.nfvi.vim import vimadaptor
 from lcm.pub.utils import restcall
 
-vim_info = {"cloud-owner": "example-cloud-owner-val-97336",
-            "cloud-region-id": "example-cloud-region-id-val-35532",
-            "cloud-type": "example-cloud-type-val-18046",
-            "owner-defined-type": "example-owner-defined-type-val-9413",
-            "cloud-region-version": "example-cloud-region-version-val-85706",
-            "identity-url": "example-identity-url-val-71252",
-            "cloud-zone": "example-cloud-zone-val-27112",
-            "complex-name": "example-complex-name-val-85283",
-            "sriov-automation": True,
-            "cloud-extra-info": "example-cloud-extra-info-val-90854",
-            "cloud-epa-caps": "example-cloud-epa-caps-val-2409",
-            "resource-version": "example-resource-version-val-42094",
-            "esr-system-info-list": {
-                "esr-system-info": [
-                    {
-                        "esr-system-info-id": "example-esr-system-info-id-val-7713",
-                        "system-name": "example-system-name-val-19801",
-                        "type": "example-type-val-24477",
-                        "vendor": "example-vendor-val-50079",
-                        "version": "example-version-val-93146",
-                        "service-url": "example-service-url-val-68090",
-                        "user-name": "example-user-name-val-14470",
-                        "password": "example-password-val-84190",
-                        "system-type": "example-system-type-val-42773",
-                        "protocal": "example-protocal-val-85736",
-                        "ssl-cacert": "example-ssl-cacert-val-33989",
-                        "ssl-insecure": True,
-                        "ip-address": "example-ip-address-val-99038",
-                        "port": "example-port-val-27323",
-                        "cloud-domain": "example-cloud-domain-val-55163",
-                        "default-tenant": "admin",
-                        "resource-version": "example-resource-version-val-15424"
-                    }
-                ]
+vim_info = {
+    "cloud-owner": "example-cloud-owner-val-97336",
+    "cloud-region-id": "example-cloud-region-id-val-35532",
+    "cloud-type": "example-cloud-type-val-18046",
+    "owner-defined-type": "example-owner-defined-type-val-9413",
+    "cloud-region-version": "example-cloud-region-version-val-85706",
+    "identity-url": "example-identity-url-val-71252",
+    "cloud-zone": "example-cloud-zone-val-27112",
+    "complex-name": "example-complex-name-val-85283",
+    "sriov-automation": True,
+    "cloud-extra-info": "example-cloud-extra-info-val-90854",
+    "cloud-epa-caps": "example-cloud-epa-caps-val-2409",
+    "resource-version": "example-resource-version-val-42094",
+    "esr-system-info-list": {
+        "esr-system-info": [
+            {
+                "esr-system-info-id": "example-esr-system-info-id-val-7713",
+                "system-name": "example-system-name-val-19801",
+                "type": "example-type-val-24477",
+                "vendor": "example-vendor-val-50079",
+                "version": "example-version-val-93146",
+                "service-url": "example-service-url-val-68090",
+                "user-name": "example-user-name-val-14470",
+                "password": "example-password-val-84190",
+                "system-type": "example-system-type-val-42773",
+                "protocal": "example-protocal-val-85736",
+                "ssl-cacert": "example-ssl-cacert-val-33989",
+                "ssl-insecure": True,
+                "ip-address": "example-ip-address-val-99038",
+                "port": "example-port-val-27323",
+                "cloud-domain": "example-cloud-domain-val-55163",
+                "default-tenant": "admin",
+                "resource-version": "example-resource-version-val-15424"
             }
-            }
+        ]
+    }
+}
 
 class TestVlViews(TestCase):
     def setUp(self):

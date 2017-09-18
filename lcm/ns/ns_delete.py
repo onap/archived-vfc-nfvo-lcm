@@ -16,6 +16,7 @@
 import logging
 import traceback
 
+from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import DefPkgMappingModel, InputParamMappingModel, ServiceBaseInfoModel
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.msapi.aai import get_customer_aai, delete_customer_aai
@@ -31,7 +32,8 @@ class DeleteNsService(object):
     def do_biz(self):
         try:
             self.delete_ns()
-            self.delete_ns_in_aai()
+            if REPORT_TO_AAI:
+                self.delete_ns_in_aai()
         except:
             logger.error(traceback.format_exc())
 

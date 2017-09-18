@@ -20,6 +20,7 @@ from lcm.ns.const import OWNER_TYPE
 
 from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
 from lcm.ns.vnfs.wait_job import wait_job_finish
+from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import NfPackageModel, NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_vnf_aai, create_vserver_aai
@@ -76,8 +77,9 @@ class CreateVnfs(Thread):
             self.wait_vnfm_job_finish()
             self.write_vnf_creation_info()
             self.save_info_to_db()
-            self.create_vnf_in_aai()
-            self.create_vserver_in_aai()
+            if REPORT_TO_AAI:
+                self.create_vnf_in_aai()
+                self.create_vserver_in_aai()
         except NSLCMException as e:
             self.vnf_inst_failed_handle(e.message)
         except Exception:

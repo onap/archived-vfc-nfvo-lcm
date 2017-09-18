@@ -18,6 +18,7 @@ import json
 import threading
 
 from lcm.ns.vnfs.wait_job import wait_job_finish
+from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import NfInstModel
 from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND
 from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai
@@ -49,7 +50,8 @@ class TerminateVnfs(threading.Thread):
             self.wait_vnfm_job_finish()
             self.send_terminate_vnf_to_resMgr()
             self.delete_data_from_db()
-            self.delete_vnf_in_aai()
+            if REPORT_TO_AAI:
+                self.delete_vnf_in_aai()
         except NSLCMException as e:
             self.exception(e.message)
         except Exception:
