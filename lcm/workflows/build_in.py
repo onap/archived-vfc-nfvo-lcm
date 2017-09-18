@@ -68,6 +68,7 @@ def run_ns_instantiate(input_data):
         [confirm_vnf_status(inst_id) for inst_id, _, _ in jobs]
 
         update_job(job_id, 70, "0", "Start to create SFC")
+        g_jobs_status[job_id] = [1 for i in range(sfc_count)]
         jobs = [create_sfc(ns_inst_id, i + 1, nsd_json, sdnc_id) for i in range(sfc_count)] 
         wait_until_jobs_done(job_id, jobs)
 
