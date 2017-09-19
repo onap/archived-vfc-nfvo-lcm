@@ -19,9 +19,10 @@ import threading
 
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.database.models import NfInstModel
-from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND
-from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai
+from lcm.pub.database.models import NfInstModel, VmInstModel
+from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE
+from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai, query_vserver_aai, delete_vserver_aai
+from lcm.pub.msapi.extsys import get_vnfm_by_id, split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.exceptions import NSLCMException
@@ -49,9 +50,10 @@ class TerminateVnfs(threading.Thread):
             self.send_nf_terminate_to_vnfmDriver()
             self.wait_vnfm_job_finish()
             self.send_terminate_vnf_to_resMgr()
-            self.delete_data_from_db()
             if REPORT_TO_AAI:
                 self.delete_vnf_in_aai()
+                self.delete_vserver_in_aai()
+            self.delete_data_from_db()
         except NSLCMException as e:
             self.exception(e.message)
         except Exception:
@@ -142,3 +144,32 @@ class TerminateVnfs(threading.Thread):
         else:
             logger.debug(
                 "Success to delete vnf instance[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
+
+    def delete_vserver_in_aai(self):
+        logger.debug("delete_vserver_in_aai start!")
+
+        vm_inst_infos = VmInstModel.objects.filter(insttype=INST_TYPE.VNF, instid=self.vnf_inst_id)
+        for vm_inst_info in vm_inst_infos:
+            vserver_id = vm_inst_info.resouceid
+            vim_id = vm_inst_info.vimid
+            cloud_owner, cloud_region_id = split_vim_to_owner_region(vim_id)
+            # query vim_info from aai, get tenant
+            vim_info = get_vim_by_id(vim_id)
+            tenant_id = vim_info["tenant"]
+
+            # query vserver instance in aai, get resource_version
+            vserver_info = query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id)
+            resource_version = vserver_info["resource-version"]
+
+            # delete vserver instance from aai
+            resp_data, resp_status = delete_vserver_aai(cloud_owner, cloud_region_id,
+                                                        tenant_id, vserver_id, resource_version)
+            if resp_data:
+                logger.debug("Fail to delete vserver instance[%s] from aai, resp_status: [%s]." %
+                             (vserver_id, resp_status))
+            else:
+                logger.debug(
+                    "Success to delete vserver instance[%s] from aai, resp_status: [%s]." %
+                    (vserver_id, resp_status))
+
+        logger.debug("delete_vserver_in_aai end!")

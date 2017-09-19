@@ -149,11 +149,11 @@ def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, reso
         raise NSLCMException("Vserver delete exception in AAI")
     return json.JSONDecoder().decode(ret[1])
 
-def query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
+def query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id):
     resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
                "%s/tenants/tenant/%s/vservers/vserver/%s?depth=all" % \
                (cloud_owner, cloud_region_id, tenant_id, vserver_id)
-    ret = call_aai(resource, "GET", data)
+    ret = call_aai(resource, "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vserver query exception in AAI")
