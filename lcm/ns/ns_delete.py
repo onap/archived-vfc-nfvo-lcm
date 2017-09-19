@@ -19,8 +19,7 @@ import traceback
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import DefPkgMappingModel, InputParamMappingModel, ServiceBaseInfoModel
 from lcm.pub.database.models import NSInstModel
-from lcm.pub.msapi.aai import get_customer_aai, delete_customer_aai
-
+from lcm.pub.msapi.aai import delete_customer_aai, query_customer_aai
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +54,7 @@ class DeleteNsService(object):
         global_customer_id = "global-customer-id-" + self.ns_inst_id
 
         # query ns instance in aai, get resource_version
-        customer_info = get_customer_aai(global_customer_id)
+        customer_info = query_customer_aai(global_customer_id)
         resource_version = customer_info["resource-version"]
 
         # delete ns instance from aai

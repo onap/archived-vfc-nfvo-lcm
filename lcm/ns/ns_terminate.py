@@ -11,19 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import math
-import traceback
-import logging
+
 import json
+import logging
+import math
 import threading
 import time
+import traceback
+
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.database.models import NSInstModel, VLInstModel, FPInstModel, NfInstModel
-from lcm.pub.database.models import DefPkgMappingModel, InputParamMappingModel, ServiceBaseInfoModel
-from lcm.pub.msapi.aai import get_customer_aai, delete_customer_aai
-from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
+from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.utils.values import ignore_case_get
 
 JOB_ERROR = 255
@@ -192,10 +192,10 @@ class TerminateNsService(threading.Thread):
         NSInstModel.objects.filter(id=self.ns_inst_id).update(status='null')
         JobUtil.add_job_status(self.job_id, 100, "ns terminate ends.", '')
 
-    # @staticmethod
-    # def call_vnfm_to_cancel_resource(res_type, instid):
-    #     ret = call_from_ns_cancel_resource(res_type, instid)
-    #     return ret
+    @staticmethod
+    def call_vnfm_to_cancel_resource(res_type, instid):
+        ret = call_from_ns_cancel_resource(res_type, instid)
+        return ret
 
     def add_progress(self, progress, status_decs, error_code=""):
         JobUtil.add_job_status(self.job_id, progress, status_decs, error_code)
