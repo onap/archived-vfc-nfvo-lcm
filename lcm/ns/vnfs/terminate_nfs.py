@@ -51,8 +51,8 @@ class TerminateVnfs(threading.Thread):
             self.wait_vnfm_job_finish()
             self.send_terminate_vnf_to_resMgr()
             if REPORT_TO_AAI:
-                self.delete_vnf_in_aai()
                 self.delete_vserver_in_aai()
+                self.delete_vnf_in_aai()
             self.delete_data_from_db()
         except NSLCMException as e:
             self.exception(e.message)

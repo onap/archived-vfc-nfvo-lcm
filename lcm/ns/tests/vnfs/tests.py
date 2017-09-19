@@ -18,50 +18,20 @@ import mock
 from django.test import TestCase, Client
 from rest_framework import status
 
-from lcm.ns.tests.vls.tests import vim_info
 from lcm.ns.vnfs import create_vnfs
-from lcm.ns.vnfs.const import VNF_STATUS
+from lcm.ns.vnfs.const import VNF_STATUS, INST_TYPE
 from lcm.ns.vnfs.create_vnfs import CreateVnfs
-from lcm.pub.database.models import NfInstModel, JobModel, NfPackageModel, NSInstModel
+from lcm.ns.vnfs.heal_vnfs import NFHealService
+from lcm.ns.vnfs.scale_vnfs import NFManualScaleService
+from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
+from lcm.pub.database.models import NfInstModel, JobModel, NfPackageModel, NSInstModel, VmInstModel
+from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
-from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
-from lcm.ns.vnfs.scale_vnfs import NFManualScaleService
-from lcm.ns.vnfs.heal_vnfs import NFHealService
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
-from lcm.pub.exceptions import NSLCMException
 
-vnfm_info = {
-    "vnfm-id": "example-vnfm-id-val-97336",
-    "vim-id": "zte_test",
-    "certificate-url": "example-certificate-url-val-18046",
-    "resource-version": "example-resource-version-val-42094",
-    "esr-system-info-list": {
-        "esr-system-info": [
-            {
-                "esr-system-info-id": "example-esr-system-info-id-val-7713",
-                "system-name": "example-system-name-val-19801",
-                "type": "ztevmanagerdriver",
-                "vendor": "example-vendor-val-50079",
-                "version": "example-version-val-93146",
-                "service-url": "example-service-url-val-68090",
-                "user-name": "example-user-name-val-14470",
-                "password": "example-password-val-84190",
-                "system-type": "example-system-type-val-42773",
-                "protocal": "example-protocal-val-85736",
-                "ssl-cacert": "example-ssl-cacert-val-33989",
-                "ssl-insecure": True,
-                "ip-address": "example-ip-address-val-99038",
-                "port": "example-port-val-27323",
-                "cloud-domain": "example-cloud-domain-val-55163",
-                "default-tenant": "example-default-tenant-val-99383",
-                "resource-version": "example-resource-version-val-15424"
-            }
-        ]
-    }
-}
 
 class TestGetVnfViews(TestCase):
     def setUp(self):
@@ -159,122 +129,154 @@ class TestCreateVnfViews(TestCase):
         def side_effect(*args):
             return mock_vals[args[4]]
         mock_call_req.side_effect = side_effect
-        data = {'ns_instance_id': ignore_case_get(self.data, 'nsInstanceId'),
-                'additional_param_for_ns': ignore_case_get(self.data, 'additionalParamForNs'),
-                'additional_param_for_vnf': ignore_case_get(self.data, 'additionalParamForVnf'),
-                'vnf_index': ignore_case_get(self.data, 'vnfIndex')}
+        data = {
+            'ns_instance_id': ignore_case_get(self.data, 'nsInstanceId'),
+            'additional_param_for_ns': ignore_case_get(self.data, 'additionalParamForNs'),
+            'additional_param_for_vnf': ignore_case_get(self.data, 'additionalParamForVnf'),
+            'vnf_index': ignore_case_get(self.data, 'vnfIndex')
+        }
         CreateVnfs(data, nf_inst_id, job_id).run()
         self.assertTrue(NfInstModel.objects.get(nfinstid=nf_inst_id).status, VNF_STATUS.ACTIVE)
 
 
-# class TestTerminateVnfViews(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.ns_inst_id = str(uuid.uuid4())
-#         self.nf_inst_id = '1'
-#         self.vnffg_id = str(uuid.uuid4())
-#         self.vim_id = str(uuid.uuid4())
-#         self.job_id = str(uuid.uuid4())
-#         self.nf_uuid = '111'
-#         self.tenant = "tenantname"
-#         NSInstModel.objects.all().delete()
-#         NfInstModel.objects.all().delete()
-#         NSInstModel(id=self.ns_inst_id, name="ns_name").save()
-#         NfInstModel.objects.create(nfinstid=self.nf_inst_id, nf_name='name_1', vnf_id='1',
-#                                    vnfm_inst_id='1', ns_inst_id='111,2-2-2',
-#                                    max_cpu='14', max_ram='12296', max_hd='101', max_shd="20", max_net=10,
-#                                    status='active', mnfinstid=self.nf_uuid, package_id='pkg1',
-#                                    vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-#                                               '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-#                                               '"productType": "CN","vnfType": "PGW",'
-#                                               '"description": "PGW VNFD description",'
-#                                               '"isShared":true,"vnfExtendType":"driver"}}')
-#
-#     def tearDown(self):
-#         NSInstModel.objects.all().delete()
-#         NfInstModel.objects.all().delete()
-#
-#     @mock.patch.object(TerminateVnfs, 'run')
-#     def test_terminate_vnf_url(self, mock_run):
-#         req_data = {
-#             "terminationType": "forceful",
-#             "gracefulTerminationTimeout": "600"}
-#
-#         response = self.client.post("/api/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id, data=req_data)
-#         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
-#
-#
-#     @mock.patch.object(restcall, 'call_req')
-#     def test_terminate_vnf(self, mock_call_req):
-#         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
-#
-#         nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-#         if nfinst:
-#             self.failUnlessEqual(1, 1)
-#         else:
-#             self.failUnlessEqual(1, 0)
-#
-#         vnf_info = {
-#             "vnf-id": "vnf-id-test111",
-#             "vnf-name": "vnf-name-test111",
-#             "vnf-type": "vnf-type-test111",
-#             "in-maint": True,
-#             "is-closed-loop-disabled": False,
-#             "resource-version": "1505465356262"
-#         }
-#         job_info = {
-#             "jobId": job_id,
-#             "responsedescriptor": {
-#                 "progress": "100",
-#                 "status": JOB_MODEL_STATUS.FINISHED,
-#                 "responseid": "3",
-#                 "statusdescription": "creating",
-#                 "errorcode": "0",
-#                 "responsehistorylist": [
-#                     {
-#                         "progress": "0",
-#                         "status": JOB_MODEL_STATUS.PROCESSING,
-#                         "responseid": "2",
-#                         "statusdescription": "creating",
-#                         "errorcode": "0"
-#                     }
-#                 ]
-#             }
-#         }
-#
-#         mock_vals = {
-#             "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
-#                 [0, json.JSONEncoder().encode(vnfm_info), '200'],
-#             "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
-#                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-#             "/api/resmgr/v1/vnf/1":
-#                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-#             "/cloud-infrastructure/cloud-regions/cloud-region/zte/test?depth=all":
-#                 [0, json.JSONEncoder().encode(vim_info), '201'],
-#             "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1?depth=all":
-#                 [0, json.JSONEncoder().encode({}), '201'],
-#             "/api/ztevmanagerdriver/v1/1/jobs/" + job_id + "?responseId=0":
-#                 [0, json.JSONEncoder().encode(job_info), '200'],
-#             "/network/generic-vnfs/generic-vnf/111?depth=all":
-#             [0, json.JSONEncoder().encode(vnf_info), '200'],
-#             "/network/generic-vnfs/generic-vnf/111?resource-version=1505465356262":
-#             [0, json.JSONEncoder().encode({}), '200']
-#         }
-#
-#         def side_effect(*args):
-#             return mock_vals[args[4]]
-#         mock_call_req.side_effect = side_effect
-#
-#         req_data = {
-#             "terminationType": "forceful",
-#             "gracefulTerminationTimeout": "600"}
-#
-#         TerminateVnfs(req_data, self.nf_inst_id, job_id).run()
-#         nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-#         if nfinst:
-#             self.failUnlessEqual(1, 0)
-#         else:
-#             self.failUnlessEqual(1, 1)
+class TestTerminateVnfViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.ns_inst_id = str(uuid.uuid4())
+        self.nf_inst_id = '1'
+        self.vnffg_id = str(uuid.uuid4())
+        self.vim_id = str(uuid.uuid4())
+        self.job_id = str(uuid.uuid4())
+        self.nf_uuid = '111'
+        self.tenant = "tenantname"
+        self.vnfd_model = {
+            "metadata": {
+                "vnfdId": "1",
+                "vnfdName": "PGW001",
+                "vnfProvider": "zte",
+                "vnfdVersion": "V00001",
+                "vnfVersion": "V5.10.20",
+                "productType": "CN",
+                "vnfType": "PGW",
+                "description": "PGW VNFD description",
+                "isShared": True,
+                "vnfExtendType": "driver"
+            }
+        }
+        NSInstModel.objects.all().delete()
+        NfInstModel.objects.all().delete()
+        VmInstModel.objects.all().delete()
+        NSInstModel(id=self.ns_inst_id, name="ns_name").save()
+        NfInstModel.objects.create(nfinstid=self.nf_inst_id,
+                                   nf_name='name_1',
+                                   vnf_id='1',
+                                   vnfm_inst_id='1',
+                                   ns_inst_id='111,2-2-2',
+                                   max_cpu='14',
+                                   max_ram='12296',
+                                   max_hd='101',
+                                   max_shd="20",
+                                   max_net=10,
+                                   status='active',
+                                   mnfinstid=self.nf_uuid,
+                                   package_id='pkg1',
+                                   vnfd_model=self.vnfd_model)
+        VmInstModel.objects.create(vmid="1",
+                                   vimid="zte_test",
+                                   resouceid="1",
+                                   insttype=INST_TYPE.VNF,
+                                   instid=self.nf_inst_id,
+                                   vmname="test",
+                                   hostid='1')
+
+    def tearDown(self):
+        NSInstModel.objects.all().delete()
+        NfInstModel.objects.all().delete()
+
+    @mock.patch.object(TerminateVnfs, 'run')
+    def test_terminate_vnf_url(self, mock_run):
+        req_data = {
+            "terminationType": "forceful",
+            "gracefulTerminationTimeout": "600"}
+
+        response = self.client.post("/api/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id, data=req_data)
+        self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
+
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_terminate_vnf(self, mock_call_req):
+        job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
+
+        nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
+        if nfinst:
+            self.failUnlessEqual(1, 1)
+        else:
+            self.failUnlessEqual(1, 0)
+
+        vnf_info = {
+            "vnf-id": "vnf-id-test111",
+            "vnf-name": "vnf-name-test111",
+            "vnf-type": "vnf-type-test111",
+            "in-maint": True,
+            "is-closed-loop-disabled": False,
+            "resource-version": "1505465356262"
+        }
+        job_info = {
+            "jobId": job_id,
+            "responsedescriptor": {
+                "progress": "100",
+                "status": JOB_MODEL_STATUS.FINISHED,
+                "responseid": "3",
+                "statusdescription": "creating",
+                "errorcode": "0",
+                "responsehistorylist": [
+                    {
+                        "progress": "0",
+                        "status": JOB_MODEL_STATUS.PROCESSING,
+                        "responseid": "2",
+                        "statusdescription": "creating",
+                        "errorcode": "0"
+                    }
+                ]
+            }
+        }
+
+        mock_vals = {
+            "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), '200'],
+            "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
+                [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
+            "/api/resmgr/v1/vnf/1":
+                [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
+            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test?depth=all":
+                [0, json.JSONEncoder().encode(vim_info), '201'],
+            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1?depth=all":
+                [0, json.JSONEncoder().encode(vserver_info), '201'],
+            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1?resource-version=1505465356263":
+                [0, json.JSONEncoder().encode({}), '200'],
+            "/api/ztevmanagerdriver/v1/1/jobs/" + job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode(job_info), '200'],
+            "/network/generic-vnfs/generic-vnf/1?depth=all":
+            [0, json.JSONEncoder().encode(vnf_info), '200'],
+            "/network/generic-vnfs/generic-vnf/1?resource-version=1505465356262":
+            [0, json.JSONEncoder().encode({}), '200']
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+        mock_call_req.side_effect = side_effect
+
+        req_data = {
+            "terminationType": "forceful",
+            "gracefulTerminationTimeout": "600"
+        }
+
+        TerminateVnfs(req_data, self.nf_inst_id, job_id).run()
+        nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
+        if nfinst:
+            self.failUnlessEqual(1, 0)
+        else:
+            self.failUnlessEqual(1, 1)
 
 class TestScaleVnfViews(TestCase):
     def setUp(self):
@@ -537,9 +539,9 @@ class TestGetVimInfoViews(TestCase):
 
     @mock.patch.object(restcall, "call_req")
     def test_get_vim_info(self, mock_call_req):
-        r1 = [0, json.JSONEncoder().encode(vim_info_aai), '200']
+        r1 = [0, json.JSONEncoder().encode(vim_info), '200']
         mock_call_req.side_effect = [r1]
-        esr_system_info = ignore_case_get(ignore_case_get(vim_info_aai, "esr-system-info-list"), "esr-system-info")
+        esr_system_info = ignore_case_get(ignore_case_get(vim_info, "esr-system-info-list"), "esr-system-info")
         expect_data = {
             "vimId": self.vim_id,
             "name": self.vim_id,
@@ -562,19 +564,32 @@ class TestGetVimInfoViews(TestCase):
         self.assertEqual(expect_data["url"], context["url"])
 
 vnfd_model_dict = {
-    'local_storages': [],
+    'local_storages': [
+
+    ],
     'vdus': [
         {
-            'volumn_storages': [],
+            'volumn_storages': [
+
+            ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'2'},
-            'local_storages': [],
+                'num_cpus': u'2'
+            },
+            'local_storages': [
+
+            ],
             'vdu_id': u'vdu_omm.001',
             'image_file': u'opencos_sss_omm_img_release_20150723-1-disk1',
-            'dependencies': [],
-            'vls': [],
-            'cps': [],
+            'dependencies': [
+
+            ],
+            'vls': [
+
+            ],
+            'cps': [
+
+            ],
             'properties': {
                 'key_vdu': '',
                 'support_scaling': False,
@@ -587,26 +602,45 @@ vnfd_model_dict = {
                     'region': '',
                     'dc': '',
                     'host': '',
-                    'tenant': ''},
-                'inject_data_list': [],
+                    'tenant': ''
+                },
+                'inject_data_list': [
+
+                ],
                 'watchdog': {
                     'action': '',
-                    'enabledelay': ''},
-                'local_affinity_antiaffinity_rule': {},
+                    'enabledelay': ''
+                },
+                'local_affinity_antiaffinity_rule': {
+
+                },
                 'template_id': u'omm.001',
-                'manual_scale_select_vim': False},
-            'description': u'singleommvm'},
+                'manual_scale_select_vim': False
+            },
+            'description': u'singleommvm'
+        },
         {
-            'volumn_storages': [],
+            'volumn_storages': [
+
+            ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'4'},
-            'local_storages': [],
+                'num_cpus': u'4'
+            },
+            'local_storages': [
+
+            ],
             'vdu_id': u'vdu_1',
             'image_file': u'sss',
-            'dependencies': [],
-            'vls': [],
-            'cps': [],
+            'dependencies': [
+
+            ],
+            'vls': [
+
+            ],
+            'cps': [
+
+            ],
             'properties': {
                 'key_vdu': '',
                 'support_scaling': False,
@@ -619,26 +653,45 @@ vnfd_model_dict = {
                     'region': '',
                     'dc': '',
                     'host': '',
-                    'tenant': ''},
-                'inject_data_list': [],
+                    'tenant': ''
+                },
+                'inject_data_list': [
+
+                ],
                 'watchdog': {
                     'action': '',
-                    'enabledelay': ''},
-                'local_affinity_antiaffinity_rule': {},
+                    'enabledelay': ''
+                },
+                'local_affinity_antiaffinity_rule': {
+
+                },
                 'template_id': u'1',
-                'manual_scale_select_vim': False},
-            'description': u'ompvm'},
+                'manual_scale_select_vim': False
+            },
+            'description': u'ompvm'
+        },
         {
-            'volumn_storages': [],
+            'volumn_storages': [
+
+            ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'},
-            'local_storages': [],
+                'num_cpus': u'14'
+            },
+            'local_storages': [
+
+            ],
             'vdu_id': u'vdu_2',
             'image_file': u'sss',
-            'dependencies': [],
-            'vls': [],
-            'cps': [],
+            'dependencies': [
+
+            ],
+            'vls': [
+
+            ],
+            'cps': [
+
+            ],
             'properties': {
                 'key_vdu': '',
                 'support_scaling': False,
@@ -651,26 +704,45 @@ vnfd_model_dict = {
                     'region': '',
                     'dc': '',
                     'host': '',
-                    'tenant': ''},
-                'inject_data_list': [],
+                    'tenant': ''
+                },
+                'inject_data_list': [
+
+                ],
                 'watchdog': {
                     'action': '',
-                    'enabledelay': ''},
-                'local_affinity_antiaffinity_rule': {},
+                    'enabledelay': ''
+                },
+                'local_affinity_antiaffinity_rule': {
+
+                },
                 'template_id': u'2',
-                'manual_scale_select_vim': False},
-            'description': u'ompvm'},
+                'manual_scale_select_vim': False
+            },
+            'description': u'ompvm'
+        },
         {
-            'volumn_storages': [],
+            'volumn_storages': [
+
+            ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'},
-            'local_storages': [],
+                'num_cpus': u'14'
+            },
+            'local_storages': [
+
+            ],
             'vdu_id': u'vdu_3',
             'image_file': u'sss',
-            'dependencies': [],
-            'vls': [],
-            'cps': [],
+            'dependencies': [
+
+            ],
+            'vls': [
+
+            ],
+            'cps': [
+
+            ],
             'properties': {
                 'key_vdu': '',
                 'support_scaling': False,
@@ -683,26 +755,45 @@ vnfd_model_dict = {
                     'region': '',
                     'dc': '',
                     'host': '',
-                    'tenant': ''},
-                'inject_data_list': [],
+                    'tenant': ''
+                },
+                'inject_data_list': [
+
+                ],
                 'watchdog': {
                     'action': '',
-                    'enabledelay': ''},
-                'local_affinity_antiaffinity_rule': {},
+                    'enabledelay': ''
+                },
+                'local_affinity_antiaffinity_rule': {
+
+                },
                 'template_id': u'3',
-                'manual_scale_select_vim': False},
-            'description': u'ompvm'},
+                'manual_scale_select_vim': False
+            },
+            'description': u'ompvm'
+        },
         {
-            'volumn_storages': [],
+            'volumn_storages': [
+
+            ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'4'},
-            'local_storages': [],
+                'num_cpus': u'4'
+            },
+            'local_storages': [
+
+            ],
             'vdu_id': u'vdu_10',
             'image_file': u'sss',
-            'dependencies': [],
-            'vls': [],
-            'cps': [],
+            'dependencies': [
+
+            ],
+            'vls': [
+
+            ],
+            'cps': [
+
+            ],
             'properties': {
                 'key_vdu': '',
                 'support_scaling': False,
@@ -715,26 +806,45 @@ vnfd_model_dict = {
                     'region': '',
                     'dc': '',
                     'host': '',
-                    'tenant': ''},
-                'inject_data_list': [],
+                    'tenant': ''
+                },
+                'inject_data_list': [
+
+                ],
                 'watchdog': {
                     'action': '',
-                    'enabledelay': ''},
-                'local_affinity_antiaffinity_rule': {},
+                    'enabledelay': ''
+                },
+                'local_affinity_antiaffinity_rule': {
+
+                },
                 'template_id': u'10',
-                'manual_scale_select_vim': False},
-            'description': u'ppvm'},
+                'manual_scale_select_vim': False
+            },
+            'description': u'ppvm'
+        },
         {
-            'volumn_storages': [],
+            'volumn_storages': [
+
+            ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'},
-            'local_storages': [],
+                'num_cpus': u'14'
+            },
+            'local_storages': [
+
+            ],
             'vdu_id': u'vdu_11',
             'image_file': u'sss',
-            'dependencies': [],
-            'vls': [],
-            'cps': [],
+            'dependencies': [
+
+            ],
+            'vls': [
+
+            ],
+            'cps': [
+
+            ],
             'properties': {
                 'key_vdu': '',
                 'support_scaling': False,
@@ -747,26 +857,45 @@ vnfd_model_dict = {
                     'region': '',
                     'dc': '',
                     'host': '',
-                    'tenant': ''},
-                'inject_data_list': [],
+                    'tenant': ''
+                },
+                'inject_data_list': [
+
+                ],
                 'watchdog': {
                     'action': '',
-                    'enabledelay': ''},
-                'local_affinity_antiaffinity_rule': {},
+                    'enabledelay': ''
+                },
+                'local_affinity_antiaffinity_rule': {
+
+                },
                 'template_id': u'11',
-                'manual_scale_select_vim': False},
-            'description': u'ppvm'},
+                'manual_scale_select_vim': False
+            },
+            'description': u'ppvm'
+        },
         {
-            'volumn_storages': [],
+            'volumn_storages': [
+
+            ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'},
-            'local_storages': [],
+                'num_cpus': u'14'
+            },
+            'local_storages': [
+
+            ],
             'vdu_id': u'vdu_12',
             'image_file': u'sss',
-            'dependencies': [],
-            'vls': [],
-            'cps': [],
+            'dependencies': [
+
+            ],
+            'vls': [
+
+            ],
+            'cps': [
+
+            ],
             'properties': {
                 'key_vdu': '',
                 'support_scaling': False,
@@ -779,23 +908,39 @@ vnfd_model_dict = {
                     'region': '',
                     'dc': '',
                     'host': '',
-                    'tenant': ''},
-                'inject_data_list': [],
+                    'tenant': ''
+                },
+                'inject_data_list': [
+
+                ],
                 'watchdog': {
                     'action': '',
-                    'enabledelay': ''},
-                'local_affinity_antiaffinity_rule': {},
+                    'enabledelay': ''
+                },
+                'local_affinity_antiaffinity_rule': {
+
+                },
                 'template_id': u'12',
-                'manual_scale_select_vim': False},
-            'description': u'ppvm'}],
-    'volumn_storages': [],
+                'manual_scale_select_vim': False
+            },
+            'description': u'ppvm'
+        }
+    ],
+    'volumn_storages': [
+
+    ],
     'policies': {
         'scaling': {
-            'targets': {},
+            'targets': {
+
+            },
             'policy_id': u'policy_scale_sss-vnf-template',
             'properties': {
-                'policy_file': '*-vnfd.zip/*-vnf-policy.xml'},
-            'description': ''}},
+                'policy_file': '*-vnfd.zip/*-vnf-policy.xml'
+            },
+            'description': ''
+        }
+    },
     'image_files': [
         {
             'description': '',
@@ -806,8 +951,10 @@ vnfd_model_dict = {
                 'file_url': u'./zte-cn-sss-main-image/OMM/opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
                 'container_type': 'vm',
                 'version': '',
-                'hypervisor_type': 'kvm'},
-            'image_file_id': u'opencos_sss_omm_img_release_20150723-1-disk1'},
+                'hypervisor_type': 'kvm'
+            },
+            'image_file_id': u'opencos_sss_omm_img_release_20150723-1-disk1'
+        },
         {
             'description': '',
             'properties': {
@@ -817,10 +964,17 @@ vnfd_model_dict = {
                 'file_url': u'./zte-cn-sss-main-image/NE/sss.vmdk',
                 'container_type': 'vm',
                 'version': '',
-                'hypervisor_type': 'kvm'},
-            'image_file_id': u'sss'}],
-    'vls': [],
-    'cps': [],
+                'hypervisor_type': 'kvm'
+            },
+            'image_file_id': u'sss'
+        }
+    ],
+    'vls': [
+
+    ],
+    'cps': [
+
+    ],
     'metadata': {
         'vendor': u'zte',
         'is_shared': False,
@@ -832,22 +986,38 @@ vnfd_model_dict = {
         'vnf_type': u'SSS',
         'vnfd_version': u'V00000001',
         'id': u'sss-vnf-template',
-        'name': u'sss-vnf-template'}}
+        'name': u'sss-vnf-template'
+    }
+}
 
 nsd_model_dict = {
-    "vnffgs": [],
+    "vnffgs": [
+
+    ],
     "inputs": {
         "externalDataNetworkName": {
             "default": "",
             "type": "string",
-            "description": ""}},
-    "pnfs": [],
-    "fps": [],
-    "server_groups": [],
-    "ns_flavours": [],
+            "description": ""
+        }
+    },
+    "pnfs": [
+
+    ],
+    "fps": [
+
+    ],
+    "server_groups": [
+
+    ],
+    "ns_flavours": [
+
+    ],
     "vnfs": [
         {
-            "dependency": [],
+            "dependency": [
+
+            ],
             "properties": {
                 "plugin_info": "vbrasplugin_1.0",
                 "vendor": "zte",
@@ -858,15 +1028,26 @@ nsd_model_dict = {
                 "nsh_aware": "True",
                 "cross_dc": "False",
                 "externalDataNetworkName": {
-                    "get_input": "externalDataNetworkName"},
+                    "get_input": "externalDataNetworkName"
+                },
                 "id": "zte_vbras",
-                "name": "vbras"},
+                "name": "vbras"
+            },
             "vnf_id": "VBras",
-            "networks": [],
-            "description": ""}],
+            "networks": [
+
+            ],
+            "description": ""
+        }
+    ],
     "ns_exposed": {
-        "external_cps": [],
-        "forward_cps": []},
+        "external_cps": [
+
+        ],
+        "forward_cps": [
+
+        ]
+    },
     "vls": [
         {
             "vl_id": "ext_mnet_network",
@@ -880,313 +1061,238 @@ nsd_model_dict = {
                     "vimid": 2,
                     "region": True,
                     "tenant": "admin",
-                    "dc": ""},
+                    "dc": ""
+                },
                 "end_ip": "190.168.100.100",
                 "gateway_ip": "190.168.100.1",
                 "start_ip": "190.168.100.2",
                 "cidr": "190.168.100.0/24",
                 "mtu": 1500,
                 "network_name": "sub_mnet",
-                "ip_version": 4}}],
-    "cps": [],
-    "policies": [],
+                "ip_version": 4
+            }
+        }
+    ],
+    "cps": [
+
+    ],
+    "policies": [
+
+    ],
     "metadata": {
         "invariant_id": "vbras_ns",
         "description": "vbras_ns",
         "version": 1,
         "vendor": "zte",
         "id": "vbras_ns",
-        "name": "vbras_ns"}}
+        "name": "vbras_ns"
+    }
+}
 
-
-vim_info_aai = {
-    "cloud-owner": "example-cloud-owner-val-1140",
-    "cloud-region-id": "example-cloud-region-id-val-73665",
-    "cloud-type": "example-cloud-type-val-14605",
-    "owner-defined-type": "example-owner-defined-type-val-84308",
-    "cloud-region-version": "example-cloud-region-version-val-67581",
-    "identity-url": "example-identity-url-val-98779",
-    "cloud-zone": "example-cloud-zone-val-67799",
-    "complex-name": "example-complex-name-val-62313",
-    "sriov-automation": True,
-    "cloud-extra-info": "example-cloud-extra-info-val-72366",
-    "cloud-epa-caps": "example-cloud-epa-caps-val-6090",
-    "volume-groups": {
-        "volume-group": [
+vserver_info = {
+    "vserver-id": "example-vserver-id-val-70924",
+    "vserver-name": "example-vserver-name-val-61674",
+    "vserver-name2": "example-vserver-name2-val-19234",
+    "prov-status": "example-prov-status-val-94916",
+    "vserver-selflink": "example-vserver-selflink-val-26562",
+    "in-maint": True,
+    "is-closed-loop-disabled": True,
+    "resource-version": "1505465356263",
+    "volumes": {
+        "volume": [
             {
-                "volume-group-id": "example-volume-group-id-val-22419",
-                "volume-group-name": "example-volume-group-name-val-41986",
-                "heat-stack-id": "example-heat-stack-id-val-53241",
-                "vnf-type": "example-vnf-type-val-19402",
-                "orchestration-status": "example-orchestration-status-val-61478",
-                "model-customization-id": "example-model-customization-id-val-82523",
-                "vf-module-model-customization-id": "example-vf-module-model-customization-id-val-49214"
+                "volume-id": "example-volume-id-val-71854",
+                "volume-selflink": "example-volume-selflink-val-22433"
             }
         ]
     },
-    "tenants": {
-        "tenant": [
+    "l-interfaces": {
+        "l-interface": [
             {
-                "tenant-id": "example-tenant-id-val-28032",
-                "tenant-name": "example-tenant-name-val-65072",
-                "tenant-context": "example-tenant-context-val-81984",
-                "vservers": {
-                    "vserver": [
+                "interface-name": "example-interface-name-val-24351",
+                "interface-role": "example-interface-role-val-43242",
+                "v6-wan-link-ip": "example-v6-wan-link-ip-val-4196",
+                "selflink": "example-selflink-val-61295",
+                "interface-id": "example-interface-id-val-95879",
+                "macaddr": "example-macaddr-val-37302",
+                "network-name": "example-network-name-val-44254",
+                "management-option": "example-management-option-val-49009",
+                "interface-description": "example-interface-description-val-99923",
+                "is-port-mirrored": True,
+                "in-maint": True,
+                "prov-status": "example-prov-status-val-4698",
+                "is-ip-unnumbered": True,
+                "allowed-address-pairs": "example-allowed-address-pairs-val-5762",
+                "vlans": {
+                    "vlan": [
                         {
-                            "vserver-id": "example-vserver-id-val-25067",
-                            "vserver-name": "example-vserver-name-val-16505",
-                            "vserver-name2": "example-vserver-name2-val-84664",
-                            "prov-status": "example-prov-status-val-1789",
-                            "vserver-selflink": "example-vserver-selflink-val-6858",
+                            "vlan-interface": "example-vlan-interface-val-58193",
+                            "vlan-id-inner": 54452151,
+                            "vlan-id-outer": 70239293,
+                            "speed-value": "example-speed-value-val-18677",
+                            "speed-units": "example-speed-units-val-46185",
+                            "vlan-description": "example-vlan-description-val-81675",
+                            "backdoor-connection": "example-backdoor-connection-val-44608",
+                            "vpn-key": "example-vpn-key-val-7946",
+                            "orchestration-status": "example-orchestration-status-val-33611",
                             "in-maint": True,
-                            "is-closed-loop-disabled": True,
-                            "volumes": {
-                                "volume": [
-                                    {
-                                        "volume-id": "example-volume-id-val-69135",
-                                        "volume-selflink": "example-volume-selflink-val-96457"
-                                    }
-                                ]
-                            },
-                            "l-interfaces": {
-                                "l-interface": [
-                                    {
-                                        "interface-name": "example-interface-name-val-57532",
-                                        "interface-role": "example-interface-role-val-10218",
-                                        "v6-wan-link-ip": "example-v6-wan-link-ip-val-64941",
-                                        "selflink": "example-selflink-val-80427",
-                                        "interface-id": "example-interface-id-val-53136",
-                                        "macaddr": "example-macaddr-val-35417",
-                                        "network-name": "example-network-name-val-77107",
-                                        "management-option": "example-management-option-val-19752",
-                                        "interface-description": "example-interface-description-val-34461",
-                                        "is-port-mirrored": True,
-                                        "in-maint": True,
-                                        "prov-status": "example-prov-status-val-39824",
-                                        "is-ip-unnumbered": True,
-                                        "allowed-address-pairs": "example-allowed-address-pairs-val-76052",
-                                        "vlans": {
-                                            "vlan": [
-                                                {
-                                                    "vlan-interface": "example-vlan-interface-val-81272",
-                                                    "vlan-id-inner": 70939085,
-                                                    "vlan-id-outer": 80445097,
-                                                    "speed-value": "example-speed-value-val-47939",
-                                                    "speed-units": "example-speed-units-val-90989",
-                                                    "vlan-description": "example-vlan-description-val-96792",
-                                                    "backdoor-connection": "example-backdoor-connection-val-74707",
-                                                    "vpn-key": "example-vpn-key-val-73677",
-                                                    "orchestration-status": "example-orchestration-status-val-93544",
-                                                    "in-maint": True,
-                                                    "prov-status": "example-prov-status-val-18854",
-                                                    "is-ip-unnumbered": True,
-                                                    "l3-interface-ipv4-address-list": [
-                                                        {
-                                                            "l3-interface-ipv4-address": "example-l3-interface-ipv4-address-val-46993",
-                                                            "l3-interface-ipv4-prefix-length": 28216731,
-                                                            "vlan-id-inner": 8589169,
-                                                            "vlan-id-outer": 22167953,
-                                                            "is-floating": True,
-                                                            "neutron-network-id": "example-neutron-network-id-val-45028",
-                                                            "neutron-subnet-id": "example-neutron-subnet-id-val-99844"
-                                                        }
-                                                    ],
-                                                    "l3-interface-ipv6-address-list": [
-                                                        {
-                                                            "l3-interface-ipv6-address": "example-l3-interface-ipv6-address-val-8414",
-                                                            "l3-interface-ipv6-prefix-length": 6761190,
-                                                            "vlan-id-inner": 88349266,
-                                                            "vlan-id-outer": 87459050,
-                                                            "is-floating": True,
-                                                            "neutron-network-id": "example-neutron-network-id-val-23050",
-                                                            "neutron-subnet-id": "example-neutron-subnet-id-val-49448"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        "sriov-vfs": {
-                                            "sriov-vf": [
-                                                {
-                                                    "pci-id": "example-pci-id-val-9702",
-                                                    "vf-vlan-filter": "example-vf-vlan-filter-val-94893",
-                                                    "vf-mac-filter": "example-vf-mac-filter-val-40257",
-                                                    "vf-vlan-strip": True,
-                                                    "vf-vlan-anti-spoof-check": True,
-                                                    "vf-mac-anti-spoof-check": True,
-                                                    "vf-mirrors": "example-vf-mirrors-val-86932",
-                                                    "vf-broadcast-allow": True,
-                                                    "vf-unknown-multicast-allow": True,
-                                                    "vf-unknown-unicast-allow": True,
-                                                    "vf-insert-stag": True,
-                                                    "vf-link-status": "example-vf-link-status-val-94678",
-                                                    "neutron-network-id": "example-neutron-network-id-val-18823"
-                                                }
-                                            ]
-                                        },
-                                        "l-interfaces": {
-                                            "l-interface": [
-                                                {
-                                                    "interface-name": "example-interface-name-val-42153",
-                                                    "interface-role": "example-interface-role-val-38539",
-                                                    "v6-wan-link-ip": "example-v6-wan-link-ip-val-12452",
-                                                    "selflink": "example-selflink-val-38250",
-                                                    "interface-id": "example-interface-id-val-68366",
-                                                    "macaddr": "example-macaddr-val-76392",
-                                                    "network-name": "example-network-name-val-58136",
-                                                    "management-option": "example-management-option-val-88555",
-                                                    "interface-description": "example-interface-description-val-66875",
-                                                    "is-port-mirrored": True,
-                                                    "in-maint": True,
-                                                    "prov-status": "example-prov-status-val-9493",
-                                                    "is-ip-unnumbered": True,
-                                                    "allowed-address-pairs": "example-allowed-address-pairs-val-80407"
-                                                }
-                                            ]
-                                        },
-                                        "l3-interface-ipv4-address-list": [
-                                            {
-                                                "l3-interface-ipv4-address": "example-l3-interface-ipv4-address-val-57596",
-                                                "l3-interface-ipv4-prefix-length": 90030728,
-                                                "vlan-id-inner": 43361064,
-                                                "vlan-id-outer": 18962103,
-                                                "is-floating": True,
-                                                "neutron-network-id": "example-neutron-network-id-val-55667",
-                                                "neutron-subnet-id": "example-neutron-subnet-id-val-46585"
-                                            }
-                                        ],
-                                        "l3-interface-ipv6-address-list": [
-                                            {
-                                                "l3-interface-ipv6-address": "example-l3-interface-ipv6-address-val-74591",
-                                                "l3-interface-ipv6-prefix-length": 38739444,
-                                                "vlan-id-inner": 65048885,
-                                                "vlan-id-outer": 94802338,
-                                                "is-floating": True,
-                                                "neutron-network-id": "example-neutron-network-id-val-64105",
-                                                "neutron-subnet-id": "example-neutron-subnet-id-val-65190"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
+                            "prov-status": "example-prov-status-val-8288",
+                            "is-ip-unnumbered": True,
+                            "l3-interface-ipv4-address-list": [
+                                {
+                                    "l3-interface-ipv4-address": "example-l3-interface-ipv4-address-val-25520",
+                                    "l3-interface-ipv4-prefix-length": 69931928,
+                                    "vlan-id-inner": 86628520,
+                                    "vlan-id-outer": 62729236,
+                                    "is-floating": True,
+                                    "neutron-network-id": "example-neutron-network-id-val-64021",
+                                    "neutron-subnet-id": "example-neutron-subnet-id-val-95049"
+                                }
+                            ],
+                            "l3-interface-ipv6-address-list": [
+                                {
+                                    "l3-interface-ipv6-address": "example-l3-interface-ipv6-address-val-64310",
+                                    "l3-interface-ipv6-prefix-length": 57919834,
+                                    "vlan-id-inner": 79150122,
+                                    "vlan-id-outer": 59789973,
+                                    "is-floating": True,
+                                    "neutron-network-id": "example-neutron-network-id-val-31713",
+                                    "neutron-subnet-id": "example-neutron-subnet-id-val-89568"
+                                }
+                            ]
                         }
                     ]
-                }
-            }
-        ]
-    },
-    "flavors": {
-        "flavor": [
-            {
-                "flavor-id": "example-flavor-id-val-92555",
-                "flavor-name": "example-flavor-name-val-35938",
-                "flavor-vcpus": 88056,
-                "flavor-ram": 18804,
-                "flavor-disk": 2575,
-                "flavor-ephemeral": 28190,
-                "flavor-swap": "example-flavor-swap-val-76888",
-                "flavor-is-public": True,
-                "flavor-selflink": "example-flavor-selflink-val-33816",
-                "flavor-disabled": True
-            }
-        ]
-    },
-    "group-assignments": {
-        "group-assignment": [
-            {
-                "group-id": "example-group-id-val-6872",
-                "group-type": "example-group-type-val-64490",
-                "group-name": "example-group-name-val-67702",
-                "group-description": "example-group-description-val-99149"
-            }
-        ]
-    },
-    "snapshots": {
-        "snapshot": [
-            {
-                "snapshot-id": "example-snapshot-id-val-32009",
-                "snapshot-name": "example-snapshot-name-val-47165",
-                "snapshot-architecture": "example-snapshot-architecture-val-84769",
-                "snapshot-os-distro": "example-snapshot-os-distro-val-70763",
-                "snapshot-os-version": "example-snapshot-os-version-val-4220",
-                "application": "example-application-val-12453",
-                "application-vendor": "example-application-vendor-val-95617",
-                "application-version": "example-application-version-val-77699",
-                "snapshot-selflink": "example-snapshot-selflink-val-90202",
-                "prev-snapshot-id": "example-prev-snapshot-id-val-10951"
-            }
-        ]
-    },
-    "images": {
-        "image": [
-            {
-                "image-id": "example-image-id-val-17245",
-                "image-name": "example-image-name-val-93251",
-                "image-architecture": "example-image-architecture-val-21934",
-                "image-os-distro": "example-image-os-distro-val-51699",
-                "image-os-version": "example-image-os-version-val-92745",
-                "application": "example-application-val-47760",
-                "application-vendor": "example-application-vendor-val-67650",
-                "application-version": "example-application-version-val-4499",
-                "image-selflink": "example-image-selflink-val-70348",
-                "metadata": {
-                    "metadatum": [
+                },
+                "sriov-vfs": {
+                    "sriov-vf": [
                         {
-                            "metaname": "example-metaname-val-57218",
-                            "metaval": "example-metaval-val-39269"
+                            "pci-id": "example-pci-id-val-16747",
+                            "vf-vlan-filter": "example-vf-vlan-filter-val-4613",
+                            "vf-mac-filter": "example-vf-mac-filter-val-68168",
+                            "vf-vlan-strip": True,
+                            "vf-vlan-anti-spoof-check": True,
+                            "vf-mac-anti-spoof-check": True,
+                            "vf-mirrors": "example-vf-mirrors-val-6270",
+                            "vf-broadcast-allow": True,
+                            "vf-unknown-multicast-allow": True,
+                            "vf-unknown-unicast-allow": True,
+                            "vf-insert-stag": True,
+                            "vf-link-status": "example-vf-link-status-val-49266",
+                            "neutron-network-id": "example-neutron-network-id-val-29493"
                         }
                     ]
-                }
+                },
+                "l-interfaces": {
+                    "l-interface": [
+                        {
+                            "interface-name": "example-interface-name-val-98222",
+                            "interface-role": "example-interface-role-val-78360",
+                            "v6-wan-link-ip": "example-v6-wan-link-ip-val-76921",
+                            "selflink": "example-selflink-val-27117",
+                            "interface-id": "example-interface-id-val-11260",
+                            "macaddr": "example-macaddr-val-60378",
+                            "network-name": "example-network-name-val-16258",
+                            "management-option": "example-management-option-val-35097",
+                            "interface-description": "example-interface-description-val-10475",
+                            "is-port-mirrored": True,
+                            "in-maint": True,
+                            "prov-status": "example-prov-status-val-65203",
+                            "is-ip-unnumbered": True,
+                            "allowed-address-pairs": "example-allowed-address-pairs-val-65028"
+                        }
+                    ]
+                },
+                "l3-interface-ipv4-address-list": [
+                    {
+                        "l3-interface-ipv4-address": "example-l3-interface-ipv4-address-val-72779",
+                        "l3-interface-ipv4-prefix-length": 55956636,
+                        "vlan-id-inner": 98174431,
+                        "vlan-id-outer": 20372128,
+                        "is-floating": True,
+                        "neutron-network-id": "example-neutron-network-id-val-39596",
+                        "neutron-subnet-id": "example-neutron-subnet-id-val-51109"
+                    }
+                ],
+                "l3-interface-ipv6-address-list": [
+                    {
+                        "l3-interface-ipv6-address": "example-l3-interface-ipv6-address-val-95203",
+                        "l3-interface-ipv6-prefix-length": 57454747,
+                        "vlan-id-inner": 53421060,
+                        "vlan-id-outer": 16006050,
+                        "is-floating": True,
+                        "neutron-network-id": "example-neutron-network-id-val-54216",
+                        "neutron-subnet-id": "example-neutron-subnet-id-val-1841"
+                    }
+                ]
             }
         ]
-    },
-    "dvs-switches": {
-        "dvs-switch": [
-            {
-                "switch-name": "example-switch-name-val-31508",
-                "vcenter-url": "example-vcenter-url-val-57139"
-            }
-        ]
-    },
-    "oam-networks": {
-        "oam-network": [
-            {
-                "network-uuid": "example-network-uuid-val-93435",
-                "network-name": "example-network-name-val-66722",
-                "cvlan-tag": 54019733,
-                "ipv4-oam-gateway-address": "example-ipv4-oam-gateway-address-val-3261",
-                "ipv4-oam-gateway-address-prefix-length": 53725
-            }
-        ]
-    },
-    "availability-zones": {
-        "availability-zone": [
-            {
-                "availability-zone-name": "example-availability-zone-name-val-71842",
-                "hypervisor-type": "example-hypervisor-type-val-21339",
-                "operational-status": "example-operational-status-val-18872"
-            }
-        ]
-    },
+    }
+}
+
+
+vnfm_info = {
+    "vnfm-id": "example-vnfm-id-val-97336",
+    "vim-id": "zte_test",
+    "certificate-url": "example-certificate-url-val-18046",
+    "resource-version": "example-resource-version-val-42094",
     "esr-system-info-list": {
         "esr-system-info": [
             {
-                "esr-system-info-id": "example-esr-system-info-id-val-42986",
-                "system-name": "example-system-name-val-1117",
-                "type": "example-type-val-28567",
-                "vendor": "example-vendor-val-99666",
-                "version": "example-version-val-9880",
-                "service-url": "example-service-url-val-95838",
-                "user-name": "example-user-name-val-88013",
-                "password": "example-password-val-51483",
-                "system-type": "example-system-type-val-24554",
-                "protocal": "example-protocal-val-92250",
-                "ssl-cacert": "example-ssl-cacert-val-80275",
+                "esr-system-info-id": "example-esr-system-info-id-val-7713",
+                "system-name": "example-system-name-val-19801",
+                "type": "ztevmanagerdriver",
+                "vendor": "example-vendor-val-50079",
+                "version": "example-version-val-93146",
+                "service-url": "example-service-url-val-68090",
+                "user-name": "example-user-name-val-14470",
+                "password": "example-password-val-84190",
+                "system-type": "example-system-type-val-42773",
+                "protocal": "example-protocal-val-85736",
+                "ssl-cacert": "example-ssl-cacert-val-33989",
                 "ssl-insecure": True,
-                "ip-address": "example-ip-address-val-49558",
-                "port": "example-port-val-55636",
-                "cloud-domain": "example-cloud-domain-val-77975",
-                "default-tenant": "example-default-tenant-val-85499"
+                "ip-address": "example-ip-address-val-99038",
+                "port": "example-port-val-27323",
+                "cloud-domain": "example-cloud-domain-val-55163",
+                "default-tenant": "example-default-tenant-val-99383",
+                "resource-version": "example-resource-version-val-15424"
+            }
+        ]
+    }
+}
+
+vim_info = {
+    "cloud-owner": "example-cloud-owner-val-97336",
+    "cloud-region-id": "example-cloud-region-id-val-35532",
+    "cloud-type": "example-cloud-type-val-18046",
+    "owner-defined-type": "example-owner-defined-type-val-9413",
+    "cloud-region-version": "example-cloud-region-version-val-85706",
+    "identity-url": "example-identity-url-val-71252",
+    "cloud-zone": "example-cloud-zone-val-27112",
+    "complex-name": "example-complex-name-val-85283",
+    "sriov-automation": True,
+    "cloud-extra-info": "example-cloud-extra-info-val-90854",
+    "cloud-epa-caps": "example-cloud-epa-caps-val-2409",
+    "resource-version": "example-resource-version-val-42094",
+    "esr-system-info-list": {
+        "esr-system-info": [
+            {
+                "esr-system-info-id": "example-esr-system-info-id-val-7713",
+                "system-name": "example-system-name-val-19801",
+                "type": "example-type-val-24477",
+                "vendor": "example-vendor-val-50079",
+                "version": "example-version-val-93146",
+                "service-url": "example-service-url-val-68090",
+                "user-name": "example-user-name-val-14470",
+                "password": "example-password-val-84190",
+                "system-type": "example-system-type-val-42773",
+                "protocal": "example-protocal-val-85736",
+                "ssl-cacert": "example-ssl-cacert-val-33989",
+                "ssl-insecure": True,
+                "ip-address": "example-ip-address-val-99038",
+                "port": "example-port-val-27323",
+                "cloud-domain": "example-cloud-domain-val-55163",
+                "default-tenant": "admin",
+                "resource-version": "example-resource-version-val-15424"
             }
         ]
     }

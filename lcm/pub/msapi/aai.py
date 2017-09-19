@@ -117,7 +117,7 @@ def delete_vnf_aai(vnf_id, resource_version=""):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vnf instance delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]), ret[2]
 
 def query_vnf_aai(vnf_id):
     resource = "/network/generic-vnfs/generic-vnf/%s?depth=all" % vnf_id
@@ -147,7 +147,7 @@ def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, reso
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vserver delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]), ret[2]
 
 def query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id):
     resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
