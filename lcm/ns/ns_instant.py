@@ -33,7 +33,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.config.config import WORKFLOW_OPTION
 from lcm.workflows import build_in
 from lcm.pub.msapi import activiti
-from lcm.pub.utils import toscaparser
+from lcm.pub.msapi import sdc_run_catalog
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class InstantNSService(object):
                 dst_plan = toscautil.convert_nsd_model(src_plan["rawData"])
             else:
                 nsd_pkg = NSDModel.objects.get(id=ns_inst.nspackage_id)
-                dst_plan = toscaparser.parse_nsd(nsd_pkg.nsd_path, input_parameters)
+                dst_plan = sdc_run_catalog.parse_nsd(ns_inst.nspackage_id, input_parameters)
             logger.debug('tosca plan dest:%s' % dst_plan)
 
             NSInstModel.objects.filter(id=self.ns_inst_id).update(nsd_model=dst_plan)
