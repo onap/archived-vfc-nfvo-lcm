@@ -67,23 +67,22 @@ class NSHealService(threading.Thread):
 
     def do_vnfs_heal(self):
         vnf_heal_params = self.prepare_vnf_heal_params(self.heal_vnf_data)
-        count = len(self.heal_vnf_data)
-        # TODO(sshank): Check progress_range
-        progress_range = [11 + 80 / count, 10 + 80 / count]
-        status = self.do_vnf_heal(vnf_heal_params, progress_range)
+        # count = len(self.heal_vnf_data)
+        # Only one VNF is supported to heal.
+        status = self.do_vnf_heal(vnf_heal_params, 15)
         if status is JOB_MODEL_STATUS.FINISHED:
             logger.info('nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
-            self.update_job(progress_range[1],
+            self.update_job(90,
                             desc='nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
         else:
             logger.error('nf heal failed')
             raise NSLCMException('nf heal failed')
 
-    def do_vnf_heal(self, vnf_heal_params, progress_range):
+    def do_vnf_heal(self, vnf_heal_params, progress):
         vnf_instance_id = vnf_heal_params.get('vnfInstanceId')
         nf_service = NFHealService(vnf_instance_id, vnf_heal_params)
         nf_service.start()
-        self.update_job(progress_range[0], desc='nf[%s] heal handle start' % vnf_instance_id)
+        self.update_job(progress, desc='nf[%s] heal handle start' % vnf_instance_id)
         status = self.wait_job_finish(nf_service.job_id)
         return status
 

@@ -78,8 +78,10 @@ class NFHealService(threading.Thread):
         action = ignore_case_get(self.nf_additional_params, 'action')
         if action is "restartvm":
             action = "vmReset"
-        vmid = ignore_case_get(self.nf_additional_params, 'vmid')
-        vmname = ignore_case_get(self.nf_additional_params, 'vmname')
+
+        actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
+        vmid = ignore_case_get(actionvminfo, 'vmid')
+        vmname = ignore_case_get(actionvminfo, 'vmname')
         # TODO(sshank): Find how to get 'vduid'
         vduid = ""
 
