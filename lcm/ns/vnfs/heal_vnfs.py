@@ -82,8 +82,10 @@ class NFHealService(threading.Thread):
         actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
         vmid = ignore_case_get(actionvminfo, 'vmid')
         vmname = ignore_case_get(actionvminfo, 'vmname')
+
+
         # Gets vduid
-        vduid = self.get_vudId(vmid)
+        vduid = self.get_vudId(vmid, self.vnf_instance_id)
 
         self.nf_heal_params = {
             "action": action,
@@ -105,10 +107,12 @@ class NFHealService(threading.Thread):
             raise NSLCMException("nf heal failed")
 
     # Gets vdu id according to the given vm id.
-    def get_vudId(self, vmId):
-        vnfcInstance = VNFCInstModel.objects.filter(vmid = vmId).first()
-        if not vnfcInstance:
-            raise NSLCMException('VDU [vmid=%s] does not exist' % self.vmId)
+    def get_vudId(self, vmid):
+        vnfcInstances = VNFCInstModel.objects.filter(vmid = vmid, nfinstid=self.vnf_instance_id)
+        if not vnfcInstances or len(vnfcInstances) > 1:
+            raise NSLCMException('VDU [vmid=%s, vnfInstanceId=%s] does not exist' % (vmid, self.vnf_instance_id))
+
+        vnfcInstance = VNFCInstModel.objects.filter(vmid = vmid,nfinstid=self.vnf_instance_id).first()
         return vnfcInstance.vduid
 
     def update_job(self, progress, desc=''):
