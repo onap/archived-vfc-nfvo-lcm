@@ -19,7 +19,7 @@ import traceback
 
 from lcm.ns.vnfs.const import VNF_STATUS
 from lcm.ns.vnfs.wait_job import wait_job_finish
-from lcm.pub.database.models import NfInstModel
+from lcm.pub.database.models import NfInstModel, VNFCInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_heal_request
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
@@ -82,8 +82,8 @@ class NFHealService(threading.Thread):
         actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
         vmid = ignore_case_get(actionvminfo, 'vmid')
         vmname = ignore_case_get(actionvminfo, 'vmname')
-        # TODO(sshank): Find how to get 'vduid'
-        vduid = ""
+        # Gets vduid
+        vduid = self.get_vudId(vmid)
 
         self.nf_heal_params = {
             "action": action,
@@ -103,6 +103,13 @@ class NFHealService(threading.Thread):
         if ret != JOB_MODEL_STATUS.FINISHED:
             logger.error('[NF heal] nf heal failed')
             raise NSLCMException("nf heal failed")
+
+    # Gets vdu id according to the given vm id.
+    def get_vudId(self, vmId):
+        vnfcInstance = VNFCInstModel.objects.filter(vmid = vmId).first()
+        if not vnfcInstance:
+            raise NSLCMException('VDU [vmid=%s] does not exist' % self.vmId)
+        return vnfcInstance.vduid
 
     def update_job(self, progress, desc=''):
         JobUtil.add_job_status(self.job_id, progress, desc)
