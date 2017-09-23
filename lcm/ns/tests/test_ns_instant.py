@@ -11,14 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import mock
 from rest_framework import status
 from django.test import TestCase
 from django.test import Client
 
 from lcm.pub.database.models import NSInstModel
-from lcm.pub.utils import restcall
-from lcm.pub.utils import toscautil
 
 
 class TestNsInstant(TestCase):

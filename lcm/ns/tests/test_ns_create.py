@@ -24,6 +24,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.database.models import NSInstModel, NSDModel
 from lcm.pub.utils import restcall
 
+
 class TestNsInstantiate(TestCase):
     def setUp(self):
         self.client = Client()

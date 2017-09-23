@@ -19,12 +19,12 @@ from rest_framework import status
 from django.test import TestCase
 from django.test import Client
 from lcm.pub.database.models import NSDModel, NSInstModel
-from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.ns.const import NS_INST_STATUS
 from lcm.pub.utils import restcall
-from lcm.pub.utils import toscautil
 from lcm.ns.ns_manual_scale import NSManualScaleService
 from lcm.pub.exceptions import NSLCMException
+
 
 class TestNsManualScale(TestCase):
     def setUp(self):
@@ -40,7 +40,6 @@ class TestNsManualScale(TestCase):
 
     def tearDown(self):
         NSInstModel.objects.filter().delete()
-
 
     """
     @mock.patch.object(restcall, 'call_req')
@@ -76,7 +75,7 @@ class TestNsManualScale(TestCase):
             'nsdid': self.nsd_id,
             'nsname': 'ns',
             'description': 'description'}
-        response = self.client.post("/api/nslcm/v1/ns/%s/scale"%self.nsd_id, data=data)
+        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.nsd_id, data=data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
