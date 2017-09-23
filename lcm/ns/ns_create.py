@@ -88,6 +88,6 @@ class CreateNSService(object):
         }
         resp_data, resp_status = create_customer_aai(global_customer_id, data)
         if resp_data:
-            logger.debug("Fail to create ns instance[%s] to aai, resp_status: [%s]." % (self.ns_inst_id, resp_status) )
+            logger.debug("Fail to create ns[%s] to aai: [%s].", self.ns_inst_id, resp_status)
         else:
-            logger.debug("Success to create ns instance[%s] to aai, resp_status: [%s]." % (self.ns_inst_id, resp_status) )
+            logger.debug("Success to create ns[%s] to aai: [%s].", self.ns_inst_id, resp_status)

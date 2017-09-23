@@ -13,7 +13,6 @@
 # limitations under the License.
 import json
 import logging
-import traceback
 
 from lcm.ns.const import OWNER_TYPE
 from lcm.pub.database.models import NSInstModel, NfInstModel, VLInstModel, CPInstModel, VNFFGInstModel
@@ -23,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class GetNSInfoService(object):
     def __init__(self, nsfilter=None):
-        self.ns_filter=nsfilter
+        self.ns_filter = nsfilter
 
     def get_ns_info(self):
         if self.ns_filter:

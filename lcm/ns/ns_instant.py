@@ -21,7 +21,7 @@ import uuid
 from rest_framework import status
 
 from lcm.pub.database.models import DefPkgMappingModel, ServiceBaseInfoModel, InputParamMappingModel
-from lcm.pub.database.models import NSInstModel, NfPackageModel, VNFFGInstModel, WFPlanModel, NSDModel
+from lcm.pub.database.models import NSInstModel, NfPackageModel, VNFFGInstModel, WFPlanModel
 from lcm.pub.msapi.catalog import get_process_id, query_rawdata_from_catalog
 from lcm.pub.msapi.catalog import get_servicetemplate_id, get_servicetemplate
 from lcm.pub.msapi.wso2bpel import workflow_run
@@ -60,14 +60,13 @@ class InstantNSService(object):
             location_constraints = []
             if 'locationConstraints' in self.req_data:
                 location_constraints = self.req_data['locationConstraints']
-            
+
             JobUtil.add_job_status(job_id, 5, 'Start query nsd(%s)' % ns_inst.nspackage_id)
             dst_plan = None
             if WORKFLOW_OPTION == "wso2":
                 src_plan = query_rawdata_from_catalog(ns_inst.nspackage_id, input_parameters)
                 dst_plan = toscautil.convert_nsd_model(src_plan["rawData"])
             else:
-                nsd_pkg = NSDModel.objects.get(id=ns_inst.nspackage_id)
                 dst_plan = sdc_run_catalog.parse_nsd(ns_inst.nspackage_id, input_parameters)
             logger.debug('tosca plan dest:%s' % dst_plan)
 
@@ -117,7 +116,7 @@ class InstantNSService(object):
                                  active_status='--',
                                  status=ns_inst.status,
                                  creator='--',
-                                 create_time=int(time.time()*1000)).save()
+                                 create_time=int(time.time() * 1000)).save()
 
             if WORKFLOW_OPTION == "wso2":
                 service_tpl = get_servicetemplate(ns_inst.nsd_id)

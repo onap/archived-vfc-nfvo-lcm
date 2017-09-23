@@ -40,12 +40,10 @@ logger = logging.getLogger(__name__)
 class CreateNSView(APIView):
     def get(self, request):
         logger.debug("CreateNSView::get")
-        filter=None
+        filter = None
         csarId = ignore_case_get(request.META, 'csarId')
         if csarId:
-            filter ={
-            "csarId":csarId
-            }
+            filter = {"csarId": csarId}
 
         ret = GetNSInfoService(filter).get_ns_info()
         logger.debug("CreateNSView::get::ret=%s", ret)
@@ -107,7 +105,7 @@ class NSHealView(APIView):
 class NSDetailView(APIView):
     def get(self, request, ns_instance_id):
         logger.debug("Enter NSDetailView::get ns(%s)", ns_instance_id)
-        ns_filter ={"ns_inst_id":ns_instance_id}
+        ns_filter = {"ns_inst_id": ns_instance_id}
         ret = GetNSInfoService(ns_filter).get_ns_info()
         if not ret:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -130,8 +128,6 @@ class SwaggerJsonView(APIView):
 
 
 class NSInstPostDealView(APIView):
-
-
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstPostDealView::post %s, %s", request.data, ns_instance_id)
         ns_post_status = ignore_case_get(request.data, 'status')
@@ -170,7 +166,6 @@ class NSInstPostDealView(APIView):
         ret = req_by_msb(policy_engine_url, "POST", req_param)
         if ret[0] != 0:
             logger.error("Failed to send ns policy req")
-            #raise NSLCMException('Failed to send ns policy req)')
 
 
 class NSManualScaleView(APIView):
