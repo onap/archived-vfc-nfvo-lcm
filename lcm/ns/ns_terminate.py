@@ -48,7 +48,7 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
         except:
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_ERROR,  "ns terminate fail.", '')
+            JobUtil.add_job_status(self.job_id, JOB_ERROR, "ns terminate fail.", '')
 
     def do_biz(self):
         if not self.check_data():

@@ -14,7 +14,7 @@
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from lcm.ns.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView, SwaggerJsonView, NSInstPostDealView, \
+from lcm.ns.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView, NSInstPostDealView, \
     NSManualScaleView, NSHealView
 
 urlpatterns = patterns('',

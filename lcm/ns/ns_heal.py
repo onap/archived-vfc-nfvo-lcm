@@ -19,7 +19,7 @@ import datetime
 import time
 
 from lcm.ns.const import NS_INST_STATUS
-from lcm.pub.database.models import JobModel, NSInstModel, NfInstModel
+from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.ns.vnfs.heal_vnfs import NFHealService
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
