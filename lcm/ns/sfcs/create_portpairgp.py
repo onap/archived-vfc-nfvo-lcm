@@ -109,7 +109,7 @@ class CreatePortPairGroup(object):
         vnf_inst_database_info = NfInstModel.objects.filter(vnf_id=self.vnf_model_in_ns_info["vnf_id"],
                                                             ns_inst_id=self.ns_inst_id).get()
         self.vnf_inst_database_info = vnf_inst_database_info
-        logger.info("VNFD MODEL : %s" %vnf_inst_database_info.vnfd_model)
+        logger.info("VNFD MODEL : %s" % vnf_inst_database_info.vnfd_model)
         vnfd_model_info = json.loads(vnf_inst_database_info.vnfd_model)
         # vnfd_model_info = json.dumps(vnf_inst_database_info.vnfd_model)
         # vnfd_model_info = json.dumps(self.vnf_inst_database_info.vnfd_model)

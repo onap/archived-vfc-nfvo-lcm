@@ -33,18 +33,22 @@ def ignorcase_get(args, key):
             return args[oldkey]
     return ""
 
+
 def ignor_dot(str):
     index = str.find('.')
     if index == -1:
-        return str;
+        return str
     return str[0:index]
 
+
 def get_fp_id(fpindex,ns_model):
-    index = int(int(float(fpindex))-1)
+    index = int(int(float(fpindex)) - 1)
     return ns_model['fps'][index].get("fp_id")
+
 
 def update_fp_status(fp_inst_id,status_info):
     FPInstModel.objects.filter(fpinstid=fp_inst_id).update(status=status_info)
+
 
 def get_fp_model_by_fp_inst_id(ns_model_data, fp_inst_id):
     fp_databas_info = FPInstModel.objects.filter(fpinstid=fp_inst_id).get()

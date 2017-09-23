@@ -85,6 +85,7 @@ class SfcView(APIView):
             logger.info("service_function_chain_fpindex : %s" % ignorcase_get(request.data, 'fpindex'))
             ns_model_data = request.data['context']
         except Exception as e:
+            logger.error("Exception occurs: %s", e.message)
             logger.error(traceback.format_exc())
         data = {
             'nsinstid': ignorcase_get(request.data, 'nsinstanceid'),
@@ -99,7 +100,7 @@ class SfcView(APIView):
         worker = CreateSfcWorker(data)
         job_id = worker.init_data()
         worker.start()
-        logger.info("Service Function Chain Thread Sleep start : %s" %time.ctime())
+        logger.info("Service Function Chain Thread Sleep start : %s" % time.ctime())
         time.sleep(2)
         logger.info("Service Function Chain Thread Sleep end: %s" % time.ctime())
         logger.info("Create Service Function Chain end")

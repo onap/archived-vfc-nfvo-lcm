@@ -86,7 +86,6 @@ class SfcInstance(object):
             "fpinstid": self.fp_inst_id
         }
 
-
     def update_vnfffg_info(self):
         vnffg_database_info = VNFFGInstModel.objects.filter(vnffginstid=self.vnffg_inst_id).get()
         fp_inst_list = vnffg_database_info.fplist
