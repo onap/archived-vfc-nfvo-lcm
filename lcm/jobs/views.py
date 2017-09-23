@@ -22,6 +22,7 @@ from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
 
+
 class JobView(APIView):
     def get(self, request, job_id):
         response_id = ignore_case_get(request.META, 'responseId')
