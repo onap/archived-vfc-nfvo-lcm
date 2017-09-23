@@ -20,7 +20,6 @@ from threading import Thread
 from lcm.ns.sfcs.create_flowcla import CreateFlowClassifier
 from lcm.ns.sfcs.create_port_chain import CreatePortChain
 from lcm.ns.sfcs.create_portpairgp import CreatePortPairGroup
-from lcm.ns.sfcs.sfc_instance import SfcInstance
 from lcm.ns.sfcs.utils import update_fp_status
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
