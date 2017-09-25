@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_5ac2f259",
+        "filename": "docs/APIs/VNFLCM_API/VNFLCM_API.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2017-09-25T08:27:25Z",
+      "side": 1,
+      "message": "Here is an extra space, please modify the similar problem.",
+      "range": {
+        "startLine": 303,
+        "startChar": 32,
+        "endLine": 303,
+        "endChar": 33
+      },
+      "revId": "9703f9bc0a008f4c4a51fc18553f2d03276b96b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_bac67e66",
+        "filename": "docs/APIs/index.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2017-09-25T08:27:25Z",
+      "side": 1,
+      "message": "Here is an extra tab, please modify the similar problem",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 3
+      },
+      "revId": "9703f9bc0a008f4c4a51fc18553f2d03276b96b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1aafca95",
+        "filename": "docs/delivery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2017-09-25T08:27:25Z",
+      "side": 1,
+      "message": "There are too many extra empty lines here.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 0
+      },
+      "revId": "9703f9bc0a008f4c4a51fc18553f2d03276b96b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
