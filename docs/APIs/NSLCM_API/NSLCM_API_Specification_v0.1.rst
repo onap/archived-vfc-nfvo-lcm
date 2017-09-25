@@ -2,7 +2,7 @@
    :depth: 1
 ..
 
-NL LCM API
+NS LCM API
 ==========
 
  {
