@@ -1,6 +1,7 @@
 .. contents::
    :depth: 3
 ..
+
 **VNFM Driver API**
 **V0.1**
 
@@ -92,7 +93,7 @@ juju
 |              |            |             |          | manages this resource.                 |
 |              |            |             |          | This attribute shall be supported      |
 |              |            |             |          | and present if VNF-related resource    |
-|              |            |             |          |  management in direct applicable.      |
+|              |            |             |          | management in direct applicable.       |
 +--------------+------------+-------------+----------+----------------------------------------+
 | networkId    | M          | 1           | String   | The network UUID of VIM                |
 +--------------+------------+-------------+----------+----------------------------------------+
@@ -154,32 +155,43 @@ juju
   "vnfPackageId":"1",
   "vnfDescriptorId":"1",
   "vnfInstanceDescription":"vFW_1",
-  "extVirtualLinkLink":[
+  "extVirtualLinkLink":[ 
+
     {
       "vlInstanceId":"1",
       "resourceId":"1246" ,
       " cpdId":"11111",
       "vim":
       {
+
         "vimInfoId":"1",
         "vimid":"1", 
         "interfaceInfo":{
+
           "vimType":"vim",
           "apiVersion":"v2",
           "protocolType":"http"
+
         }
         "accessInfo":{
+
           "tenant":"tenant_vCPE",
           "username":"vCPE",
           "password":"vCPE_321"
+
         }
         "interfaceEndpoint":"http://10.43.21.105:80/"
+
       }
+
     }
+
   ]
   "additionalParam":{
+
   ……
   }
+
 }
 
 
@@ -200,6 +212,7 @@ juju
 {
   "jobId":"1",
   "vnfInstanceId":"1"
+
 }
 
 **3.2  Terminate VNF**
@@ -274,6 +287,7 @@ juju
   "vnfInstanceId":"1",
   "terminationType":"graceful",
   "gracefulTerminationTimeout":"60"
+
 }
 
 **3.2.2  Response**
@@ -290,6 +304,7 @@ juju
 
 {
   "jobId":"1"
+
 }
 
 
@@ -367,6 +382,7 @@ VNF filter: vnfInstanceId via url [R1]
 {
   "vnfInfo":
   {
+
     "nfInstanceId":"1",
     "vnfInstanceName":"vFW",
     "vnfInstanceDescription":"vFW in Nanjing TIC Edge",
@@ -376,7 +392,9 @@ VNF filter: vnfInstanceId via url [R1]
     "vnfProvider":"ZTE",
     "vnfType":"vFW",
     "vnfStatus":"  ACTIVE",
+
   }
+
 }
 
 **3.4  Get operation status**
@@ -437,26 +455,33 @@ VNF filter: vnfInstanceId via url [R1]
 {
   "jobId" : "1234566",
   "responseDescriptor" : {
+
     "progress" : "40",
     "status" : "proccessing",
     "statusDescription" : "OMC VMs are decommissioned in VIM",
     "errorCode" : null,
     "responseId" : "42",
     "responseHistoryList" : [{
+
       "progress" : "40",
       "status" : "proccessing",
       "statusDescription" : "OMC VMs are decommissioned in VIM",
       "errorCode" : null,
       "responseId" : "1"
+
     }, {
       "progress" : "41",
       "status" : "proccessing",
       "statusDescription" : "OMC VMs are decommissioned in VIM",
       "errorCode" : null,
       "responseId" : "2"
+
     }
+
   ]
+
  }
+
 }
 
 **3.5  Scale VNF**
@@ -474,6 +499,7 @@ VNF filter: vnfInstanceId via url [R1]
 +---------------+------------------------------------------------------------------+
 
 **3.5.1  Request**
+
 
 +---------------+------------+-------------+-------------+---------------------------------------------+
 | Parameter     | Qualifier  | Cardinality | Content     | Description                                 |
@@ -495,7 +521,7 @@ VNF filter: vnfInstanceId via url [R1]
 |               |            |             |             | whether or not a particular VNF supports    |
 |               |            |             |             | performing more than one step at a time.    |
 |               |            |             |             | Such a property in the VNFD applies for all |
-+--------------------+------------+-------------+-------------+----------------------------------------+
++---------------+------------+-------------+-------------+---------------------------------------------+
 | additional    | M          | 1           |KeyValuePair | Additional parameters passed by the NFVO    |
 | Param         |            |             |             | as input to the scaling proccess, specific  |
 |               |            |             |             | to the VNF being scaled.                    |
@@ -516,8 +542,11 @@ VNF filter: vnfInstanceId via url [R1]
   "aspectId":"101",
   "numberOfSteps":"1",
   "additionalParam":{
+
     ……
+
   }
+
 }
 
 **3.5.2  Response**
@@ -531,6 +560,7 @@ VNF filter: vnfInstanceId via url [R1]
 
 {
   "jobId":"1"
+
 }
 
 **3.6  Heal VNF**
@@ -579,10 +609,13 @@ VNF filter: vnfInstanceId via url [R1]
   "action": "vmReset",
   "affectedvm": 
   {
+
     "vmid": "804cca71-9ae9-4511-8e30-d1387718caff",
     "vduid": "vdu_100",
     "vmname": "ZTE_SSS_111_PP_2_L"
+
   },
+
 }
 
 **3.6.2  Response**
@@ -596,4 +629,5 @@ VNF filter: vnfInstanceId via url [R1]
 
 {
   "jobId":"1"
+
 }

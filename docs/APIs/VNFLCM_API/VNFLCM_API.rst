@@ -26,6 +26,7 @@
 +------------------------+-----------------------------------------------------+
 |     VNF                |     Virtual Network Function                        |
 +------------------------+-----------------------------------------------------+
+
 Table 2-1 abbreviations
 
 **3. Interfaces provided by VNFM**  (Or-Vnfm/Ve-Vnfm-vnf) 
@@ -67,7 +68,8 @@ Table 2-1 abbreviations
     {
       "vnfdId": "zte\_vFW\_51610", 
       "vnfInstanceName": "vFW\_01",
-      " vnfInstanceDescription": " vFW in Nanjing TIC Edge"
+      "vnfInstanceDescription": " vFW in Nanjing TIC Edge"
+
     }
 
 **3.1.2 Response**
@@ -80,6 +82,7 @@ Table 2-1 abbreviations
 
     {
       "vnfInstanceId": "1"
+
     }
 
 **3.1.3 Response Code**
@@ -133,8 +136,8 @@ Table 2-1 abbreviations
 | 4xx/5xx   | <name from RFC7231>   |     <description>                                                                            |
 +-----------+-----------------------+----------------------------------------------------------------------------------------------+
 
-3.3 Instantiate VNF
--------------------
+**3.3 Instantiate VNF**
+-----------------------
 
 +---------------------+-------------------------------------------------------------------------------------------+
 |     If Definition   | Description                                                                               |
@@ -203,8 +206,8 @@ Table 2-1 abbreviations
 | extCps           | M         | 1..N        | VnfExtCpData    | External CPs of the VNF to be connected to this external VL.                     |
 +------------------+-----------+-------------+-----------------+----------------------------------------------------------------------------------+
 
-
     **VimInfo:**
+
 +-----------------+-----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------+
 | Attribute       | Qualifier | Cardinality | Content      | Description                                                                                                                              |
 +=================+===========+=============+==============+==========================================================================================================================================+
@@ -222,6 +225,7 @@ Table 2-1 abbreviations
 +-----------------+-----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------+
 
     **interfaceInfo:**
+
 +------------------+---------------+--------------------------------------+
 | **Key Define**   | **Content**   | **Description**                      |
 +==================+===============+======================================+
@@ -233,6 +237,7 @@ Table 2-1 abbreviations
 +------------------+---------------+--------------------------------------+
 
     **accessInfo:**
+
 +------------------+---------------+--------------------------+
 | **Key Define**   | **Content**   | **Description**          |
 +==================+===============+==========================+
@@ -252,7 +257,7 @@ Table 2-1 abbreviations
 +------------------------+---------------------+-----------------------+--------------------+-----------------------------------------------------------+
 | addresses              |     O               | 0..N                  | NetworkAddress     | List of (fixed) network addresses that                    |
 |                        |                     |                       |                    | need to be configured on the CP. This attribute shall     |
-|                        |                     |                       |                    |  be present if fixed addresses need to be configured.     |
+|                        |                     |                       |                    | be present if fixed addresses need to be configured.      |
 +------------------------+---------------------+-----------------------+--------------------+-----------------------------------------------------------+
 | numDynamicAddre sses   |     O               | 0..1                  | Integer            | Number of network addresses to be assigned dynamically.   |
 |                        |                     |                       |                    | This attribute shall be present if dynamic                |
@@ -303,47 +308,68 @@ Table 2-1 abbreviations
       "flavourId": "flavour\_1", 
       "instantiationLevelId":"instantiationLevel\_1", 
       "extVirtualLinks": [
-        {
-          "vlInstanceId": "1",
+
+        {  "vlInstanceId": "1",
            "vim": {
             "vimInfoId": "1",
             "vimId": "1", 
             "interfaceInfo": {
+
               "vimType": "vim",
               "apiVersion": "v2",
               "protocolType": "http"
+
             },
             "accessInfo": {
+
               "tenant": "tenant\_vCPE", 
               "username": "vCPE", 
               "password": "vCPE\_321"
+
             },
             "interfaceEndpoint": "http://10.43.21.105:80/"
+
         },
         "resourceId": "1246", 
         "extCps": [
+
           {
             "cpdId": "11", "addresses": [
+
               {
                 "addressType": "MAC", 
                 "l2AddressData": "00:f3:43:20:a2:a3"
+
               },
               {
+
                 "addressType": "IP", 
                 "l3AddressData": {
+
                   "iPAddressType": "IPv4", 
                   "iPAddress": "192.168.104.2"
+
                 }
+
               }
+
             ],
             "numDynamicAddresses": 0
-          }
+
+          },
+
+          ...
+
           ]
+
         }
+
       ],
 
       "localizationLanguage": "en\_US", "additionalParams": {...}
+
     }
+
 
 **3.3.2 Response**
 
@@ -360,6 +386,7 @@ Table 2-1 abbreviations
     }
 
     **3.3.3 Response Code**
+
 +-----------+-----------------------+------------------------------------------------------------------------------------------+
 | Code      | Meaning               |     Description                                                                          |
 +===========+=======================+==========================================================================================+
@@ -398,12 +425,13 @@ Table 2-1 abbreviations
 |                   |             |               |               |     will first arrange to take the VNF out of service after accepting   |
 |                   |             |               |               |     the request. Once the operation is successful or once the timer     |
 |                   |             |               |               |     value specified in the                                              |
+|                   |             |               |               |                                                                         |
 |                   |             |               |               |    “gracefulTerminationTime out” attribute expires, the VNFM will shut  |
 |                   |             |               |               |     down the VNF and release the resources.                             |
 +-------------------+-------------+---------------+---------------+-------------------------------------------------------------------------+
 | graceful          | O           | 0..1          |     Integer   | This attribute is only                                                  |
 | Termination       |             |               |               | applicable in case of graceful                                          |
-|  Timeout          |             |               |               | termination. It defines the                                             |
+| Timeout           |             |               |               | termination. It defines the                                             |
 |                   |             |               |               | time to wait for the VNF to be                                          |
 |                   |             |               |               | taken out of service before                                             |
 |                   |             |               |               | shutting down the VNF and                                               |
@@ -421,9 +449,11 @@ Table 2-1 abbreviations
 |                   |             |               |               | VNF and releasing the                                                   |
 |                   |             |               |               | resources.                                                              |
 +-------------------+-------------+---------------+---------------+-------------------------------------------------------------------------+
+
  {
     "terminationType": "GRACEFUL", 
     "gracefulTerminationTimeout": 120
+
  }
 
 **3.4.2 Response**
@@ -436,6 +466,7 @@ Table 2-1 abbreviations
 
     {
       "vnfLcOpId": "2"
+
     }
 
 **3.4.3 Response Code**
@@ -727,109 +758,163 @@ Table 2-1 abbreviations
         "vnfConfigurableProperties": {...},
         "instantiationState": "INSTANTIATED", 
         "instantiatedVnfInfo": {
+
           "flavourId": "1", 
           "vnfState": "STARTED", 
           "scaleStatus": [
+
             {
               "aspectId": "aspect1", 
               "scaleLevel": 1
+
             }
+
           ],
+
         "extCpInfo": [
+
           {
             "cpInstanceId": "1",
             "cpdId": "1", "addresses": [
+
               {
                 "addressType": "MAC", 
                 "l2AddressData": "00:f3:43:20:a2:a3"
+
               },
+
               {
                 "addressType": "IP", 
                 "l3AddressData": {
+
                   "iPAddressType": "IPv4", 
                   "address": "192.168.104.2"
+
                 }
+
               }
+
             ]
+
           }  
+
         ],
         "extVirtualLink": [
+
           {
             "extVirtualLinkId": "extvl1", 
             "resourceHandle": {
+
               "vimId": "1",
               "resourceId": "1111"
+
             },
 
           "linkPorts": [
+
             {
               "resourceHandle": 
+
               { 
                 "vimId": "1",
                 "resourceId": "2121"
+
               },
+
               "cpInstanceId": "1"
+
             }
+
           ]
+
         }
+
       ],
 
       "monitoringParameters": {...}, 
       "localizationLanguage": "en\_US",
       "vimInfo": [
+
         {
           "vimInfoId": "1",
           "vimId": "1", 
           "interfaceInfo": {
+
             "vimType": "vim",
             "apiVersion": "v2", 
             "protocolType": "http"
+
           },
+
           "accessInfo": {
+
               "tenant": "tenant\_vCPE", 
               "username": "vCPE", 
               "password": "vCPE\_321"
+
           },
 
         "interfaceEndpoint": "http://10.43.21.105:80/"
+
       }
+
     ],
     "vnfcResourceInfo": [
+
       {
         "vnfcInstanceId": "vm1", 
         "vduId": "vdu1", 
         "computeResource": {
+
           "vimId": "1",
           "resourceId": "3333"
+
         },
+
         "storageResourceIds": [ "storage1"
         ]
+
       }
+
     ],
+
     "virtualLinkResourceInfo": [
+
       {
         "virtualLinkInstanceId": "vl01", 
         "virtualLinkDescId": "vl01",
         "networkResource": {
+
           "vimId": "1",
           "resourceId": "4444"
+
         }
+
       }
+
     ],
     "virtualStorageResourceInfo": [
+
     {
       "virtualStorageInstanceId": "storage1", 
       "virtualStorageDescId":"storage1", 
       "storageResource": {
+
         "vimId": "1",
         "resourceId": "555"
+
       }
+
     }
+
     ]
+
   },
   "metadata": {...},
   "extensions": {...}
+
  }
+
 ]
 
 **3.5.3 Response Code**
@@ -847,7 +932,7 @@ Table 2-1 abbreviations
 +---------------------+------------------------------------------------------------------------------+
 |     If Definition   | Description                                                                  |
 +=====================+==============================================================================+
-|     URI             | http(s)://[hostname][:port]/gvnfmapi/lcm/v1/vnf_instances/{vnfInstanceId}   |
+|     URI             | http(s)://[hostname][:port]/gvnfmapi/lcm/v1/vnf_instances/{vnfInstanceId}    |
 +---------------------+------------------------------------------------------------------------------+
 |     Operation       | GET                                                                          |
 +---------------------+------------------------------------------------------------------------------+
@@ -898,110 +983,158 @@ Table 2-1 abbreviations
     "flavourId": "1", 
     "vnfState": "STARTED", 
     "scaleStatus": [
+
     {
       "aspectId": "aspect1", 
       "scaleLevel": 1
+
     }
+
     ],
 
     "extCpInfo": [
+
     {
     "cpInstanceId": "1",
     "cpdId": "1", "addresses": [
+
     {
       "addressType": "MAC", 
       "l2AddressData": "00:f3:43:20:a2:a3"
+
     },
 
     {
       "addressType": "IP", 
       "l3AddressData": {
+
         "iPAddressType": "IPv4", 
         "address": "192.168.104.2"
+
       }
+
     }
+
     ]
+
   }
+
   ],
 
     "extVirtualLink": [
+
     {
       "extVirtualLinkId": "extvl1", 
       "resourceHandle": {
+
         "vimId": "1",
         "resourceId": "1111"
+
       },
+
     "linkPorts": [
+
     {
-      "resourceHandle": 
+      "resourceHandle":
+ 
       { 
         "vimId": "1",
         "resourceId": "2121"
+
       },
       "cpInstanceId": "1"
+
     }
+
     ]
+
     }
+
     ],
 
     "monitoringParameters": {...}, 
     "localizationLanguage": "en\_US",
     "vimInfo": [
+
     {
       "vimInfoId": "1",
       "vimId": "1", 
       "interfaceInfo": {
+
         "vimType": "vim",
         "apiVersion": "v2", 
         "protocolType": "http"
+
     },
+
     "accessInfo": {
+
       "tenant": "tenant\_vCPE", 
       "username": "vCPE", 
       "password": "vCPE\_321"
+
     },
     "interfaceEndpoint": "http://10.43.21.105:80/"
+
     }
+
   ],
 
     "vnfcResourceInfo": [
+
       {
         "vnfcInstanceId": "vm1", 
         "vduId": "vdu1", 
         "computeResource": {
+
           "vimId": "1",
           "resourceId": "3333"
+
       },
 
       "storageResourceIds": [ "storage1"
       ]
+
       }
+
     ],
 
     "virtualLinkResourceInfo": [
+
       {
         "virtualLinkInstanceId": "vl01", 
         "virtualLinkDescId": "vl01",
         "networkResource": {
+
           "vimId": "1",
           "resourceId": "4444"
+
          }
+
       }
+
     ],
 
     "virtualStorageResourceInfo": [
+
     {
       "virtualStorageInstanceId": "storage1", 
       "virtualStorageDescId": "storage1", 
       "storageResource": {
+
         "vimId": "1",
         "resourceId": "555"
+
       }
+
     }
+
     ]
+
    },
     "metadata": {...},
     "extensions": {...}
+
   }
 
 **3.7 Get Operation Status**
@@ -1032,7 +1165,7 @@ Table 2-1 abbreviations
 | lcmOperationType   | M           | 1             | ENUM      | Type of the actual LCM operation represented by this lcm operation occurrence.   |
 |                    |             |               |           |                                                                                  |
 |                    |             |               |           | Permitted values:                                                                |
-+--------------------+-------------+---------------+-----------+----------------------------------------------------------------------------------+
+|                    |             |               |           |                                                                                  |
 |                    |             |               |           | -  INSTANTIATE:the                                                               |
 |                    |             |               |           |                                                                                  |
 |                    |             |               |           |     Instantiate VNF LCM operation.                                               |
@@ -1077,7 +1210,7 @@ Table 2-1 abbreviations
 +---------------------------+-----------------+--------------------+---------------+-----------------------------------------------------------+
 |     progress              |     M           |     1              |     Integer   |     progress (1-100)                                      |
 +---------------------------+-----------------+--------------------+---------------+-----------------------------------------------------------+
-|     lcmOperationS tatus   |     M           |     1              |     ENUM      |     Status of a VNF lifecycle operation occurrence        |
+|     lcmOperationStatus    |     M           |     1              |     ENUM      |     Status of a VNF lifecycle operation occurrence        |
 |                           |                 |                    |               |                                                           |
 |                           |                 |                    |               |     Permitted values:                                     |
 |                           |                 |                    |               |                                                           |
@@ -1094,13 +1227,16 @@ Table 2-1 abbreviations
 |                           |                 |                    |               | -  FAILED\_TEMP: The operation has failed and execution   |
 |                           |                 |                    |               |             has stopped, but the execution of the         |
 |                           |                 |                    |               |             operation is not considered to be closed.     |
+|                           |                 |                    |               |                                                           |
 |                           |                 |                    |               |            (Reserved)                                     |
+|                           |                 |                    |               |                                                           |
 |                           |                 |                    |               | -  ROLLING\_BACK: The operation is currently being rolled |
 |                           |                 |                    |               |                   back. (Reserved)                        |
 |                           |                 |                    |               |                                                           |
 |                           |                 |                    |               | -  ROLLED\_BACK: The state of the VNF prior to the        |
 |                           |                 |                    |               |              original operation invocation has been       |
-|                           |                 |                    |               |             restored as closely as possible. (Reserved)   |
+|                           |                 |                    |               |                                                           |
+|                           |                 |                    |               |             restored as closely as possible. (Reserved)   |    
 +---------------------------+-----------------+--------------------+---------------+-----------------------------------------------------------+
 |    statusDescripti on     |     O           |     0..1           | String        |     Status Description of a VNF lifecycle operation       |
 |                           |                 |                    |               |     occurrence                                            |
@@ -1162,29 +1298,37 @@ Table 2-1 abbreviations
 
     "startTime": "2017-01-01T12:00:27.87+00:20",
 
-    "responseDescriptor": { 
+    "responseDescriptor": {
+ 
         "responseId": 3,
         "progress": 40, 
         "lcmOperationStatus": "PROCESSING",
         "statusDescription": "OMC VMs are decommissioned in VIM",
         "errorCode": null,
         "responseHistoryList": [
+
          {
            "responseId": 1,
            "progress": 40, 
            "lcmOperationStatus": "PROCESSING",
            "statusDescription": "OMC VMs are decommissioned in VIM",
            "errorCode": null
+
          },
          {
+
            "responseId": 2,
            "progress": 41, 
            "lcmOperationStatus": "PROCESSING",
            "statusDescription": "OMC VMs are decommissioned in VIM",
            "errorCode": null
+
          }
+
         ]
+
       }
+
     }
 
 **3.7.3 Response Code**
@@ -1201,7 +1345,7 @@ Table 2-1 abbreviations
 ===============================================
 
 **4.1 Set Initial Configuration**
------------------------------
+---------------------------------
 
 +---------------------+---------------------------------------------+
 |     If Definition   | Description                                 |
@@ -1311,68 +1455,105 @@ Table 2-1 abbreviations
 
     "vnfInstanceId": "1", 
     "vnfConfigurationData": {
+
       "cp": [
+
         {
           "cpId": "cp-1",
           "cpdId": "cpd-a", 
           "cpAddress": [
+
             {
               "addresses": [
+
                 {
                   "addressType": "MAC", 
                   "l2AddressData": "00:f3:43:20:a2:a3"
+
                 },
                 {
+
                   "addressType": "IP", 
                     "l3AddressData": {
+
                       "iPAddressType": "IPv4", 
                       "iPAddress": "192.168.104.2"
+
                     }
+
                 }
+
                 ],
+
               "useDynamicAddress": "FALSE"
+
             }
+
           ]
+
         }
+
       ],
+
     "vnfSpecificData": { 
+
         "autoScalable": "FALSE", 
         "autoHealable": "FALSE"
+
     }
+
   },
+
   "vnfcConfigurationData": 
     { 
         "vnfcId": "vnfc-1", 
         "cp": [
+
           {
             "cpId": "cp-11",
             "cpdId": "cpd-1a",
             "cpAddress": [
+
               {
                 "addresses": [
+
                   {
                     "addressType": "MAC", 
                     "l2AddressData": "00:f3:43:21:a2:a3"
+
                   },
                   {
+
                     "addressType": "IP", 
                     "l3AddressData": {
+
                       "iPAddressType": "IPv4", 
                       "iPAddress": "192.168.105.2"
+
                     }
+
                   }
+
                 ],
                 "useDynamicAddress": "FALSE"
+
               }
+
             ]
+
           }
+
         ],
+
       "vnfcSpecificData": {}
+
     }
+
   }
 
 
     **4.1.2 Response**
+
 +-----------------------+-------------+---------------+-------------------+---------------------------------+
 | Parameter             | Qualifier   | Cardinality   |     Content       | Description                     |
 +=======================+=============+===============+===================+=================================+
@@ -1391,63 +1572,101 @@ Table 2-1 abbreviations
 
     {
       "vnfConfigurationData": { 
+
         "cp": [
+
           {
             "cpId": "cp-1",
             "cpdId": "cpd-a", "cpAddress": [
+
               {
                 "addresses": [
+
                   {
                     "addressType": "MAC", 
                     "l2AddressData": "00:f3:43:20:a2:a3"
+
                   },
                   {
+
                     "addressType": "IP", 
                     "l3AddressData": {
+
                       "iPAddressType": "IPv4", 
                       "iPAddress": "192.168.104.2"
+
                     }
+
                   }
+
                 ],
+
                 "useDynamicAddress": "FALSE"
+
               }
+
             ]
+
           }
+
         ],
         "vnfSpecificData": { 
+
             "autoScalable": "FALSE", 
             "autoHealable": "FALSE",
             …
+
         }
+
       },
+
       "vnfcConfigurationData": { 
+
           "vnfcId": "vnfc-1", 
           "cp": [
+
             {
               "cpId": "cp-11",
               "cpdId": "cpd-1a", 
               "cpAddress": [
+
                 {
                   "addresses": [
+
                     {
+
                       "addressType": "MAC", 
                       "l2AddressData": "00:f3:43:21:a2:a3"
+
                     },
                     {
+
                       "addressType": "IP", 
                       "l3AddressData": {
+
                         "iPAddressType": "IPv4", 
                         "iPAddress": "192.168.105.2"
+
                        }
+
                     }
+
                   ],
+
                   "useDynamicAddress": "FALSE"
+
                 }
+
               ]
+
             }
+
           ],
+
       "vnfcSpecificData": {…}
+
     }
+
   }
 
     **4.1.3Response Code**
@@ -1462,4 +1681,4 @@ Table 2-1 abbreviations
 
 .. |image0| image:: VNFM_API.png
    :width: 5.07047in
-   :height: 5.63208in
+   :height: 5.6320
