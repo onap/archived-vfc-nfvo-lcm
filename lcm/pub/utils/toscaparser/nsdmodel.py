@@ -44,7 +44,6 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.ns_flavours = self.get_all_flavour(tosca.topology_template.groups)
         self.nested_ns = self.get_all_nested_ns(nodeTemplates)
 
-
     def buildInputs(self, top_inputs):
         ret = {}
         for tmpinput in top_inputs:
@@ -57,7 +56,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
         return ret
 
     def buildNode(self, nodeTemplate, inputs, parsed_params):
-        ret ={}
+        ret = {}
         ret['name'] = nodeTemplate.name
         ret['nodeType'] = nodeTemplate.type
         if 'description' in nodeTemplate.entity_tpl:
@@ -70,7 +69,8 @@ class EtsiNsdInfoModel(BaseInfoModel):
         self.buildCapabilities(nodeTemplate, inputs, ret)
         self.buildArtifacts(nodeTemplate, inputs, ret)
         interfaces = self.build_interfaces(nodeTemplate)
-        if interfaces: ret['interfaces'] = interfaces
+        if interfaces:
+            ret['interfaces'] = interfaces
         return ret
 
     def _get_all_vnf(self, nodeTemplates):
@@ -111,7 +111,7 @@ class EtsiNsdInfoModel(BaseInfoModel):
                     for key, value in item.items():
                         if key.upper().startswith('VIRTUALBINDING'):
                             req_node_name = self.get_requirement_node_name(value)
-                            if req_node_name != None and req_node_name == node['name']:
+                            if req_node_name is not None and req_node_name == node['name']:
                                 cps.append(tmpnode)
         return cps
 
@@ -171,9 +171,9 @@ class EtsiNsdInfoModel(BaseInfoModel):
         cp_vl = {}
         cp_vl['vl_id'] = self.get_prop_from_obj(req, 'node')
         relationship = self.get_prop_from_obj(req, 'relationship')
-        if relationship != None:
+        if relationship is not None:
             properties = self.get_prop_from_obj(relationship, 'properties')
-            if properties != None and isinstance(properties, dict):
+            if properties is not None and isinstance(properties, dict):
                 for key, value in properties.items():
                     cp_vl[key] = value
         return cp_vl
