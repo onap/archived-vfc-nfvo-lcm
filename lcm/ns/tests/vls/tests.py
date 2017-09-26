@@ -75,7 +75,6 @@ class TestVlViews(TestCase):
         vl_from_vl_1 = VLInstModel.objects.filter(vldid=self.vl_id_1, ownerid=self.ns_inst_id)
         self.assertEqual(network_id, vl_from_vl_1[0].relatednetworkid)
         self.assertEqual(subnetwork_id, vl_from_vl_1[0].relatedsubnetworkid)
-        #self.assertEqual(self.vim_id, vl_from_vl_1[0].vimid)
         self.assertEqual(self.tenant, vl_from_vl_1[0].tenant)
         vl_from_vl_2 = VLInstModel.objects.filter(vldid=self.vl_id_2, ownerid=self.ns_inst_id)
         self.assertEqual(VNFFGInstModel.objects.filter(vnffgdid=self.vnffg_id, nsinstid=self.ns_inst_id)[0].vllist,

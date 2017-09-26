@@ -202,7 +202,6 @@ class TestTerminateVnfViews(TestCase):
         response = self.client.post("/api/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id, data=req_data)
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
 
-
     @mock.patch.object(restcall, 'call_req')
     def test_terminate_vnf(self, mock_call_req):
         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
@@ -278,6 +277,7 @@ class TestTerminateVnfViews(TestCase):
         else:
             self.failUnlessEqual(1, 1)
 
+
 class TestScaleVnfViews(TestCase):
     def setUp(self):
         self.client = Client()
@@ -308,44 +308,40 @@ class TestScaleVnfViews(TestCase):
         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
 
         vnfd_info = {
-            "vnf_flavours":[
-                {
-                    "flavour_id":"flavour1",
-                    "description":"",
-                    "vdu_profiles":[
-                        {
-                            "vdu_id":"vdu1Id",
-                            "instances_minimum_number": 1,
-                            "instances_maximum_number": 4,
-                            "local_affinity_antiaffinity_rule":[
-                                {
-                                    "affinity_antiaffinity":"affinity",
-                                    "scope":"node",
-                                }
-                            ]
-                        }
-                    ],
-                    "scaling_aspects":[
-                        {
-                            "id": "demo_aspect",
-                            "name": "demo_aspect",
-                            "description": "demo_aspect",
-                            "associated_group": "elementGroup1",
-                            "max_scale_level": 5
-                        }
-                    ]
-                }
-            ],
-            "element_groups": [
-                  {
-                      "group_id": "elementGroup1",
-                      "description": "",
-                      "properties":{
-                          "name": "elementGroup1",
-                      },
-                      "members": ["gsu_vm","pfu_vm"],
-                  }
-            ]
+            "vnf_flavours": [{
+                "flavour_id": "flavour1",
+                "description": "",
+                "vdu_profiles": [
+                    {
+                        "vdu_id": "vdu1Id",
+                        "instances_minimum_number": 1,
+                        "instances_maximum_number": 4,
+                        "local_affinity_antiaffinity_rule": [
+                            {
+                                "affinity_antiaffinity": "affinity",
+                                "scope": "node",
+                            }
+                        ]
+                    }
+                ],
+                "scaling_aspects": [
+                    {
+                        "id": "demo_aspect",
+                        "name": "demo_aspect",
+                        "description": "demo_aspect",
+                        "associated_group": "elementGroup1",
+                        "max_scale_level": 5
+                    }
+                ]
+            }],
+            "element_groups": [{
+                "group_id": "elementGroup1",
+                "description": "",
+                "properties": {
+                    "name": "elementGroup1",
+                },
+                "members": ["gsu_vm","pfu_vm"]
+            }]
         }
 
         req_data = {
@@ -365,15 +361,14 @@ class TestScaleVnfViews(TestCase):
             ]
         }
 
-
         mock_vals = {
-            "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
-                [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
             "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200']
         }
+
         def side_effect(*args):
             return mock_vals[args[4]]
+
         mock_call_req.side_effect = side_effect
 
         NFManualScaleService(self.nf_inst_id, req_data).run()
@@ -410,7 +405,6 @@ class TestHealVnfViews(TestCase):
 
     @mock.patch.object(restcall, "call_req")
     def test_heal_vnf(self, mock_call_req):
-
 
         mock_vals = {
             "/api/ztevmanagerdriver/v1/1/vnfs/111/heal":
@@ -468,6 +462,7 @@ class TestHealVnfViews(TestCase):
 
         self.assertRaises(NSLCMException, NFHealService(nf_inst_id, req_data).run)
         self.assertEqual(len(NfInstModel.objects.filter(nfinstid=nf_inst_id)), 0)
+
 
 class TestGetVnfmInfoViews(TestCase):
     def setUp(self):
@@ -529,6 +524,7 @@ class TestGetVnfmInfoViews(TestCase):
         context = json.loads(response.content)
         self.assertEqual(expect_data, context)
 
+
 class TestGetVimInfoViews(TestCase):
     def setUp(self):
         self.client = Client()
@@ -563,10 +559,9 @@ class TestGetVimInfoViews(TestCase):
         context = json.loads(response.content)
         self.assertEqual(expect_data["url"], context["url"])
 
-vnfd_model_dict = {
-    'local_storages': [
 
-    ],
+vnfd_model_dict = {
+    'local_storages': [],
     'vdus': [
         {
             'volumn_storages': [
