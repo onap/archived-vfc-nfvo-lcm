@@ -15,6 +15,7 @@
 from django.test import TestCase, Client
 from rest_framework import status
 
+
 class TestGetVnfViews(TestCase):
     def setUp(self):
         self.client = Client()
