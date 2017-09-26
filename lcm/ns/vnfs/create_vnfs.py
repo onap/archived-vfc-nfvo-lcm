@@ -16,8 +16,8 @@ import logging
 import traceback
 import uuid
 from threading import Thread
-from lcm.ns.const import OWNER_TYPE
 
+from lcm.ns.const import OWNER_TYPE
 from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.config.config import REPORT_TO_AAI
@@ -279,16 +279,39 @@ class CreateVnfs(Thread):
             "vnf-type": "vnf-type-test111",
             "service-id": self.ns_inst_id,
             "in-maint": True,
-            "is-closed-loop-disabled": False
+            "is-closed-loop-disabled": False,
+            "relationship-list": {
+                "relationship": [
+                    {
+                        "related-to": "service-instance",
+                        "relationship-data": [
+                            {
+                                "relationship-key": "customer.global-customer-id",
+                                "relationship-value": "global-customer-id-" + self.ns_inst_id
+                            },
+                            {
+                                "relationship-key": "service-subscription.service-type",
+                                "relationship-value": "service-type-" + self.ns_inst_id
+                            },
+                            {
+                                "relationship-key": "service-instance.service-instance-id",
+                                "relationship-value": self.ns_inst_id
+                            }
+                        ]
+                    }
+                ]
+            }
         }
         resp_data, resp_status = create_vnf_aai(self.nf_inst_id, data)
         if resp_data:
-            logger.debug("Fail to create vnf instance[%s] to aai, resp_status: [%s]." % (self.nf_inst_id, resp_status))
+            logger.debug("Fail to create vnf instance[%s] to aai, vnf instance=[%s], resp_status: [%s]."
+                         % (self.nf_inst_id, self.ns_inst_id, resp_status))
         else:
-            logger.debug("Success to create vnf instance[%s] to aai, resp_status: [%s]." % (self.nf_inst_id, resp_status))
+            logger.debug("Success to create vnf instance[%s] to aai, vnf instance=[%s], resp_status: [%s]."
+                         % (self.nf_inst_id, self.ns_inst_id, resp_status))
 
     def create_vserver_in_aai(self):
-        logger.debug("create_vserver_in_aai start!")
+        logger.debug("CreateVnfs::create_vserver_in_aai::report vserver instance to aai.")
         cloud_owner, cloud_region_id = split_vim_to_owner_region(self.vim_id)
 
         # query vim_info from aai
@@ -303,16 +326,27 @@ class CreateVnfs(Thread):
                 "prov-status": "ACTIVE",
                 "vserver-selflink": "",
                 "in-maint": True,
-                "is-closed-loop-disabled": False
+                "is-closed-loop-disabled": False,
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "generic-vnf",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "generic-vnf.vnf-id",
+                                    "relationship-value": self.nf_inst_id
+                                }
+                            ]
+                        }
+                    ]
+                }
             }
 
             # create vserver instance in aai
             resp_data, resp_status = create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data)
             if resp_data:
-                logger.debug(
-                    "Fail to create vserver instance[%s] to aai, resp_status: [%s]." % (vserver_id, resp_status))
+                logger.debug("Fail to create vserver instance[%s] to aai, vnf instance=[%s], resp_status: [%s]."
+                             % (vserver_id, self.nf_inst_id, resp_status))
             else:
-                logger.debug(
-                    "Success to create vserver instance[%s] to aai, resp_status: [%s]." % (vserver_id, resp_status))
-
-        logger.debug("create_vserver_in_aai end!")
+                logger.debug("Success to create vserver instance[%s] to aai, vnf instance=[%s], resp_status: [%s]."
+                             % (vserver_id, self.nf_inst_id, resp_status))
