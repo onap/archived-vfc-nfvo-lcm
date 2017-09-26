@@ -15,11 +15,9 @@
 import logging
 import traceback
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
-from lcm.pub.database import models
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +29,7 @@ class SampleList(APIView):
     def get(self, request, format=None):
         logger.debug("get")
         return Response({"status": "active"})
+
 
 class TablesList(APIView):
     def delete(self, request, modelName):
@@ -47,7 +46,6 @@ class TablesList(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
 
-
     def get(self, request, modelName):
         logger.debug("Get model %s", modelName)
         count = 0
@@ -59,7 +57,3 @@ class TablesList(APIView):
             return Response(data={"error": "failed"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data={"count": count}, status=status.HTTP_200_OK)
-
-
-
-

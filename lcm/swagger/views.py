@@ -14,12 +14,9 @@
 import json
 import logging
 import os
-import traceback
 
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +24,6 @@ logger = logging.getLogger(__name__)
 class SwaggerJsonView(APIView):
 
     def get(self, request):
-
         json_file = os.path.join(os.path.dirname(__file__), 'vfc.nslcm.swagger.json')
         f = open(json_file)
         json_data = json.JSONDecoder().decode(f.read())
@@ -49,7 +45,6 @@ class SwaggerJsonView(APIView):
         json_data["paths"].update(json_data_temp["paths"])
         json_data["definitions"].update(json_data_temp["definitions"])
 
-
         json_file = os.path.join(os.path.dirname(__file__), 'vfc.sfclcm.swagger.json')
         f = open(json_file)
         json_data_temp = json.JSONDecoder().decode(f.read())
@@ -58,18 +53,13 @@ class SwaggerJsonView(APIView):
         json_data["paths"].update(json_data_temp["paths"])
         json_data["definitions"].update(json_data_temp["definitions"])
 
-
         json_file = os.path.join(os.path.dirname(__file__), 'vfc.others.swagger.json')
         f = open(json_file)
         json_data_temp = json.JSONDecoder().decode(f.read())
         f.close()
 
-        json_data_jobtemp=json_data["paths"]["/jobs/{jobId}"]
+        json_data_jobtemp = json_data["paths"]["/jobs/{jobId}"]
         json_data["paths"].update(json_data_temp["paths"])
         json_data["paths"]["/jobs/{jobId}"].update(json_data_jobtemp)
         json_data["definitions"].update(json_data_temp["definitions"])
-
         return Response(json_data)
-
-    
-
