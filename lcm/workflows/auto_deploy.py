@@ -19,6 +19,7 @@ from lcm.pub.msapi import activiti
 
 logger = logging.getLogger(__name__)
 
+
 def deploy_workflow_on_startup():
     try:
         if WFPlanModel.objects.filter():
@@ -35,4 +36,3 @@ def deploy_workflow_on_startup():
         logger.info("Deploy workflow successfully.")
     except:
         logger.error(traceback.format_exc())
-

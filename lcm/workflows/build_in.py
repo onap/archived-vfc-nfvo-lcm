@@ -43,6 +43,8 @@ format of input_data
     "sdnControllerId": uuid of SDN controller
 }
 """
+
+
 def run_ns_instantiate(input_data):
     logger.debug("Enter %s, input_data is %s", fun_name(), input_data)
     ns_instantiate_ok = False
@@ -116,6 +118,7 @@ def create_vl(ns_inst_id, vl_index, nsd, ns_param):
 
     logger.debug("Create VL(%s) successfully.", vl_id)
 
+
 def create_vnf(ns_inst_id, vnf_index, nf_param):
     uri = "api/nslcm/v1/ns/vnfs"
     data = json.JSONEncoder().encode({
@@ -134,6 +137,7 @@ def create_vnf(ns_inst_id, vnf_index, nf_param):
     job_id = ret[1]["jobId"]
     logger.debug("Create VNF(%s) started.", vnf_inst_id)
     return vnf_inst_id, job_id, vnf_index - 1
+
 
 def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
     uri = "api/nslcm/v1/ns/sfcs"
@@ -155,6 +159,7 @@ def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
     logger.debug("Create SFC(%s) started.", sfc_inst_id)
     return sfc_inst_id, job_id, fp_index - 1
 
+
 def post_deal(ns_inst_id, status):
     uri = "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id) 
     data = json.JSONEncoder().encode({
@@ -166,6 +171,7 @@ def post_deal(ns_inst_id, status):
         logger.error("Failed to call post_deal(%s): %s", ns_inst_id, ret[1])
     logger.debug("Call post_deal(%s, %s) successfully.", ns_inst_id, status)
 
+
 def update_job(job_id, progress, errcode, desc):
     uri = "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id)
     data = json.JSONEncoder().encode({
@@ -175,11 +181,11 @@ def update_job(job_id, progress, errcode, desc):
     })
     restcall.req_by_msb(uri, "POST", data)  
 
+
 class JobWaitThread(Thread):
     """
     Job Wait 
     """
-
     def __init__(self, inst_id, job_id, ns_job_id, index):
         Thread.__init__(self)
         self.inst_id = inst_id
@@ -226,6 +232,7 @@ class JobWaitThread(Thread):
             if job_end_normal:
                 g_jobs_status[self.ns_job_id][self.index] = 0
 
+
 def wait_until_jobs_done(g_job_id, jobs):
     job_threads = []
     for inst_id, job_id, index in jobs:
@@ -239,6 +246,7 @@ def wait_until_jobs_done(g_job_id, jobs):
             logger.error("g_jobs_status[%s]: %s", g_job_id, g_jobs_status[g_job_id])
             raise NSLCMException("Some jobs failed!")
 
+
 def confirm_vnf_status(vnf_inst_id):
     uri = "api/nslcm/v1/ns/vnfs/{vnfInstId}".format(vnfInstId=vnf_inst_id)
     ret = restcall.req_by_msb(uri, "GET")
@@ -250,6 +258,7 @@ def confirm_vnf_status(vnf_inst_id):
     if vnf_status != "active":
         raise NSLCMException("Status of VNF(%s) is not active" % vnf_inst_id)
 
+
 def confirm_sfc_status(sfc_inst_id):
     uri = "api/nslcm/v1/ns/sfcs/{sfcInstId}".format(sfcInstId=sfc_inst_id)
     ret = restcall.req_by_msb(uri, "GET")
@@ -260,10 +269,3 @@ def confirm_sfc_status(sfc_inst_id):
     sfc_status = ret[1]["sfcStatus"]
     if sfc_status != "active":
         raise NSLCMException("Status of SFC(%s) is not active" % sfc_inst_id)
-
-
-
-
-
-      
-

@@ -57,8 +57,3 @@ def deploy_workflow(request, *args, **kwargs):
         return Response(data={'error': str(sys.exc_info())}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     logger.debug("Leave %s", fun_name())
     return Response(data={'msg': 'OK'}, status=status.HTTP_202_ACCEPTED)
-
-
-
-
-
