@@ -18,9 +18,10 @@ import mock
 from django.test import TestCase, Client
 from rest_framework import status
 from lcm.pub.msapi import sdncdriver
-from lcm.pub.database.models import FPInstModel, VNFFGInstModel, NfInstModel
-from lcm.pub.utils import restcall
+from lcm.pub.database.models import FPInstModel
 from lcm.pub.msapi import resmgr
+
+
 class TestSfcDetailViews(TestCase):
     def setUp(self):
         self.client = Client()
@@ -28,16 +29,9 @@ class TestSfcDetailViews(TestCase):
         self.sfc_inst_id = str(uuid.uuid4())
         self.status = "active"
         self.sdn_controler_id = str(uuid.uuid4())
-        sfc_id = str(uuid.uuid4())
-        flow_classifiers = "flow1,flow2"
-        port_pair_groups = json.JSONEncoder().encode(
-            [{"groupid": "group1", "portpair": [str(uuid.uuid4()), str(uuid.uuid4())]},
-             {"groupid": "group2", "portpair": [str(uuid.uuid4()), str(uuid.uuid4())]}])
-
 
     def tearDown(self):
-        pass
-    
+        pass  
     
     def test_sfc_delete_failed(self):
         response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % "notExist")
@@ -52,11 +46,11 @@ class TestSfcDetailViews(TestCase):
     @mock.patch.object(sdncdriver, "delete_port_pair")
     @mock.patch.object(resmgr, "delete_sfc")
     def test_sfc_delete_success(self, mock_delete_sfc, mock_delete_port_pair, mock_delete_port_pair_group, mock_delete_flow_classifier, mock_delete_port_chain, mock_get_sdn_controller_by_id):
-        mock_delete_port_chain.return_value=None
-        mock_delete_flow_classifier.return_value=None
-        mock_delete_port_pair_group.return_value=None
-        mock_delete_port_pair.return_value=None
-        mock_delete_sfc.return_value=None
+        mock_delete_port_chain.return_value = None
+        mock_delete_flow_classifier.return_value = None
+        mock_delete_port_pair_group.return_value = None
+        mock_delete_port_pair.return_value = None
+        mock_delete_sfc.return_value = None
         mock_get_sdn_controller_by_id.return_value = json.loads('{"test":"test_name","url":"url_add"}')
         sfc_inst_id = "10"
 
@@ -70,17 +64,16 @@ class TestSfcDetailViews(TestCase):
         self.assertEqual(expect_resp_data, response.data)
 
     def test_sfc_get_failed(self):
-        sfc_inst_id="10"
+        sfc_inst_id = "10"
         response = self.client.get("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
     def test_sfc_get_success(self):
-        sfc_inst_id ="10"
+        sfc_inst_id = "10"
         FPInstModel(fpid="1", fpinstid="10", fpname="2", nsinstid="3", vnffginstid="4",
                     symmetric="5", policyinfo="6", forworderpaths="7", status="8", sdncontrollerid="9",
                     sfcid="10", flowclassifiers="11",
                     portpairgroups="12").save()
         response = self.client.get("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
-        expect_resp_data={'sfcName': 'xxx', 'sfcInstId': '10', 'sfcStatus': '8'}
+        expect_resp_data = {'sfcName': 'xxx', 'sfcInstId': '10', 'sfcStatus': '8'}
         self.assertEqual(expect_resp_data, response.data)
-
