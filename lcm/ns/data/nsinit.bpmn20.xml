@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+	<process id="nsinit" isExecutable="true">
+		<!-- dataObjects -->
+				<dataObject id="vlCount" name="vlCount">
+	<extensionElements>
+		<activiti:value><![CDATA[3]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="vnfCount" name="vnfCount">
+	<extensionElements>
+		<activiti:value><![CDATA[2]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="sfcCount" name="sfcCount">
+	<extensionElements>
+		<activiti:value><![CDATA[4]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="object_context" name="object_context">
+	<extensionElements>
+		<activiti:value><![CDATA[object_context1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="nsInstanceId" name="nsInstanceId">
+	<extensionElements>
+		<activiti:value><![CDATA[nsInstanceId1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="object_additionalParamForNs" name="object_additionalParamForNs">
+	<extensionElements>
+		<activiti:value><![CDATA[object_additionalParamForNs1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="object_additionalParamForVnf" name="object_additionalParamForVnf">
+	<extensionElements>
+		<activiti:value><![CDATA[object_additionalParamForVnf1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="jobId" name="jobId">
+	<extensionElements>
+		<activiti:value><![CDATA[jobId1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="sdnControllerId" name="sdnControllerId">
+	<extensionElements>
+		<activiti:value><![CDATA[sdnControllerId1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="templateid" name="templateid">
+	<extensionElements>
+		<activiti:value><![CDATA[templateid1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="instanceid" name="instanceid">
+	<extensionElements>
+		<activiti:value><![CDATA[instanceid1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="sdnolcmurl" name="sdnolcmurl">
+	<extensionElements>
+		<activiti:value><![CDATA[sdnolcmurl1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				<dataObject id="statusurl" name="statusurl">
+	<extensionElements>
+		<activiti:value><![CDATA[statusurl1]]></activiti:value>
+	</extensionElements>
+</dataObject>
+				
+		
+		<!-- Perform bpmn elements -->
+				
+<startEvent id="node0" name="startEvent">
+	<extensionElements>
+				<activiti:formProperty id="vlCount" name="vlCount" default="3" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="vnfCount" name="vnfCount" default="2" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="sfcCount" name="sfcCount" default="4" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="object_context" name="object_context" default="object_context1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="nsInstanceId" name="nsInstanceId" default="nsInstanceId1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="object_additionalParamForNs" name="object_additionalParamForNs" default="object_additionalParamForNs1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="object_additionalParamForVnf" name="object_additionalParamForVnf" default="object_additionalParamForVnf1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="jobId" name="jobId" default="jobId1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="sdnControllerId" name="sdnControllerId" default="sdnControllerId1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="templateid" name="templateid" default="templateid1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="instanceid" name="instanceid" default="instanceid1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="sdnolcmurl" name="sdnolcmurl" default="sdnolcmurl1" type="string"></activiti:formProperty>
+        		<activiti:formProperty id="statusurl" name="statusurl" default="statusurl1" type="string"></activiti:formProperty>
+        	</extensionElements>
+</startEvent>
+				
+<exclusiveGateway id="node1" name="exclusiveGateway"></exclusiveGateway>				<scriptTask id="node2" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("vl_index", 1);
+execution.setVariable("vl_status", "active");]]></script>
+</scriptTask>
+				
+<serviceTask id="node3" name="createVL" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/ns/vls]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="accept">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="contentType">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"vnfInstanceData":{"value":[],"valueSource":"Definition"},"additionalParamForVnf":{"value":"${object_additionalParamForVnf}","valueSource":"Variable"},"nsInstanceId":{"value":"${nsInstanceId}","valueSource":"Variable"},"flavourId":{"value":"","valueSource":"String"},"pnfInfo":{"value":[],"valueSource":"Definition"},"extNSVirtualLink":{"value":[],"valueSource":"Definition"},"additionalParamForNs":{"value":"${object_additionalParamForNs}","valueSource":"Variable"},"context":{"value":"${object_context}","valueSource":"Variable"},"sapData":{"value":[],"valueSource":"Definition"},"nestedNsInstanceId":{"value":[],"valueSource":"Definition"},"jobId":{"value":"","valueSource":"String"},"locationConstraints":{"value":[],"valueSource":"Definition"},"vlIndex":{"value":"${vl_index}","valueSource":"Variable"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				<scriptTask id="node4" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("vl_index", vl_index+1);
+
+vl_status = node3.responseBody.result;
+
+vl_status = vl_status.replace(/0/g,"");
+vl_status += 'active';
+execution.setVariable("vl_status", vl_status);
+
+
+
+
+]]></script>
+</scriptTask>
+				
+<serviceTask id="node5" name="jobstatus" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/jobs/{jobId}]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"jobId","position":"path","required":true,"type":"String","value":"${jobId}","valueSource":"Variable"}, {"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"progress":{"value":"20","valueSource":"String"},"errcode":{"value":"${vl_status}","valueSource":"Variable"},"desc":{"value":"","valueSource":"String"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				<scriptTask id="node6" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("vnf_index", 1);
+execution.setVariable("vnf_status", "active");]]></script>
+</scriptTask>
+				
+<exclusiveGateway id="node7" name="exclusiveGateway"></exclusiveGateway>				
+<serviceTask id="node8" name="createVNF" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/ns/vnfs]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="accept">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="contentType">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"vnfInstanceData":{"value":[],"valueSource":"Definition"},"vnfIndex":{"value":"${vnf_index}","valueSource":"Variable"},"additionalParamForVnf":{"value":"${object_additionalParamForVnf}","valueSource":"Variable"},"nsInstanceId":{"value":"${nsInstanceId}","valueSource":"String"},"flavourId":{"value":"","valueSource":"String"},"pnfInfo":{"value":[],"valueSource":"Definition"},"extNSVirtualLink":{"value":[],"valueSource":"Definition"},"additionalParamForNs":{"value":"${object_additionalParamForNs}","valueSource":"Variable"},"context":{"value":"${object_context}","valueSource":"String"},"sapData":{"value":[],"valueSource":"Definition"},"nestedNsInstanceId":{"value":[],"valueSource":"Definition"},"jobId":{"value":"","valueSource":"String"},"locationConstraints":{"value":[],"valueSource":"Definition"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				<scriptTask id="node9" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("vnf_index", vnf_index+1);]]></script>
+</scriptTask>
+				
+<serviceTask id="node10" name="restTask" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/ns/vnfs/{vnfInstId}]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[get]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="accept">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="contentType">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"vnfInstId","position":"path","required":true,"type":"String","value":"[node8].[responseBody].[vnfInstId]","valueSource":"Plan"}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				
+<exclusiveGateway id="node11" name="exclusiveGateway"></exclusiveGateway>				
+<serviceTask id="node13" name="jobstatus" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/jobs/{jobId}]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"jobId","position":"path","required":true,"type":"String","value":"[jobId]","valueSource":"Plan"}, {"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"progress":{"value":"60","valueSource":"String"},"errcode":{"value":"${vnf_status}","valueSource":"Variable"},"desc":{"value":"","valueSource":"String"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				<scriptTask id="node14" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("sfc_index", 1);
+execution.setVariable("sfc_status", "active");]]></script>
+</scriptTask>
+				
+<exclusiveGateway id="node15" name="exclusiveGateway"></exclusiveGateway>				
+<serviceTask id="node16" name="createSFC" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/ns/sfcs]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="accept">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="contentType">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"sdnControllerId":{"value":"[sdnControllerId]","valueSource":"Plan"},"vnfInstanceData":{"value":[],"valueSource":"Definition"},"additionalParamForVnf":{"value":"[object_additionalParamForVnf]","valueSource":"Plan"},"nsInstanceId":{"value":"[nsInstanceId]","valueSource":"Plan"},"jobId":{"value":"","valueSource":"String"},"additionalParamForNs":{"value":"[object_additionalParamForNs]","valueSource":"Plan"},"context":{"value":"${object_context}","valueSource":"String"},"sapData":{"value":[],"valueSource":"Definition"},"fpindex":{"value":"${sfc_index}","valueSource":"String"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				
+<serviceTask id="node17" name="querySFC" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/ns/sfcs/{sfcInstId}]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[get]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="accept">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="contentType">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"sfcInstId","position":"path","required":true,"type":"String","value":"[node16].[responseBody].[sfcInstId]","valueSource":"Plan"}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				
+<exclusiveGateway id="node18" name="exclusiveGateway"></exclusiveGateway>				
+<intermediateCatchEvent id="node19" name="intermediateCatchEvent">
+	<timerEventDefinition>
+        <timeDuration><![CDATA[PT10S]]></timeDuration>
+      </timerEventDefinition>
+</intermediateCatchEvent>
+				<scriptTask id="node20" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("sfc_index", sfc_index + 1);]]></script>
+</scriptTask>
+				
+<serviceTask id="node21" name="jobstatus" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/jobs/{jobId}]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"jobId","position":"path","required":true,"type":"String","value":"[jobId]","valueSource":"Plan"}, {"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"progress":{"value":"80","valueSource":"String"},"errcode":{"value":"${sfc_status}","valueSource":"Variable"},"desc":{"value":"","valueSource":"String"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				
+<serviceTask id="node23" name="post_do" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/ns/{nsInstanceId}/postdeal]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="accept">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="contentType">
+			<activiti:string><![CDATA[[application/json]]]></activiti:string>
+		</activiti:field>
+				<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"nsInstanceId","position":"path","required":true,"type":"String","value":"[nsInstanceId]","valueSource":"Plan"}, {"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"status":{"value":"${exec_status}","valueSource":"Variable"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				
+<serviceTask id="node24" name="jobstatus" activiti:class="com.zte.ums.workflow.activitiext.restservicetask.HttpUtil">
+	<extensionElements>
+		<activiti:field name="url">
+			<activiti:string><![CDATA[/api/nslcm/v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="name">
+			<activiti:string><![CDATA[nslcm]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="version">
+			<activiti:string><![CDATA[v1]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="path">
+			<activiti:string><![CDATA[/jobs/{jobId}]]></activiti:string>
+		</activiti:field>
+		<activiti:field name="method">
+			<activiti:string><![CDATA[post]]></activiti:string>
+		</activiti:field>
+						<activiti:field name="parameters">
+			<activiti:string><![CDATA[[{"description":"","name":"jobId","position":"path","required":true,"type":"String","value":"[jobId]","valueSource":"Plan"}, {"description":"","name":"body","position":"body","required":true,"type":"String","value":{"value":{"progress":{"value":"100","valueSource":"String"},"errcode":{"value":"${exec_status}","valueSource":"Variable"},"desc":{"value":"","valueSource":"String"}},"valueSource":"Definition"}}]]]></activiti:string>
+		</activiti:field>
+	</extensionElements>
+</serviceTask>
+				
+
+<endEvent id="node25" name="endEvent">
+</endEvent>
+				
+<intermediateCatchEvent id="node12" name="intermediateCatchEvent">
+	<timerEventDefinition>
+        <timeDuration><![CDATA[PT10S]]></timeDuration>
+      </timerEventDefinition>
+</intermediateCatchEvent>
+				<scriptTask id="node26" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[
+execution.setVariable("vnf_status",  node10.responseBody.vnfStatus);]]></script>
+</scriptTask>
+				<scriptTask id="node27" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("sfc_status", node17.responseBody.sfcStatus);]]></script>
+</scriptTask>
+				<scriptTask id="node28" name="scriptTask" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[// starts-with($vl_status,'active') and contains($vnf_status,'active') and contains($sfc_status,'active')
+
+exec_status = vl_status.indexOf('active') == 0 && vnf_status.indexOf('active') != -1 && sfc_status.indexOf('active') != -1
+
+execution.setVariable("exec_status", exec_status );]]></script>
+</scriptTask>
+		
+		<!-- Perform bpmn sequence flow -->
+				<sequenceFlow id="node0node2" sourceRef="node0" targetRef="node2">
+</sequenceFlow>				<sequenceFlow id="node1node3" sourceRef="node1" targetRef="node3">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(vl_index<=vlCount) and (vl_status=='active')}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node1node5" sourceRef="node1" targetRef="node5">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!((vl_index<=vlCount) and (vl_status=='active'))}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node2node1" sourceRef="node2" targetRef="node1">
+</sequenceFlow>				<sequenceFlow id="node3node4" sourceRef="node3" targetRef="node4">
+</sequenceFlow>				<sequenceFlow id="node4node1" sourceRef="node4" targetRef="node1">
+</sequenceFlow>				<sequenceFlow id="node5node6" sourceRef="node5" targetRef="node6">
+</sequenceFlow>				<sequenceFlow id="node6node7" sourceRef="node6" targetRef="node7">
+</sequenceFlow>				<sequenceFlow id="node7node8" sourceRef="node7" targetRef="node8">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vnf_index<=vnfCount and vl_status=='active' and vnf_status=='active'}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node7node13" sourceRef="node7" targetRef="node13">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!(vnf_index<=vnfCount and vl_status=='active' and vnf_status=='active')}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node8node12" sourceRef="node8" targetRef="node12">
+</sequenceFlow>				<sequenceFlow id="node9node7" sourceRef="node9" targetRef="node7">
+</sequenceFlow>				<sequenceFlow id="node10node26" sourceRef="node10" targetRef="node26">
+</sequenceFlow>				<sequenceFlow id="node11node9" sourceRef="node11" targetRef="node9">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vnf_status=='active' or vnf_status=='failed'}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node11node12" sourceRef="node11" targetRef="node12">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!(vnf_status=='active' or vnf_status=='failed')}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node13node14" sourceRef="node13" targetRef="node14">
+</sequenceFlow>				<sequenceFlow id="node14node15" sourceRef="node14" targetRef="node15">
+</sequenceFlow>				<sequenceFlow id="node15node16" sourceRef="node15" targetRef="node16">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sfc_index<=sfcCount and vl_status=='active' and vnf_status=='active' and sfc_status=='active'}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node15node21" sourceRef="node15" targetRef="node21">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!(sfc_index<=sfcCount and vl_status=='active' and vnf_status=='active' and sfc_status=='active')}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node16node19" sourceRef="node16" targetRef="node19">
+</sequenceFlow>				<sequenceFlow id="node17node27" sourceRef="node17" targetRef="node27">
+</sequenceFlow>				<sequenceFlow id="node18node19" sourceRef="node18" targetRef="node19">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!(sfc_status=='active' or sfc_status=='failed')}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node18node20" sourceRef="node18" targetRef="node20">
+  <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sfc_status=='active' or sfc_status=='failed'}]]></conditionExpression>
+</sequenceFlow>				<sequenceFlow id="node19node17" sourceRef="node19" targetRef="node17">
+</sequenceFlow>				<sequenceFlow id="node20node15" sourceRef="node20" targetRef="node15">
+</sequenceFlow>				<sequenceFlow id="node21node28" sourceRef="node21" targetRef="node28">
+</sequenceFlow>				<sequenceFlow id="node23node24" sourceRef="node23" targetRef="node24">
+</sequenceFlow>				<sequenceFlow id="node24node25" sourceRef="node24" targetRef="node25">
+</sequenceFlow>				<sequenceFlow id="node12node10" sourceRef="node12" targetRef="node10">
+</sequenceFlow>				<sequenceFlow id="node26node11" sourceRef="node26" targetRef="node11">
+</sequenceFlow>				<sequenceFlow id="node27node18" sourceRef="node27" targetRef="node18">
+</sequenceFlow>				<sequenceFlow id="node28node23" sourceRef="node28" targetRef="node23">
+</sequenceFlow>		
+	</process>
+</definitions>
+
