@@ -22,4 +22,3 @@ def ignore_case_get(args, key, def_val=""):
         if old_key.upper() == key.upper():
             return args[old_key]
     return def_val
-

@@ -47,7 +47,6 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         self.vnf_exposed = self.get_all_endpoint_exposed(tosca.topology_template)
         self.vnf_flavours = self.get_all_flavour(tosca.topology_template.groups)
 
-
     def _get_all_services(self, nodeTemplates):
         ret = []
         for node in nodeTemplates:
@@ -177,13 +176,13 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
                 ret['dependencies'] = map(lambda x: self.get_requirement_node_name(x), self.getNodeDependencys(node))
 
                 nfv_compute = self.getCapabilityByName(node, 'nfv_compute')
-                if nfv_compute != None and 'properties' in nfv_compute:
+                if nfv_compute is not None and 'properties' in nfv_compute:
                     ret['nfv_compute'] = nfv_compute['properties']
 
                 ret['vls'] = self.get_linked_vl_ids(node, nodeTemplates)
 
                 scalable = self.getCapabilityByName(node, 'scalable')
-                if scalable != None and 'properties' in scalable:
+                if scalable is not None and 'properties' in scalable:
                     ret['scalable'] = scalable['properties']
 
                 ret['cps'] = self.getVirtalBindingCpIds(node, nodeTemplates)
@@ -296,8 +295,8 @@ class EtsiVnfdInfoModel(EtsiNsdInfoModel):
         policies = []
         scaling_policies = self.get_scaling_policies(top_policies)
         healing_policies = self.get_healing_policies(top_policies)
-        policies.append({"scaling":scaling_policies, 'healing':healing_policies})
+        policies.append({"scaling": scaling_policies, 'healing': healing_policies})
         return policies
 
     def get_healing_policies(self, top_policies):
-        return self.get_policies_by_keyword(top_policies,'.HEALING')
+        return self.get_policies_by_keyword(top_policies, '.HEALING')

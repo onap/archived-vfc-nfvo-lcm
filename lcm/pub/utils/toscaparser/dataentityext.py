@@ -16,8 +16,8 @@ from toscaparser.dataentity import DataEntity
 from toscaparser.elements.constraints import Schema
 from toscaparser.common.exception import ExceptionCollector
 
-class DataEntityExt(object):
 
+class DataEntityExt(object):
     '''A complex data value entity ext.'''
     @staticmethod
     def validate_datatype(type, value, entry_schema=None, custom_def=None):
@@ -29,6 +29,5 @@ class DataEntityExt(object):
                     return float(value)
                 except Exception:
                     ExceptionCollector.appendException(ValueError(('"%s" is not an float.') % value))
-    
             return DataEntity.validate_datatype(type, value, entry_schema, custom_def)
         return value
