@@ -48,7 +48,6 @@ class NotifyLcm(object):
             self.update_Vl()
             self.update_Cp()
             self.update_Storage()
-            #self.update_vnf_by_vnfdmodule()
             logger.debug("notify lcm end")
         except NSLCMException as e:
             self.exception(e.message)
@@ -75,12 +74,6 @@ class NotifyLcm(object):
             vimId = ignore_case_get(vnfc, 'vimid')
             vmId = ignore_case_get(vnfc, 'vmid')
             vmName = ignore_case_get(vnfc, 'vmname')
-            # resourceType = ignore_case_get(vmResource, 'resourceType')
-            # resourceId = ignore_case_get(vmId, 'resourceId')
-
-
-            # if resourceType != 'vm':
-            #     self.exception('affectedVnfc struct error: resourceType not euqal vm')
 
             if changeType == 'added':
                 VNFCInstModel(vnfcinstanceid=vnfcInstanceId, vduid=vduId,
@@ -125,7 +118,6 @@ class NotifyLcm(object):
     def update_Cp(self):
         for cp in self.affectedCp:
             virtualLinkInstanceId = ignore_case_get(cp, 'virtualLinkInstanceId')
-            #ownerid = ignore_case_get(cp, 'ownerid')
             ownertype = ignore_case_get(cp, 'ownertype')
             if not ownertype:
                 ownertype = 0
@@ -142,7 +134,6 @@ class NotifyLcm(object):
                 tenant = ignore_case_get(portResource, 'tenant')
                 ipAddress = ignore_case_get(portResource, 'ipAddress')
                 macAddress = ignore_case_get(portResource, 'macAddress')
-                sfcEncapsulation = ignore_case_get(portResource, 'sfcEncapsulation')
                 instId = ignore_case_get(portResource, 'instId')
                 portid = str(uuid.uuid4())
                 PortInstModel(portid=portid, networkid='unknown', subnetworkid='unknown', vimid=vimId,

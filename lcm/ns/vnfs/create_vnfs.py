@@ -107,7 +107,7 @@ class CreateVnfs(Thread):
     def get_vnfd_id(self):
         if self.vnfd_id:
             logger.debug("need not get vnfd_id")
-            self.nsd_model={'vnfs': [], 'vls': [], 'vnffgs': []}
+            self.nsd_model = {'vnfs': [], 'vls': [], 'vnffgs': []}
             self.vnf_inst_name = self.vnfd_id + str(uuid.uuid4())
             self.vnf_inst_name = self.vnf_inst_name[:30]
             return
@@ -270,7 +270,6 @@ class CreateVnfs(Thread):
                 raise NSLCMException('Vnffg instance not exist.')
             vnf_list = vnffg_inst_infos[0].vnflist
             vnffg_inst_infos.update(vnf_list=vnf_list + ',' + self.nf_inst_id if vnf_list else self.nf_inst_id)
-
 
     def create_vnf_in_aai(self):
         logger.debug("CreateVnfs::create_vnf_in_aai::report vnf instance[%s] to aai." % self.nf_inst_id)

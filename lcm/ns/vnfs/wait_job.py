@@ -54,8 +54,7 @@ def default_callback(vnfo_job_id, vnfm_job_id, job_status, jobs, progress_range,
     return False, JOB_MODEL_STATUS.PROCESSING
 
 
-def wait_job_finish(vnfm_id, vnfo_job_id, vnfm_job_id, progress_range=None, timeout=600, 
-    job_callback=default_callback, **kwargs):
+def wait_job_finish(vnfm_id, vnfo_job_id, vnfm_job_id, progress_range=None, timeout=600, job_callback=default_callback, **kwargs):
     progress_range = [0, 100] if not progress_range else progress_range
     response_id = 0
     query_interval = 2

@@ -22,7 +22,7 @@ from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import NfInstModel, VmInstModel
 from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE
 from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai, query_vserver_aai, delete_vserver_aai
-from lcm.pub.msapi.extsys import get_vnfm_by_id, split_vim_to_owner_region, get_vim_by_id
+from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.exceptions import NSLCMException

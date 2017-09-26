@@ -118,12 +118,14 @@ class NfScaleView(APIView):
         except Exception as e:
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
 
+
 class NfVerifyView(APIView):
     def post(self, request):
         job_id = "VNFSDK_" + str(uuid.uuid4())
         logger.debug("NfVerifyView--post::%s> %s", job_id, request.data)
         VerifyVnfs(request.data, job_id).start()
         return Response(data={"jobId": job_id}, status=status.HTTP_202_ACCEPTED)
+
 
 class NfVnfmInfoView(APIView):
     def get(self, request, vnfmid):
@@ -138,6 +140,7 @@ class NfVnfmInfoView(APIView):
             return Response(data={'error': 'Failed to get vnfm info.'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data=vnfm_info, status=status.HTTP_200_OK)
+
 
 class NfVimInfoView(APIView):
     def get(self, request, vimid):

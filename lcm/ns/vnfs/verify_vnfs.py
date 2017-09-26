@@ -19,13 +19,14 @@ import traceback
 import time
 
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.restcall import req_by_msb
 
 logger = logging.getLogger(__name__)
 
 JOB_ERROR = 255
+
 
 class VerifyVnfs(threading.Thread):
     def __init__(self, data, job_id):
@@ -53,7 +54,6 @@ class VerifyVnfs(threading.Thread):
             logger.warn("Ignore terminate vnf operation")
             if self.verify_ok:
                 self.update_job(100, "Ignore terminate vnf operation.")
-            #self.do_term_vnf()
 
     def do_on_boarding(self):
         self.update_job(10, "Start vnf on boarding.")

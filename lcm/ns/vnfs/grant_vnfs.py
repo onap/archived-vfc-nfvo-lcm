@@ -42,7 +42,6 @@ class GrantVnfs(object):
         elif ignore_case_get(self.data, "removeResource"):
             grant_type = "removeResource"
         else:
-            #raise NSLCMException("No grant resource is found.")
             has_res_tpl = True
 
         for res in ignore_case_get(self.data, grant_type):
@@ -116,10 +115,3 @@ class GrantVnfs(object):
             if storage_id == storage["local_storage_id"]:
                 return int(storage["properties"]["size"])
         return 0
-
-
-
-
-
-
-
