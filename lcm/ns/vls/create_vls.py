@@ -158,7 +158,17 @@ class CreateVls(object):
             "vlanTransparent": str(self.vl_properties.get("vlan_transparent", "")),
             "routerExternal": self.route_external,
             "resourceProviderType": "",
-            "resourceProviderId": ""}
+            "resourceProviderId": "",
+            "subnet_list": [{
+                "subnet_name": self.vl_properties.get("name", ""),
+                "cidr": self.vl_properties.get("cidr", "192.168.0.0/24"),
+                "ip_version": self.vl_properties.get("ip_version", const.IPV4),
+                "enable_dhcp": self.vl_properties.get("dhcp_enabled", False),
+                "gateway_ip": self.vl_properties.get("gateway_ip", ""),
+                "dns_nameservers": self.vl_properties.get("dns_nameservers", ""),
+                "host_routes": self.vl_properties.get("host_routes", "")
+            }]
+        }
         resmgr.create_vl(req_param)
 
     def create_vl_inst_id_in_vnffg(self):
