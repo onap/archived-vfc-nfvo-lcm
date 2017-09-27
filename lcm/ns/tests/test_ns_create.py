@@ -30,16 +30,19 @@ class TestNsInstantiate(TestCase):
         self.client = Client()
         self.nsd_id = str(uuid.uuid4())
         self.ns_package_id = str(uuid.uuid4())
-        NSDModel(id=self.ns_package_id, nsd_id=self.nsd_id, name='name').save()
 
     def tearDown(self):
-        NSDModel.objects.all().delete()
         NSInstModel.objects.all().delete()
 
     @mock.patch.object(restcall, 'call_req')
     def test_create_ns(self, mock_call_req):
-        r1_create_ns_to_aai = [0, json.JSONEncoder().encode({}), '201']
-        mock_call_req.side_effect = [r1_create_ns_to_aai]
+        nspackage_info = {
+            "csarId": self.ns_package_id,
+            "packageInfo": {}
+        }
+        r1_query_nspackage_from_catalog = [0, json.JSONEncoder().encode(nspackage_info), '201']
+        r2_create_ns_to_aai = [0, json.JSONEncoder().encode({}), '201']
+        mock_call_req.side_effect = [r1_query_nspackage_from_catalog, r2_create_ns_to_aai]
         data = {
             'nsdid': self.nsd_id,
             'nsname': 'ns',

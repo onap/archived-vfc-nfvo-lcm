@@ -18,6 +18,7 @@ from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import NSDModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_customer_aai
+from lcm.pub.msapi.sdc_run_catalog import query_nspackage_by_id
 from lcm.pub.utils.timeutil import now_time
 
 logger = logging.getLogger(__name__)
@@ -42,10 +43,10 @@ class CreateNSService(object):
 
     def check_nsd_valid(self):
         logger.debug("CreateNSService::check_nsd_valid::nsd_id=%s" % self.nsd_id)
-        ns_package_info = NSDModel.objects.filter(nsd_id=self.nsd_id)
+        ns_package_info = query_nspackage_by_id(self.nsd_id)
         if not ns_package_info:
             raise NSLCMException("nsd(%s) not exists." % self.nsd_id)
-        self.ns_package_id = ns_package_info[0].id
+        self.ns_package_id = ns_package_info["csarId"]
         logger.debug("CreateNSService::check_nsd_valid::ns_package_id=%s" % self.ns_package_id)
 
     def check_ns_inst_name_exist(self):

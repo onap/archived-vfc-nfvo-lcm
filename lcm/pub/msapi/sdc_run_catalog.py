@@ -37,3 +37,11 @@ def parse_vnfd(csar_id, input_parameters=[]):
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to parse_vnfd of CSAR(%s) from catalog." % csar_id)
     return json.JSONDecoder().decode(ret[1])
+
+
+def query_nspackage_by_id(csar_id):
+    ret = req_by_msb("/api/catalog/v1/nspackages/%s" % csar_id, "GET")
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Failed to query CSAR(%s) from catalog." % csar_id)
+    return json.JSONDecoder().decode(ret[1])
