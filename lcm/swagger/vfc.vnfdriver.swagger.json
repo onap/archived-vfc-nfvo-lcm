@@ -336,6 +336,9 @@
               "$ref": "#/definitions/GrantVNFResponse"
             }
           },
+          "404": {
+            "description": "URL not found"
+          },
           "500": {
             "description": "the url is invalid"
           }
@@ -371,6 +374,9 @@
         "responses": {
           "202": {
             "description": ""
+          },
+          "404": {
+            "description": "URL not found"
           },
           "500": {
             "description": "the url is invalid"
@@ -485,6 +491,9 @@
               "$ref": "#/definitions/VnfmInfo"
             }
           },
+          "404": {
+            "description": "URL not found"
+          },
           "500": {
             "description": "internal error"
           }
@@ -520,6 +529,9 @@
             "schema": {
               "$ref": "#/definitions/VimInfo"
             }
+          },
+          "404": {
+            "description": "URL not found"
           },
           "500": {
             "description": "internal error"

@@ -37,6 +37,9 @@
                         "schema": {
                             "$ref": "#/definitions/SfcPostResponse"
                         }
+                    },
+                    "404": {
+                        "description": "URL not found"
                     }
                 }
             }

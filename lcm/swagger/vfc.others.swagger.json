@@ -41,6 +41,9 @@
                 "responses": {
                     "202": {
                         "description": ""
+                    },
+                    "404": {
+                        "description": "URL not found"
                     }
                 }
             }
@@ -75,6 +78,9 @@
                             "$ref": "#/definitions/TableInfo"
                         }
                     },
+                    "404": {
+                        "description": "URL not found"
+                    },
                     "500": {
                         "description": "the url is invalid"
                     }
@@ -105,6 +111,9 @@
                 "responses": {
                     "204": {
                         "description": "The tables were deleted successfully."
+                    },
+                    "404": {
+                        "description": "URL not found"
                     }
                 }
             }
@@ -138,6 +147,9 @@
             "responses": {
               "202": {
                 "description": ""
+              },
+              "404": {
+                        "description": "URL not found"
               }
             }
         }

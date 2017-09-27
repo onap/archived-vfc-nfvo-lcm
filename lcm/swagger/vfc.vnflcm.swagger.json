@@ -37,6 +37,9 @@
                         "schema": {
                             "$ref": "#/definitions/VnfPostResponse"
                         }
+                    },
+                    "404": {
+                        "description": "URL not found"
                     }
                 }
             }

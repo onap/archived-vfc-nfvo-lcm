@@ -47,6 +47,9 @@
             "schema": {
               "$ref": "#/definitions/NsCreateResponse"
             }
+          },
+          "404": {
+            "description": "URL not found"
           }
         }
       },
@@ -72,6 +75,9 @@
             "schema": {
               "$ref": "#/definitions/NsInstancesInfo"
             }
+          },
+          "404": {
+            "description": "URL not found"
           }
         }
       }
@@ -111,6 +117,9 @@
           },
           "201": {
             "description": "Invalid Request"
+          },
+          "404": {
+            "description": "URL not found"
           }
         }
       }
@@ -150,6 +159,9 @@
           },
           "201": {
             "description": "Invalid Request"
+          },
+          "404": {
+            "description": "URL not found"
           }
         }
       }
@@ -186,6 +198,9 @@
             "schema": {
               "$ref": "#/definitions/JobInfo"
             }
+          },
+          "404": {
+            "description": "URL not found"
           },
           "500": {
             "description": "the url is invalid"
