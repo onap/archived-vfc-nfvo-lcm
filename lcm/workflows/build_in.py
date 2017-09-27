@@ -32,14 +32,14 @@ g_jobs_status = {}
 """
 format of input_data
 {
-    "jobId": uuid of job, 
+    "jobId": uuid of job,
     "nsInstanceId": id of ns instance,
     "object_context": json format of nsd,
     "object_additionalParamForNs": json format of additional parameters for ns,
     "object_additionalParamForVnf": json format of additional parameters for vnf,
     "vlCount": int type of VL count,
     "vnfCount: int type of VNF count,
-    "sfcCount": int type of SFC count, 
+    "sfcCount": int type of SFC count,
     "sdnControllerId": uuid of SDN controller
 }
 """
@@ -64,14 +64,14 @@ def run_ns_instantiate(input_data):
             create_vl(ns_inst_id, i + 1, nsd_json, ns_param_json)
 
         update_job(job_id, 30, "0", "Start to create VNF")
-        jobs = [create_vnf(ns_inst_id, i + 1, vnf_param_json) for i in range(vnf_count)] 
+        jobs = [create_vnf(ns_inst_id, i + 1, vnf_param_json) for i in range(vnf_count)]
         wait_until_jobs_done(job_id, jobs)
 
         [confirm_vnf_status(inst_id) for inst_id, _, _ in jobs]
 
         update_job(job_id, 70, "0", "Start to create SFC")
         g_jobs_status[job_id] = [1 for i in range(sfc_count)]
-        jobs = [create_sfc(ns_inst_id, i + 1, nsd_json, sdnc_id) for i in range(sfc_count)] 
+        jobs = [create_sfc(ns_inst_id, i + 1, nsd_json, sdnc_id) for i in range(sfc_count)]
         wait_until_jobs_done(job_id, jobs)
 
         [confirm_sfc_status(inst_id) for inst_id, _, _ in jobs]
@@ -161,7 +161,7 @@ def create_sfc(ns_inst_id, fp_index, nsd_json, sdnc_id):
 
 
 def post_deal(ns_inst_id, status):
-    uri = "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id) 
+    uri = "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id)
     data = json.JSONEncoder().encode({
         "status": status
     })
@@ -179,12 +179,12 @@ def update_job(job_id, progress, errcode, desc):
         "errcode": errcode,
         "desc": desc
     })
-    restcall.req_by_msb(uri, "POST", data)  
+    restcall.req_by_msb(uri, "POST", data)
 
 
 class JobWaitThread(Thread):
     """
-    Job Wait 
+    Job Wait
     """
     def __init__(self, inst_id, job_id, ns_job_id, index):
         Thread.__init__(self)

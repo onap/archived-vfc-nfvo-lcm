@@ -28,8 +28,8 @@ def deploy_workflow_on_startup():
         file_path = "TODO:"
         deploy_info = activiti.deploy_workflow(file_path)
         WFPlanModel(
-            deployed_id=deploy_info["deployedId"], 
-            process_id=deploy_info["processId"], 
+            deployed_id=deploy_info["deployedId"],
+            process_id=deploy_info["processId"],
             status=deploy_info["status"],
             message=deploy_info["message"],
             plan_name="ns_instantiate").save()

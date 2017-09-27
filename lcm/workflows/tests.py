@@ -42,8 +42,8 @@ class WorkflowViewTest(unittest.TestCase):
             "processId": "4"
         }
         mock_upload_by_msb.return_value = [0, json.JSONEncoder().encode(res_data), '202']
-        response = self.client.post("/api/nslcm/v1/workflow", 
-            {"filePath": os.path.abspath(__file__)}, format='json')
+        response = self.client.post("/api/nslcm/v1/workflow",
+                                    {"filePath": os.path.abspath(__file__)}, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.content)
         self.assertEqual(1, len(WFPlanModel.objects.filter(deployed_id="3")))
 
@@ -61,16 +61,16 @@ class WorkflowViewTest(unittest.TestCase):
             "processId": "5"
         }), '202']
         WFPlanModel(deployed_id="1", process_id="2", status="3", message="4").save()
-        response = self.client.post("/api/nslcm/v1/workflow", 
-            {"filePath": os.path.abspath(__file__), "forceDeploy": "True"}, format='json')
+        response = self.client.post("/api/nslcm/v1/workflow",
+                                    {"filePath": os.path.abspath(__file__), "forceDeploy": "True"}, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.content)
         self.assertEqual(0, len(WFPlanModel.objects.filter(deployed_id="1")))
         self.assertEqual(1, len(WFPlanModel.objects.filter(deployed_id="4")))
 
     def test_deploy_workflow_when_already_deployed(self):
         WFPlanModel(deployed_id="1", process_id="2", status="3", message="4").save()
-        response = self.client.post("/api/nslcm/v1/workflow", 
-            {"filePath": os.path.abspath(__file__)}, format='json')
+        response = self.client.post("/api/nslcm/v1/workflow",
+                                    {"filePath": os.path.abspath(__file__)}, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.content)
         self.assertEqual({'msg': 'Already deployed.'}, json.loads(response.content))
 
@@ -126,9 +126,9 @@ class WorkflowViewTest(unittest.TestCase):
                     "progress": 100,
                     "statusDescription": "ok"
                 }}), '200'],
-            "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id): 
+            "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
                 [0, '{}', '201'],
-            "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id): 
+            "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id):
                 [0, '{}', '201']
         }
 

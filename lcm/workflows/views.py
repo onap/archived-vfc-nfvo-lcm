@@ -47,8 +47,8 @@ def deploy_workflow(request, *args, **kwargs):
                 return Response(data={'msg': 'Already deployed.'}, status=status.HTTP_202_ACCEPTED)
         deploy_info = activiti.deploy_workflow(file_path)
         WFPlanModel(
-            deployed_id=deploy_info["deployedId"], 
-            process_id=deploy_info["processId"], 
+            deployed_id=deploy_info["deployedId"],
+            process_id=deploy_info["processId"],
             status=deploy_info["status"],
             message=deploy_info["message"],
             plan_name="ns_instantiate").save()

@@ -13,28 +13,23 @@
 # limitations under the License.
 
 import json
-import os
 import logging
-from lcm.pub.exceptions import NSLCMException
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
+import os
 
 logger = logging.getLogger(__name__)
 SCALE_TYPE = ("SCALE_NS", "SCALE_VNF")
 
 scale_vnf_data_mapping = {
-    "vnfInstanceId":"",
-    "scaleByStepData":[
+    "vnfInstanceId": "",
+    "scaleByStepData": [
         {
-            "type":"",
-            "aspectId":"",
-            "numberOfSteps":""
+            "type": "",
+            "aspectId": "",
+            "numberOfSteps": ""
         }
     ]
 }
+
 
 def ignorcase_get(args, key):
     if not key:
@@ -48,6 +43,7 @@ def ignorcase_get(args, key):
             return args[old_key]
     return ""
 
+
 def mapping_conv(keyword_map, rest_return):
     resp_data = {}
     for param in keyword_map:
@@ -57,6 +53,7 @@ def mapping_conv(keyword_map, rest_return):
             else:
                 resp_data[param] = ignorcase_get(rest_return, param)
     return resp_data
+
 
 def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
     json_data = get_json_data(filename)
@@ -73,6 +70,7 @@ def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
 
     return None
 
+
 def get_json_data(filename):
     f = open(filename)
     json_str = f.read()
@@ -80,12 +78,16 @@ def get_json_data(filename):
     f.close()
     return data
 
+
 def check_scale_list(vnf_scale_list, ns_instanceId, aspect, step):
     if vnf_scale_list is None:
-        logger.debug("The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file." %(ns_instanceId, aspect, step))
-        raise Exception("The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file." %(ns_instanceId, aspect, step))
+        logger.debug("The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file."
+                     % (ns_instanceId, aspect, step))
+        raise Exception("The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file."
+                        % (ns_instanceId, aspect, step))
     else:
         return vnf_scale_list
+
 
 def set_scaleVnfData_type(vnf_scale_list, scale_type):
     logger.debug("vnf_scale_list = %s, type = %s" % (vnf_scale_list, scale_type))
@@ -101,40 +103,44 @@ def set_scaleVnfData_type(vnf_scale_list, scale_type):
     logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
     return scaleVnfDataList
 
+
 def get_vnfInstanceIdByName(name):
     return name
+
 
 def get_vnf_data(filename, ns_instanceId, aspect, step, scale_type):
 
     vnf_scale_list = get_vnf_scale_info(filename, ns_instanceId, aspect, step)
     check_scale_list(vnf_scale_list, ns_instanceId, aspect, step)
-    scaleVnfDataList = set_scaleVnfData_type(vnf_scale_list,scale_type)
+    scaleVnfDataList = set_scaleVnfData_type(vnf_scale_list, scale_type)
     logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
     return scaleVnfDataList
 
-    #return Response(data={'error': e.message},status=status.HTTP_204_NO_CONTENT)
-    #return Response(data={'success': 'success'},status=status.HTTP_200_OK)
+    # return Response(data={'error': e.message},status=status.HTTP_204_NO_CONTENT)
+    # return Response(data={'success': 'success'},status=status.HTTP_200_OK)
+
 
 def get_and_check_params(scaleNsData, ns_InstanceId):
 
     if scaleNsData is None:
         pass
-        #raise NSLCMException("Error! scaleNsData in the request is Empty!")
+        # raise NSLCMException("Error! scaleNsData in the request is Empty!")
 
     scaleNsByStepsData = scaleNsData[0]["scaleNsByStepsData"]
     if scaleNsByStepsData is None:
         pass
-        #raise NSLCMException("Error! scaleNsByStepsData in the request is Empty!")
+        # raise NSLCMException("Error! scaleNsByStepsData in the request is Empty!")
 
     aspect = scaleNsByStepsData[0]["aspectId"]
     numberOfSteps = scaleNsByStepsData[0]["numberOfSteps"]
     scale_type = scaleNsByStepsData[0]["scalingDirection"]
 
-    return ns_InstanceId,aspect,numberOfSteps,scale_type
+    return ns_InstanceId, aspect, numberOfSteps, scale_type
+
 
 def get_scale_vnf_data(scaleNsData, ns_InstanceId):
     curdir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     filename = curdir_path + "/ns/data/scalemapping.json"
     logger.debug("filename = %s" % filename)
-    ns_InstanceId,aspect,numberOfSteps,scale_type = get_and_check_params(scaleNsData, ns_InstanceId)
-    return get_vnf_data(filename, ns_InstanceId,aspect,numberOfSteps,scale_type)
+    ns_InstanceId, aspect, numberOfSteps, scale_type = get_and_check_params(scaleNsData, ns_InstanceId)
+    return get_vnf_data(filename, ns_InstanceId, aspect, numberOfSteps, scale_type)
