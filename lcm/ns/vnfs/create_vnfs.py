@@ -26,6 +26,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_vnf_aai, create_vserver_aai
 from lcm.pub.msapi.extsys import get_vnfm_by_id, split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.msapi.resmgr import create_vnf, create_vnf_creation_info
+from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.msapi.vnfmdriver import send_nf_init_request
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil, JOB_TYPE
 from lcm.pub.utils.share_lock import do_biz_with_share_lock
@@ -127,12 +128,9 @@ class CreateVnfs(Thread):
         raise NSLCMException('Can not found vnf in nsd model')
 
     def check_nf_package_valid(self):
-        nf_package_info = NfPackageModel.objects.filter(vnfdid=self.vnfd_id)
-        if not nf_package_info:
-            logger.info('NF package not exist.')
-            raise NSLCMException('NF package not exist.')
-        self.nf_package_info = nf_package_info[0]
-        self.vnfd_model = json.loads(self.nf_package_info.vnfdmodel)
+        nf_package_info = query_vnfpackage_by_id(self.vnfd_id)
+        self.nf_package_info = nf_package_info["packageInfo"]
+        self.vnfd_model = ignore_case_get(self.nf_package_info, "vnfdModel")
 
     def get_virtual_link_info(self, vnf_id):
         virtual_link_list, ext_virtual_link = [], []
@@ -179,7 +177,7 @@ class CreateVnfs(Thread):
         virtual_link_list, ext_virtual_link = self.get_virtual_link_info(self.vnf_id)
         req_param = json.JSONEncoder().encode({
             'vnfInstanceName': self.vnf_inst_name, 
-            'vnfPackageId': self.nf_package_info.nfpackageid, 
+            'vnfPackageId': ignore_case_get(self.nf_package_info, "vnfPackageId"),
             'vnfDescriptorId': self.vnfd_id,
             'extVirtualLink': ext_virtual_link,
             'additionalParam': {"inputs": self.inputs, 
@@ -193,11 +191,11 @@ class CreateVnfs(Thread):
             mnfinstid=self.vnfm_nf_inst_id,
             nf_name=self.vnf_inst_name,
             vnf_id=self.vnf_id,
-            package_id=self.nf_package_info.nfpackageid,
+            package_id=ignore_case_get(self.nf_package_info, "vnfPackageId"),
             vnfm_inst_id=self.vnfm_inst_id,
             ns_inst_id=self.ns_inst_id,
-            version=self.nf_package_info.vnfversion,
-            vendor=self.nf_package_info.vendor,
+            version=ignore_case_get(self.nf_package_info, "vnfdVersion"),
+            vendor=ignore_case_get(self.nf_package_info, "vnfdProvider"),
             vnfd_model=self.vnfd_model,
             input_params=json.JSONEncoder().encode(self.inputs),
             lastuptime=now_time())
@@ -207,7 +205,7 @@ class CreateVnfs(Thread):
         self.vnfm_inst_name = ignore_case_get(resp_body, 'name')
 
     def send_create_vnf_request_to_resmgr(self):
-        pkg_vnfd = json.loads(self.nf_package_info.vnfdmodel)
+        pkg_vnfd = self.vnfd_model
         data = {
             'nf_inst_id': self.nf_inst_id,
             'vnfm_nf_inst_id': self.vnfm_nf_inst_id,
@@ -222,7 +220,8 @@ class CreateVnfs(Thread):
             'job_id': self.job_id,
             'nf_inst_status': VNF_STATUS.INSTANTIATING,
             'vnf_type': pkg_vnfd['metadata'].get('vnf_type', 'undefined'),
-            'nf_package_id': self.nf_package_info.nfpackageid}
+            'nf_package_id': ignore_case_get(self.nf_package_info, "vnfPackageId")
+        }
         create_vnf(data)
 
     def wait_vnfm_job_finish(self):

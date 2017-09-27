@@ -32,7 +32,6 @@ class TestNsManualScale(TestCase):
         self.ns_package_id = str(uuid.uuid4())
         self.ns_inst_id = str(uuid.uuid4())
         self.job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
-        NSDModel(id=self.ns_package_id, nsd_id=self.nsd_id, name='name').save()
 
         self.client = Client()
         self.context = '{"vnfs": ["a", "b"], "sfcs": ["c"], "vls": ["d", "e", "f"]}'

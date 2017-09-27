@@ -97,9 +97,25 @@ class TestCreateVnfViews(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_create_vnf_thread(self, mock_call_req):
         nf_inst_id, job_id = create_vnfs.prepare_create_params()
+        nf_package_info = {
+            "csarId": "zte_vbras",
+            "packageInfo": {
+                "vnfdId": "1",
+                "vnfPackageId": "zte_vbras",
+                "vnfdProvider": "1",
+                "vnfdVersion": "1",
+                "vnfVersion": "1",
+                "csarName": "1",
+                "vnfdModel": vnfd_model_dict,
+                "downloadUrl": "1"
+            },
+            "imageInfo": []
+        }
         mock_vals = {
             "/api/ztevmanagerdriver/v1/1/vnfs":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), '200'],
+            "/api/catalog/v1/vnfpackages/zte_vbras":
+                [0, json.JSONEncoder().encode(nf_package_info), '200'],
             "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
                 [0, json.JSONEncoder().encode(vnfm_info), '200'],
             "/api/resmgr/v1/vnf":
