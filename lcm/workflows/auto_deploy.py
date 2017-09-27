@@ -13,6 +13,7 @@
 # limitations under the License.
 import logging
 import traceback
+import os
 
 from lcm.pub.database.models import WFPlanModel
 from lcm.pub.msapi import activiti
@@ -25,7 +26,8 @@ def deploy_workflow_on_startup():
         if WFPlanModel.objects.filter():
             logger.warn("Workflow is already deployed.")
             return
-        file_path = "TODO:"
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(base_path, "ns/data/nsinit.bpmn20.xml")
         deploy_info = activiti.deploy_workflow(file_path)
         WFPlanModel(
             deployed_id=deploy_info["deployedId"],
