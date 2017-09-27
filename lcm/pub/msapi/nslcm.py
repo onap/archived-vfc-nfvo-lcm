@@ -19,6 +19,7 @@ from lcm.pub.utils.restcall import req_by_msb
 
 logger = logging.getLogger(__name__)
 
+
 def call_from_ns_cancel_resource(res_type, instid):
     method = "DELETE"
     if res_type == 'vl':

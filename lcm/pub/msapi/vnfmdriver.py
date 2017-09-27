@@ -15,9 +15,8 @@ import json
 import logging
 
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.restcall import req_by_msb
-from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.msapi.extsys import get_vnfm_by_id
+from lcm.pub.utils.restcall import req_by_msb
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +30,7 @@ def send_nf_init_request(vnfm_inst_id, req_param):
         raise NSLCMException('Failed to send nf init request to VNFM(%s)' % vnfm_inst_id)
     return json.JSONDecoder().decode(ret[1])
 
+
 def send_nf_terminate_request(vnfm_inst_id, vnf_inst_id, req_param):
     vnfm = get_vnfm_by_id(vnfm_inst_id)
     uri = '/api/%s/v1/%s/vnfs/%s/terminate' % (vnfm["type"], vnfm_inst_id, vnf_inst_id)
@@ -40,11 +40,11 @@ def send_nf_terminate_request(vnfm_inst_id, vnf_inst_id, req_param):
         raise NSLCMException('Failed to send nf terminate request to VNFM(%s)' % vnfm_inst_id)
     return json.JSONDecoder().decode(ret[1]) if ret[1] else {}
 
+
 def query_vnfm_job(vnfm_inst_id, job_id, response_id=0):
     vnfm = get_vnfm_by_id(vnfm_inst_id)
     retry_time = 3
-    uri = '/api/%s/v1/%s/jobs/%s?responseId=%s' % (vnfm["type"], 
-        vnfm_inst_id, job_id, response_id)
+    uri = '/api/%s/v1/%s/jobs/%s?responseId=%s' % (vnfm["type"], vnfm_inst_id, job_id, response_id)
     while retry_time > 0:
         rsp = req_by_msb(uri, "GET")
         if str(rsp[2]) == '404':
@@ -58,6 +58,7 @@ def query_vnfm_job(vnfm_inst_id, job_id, response_id=0):
         logger.error(rsp[1])
         raise NSLCMException('Failed to query job from VNFM!')
     return True, json.JSONDecoder().decode(rsp[1])
+
 
 def send_nf_scaling_request(vnfm_inst_id, vnf_inst_id, req_param):
     vnfm = get_vnfm_by_id(vnfm_inst_id)

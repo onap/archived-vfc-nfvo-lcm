@@ -23,21 +23,24 @@ filename:formdata
 =================================
 Output:
 {
-    "status": "int", 
-    "message": "string", 
-    "deployedId": "string", 
-    "processId": "string" 
+    "status": "int",
+    "message": "string",
+    "deployedId": "string",
+    "processId": "string"
 }
 """
+
+
 def deploy_workflow(file_path):
     file_name = file_path.split("/")[-1]
     file_data = {
-        'file': open(file_path, 'rb'), 
+        'file': open(file_path, 'rb'),
         'filename': file_name}
     ret = restcall.upload_by_msb("api/workflow/v1/package", "POST", file_data)
     if ret[0] != 0:
         raise NSLCMException("Status code is %s, detail is %s.", ret[2], ret[1])
     return json.JSONDecoder().decode(ret[1])
+
 
 """
 Input:
@@ -45,10 +48,12 @@ None
 =================================
 Output:
 {
-    "status": "int", 
-    "message": "string", 
+    "status": "int",
+    "message": "string",
 }
 """
+
+
 def undeploy_workflow(deploy_id):
     uri = "api/workflow/v1/package/{deployId}".format(deployId=deploy_id)
     ret = restcall.req_by_msb(uri, "DELETE")
@@ -60,21 +65,21 @@ def undeploy_workflow(deploy_id):
 """
 Input:
 {
-    "processId": "string", 
-    "params": "Map<String, String>" 
+    "processId": "string",
+    "params": "Map<String, String>"
 }
 =================================
 Output:
 {
-    "status": "int", 
-    "message": "string", 
+    "status": "int",
+    "message": "string",
 }
 """
+
+
 def exec_workflow(content):
     content_str = json.JSONEncoder().encode(content)
     ret = restcall.req_by_msb("api/workflow/v1/process/instance", "POST", content_str)
     if ret[0] != 0:
         raise NSLCMException("Status code is %s, detail is %s.", ret[2], ret[1])
     return json.JSONDecoder().decode(ret[1])
-
-

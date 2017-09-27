@@ -29,6 +29,7 @@ def parse_nsd(csar_id, input_parameters=[]):
         raise NSLCMException("Failed to parsernsd of CSAR(%s) from catalog." % csar_id)
     return json.JSONDecoder().decode(ret[1])
 
+
 def parse_vnfd(csar_id, input_parameters=[]):
     req_param = json.JSONEncoder().encode({"csarId": csar_id, "inputs": input_parameters})
     ret = req_by_msb("/api/catalog/v1/parservnfd", "POST", req_param)
