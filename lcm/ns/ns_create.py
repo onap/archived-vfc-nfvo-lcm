@@ -20,6 +20,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_customer_aai
 from lcm.pub.msapi.sdc_run_catalog import query_nspackage_by_id
 from lcm.pub.utils.timeutil import now_time
+from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,8 @@ class CreateNSService(object):
         ns_package_info = query_nspackage_by_id(self.nsd_id)
         if not ns_package_info:
             raise NSLCMException("nsd(%s) not exists." % self.nsd_id)
-        self.ns_package_id = ns_package_info["csarId"]
+        packageInfo = ns_package_info["packageInfo"]
+        self.ns_package_id = ignore_case_get(packageInfo, "nsPackageId")
         logger.debug("CreateNSService::check_nsd_valid::ns_package_id=%s" % self.ns_package_id)
 
     def check_ns_inst_name_exist(self):
