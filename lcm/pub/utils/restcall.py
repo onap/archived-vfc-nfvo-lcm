@@ -86,18 +86,19 @@ def req_by_msb(resource, method, content=''):
     base_url = "http://%s:%s/" % (MSB_SERVICE_IP, MSB_SERVICE_PORT)
     return call_req(base_url, "", "", rest_no_auth, resource, method, content)
 
+
 def upload_by_msb(resource, method, file_data={}):
     headers = {'Content-Type': 'application/octet-stream'}
     full_url = "http://%s:%s/%s" % (MSB_SERVICE_IP, MSB_SERVICE_PORT, resource)
     http = httplib2.Http()
-    resp, resp_content = http.request(full_url, 
-        method=method.upper(), body=file_data, headers=headers)
+    resp, resp_content = http.request(full_url, method=method.upper(), body=file_data, headers=headers)
     resp_status, resp_body = resp['status'], resp_content.decode('UTF-8')
     if resp_status not in status_ok_list:
         logger.error("Status code is %s, detail is %s.", resp_status, resp_body)
         return [1, "Failed to upload file.", resp_status]
     logger.debug("resp_body=%s", resp_body)
     return [0, resp_body, resp_status]
+
 
 def combine_url(base_url, resource):
     full_url = None
