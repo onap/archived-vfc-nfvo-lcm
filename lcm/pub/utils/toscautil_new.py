@@ -14,6 +14,7 @@
 
 import json
 
+
 def safe_get(key_val, key):
     return key_val[key] if key in key_val else ""
 
@@ -36,8 +37,7 @@ def find_related_node(node_id, src_json_model, requirement_name):
     related_nodes = []
     for model_tpl in safe_get(src_json_model, "node_templates"):
         for rt in safe_get(model_tpl, 'requirement_templates'):
-            if safe_get(rt, 'name') == requirement_name and \
-                safe_get(rt, 'target_node_template_name') == node_id:
+            if safe_get(rt, 'name') == requirement_name and safe_get(rt, 'target_node_template_name') == node_id:
                 related_nodes.append(model_tpl['name'])
     return related_nodes
 
@@ -46,16 +46,18 @@ def convert_props(src_node, dest_node):
     if 'properties' in src_node and src_node['properties']:
         for prop_name, prop_info in src_node['properties'].items():
             if 'value' in prop_info:
-                dest_node['properties'][prop_name] = prop_info['value']   
+                dest_node['properties'][prop_name] = prop_info['value']
 
 
 def convert_metadata(src_json):
     return src_json['metadata'] if 'metadata' in src_json else {}
 
+
 def convert_factor_unit(value):
     if isinstance(value, (str, unicode)):
         return value
     return "%s %s" % (value["factor"], value["unit"])
+
 
 def convert_inputs(src_json):
     inputs = {}
@@ -74,20 +76,28 @@ def convert_inputs(src_json):
 
 
 def convert_vnf_node(src_node, src_json_model):
-    vnf_node = {'type': src_node['type_name'], 'vnf_id': src_node['template_name'],
-        'description': '', 'properties': {}, 'dependencies': [], 'networks': []}
+    vnf_node = {
+        'type': src_node['type_name'],
+        'vnf_id': src_node['template_name'],
+        'description': '',
+        'properties': {},
+        'dependencies': [],
+        'networks': []
+    }
     convert_props(src_node, vnf_node)
     for model_tpl in safe_get(src_json_model, "node_templates"):
         if model_tpl['name'] != vnf_node['vnf_id']:
             continue
-        vnf_node['dependencies'] = [{
-            'key_name': requirement['name'],
-            'vl_id': requirement['target_node_template_name']} for \
-            requirement in safe_get(model_tpl, 'requirement_templates') if \
-            safe_get(requirement, 'target_capability_name') == 'virtual_linkable']
-        vnf_node['networks'] = [requirement['target_node_template_name'] for \
-            requirement in safe_get(model_tpl, 'requirement_templates') if \
-            safe_get(requirement, 'name') == 'dependency']
+        vnf_node['dependencies'] = [
+            {
+                'key_name': requirement['name'],
+                'vl_id': requirement['target_node_template_name']
+            } for requirement in safe_get(model_tpl, 'requirement_templates')
+            if safe_get(requirement, 'target_capability_name') == 'virtual_linkable'
+        ]
+        vnf_node['networks'] = [requirement['target_node_template_name'] for
+                                requirement in safe_get(model_tpl, 'requirement_templates') if
+                                safe_get(requirement, 'name') == 'dependency']
     return vnf_node
 
 
@@ -141,8 +151,12 @@ def convert_router_node(src_node, src_node_list):
 
 
 def convert_fp_node(src_node, src_node_list, src_json_model):
-    fp_node = {'fp_id': src_node['template_name'], 'description': '', 
-        'properties': {}, 'forwarder_list': []}
+    fp_node = {
+        'fp_id': src_node['template_name'],
+        'description': '',
+        'properties': {},
+        'forwarder_list': []
+    }
     convert_props(src_node, fp_node)
     for relation in safe_get(src_node, 'relationships'):
         if safe_get(relation, 'name') != 'forwarder':
@@ -168,8 +182,12 @@ def convert_fp_node(src_node, src_node_list, src_json_model):
 
 
 def convert_vnffg_group(src_group, src_group_list, src_node_list):
-    vnffg = {'vnffg_id': src_group['template_name'], 'description': '', 
-        'properties': {}, 'members': []}
+    vnffg = {
+        'vnffg_id': src_group['template_name'],
+        'description': '',
+        'properties': {},
+        'members': []
+    }
     convert_props(src_group, vnffg)
     for member_node_id in src_group['member_node_ids']:
         vnffg['members'].append(find_node_name(member_node_id, src_node_list))
@@ -177,32 +195,49 @@ def convert_vnffg_group(src_group, src_group_list, src_node_list):
 
 
 def convert_imagefile_node(src_node, src_node_list):
-    image_node = {'image_file_id': src_node['template_name'], 'description': '', 
-        'properties': {}}
+    image_node = {
+        'image_file_id': src_node['template_name'],
+        'description': '',
+        'properties': {}
+    }
     convert_props(src_node, image_node)
     return image_node
 
 
 def convert_localstorage_node(src_node, src_node_list):
-    localstorage_node = {'local_storage_id': src_node['template_name'], 'description': '', 
-        'properties': {}}
+    localstorage_node = {
+        'local_storage_id': src_node['template_name'],
+        'description': '',
+        'properties': {}
+    }
     convert_props(src_node, localstorage_node)
     return localstorage_node
 
+
 def convert_volumestorage_node(src_node, src_node_list):
     volumestorage_node = {
-        'volume_storage_id': src_node['id'], 
-        'description': "", 
+        'volume_storage_id': src_node['id'],
+        'description': "",
         'properties': {}}
     convert_props(src_node, volumestorage_node)
     volumestorage_node["properties"]["size"] = convert_factor_unit(
         volumestorage_node["properties"]["size_of_storage"])
     return volumestorage_node
 
+
 def convert_vdu_node(src_node, src_node_list, src_json_model):
-    vdu_node = {'vdu_id': src_node['template_name'], 'description': '', 'properties': {},
-        'image_file': '', 'local_storages': [], 'dependencies': [], 'nfv_compute': {},
-        'vls': [], 'artifacts': [], 'volume_storages': []}
+    vdu_node = {
+        'vdu_id': src_node['template_name'],
+        'description': '',
+        'properties': {},
+        'image_file': '',
+        'local_storages': [],
+        'dependencies': [],
+        'nfv_compute': {},
+        'vls': [],
+        'artifacts': [],
+        'volume_storages': []
+    }
     convert_props(src_node, vdu_node)
 
     for relation in src_node.get('relationships', ''):
@@ -226,8 +261,8 @@ def convert_vdu_node(src_node, src_node_list, src_json_model):
             if prop_name == "virtual_cpu":
                 vdu_node['nfv_compute']['num_cpus'] = prop_info["value"]["num_virtual_cpu"]
                 if "virtual_cpu_clock" in prop_info["value"]:
-                    vdu_node['nfv_compute']['cpu_frequency'] = convert_factor_unit(
-                        prop_info["value"]["virtual_cpu_clock"])               
+                    vdu_node['nfv_compute']['cpu_frequency'] =\
+                        convert_factor_unit(prop_info["value"]["virtual_cpu_clock"])
             elif prop_name == "virtual_memory":
                 vdu_node['nfv_compute']['mem_size'] = convert_factor_unit(
                     prop_info["value"]["virtual_mem_size"])
@@ -251,8 +286,12 @@ def convert_vdu_node(src_node, src_node_list, src_json_model):
                     vdu_node['vls'].append(vl_node_name)
 
     for item in safe_get(src_node, 'artifacts'):
-        artifact = {'artifact_name': item['name'], 'type': item['type_name'], 
-            'file': item['source_path'], 'properties': {}}
+        artifact = {
+            'artifact_name': item['name'],
+            'type': item['type_name'],
+            'file': item['source_path'],
+            'properties': {}
+        }
         convert_props(item, artifact)
         for key in artifact['properties']:
             if 'factor' in artifact['properties'][key] and 'unit' in artifact['properties'][key]:
@@ -265,11 +304,17 @@ def convert_vdu_node(src_node, src_node_list, src_json_model):
 
 def convert_exposed_node(src_json, src_nodes, exposed):
     for item in safe_get(safe_get(src_json, 'substitution'), 'requirements'):
-        exposed['external_cps'].append({'key_name': item['mapped_name'],
-            "cp_id": find_node_name(item['node_id'], src_nodes)})
+        external_cps = {
+            'key_name': item['mapped_name'],
+            "cp_id": find_node_name(item['node_id'], src_nodes)
+        }
+        exposed['external_cps'].append(external_cps)
     for item in safe_get(safe_get(src_json, 'substitution'), 'capabilities'):
-        exposed['forward_cps'].append({'key_name': item['mapped_name'],
-            "cp_id": find_node_name(item['node_id'], src_nodes)})
+        forward_cps = {
+            'key_name': item['mapped_name'],
+            "cp_id": find_node_name(item['node_id'], src_nodes)
+        }
+        exposed['forward_cps'].append(forward_cps)
 
 
 def convert_vnffgs(src_json_inst, src_nodes):
@@ -280,6 +325,7 @@ def convert_vnffgs(src_json_inst, src_nodes):
         if type_name.find('.VNFFG.') >= 0 or type_name.endswith('.VNFFG'):
             vnffgs.append(convert_vnffg_group(group, src_groups, src_nodes))
     return vnffgs
+
 
 def merge_imagefile_node(img_nodes, vdu_nodes):
     for vdu_node in vdu_nodes:
@@ -294,6 +340,7 @@ def merge_imagefile_node(img_nodes, vdu_nodes):
                 "description": "",
                 "properties": artifact["properties"]
             })
+
 
 def convert_common(src_json, target_json):
     if isinstance(src_json, (unicode, str)):
@@ -315,7 +362,7 @@ def convert_common(src_json, target_json):
 def convert_nsd_model(src_json):
     target_json = {'vnfs': [], 'pnfs': [], 'fps': []}
     src_json_inst, src_json_model = convert_common(src_json, target_json)
-   
+
     src_nodes = src_json_inst['nodes']
     for node in src_nodes:
         type_name = node['type_name']
@@ -363,11 +410,12 @@ def convert_vnfd_model(src_json):
             target_json['cps'].append(convert_cp_node(node, src_nodes, 'VNFD'))
         elif type_name.endswith('.Router'):
             target_json['routers'].append(convert_router_node(node, src_nodes))
-    
+
     target_json['vnf_exposed'] = {'external_cps': [], 'forward_cps': []}
     convert_exposed_node(src_json_inst, src_nodes, target_json['vnf_exposed'])
     merge_imagefile_node(target_json['image_files'], target_json['vdus'])
     return json.dumps(target_json)
+
 
 if __name__ == '__main__':
     src_json = json.dumps({
@@ -1452,7 +1500,3 @@ if __name__ == '__main__':
         }
     })
     print convert_vnfd_model(src_json)
-
-
-
-

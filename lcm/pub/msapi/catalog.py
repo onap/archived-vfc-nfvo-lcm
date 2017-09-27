@@ -83,6 +83,7 @@ def get_process_id(name, srv_template_id):
             return item['processId']
     raise NSLCMException('service[%s,%s] process id not exist' % (name, srv_template_id))
 
+
 def get_servicetemplate_id(nsd_id):
     ret = req_by_msb('/api/catalog/v1/servicetemplates', 'GET')
     if ret[0] != 0:
@@ -92,7 +93,8 @@ def get_servicetemplate_id(nsd_id):
         if stpl.get("id", "") == nsd_id:
             return stpl["serviceTemplateId"]
     raise NSLCMException('servicetemplate(%s) does not exist.' % nsd_id)
-    
+
+
 def get_servicetemplate(nsd_id):
     ret = req_by_msb('/api/catalog/v1/servicetemplates', 'GET')
     if ret[0] != 0:

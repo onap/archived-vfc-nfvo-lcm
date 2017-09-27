@@ -49,11 +49,13 @@ def get_vim_by_id(vim_id):
     vim_info = convert_vim_info(vim_info_aai)
     return vim_info
 
+
 def split_vim_to_owner_region(vim_id):
     split_vim = vim_id.split('_')
     cloud_owner = split_vim[0]
     cloud_region = "".join(split_vim[1:])
     return cloud_owner, cloud_region
+
 
 def convert_vim_info(vim_info_aai):
     vim_id = vim_info_aai["cloud-owner"] + "_" + vim_info_aai["cloud-region-id"]

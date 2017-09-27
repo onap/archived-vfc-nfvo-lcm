@@ -43,7 +43,7 @@ class JobUtil(object):
 
     @staticmethod
     def query_job_status(job_id, index_id=-1):
-        #logger.info("Query job status, jobid =[%s], responseid [%d]" % (job_id, index_id))
+        # logger.info("Query job status, jobid =[%s], responseid [%d]" % (job_id, index_id))
         jobs = []
         if index_id < 0:
             row = JobStatusModel.objects.filter(jobid=job_id).order_by("-indexid").first()
@@ -53,7 +53,7 @@ class JobUtil(object):
             [jobs.append(job) for job in JobStatusModel.objects.filter(jobid=job_id).order_by("-indexid")
              if job.indexid > index_id]
 
-        #logger.info("Query job status, rows=%s" % str(jobs))
+        # logger.info("Query job status, rows=%s" % str(jobs))
         return jobs
 
     @staticmethod
