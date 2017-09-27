@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
 import json
+import logging
 
-from lcm.pub.msapi import resmgr
-from lcm.pub.database.models import NfPackageModel, NfInstModel
+from lcm.pub.database.models import NfInstModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi import resmgr
+from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
@@ -62,7 +63,9 @@ class GrantVnfs(object):
                     m_vnf_inst_id, vnfm_inst_id))
                 
             vnf_pkg_id = vnfinsts[0].package_id
-            vnf_pkgs = NfPackageModel.objects.filter(nfpackageid=vnf_pkg_id)
+            # vnf_pkgs = NfPackageModel.objects.filter(nfpackageid=vnf_pkg_id)
+            nfpackage_info = query_vnfpackage_by_id(vnf_pkg_id)
+            vnf_pkgs = nfpackage_info["packageInfo"]
             if not vnf_pkgs:
                 raise NSLCMException("vnfpkg(%s) is not found" % vnf_pkg_id)
 

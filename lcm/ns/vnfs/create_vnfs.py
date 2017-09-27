@@ -21,7 +21,7 @@ from lcm.ns.const import OWNER_TYPE
 from lcm.ns.vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
 from lcm.ns.vnfs.wait_job import wait_job_finish
 from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.database.models import NfPackageModel, NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel
+from lcm.pub.database.models import NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_vnf_aai, create_vserver_aai
 from lcm.pub.msapi.extsys import get_vnfm_by_id, split_vim_to_owner_region, get_vim_by_id
@@ -128,8 +128,8 @@ class CreateVnfs(Thread):
         raise NSLCMException('Can not found vnf in nsd model')
 
     def check_nf_package_valid(self):
-        nf_package_info = query_vnfpackage_by_id(self.vnfd_id)
-        self.nf_package_info = nf_package_info["packageInfo"]
+        nfpackage_info = query_vnfpackage_by_id(self.vnfd_id)
+        self.nf_package_info = nfpackage_info["packageInfo"]
         self.vnfd_model = ignore_case_get(self.nf_package_info, "vnfdModel")
 
     def get_virtual_link_info(self, vnf_id):

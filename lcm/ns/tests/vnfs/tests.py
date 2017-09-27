@@ -24,7 +24,7 @@ from lcm.ns.vnfs.create_vnfs import CreateVnfs
 from lcm.ns.vnfs.heal_vnfs import NFHealService
 from lcm.ns.vnfs.scale_vnfs import NFManualScaleService
 from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
-from lcm.pub.database.models import NfInstModel, JobModel, NfPackageModel, NSInstModel, VmInstModel
+from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS
@@ -77,8 +77,6 @@ class TestCreateVnfViews(TestCase):
             "vnfIndex": "1"
         }
         self.client = Client()
-        NfPackageModel(uuid=str(uuid.uuid4()), nfpackageid='package_id1', vnfdid='zte_vbras', vendor='zte',
-                       vnfdversion='1.0.0', vnfversion='1.0.0', vnfdmodel=json.dumps(vnfd_model_dict)).save()
         NSInstModel(id=self.ns_inst_id, name='ns', nspackage_id='1', nsd_id='nsd_id', description='description',
                     status='instantiating', nsd_model=json.dumps(nsd_model_dict), create_time=now_time(),
                     lastuptime=now_time()).save()
@@ -97,20 +95,6 @@ class TestCreateVnfViews(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_create_vnf_thread(self, mock_call_req):
         nf_inst_id, job_id = create_vnfs.prepare_create_params()
-        nf_package_info = {
-            "csarId": "zte_vbras",
-            "packageInfo": {
-                "vnfdId": "1",
-                "vnfPackageId": "zte_vbras",
-                "vnfdProvider": "1",
-                "vnfdVersion": "1",
-                "vnfVersion": "1",
-                "csarName": "1",
-                "vnfdModel": vnfd_model_dict,
-                "downloadUrl": "1"
-            },
-            "imageInfo": []
-        }
         mock_vals = {
             "/api/ztevmanagerdriver/v1/1/vnfs":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), '200'],
@@ -1307,4 +1291,19 @@ vim_info = {
             }
         ]
     }
+}
+
+nf_package_info = {
+    "csarId": "zte_vbras",
+    "packageInfo": {
+        "vnfdId": "1",
+        "vnfPackageId": "zte_vbras",
+        "vnfdProvider": "1",
+        "vnfdVersion": "1",
+        "vnfVersion": "1",
+        "csarName": "1",
+        "vnfdModel": vnfd_model_dict,
+        "downloadUrl": "1"
+    },
+    "imageInfo": []
 }

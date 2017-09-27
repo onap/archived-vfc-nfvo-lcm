@@ -14,27 +14,27 @@
 
 import json
 import logging
-import traceback
 import time
+import traceback
 import uuid
 
 from rest_framework import status
 
-from lcm.pub.database.models import DefPkgMappingModel, ServiceBaseInfoModel, InputParamMappingModel
-from lcm.pub.database.models import NSInstModel, NfPackageModel, VNFFGInstModel, WFPlanModel
-from lcm.pub.msapi.catalog import get_process_id, query_rawdata_from_catalog
-from lcm.pub.msapi.catalog import get_servicetemplate_id, get_servicetemplate
-from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
-from lcm.pub.msapi.wso2bpel import workflow_run
-from lcm.pub.msapi.extsys import select_vnfm
-from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.utils import toscautil
-from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.exceptions import NSLCMException
 from lcm.pub.config.config import WORKFLOW_OPTION
-from lcm.workflows import build_in
+from lcm.pub.database.models import DefPkgMappingModel, ServiceBaseInfoModel, InputParamMappingModel
+from lcm.pub.database.models import NSInstModel, VNFFGInstModel, WFPlanModel
+from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import activiti
 from lcm.pub.msapi import sdc_run_catalog
+from lcm.pub.msapi.catalog import get_process_id, query_rawdata_from_catalog
+from lcm.pub.msapi.catalog import get_servicetemplate_id, get_servicetemplate
+from lcm.pub.msapi.extsys import select_vnfm
+from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
+from lcm.pub.msapi.wso2bpel import workflow_run
+from lcm.pub.utils import toscautil
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.utils.values import ignore_case_get
+from lcm.workflows import build_in
 
 logger = logging.getLogger(__name__)
 
