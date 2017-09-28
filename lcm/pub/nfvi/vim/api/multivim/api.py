@@ -22,11 +22,12 @@ logger = logging.getLogger(__name__)
 
 VIM_DRIVER_BASE_URL = "api/multicloud/v0"
 
+
 def call(vim_id, tenant_id, res, method, data=''):
     if data and not isinstance(data, (str, unicode)):
         data = json.JSONEncoder().encode(data)
     url = "{base_url}/{vim_id}{tenant_id}/{res}".format(
-        base_url=VIM_DRIVER_BASE_URL, 
+        base_url=VIM_DRIVER_BASE_URL,
         vim_id=vim_id,
         tenant_id="/" + tenant_id if tenant_id else "",
         res=res)
@@ -35,111 +36,149 @@ def call(vim_id, tenant_id, res, method, data=''):
         raise VimException(ret[1], ret[2])
     return json.JSONDecoder().decode(ret[1]) if ret[1] else {}
 
-######################################################################
+
+#######################################################################
+
 
 def create_image(vim_id, tenant_id, data):
     return call(vim_id, tenant_id, "images", "POST", data)
 
+
 def delete_image(vim_id, tenant_id, image_id):
     return call(vim_id, tenant_id, "images/%s" % image_id, "DELETE")
-    
+
+
 def get_image(vim_id, tenant_id, image_id):
     return call(vim_id, tenant_id, "images/%s" % image_id, "GET")
-    
+
+
 def list_image(vim_id, tenant_id):
     return call(vim_id, tenant_id, "images", "GET")
 
+
 ######################################################################
+
 
 def create_network(vim_id, tenant_id, data):
     return call(vim_id, tenant_id, "networks", "POST", data)
 
+
 def delete_network(vim_id, tenant_id, network_id):
     return call(vim_id, tenant_id, "networks/%s" % network_id, "DELETE")
-    
+
+
 def get_network(vim_id, tenant_id, network_id):
     return call(vim_id, tenant_id, "networks/%s" % network_id, "GET")
-    
+
+
 def list_network(vim_id, tenant_id):
     return call(vim_id, tenant_id, "networks", "GET")
 
+
 ######################################################################
+
 
 def create_subnet(vim_id, tenant_id, data):
     return call(vim_id, tenant_id, "subnets", "POST", data)
 
+
 def delete_subnet(vim_id, tenant_id, subnet_id):
     return call(vim_id, tenant_id, "subnets/%s" % subnet_id, "DELETE")
-    
+
+
 def get_subnet(vim_id, tenant_id, subnet_id):
     return call(vim_id, tenant_id, "subnets/%s" % subnet_id, "GET")
-    
+
+
 def list_subnet(vim_id, tenant_id):
     return call(vim_id, tenant_id, "subnets", "GET")
 
+
 ######################################################################
+
 
 def create_port(vim_id, tenant_id, data):
     return call(vim_id, tenant_id, "ports", "POST", data)
 
+
 def delete_port(vim_id, tenant_id, port_id):
     return call(vim_id, tenant_id, "ports/%s" % port_id, "DELETE")
-    
+
+
 def get_port(vim_id, tenant_id, port_id):
     return call(vim_id, tenant_id, "ports/%s" % port_id, "GET")
-    
+
+
 def list_port(vim_id, tenant_id):
     return call(vim_id, tenant_id, "ports", "GET")
 
+
 ######################################################################
+
 
 def create_flavor(vim_id, tenant_id, data):
     return call(vim_id, tenant_id, "flavors", "POST", data)
 
+
 def delete_flavor(vim_id, tenant_id, flavor_id):
     return call(vim_id, tenant_id, "flavors/%s" % flavor_id, "DELETE")
-    
+
+
 def get_flavor(vim_id, tenant_id, flavor_id):
     return call(vim_id, tenant_id, "flavors/%s" % flavor_id, "GET")
-    
+
+
 def list_flavor(vim_id, tenant_id):
     return call(vim_id, tenant_id, "flavors", "GET")
 
+
 ######################################################################
+
 
 def create_vm(vim_id, tenant_id, data):
     return call(vim_id, tenant_id, "servers", "POST", data)
 
+
 def delete_vm(vim_id, tenant_id, vm_id):
     return call(vim_id, tenant_id, "servers/%s" % vm_id, "DELETE")
-    
+
+
 def get_vm(vim_id, tenant_id, vm_id):
     return call(vim_id, tenant_id, "servers/%s" % vm_id, "GET")
-    
+
+
 def list_vm(vim_id, tenant_id):
     return call(vim_id, tenant_id, "servers", "GET")
 
+
 ######################################################################
+
 
 def create_volume(vim_id, tenant_id, data):
     return call(vim_id, tenant_id, "volumes", "POST", data)
 
+
 def delete_volume(vim_id, tenant_id, volume_id):
     return call(vim_id, tenant_id, "volumes/%s" % volume_id, "DELETE")
-    
+
+
 def get_volume(vim_id, tenant_id, volume_id):
     return call(vim_id, tenant_id, "volumes/%s" % volume_id, "GET")
-    
+
+
 def list_volume(vim_id, tenant_id):
     return call(vim_id, tenant_id, "volumes", "GET")
 
+
 ######################################################################
+
 
 def list_tenant(vim_id, tenant_name=""):
     res = "tenants"
     if tenant_name:
         res = "%s?name=%s" % (res, tenant_name)
     return call(vim_id, "", res, "GET")
+
 
 ######################################################################
 
@@ -188,7 +227,7 @@ class MultiVimApi:
             "subnets": net.get("subnets", []),
             "shared": net.get("shared", True),
             "router_external": net.get("routerExternal", "")
-        } for net in nets["networks"]]}]      
+        } for net in nets["networks"]]}]
 
     def query_subnet(self, auth_info, subnet_id):
         subnet_info = get_subnet(self.vim_id, self.tenant_id, subnet_id)
@@ -233,30 +272,32 @@ class MultiVimApi:
             "imageType": data["image_type"],
             "containerFormat": "bare",
             "visibility": "public",
-            "properties": [] 
+            "properties": []
         }
         image = create_image(self.vim_id, self.tenant_id, image_data)
         return [0, {
-            "id": image["id"], 
-            "name": image["name"], 
-            const.RES_TYPE_KEY: image["returnCode"]}]
+            "id": image["id"],
+            "name": image["name"],
+            const.RES_TYPE_KEY: image["returnCode"]}
+        ]
 
     def get_image(self, auth_info, image_id):
         image = get_image(self.vim_id, self.tenant_id, image_id)
         return [0, {
-            "id": image["id"], 
-            "name": image["name"], 
-            "size": image["size"], 
-            "status": image["status"]}]      
+            "id": image["id"],
+            "name": image["name"],
+            "size": image["size"],
+            "status": image["status"]}
+        ]
 
     def get_images(self, auth_info):
         images = list_image(self.vim_id, self.tenant_id)
         return [0, {"image_list": [{
-            "id": img["id"], 
-            "name": img["name"], 
-            "size": img["size"], 
+            "id": img["id"],
+            "name": img["name"],
+            "size": img["size"],
             "status": img["status"]
-            } for img in images["images"]]}]
+        } for img in images["images"]]}]
 
     def delete_image(self, auth_info, image_id):
         return [0, ""]
@@ -269,7 +310,7 @@ class MultiVimApi:
         }
         if "physical_network" in data and data['physical_network']:
             net_data["physicalNetwork"] = data['physical_network']
-        if "vlan_transparent" in data and data["vlan_transparent"]: 
+        if "vlan_transparent" in data and data["vlan_transparent"]:
             net_data["vlanTransparent"] = data["vlan_transparent"]
         if "segmentation_id" in data and data['segmentation_id']:
             net_data["segmentationId"] = data["segmentation_id"]
@@ -287,13 +328,13 @@ class MultiVimApi:
             "subnet_list": []
         }
         if "subnet_list" in data and data["subnet_list"]:
-            subnet = data["subnet_list"][0]           
+            subnet = data["subnet_list"][0]
             subnet_data = {
                 "networkId": network_id,
                 "name": subnet["subnet_name"],
                 "cidr": subnet["cidr"],
                 "ipVersion": const.IPV4,
-                "enableDhcp": False           
+                "enableDhcp": False
             }
             if "ip_version" in subnet and subnet["ip_version"]:
                 subnet_data["ipVersion"] = int(subnet["ip_version"])
