@@ -87,19 +87,19 @@ class TestSdcNsPackage(TestCase):
                     "description": "",
                     "properties": {
                         "vendor": "zte",
-                        "request_reclassification": False ,
+                        "request_reclassification": False,
                         "pnf_type": "m6000s",
                         "version": "1.0",
                         "management_address": "111111",
                         "id": "m6000_s",
-                        "nsh_aware": False 
+                        "nsh_aware": False
                     }
                 }
             ],
             "fps": [
                 {
                     "properties": {
-                        "symmetric": False ,
+                        "symmetric": False,
                         "policy": {
                             "type": "ACL",
                             "criteria": {
@@ -201,7 +201,7 @@ class TestSdcNsPackage(TestCase):
                     "properties": {
                         "plugin_info": "vbrasplugin_1.0",
                         "vendor": "zte",
-                        "is_shared": False ,
+                        "is_shared": False,
                         "adjust_vnf_capacity": True,
                         "name": "VFW",
                         "vnf_extend_type": "driver",
@@ -210,13 +210,13 @@ class TestSdcNsPackage(TestCase):
                         "csarProvider": "ZTE",
                         "version": "1.0",
                         "nsh_aware": True,
-                        "cross_dc": False ,
+                        "cross_dc": False,
                         "vnf_type": "VFW",
                         "vmnumber_overquota_alarm": True,
                         "vnfd_version": "1.0.0",
                         "externalPluginManageNetworkName": "vlan_4007_plugin_net",
                         "id": "vcpe_vfw_zte_1_0",
-                        "request_reclassification": False 
+                        "request_reclassification": False
                     },
                     "dependencies": [
                         {
@@ -246,7 +246,7 @@ class TestSdcNsPackage(TestCase):
                 {
                     "route_id": "",
                     "vl_id": "ext_mnet_net",
-                    "route_external": False ,
+                    "route_external": False,
                     "description": "",
                     "properties": {
                         "name": "vlan_4008_mng_net",
@@ -265,7 +265,7 @@ class TestSdcNsPackage(TestCase):
                 {
                     "route_id": "",
                     "vl_id": "ext_datanet_net",
-                    "route_external": False ,
+                    "route_external": False,
                     "description": "",
                     "properties": {
                         "name": "vlan_4004_tunnel_net",
@@ -284,12 +284,12 @@ class TestSdcNsPackage(TestCase):
                 {
                     "route_id": "",
                     "vl_id": "sfc_data_network",
-                    "route_external": False ,
+                    "route_external": False,
                     "description": "",
                     "properties": {
                         "name": "sfc_data_network",
                         "dhcp_enabled": True,
-                        "is_predefined": False ,
+                        "is_predefined": False,
                         "location_info": {
                             "tenant": "admin",
                             "vimid": 2,
@@ -404,14 +404,14 @@ class TestSdcNsPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     @mock.patch.object(sdc, 'download_artifacts')
     @mock.patch.object(toscaparser, 'parse_nsd')
-    def test_ns_pkg_distribute_when_nsd_already_exists(self, 
-        mock_parse_nsd, mock_download_artifacts, mock_call_req):
+    def test_ns_pkg_distribute_when_nsd_already_exists(self, mock_parse_nsd, mock_download_artifacts,
+                                                       mock_call_req):
         mock_parse_nsd.return_value = json.JSONEncoder().encode(self.nsd_data)
         mock_download_artifacts.return_value = "/home/vcpe.csar"
         mock_call_req.return_value = [0, json.JSONEncoder().encode([{
             "uuid": "1",
             "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/vcpe.csar"
-            }]), '200']
+        }]), '200']
         NSDModel(id="2", nsd_id="VCPE_NS").save()
         resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
@@ -421,14 +421,14 @@ class TestSdcNsPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     @mock.patch.object(sdc, 'download_artifacts')
     @mock.patch.object(toscaparser, 'parse_nsd')
-    def test_ns_pkg_distribute_when_nf_not_distributed(self, 
-        mock_parse_nsd, mock_download_artifacts, mock_call_req):
+    def test_ns_pkg_distribute_when_nf_not_distributed(self, mock_parse_nsd, mock_download_artifacts,
+                                                       mock_call_req):
         mock_parse_nsd.return_value = json.JSONEncoder().encode(self.nsd_data)
         mock_download_artifacts.return_value = "/home/vcpe.csar"
         mock_call_req.return_value = [0, json.JSONEncoder().encode([{
             "uuid": "1",
             "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/vcpe.csar"
-            }]), '200']
+        }]), '200']
         resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual("failed", resp.data["status"])
@@ -437,14 +437,13 @@ class TestSdcNsPackage(TestCase):
     @mock.patch.object(restcall, 'call_req')
     @mock.patch.object(sdc, 'download_artifacts')
     @mock.patch.object(toscaparser, 'parse_nsd')
-    def test_ns_pkg_distribute_when_successfully(self, 
-        mock_parse_nsd, mock_download_artifacts, mock_call_req):
+    def test_ns_pkg_distribute_when_successfully(self, mock_parse_nsd, mock_download_artifacts, mock_call_req):
         mock_parse_nsd.return_value = json.JSONEncoder().encode(self.nsd_data)
         mock_download_artifacts.return_value = "/home/vcpe.csar"
         mock_call_req.return_value = [0, json.JSONEncoder().encode([{
             "uuid": "1",
             "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/vcpe.csar"
-            }]), '200']
+        }]), '200']
         NfPackageModel(uuid="1", nfpackageid="1", vnfdid="vcpe_vfw_zte_1_0").save()
         resp = self.client.post("/api/nslcm/v1/nspackage", {"csarId": "1"}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
@@ -481,7 +480,7 @@ class TestSdcNsPackage(TestCase):
 
         resp = self.client.get("/api/nslcm/v1/nspackage")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual({"csars": [{"csarId":"13", "nsdId": "2"}]}, resp.data)
+        self.assertEqual({"csars": [{"csarId": "13", "nsdId": "2"}]}, resp.data)
 
     def test_ns_pkg_get_one(self):
         NSDModel(id="14", nsd_id="2", vendor="3", version="4").save()
@@ -489,24 +488,18 @@ class TestSdcNsPackage(TestCase):
 
         resp = self.client.get("/api/nslcm/v1/nspackage/14")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual({"csarId": "14", 
+        expect_data = {
+            "csarId": "14",
             "packageInfo": {
                 "nsdId": "2",
                 "nsdProvider": "3",
                 "nsdVersion": "4"
-            }, 
-            "nsInstanceInfo": [{
-                "nsInstanceId": "1", "nsInstanceName": "11"
-            }]}, resp.data)
-
-
-        
-
-
-
-
-
-
-
-
-
+            },
+            "nsInstanceInfo": [
+                {
+                    "nsInstanceId": "1",
+                    "nsInstanceName": "11"
+                }
+            ]
+        }
+        self.assertEqual(expect_data, resp.data)

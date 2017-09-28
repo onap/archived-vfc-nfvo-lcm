@@ -12,18 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
-import mock
-from rest_framework import status
-from django.test import TestCase
-from django.test import Client
 
-from lcm.pub.utils import restcall, toscaparser
-from lcm.pub.utils import fileutil
-from lcm.pub.database.models import NfPackageModel, NfInstModel
-from lcm.pub.database.models import JobStatusModel, JobModel
+import mock
+from django.test import Client
+from django.test import TestCase
+from rest_framework import status
+
 from lcm.packages.sdc_nf_package import SdcNfDistributeThread, SdcNfPkgDeleteThread
-from lcm.packages import sdc_nf_package
+from lcm.pub.database.models import JobStatusModel, JobModel
+from lcm.pub.database.models import NfPackageModel, NfInstModel
 from lcm.pub.msapi import sdc
+from lcm.pub.utils import restcall, toscaparser
+
 
 class TestNfPackage(TestCase):
     def setUp(self):
@@ -249,53 +249,40 @@ class TestNfPackage(TestCase):
 
     @mock.patch.object(SdcNfDistributeThread, 'run')
     def test_nf_pkg_distribute_normal(self, mock_run):
-        resp = self.client.post("/api/nslcm/v1/vnfpackage", {
-            "csarId": "1",
-            "vimIds": ["1"]
-            }, format='json')
+        resp = self.client.post("/api/nslcm/v1/vnfpackage", {"csarId": "1", "vimIds": ["1"]}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
-    
+
     def test_nf_pkg_distribute_when_csar_already_exist(self):
         NfPackageModel(uuid="1", nfpackageid="1", vnfdid="vcpe_vfw_zte_1_0").save()
-        SdcNfDistributeThread(csar_id="1",
-                           vim_ids=["1"],
-                           lab_vim_id="",
-                           job_id="2").run()
+        SdcNfDistributeThread(csar_id="1", vim_ids=["1"], lab_vim_id="", job_id="2").run()
         self.assert_job_result("2", 255, "NF CSAR(1) already exists.")
 
     @mock.patch.object(restcall, 'call_req')
     @mock.patch.object(sdc, 'download_artifacts')
     @mock.patch.object(toscaparser, 'parse_vnfd')
-    def test_nf_pkg_distribute_when_vnfd_already_exist(self,
-    	mock_parse_vnfd, mock_download_artifacts, mock_call_req):
-    	mock_parse_vnfd.return_value = json.JSONEncoder().encode(self.vnfd_data)
+    def test_nf_pkg_distribute_when_vnfd_already_exist(self, mock_parse_vnfd, mock_download_artifacts,
+                                                       mock_call_req):
+        mock_parse_vnfd.return_value = json.JSONEncoder().encode(self.vnfd_data)
         mock_download_artifacts.return_value = "/home/hss.csar"
         mock_call_req.return_value = [0, json.JSONEncoder().encode([{
             "uuid": "1",
             "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/hss.csar"
-            }]), '200']
+        }]), '200']
         NfPackageModel(uuid="2", nfpackageid="2", vnfdid="zte-hss-1.0").save()
-        SdcNfDistributeThread(csar_id="1",
-                           vim_ids=["1"],
-                           lab_vim_id="",
-                           job_id="2").run()
+        SdcNfDistributeThread(csar_id="1", vim_ids=["1"], lab_vim_id="", job_id="2").run()
         self.assert_job_result("2", 255, "NFD(zte-hss-1.0) already exists.")
-    
+
     @mock.patch.object(restcall, 'call_req')
     @mock.patch.object(sdc, 'download_artifacts')
     @mock.patch.object(toscaparser, 'parse_vnfd')
-    def test_nf_pkg_distribute_successfully(self,
-    	mock_parse_vnfd, mock_download_artifacts, mock_call_req):
-    	mock_parse_vnfd.return_value = json.JSONEncoder().encode(self.vnfd_data)
+    def test_nf_pkg_distribute_successfully(self, mock_parse_vnfd, mock_download_artifacts, mock_call_req):
+        mock_parse_vnfd.return_value = json.JSONEncoder().encode(self.vnfd_data)
         mock_download_artifacts.return_value = "/home/hss.csar"
         mock_call_req.return_value = [0, json.JSONEncoder().encode([{
             "uuid": "1",
             "toscaModelURL": "https://127.0.0.1:1234/sdc/v1/hss.csar"
-            }]), '200']
-        SdcNfDistributeThread(csar_id="1",
-                           vim_ids=["1"],
-                           lab_vim_id="",
-                           job_id="4").run()
+        }]), '200']
+        SdcNfDistributeThread(csar_id="1", vim_ids=["1"], lab_vim_id="", job_id="4").run()
         self.assert_job_result("4", 100, "CSAR(1) distribute successfully.")
 
     ###############################################################################################################
@@ -304,7 +291,7 @@ class TestNfPackage(TestCase):
     def test_nf_pkg_delete_normal(self, mock_run):
         resp = self.client.delete("/api/nslcm/v1/vnfpackage/1")
         self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
-    
+
     def test_nf_pkg_normal_delete(self):
         NfPackageModel(uuid="2", nfpackageid="2", vnfdid="vcpe_vfw_zte_1_0").save()
         SdcNfPkgDeleteThread(csar_id="2", job_id="2", force_delete=False).run()
@@ -327,30 +314,25 @@ class TestNfPackage(TestCase):
 
         resp = self.client.get("/api/nslcm/v1/vnfpackage")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual({"csars": [{"csarId":"3", "vnfdId": "4"}]}, resp.data)
+        self.assertEqual({"csars": [{"csarId": "3", "vnfdId": "4"}]}, resp.data)
 
     def test_nf_pkg_get_one(self):
-        NfPackageModel(uuid="4", nfpackageid="4", vnfdid="5", 
-        	vendor="6", vnfdversion="7", vnfversion="8").save()
+        NfPackageModel(uuid="4", nfpackageid="4", vnfdid="5", vendor="6", vnfdversion="7", vnfversion="8").save()
         NfInstModel(nfinstid="1", package_id="4", nf_name="3").save()
 
         resp = self.client.get("/api/nslcm/v1/vnfpackage/4")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual({"csarId": "4", 
+        expect_data = {
+            "csarId": "4",
             "packageInfo": {
                 "vnfdId": "5",
                 "vnfdProvider": "6",
                 "vnfdVersion": "7",
                 "vnfVersion": "8"
-            }, 
+            },
             "imageInfo": [],
             "vnfInstanceInfo": [{
                 "vnfInstanceId": "1", "vnfInstanceName": "3"
-            }]}, resp.data)
-
-
-
-
-
-
-
+            }]
+        }
+        self.assertEqual(expect_data, resp.data)
