@@ -15,7 +15,7 @@ import logging
 import uuid
 
 from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.database.models import NSDModel, NSInstModel
+from lcm.pub.database.models import NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_customer_aai
 from lcm.pub.msapi.sdc_run_catalog import query_nspackage_by_id

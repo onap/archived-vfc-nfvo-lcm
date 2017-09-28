@@ -66,7 +66,7 @@ class NSManualScaleService(threading.Thread):
 
         # Get data if SCALE_NS
         self.scale_ns_data = ignore_case_get(self.request_data, 'scaleNsData')
-        self.scale_vnf_data = get_scale_vnf_data(self.scale_ns_data,self.ns_instance_id)
+        self.scale_vnf_data = get_scale_vnf_data(self.scale_ns_data, self.ns_instance_id)
         logger.debug('scale_vnf_data = %s' % self.scale_vnf_data)
         # Get data if SCALE_VNF
         if not self.scale_vnf_data:

@@ -155,11 +155,11 @@ class NSInstPostDealView(APIView):
         return Response(data={'success': 'Update status of NS(%s) to %s' % (ns_instance_id, ns_status)},
                         status=status.HTTP_202_ACCEPTED)
 
-    def send_policy_request(self,ns_instance_id, nsd_id, file_url):
+    def send_policy_request(self, ns_instance_id, nsd_id, file_url):
         input_data = {
             "nsid": ns_instance_id,
             "nsdid": nsd_id,
-            "fileUri":file_url
+            "fileUri": file_url
         }
         req_param = json.JSONEncoder().encode(input_data)
         policy_engine_url = 'api/polengine/v1/policyinfo'

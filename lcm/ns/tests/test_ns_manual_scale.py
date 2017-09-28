@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import uuid
 
 import mock
-import uuid
-from rest_framework import status
-from django.test import TestCase
 from django.test import Client
-from lcm.pub.database.models import NSDModel, NSInstModel
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from django.test import TestCase
+from rest_framework import status
+
 from lcm.ns.const import NS_INST_STATUS
-from lcm.pub.utils import restcall
 from lcm.ns.ns_manual_scale import NSManualScaleService
+from lcm.pub.database.models import NSInstModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.utils import restcall
+from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
 
 class TestNsManualScale(TestCase):
@@ -35,7 +36,7 @@ class TestNsManualScale(TestCase):
 
         self.client = Client()
         self.context = '{"vnfs": ["a", "b"], "sfcs": ["c"], "vls": ["d", "e", "f"]}'
-        NSInstModel(id=self.ns_inst_id, name="abc",nspackage_id="7", nsd_id="111").save()
+        NSInstModel(id=self.ns_inst_id, name="abc", nspackage_id="7", nsd_id="111").save()
 
     def tearDown(self):
         NSInstModel.objects.filter().delete()

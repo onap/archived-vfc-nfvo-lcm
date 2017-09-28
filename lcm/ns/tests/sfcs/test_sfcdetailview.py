@@ -31,8 +31,8 @@ class TestSfcDetailViews(TestCase):
         self.sdn_controler_id = str(uuid.uuid4())
 
     def tearDown(self):
-        pass  
-    
+        pass
+
     def test_sfc_delete_failed(self):
         response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % "notExist")
         expect_resp_data = {"result": 0, "detail": "sfc is not exist or has been already deleted"}
@@ -57,7 +57,7 @@ class TestSfcDetailViews(TestCase):
         FPInstModel(fpid="1", fpinstid="10", fpname="2", nsinstid="3", vnffginstid="4",
                     symmetric="5", policyinfo="6", forworderpaths="7", status="8", sdncontrollerid="9",
                     sfcid="10", flowclassifiers="11",
-                    portpairgroups=json.JSONEncoder().encode([{"groupid":"98","portpair":"99"}])
+                    portpairgroups=json.JSONEncoder().encode([{"groupid": "98", "portpair": "99"}])
                     ).save()
         response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
         expect_resp_data = {"result": 0, "detail": "delete sfc success"}

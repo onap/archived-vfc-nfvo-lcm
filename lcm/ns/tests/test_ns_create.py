@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
-
 import uuid
-import mock
 
+import mock
 from django.test import TestCase, Client
 from rest_framework import status
 
 from lcm.ns.ns_create import CreateNSService
+from lcm.pub.database.models import NSInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.database.models import NSInstModel, NSDModel
 from lcm.pub.utils import restcall
 
 

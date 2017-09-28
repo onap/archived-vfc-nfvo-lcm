@@ -42,8 +42,7 @@ class TablesList(APIView):
                 logger.debug("End delete model %s", name)
         except:
             logger.error(traceback.format_exc())
-            return Response(data={"error": "failed"}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={"error": "failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request, modelName):
@@ -54,6 +53,5 @@ class TablesList(APIView):
             count = len(model_obj.filter())
         except:
             logger.error(traceback.format_exc())
-            return Response(data={"error": "failed"}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={"error": "failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data={"count": count}, status=status.HTTP_200_OK)

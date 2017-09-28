@@ -56,7 +56,7 @@ class TestNsInstant(TestCase):
         resp = self.client.post("/api/nslcm/v1/ns/123/instantiate", data, format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
     """
-    
+
     def test_swagger_ok(self):
         resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
