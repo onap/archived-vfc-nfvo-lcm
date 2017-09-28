@@ -331,7 +331,7 @@ class TestNsPackage(TestCase):
             "modifyTime": "11",
             "format": "12",
             "size": "13"
-            }), '200']
+        }), '200']
 
         NSDModel(id="13", nsd_id="2", vendor="3", version="4").save()
         NSInstModel(id="1", nspackage_id="13", name="11").save()
