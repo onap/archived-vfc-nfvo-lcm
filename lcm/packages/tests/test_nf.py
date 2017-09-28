@@ -37,109 +37,109 @@ class TestNfPackage(TestCase):
         JobModel.objects.filter().delete()
         JobStatusModel.objects.filter().delete()
         self.vnfd_raw_data = {
-            "rawData":{
-                "instance":{
-                    "metadata":{
-                        "is_shared":False,
-                        "plugin_info":"vbrasplugin_1.0",
-                        "vendor":"zte",
-                        "request_reclassification":False,
-                        "name":"vbras",
-                        "version":1,
-                        "vnf_type":"vbras",
-                        "cross_dc":False,
-                        "vnfd_version":"1.0.0",
-                        "id":"zte_vbras_1.0",
-                        "nsh_aware":True
+            "rawData": {
+                "instance": {
+                    "metadata": {
+                        "is_shared": False,
+                        "plugin_info": "vbrasplugin_1.0",
+                        "vendor": "zte",
+                        "request_reclassification": False,
+                        "name": "vbras",
+                        "version": 1,
+                        "vnf_type": "vbras",
+                        "cross_dc": False,
+                        "vnfd_version": "1.0.0",
+                        "id": "zte_vbras_1.0",
+                        "nsh_aware": True
                     },
-                    "nodes":[
+                    "nodes": [
                         {
-                            "id":"aaa_dnet_cp_0xu2j5sbigxc8h1ega3if0ld1",
-                            "type_name":"tosca.nodes.nfv.ext.zte.CP",
-                            "template_name":"aaa_dnet_cp",
-                            "properties":{
-                                "bandwidth":{
-                                    "type_name":"integer",
-                                    "value":0
+                            "id": "aaa_dnet_cp_0xu2j5sbigxc8h1ega3if0ld1",
+                            "type_name": "tosca.nodes.nfv.ext.zte.CP",
+                            "template_name": "aaa_dnet_cp",
+                            "properties": {
+                                "bandwidth": {
+                                    "type_name": "integer",
+                                    "value": 0
                                 },
-                                "direction":{
-                                    "type_name":"string",
-                                    "value":"bidirectional"
+                                "direction": {
+                                    "type_name": "string",
+                                    "value": "bidirectional"
                                 },
-                                "vnic_type":{
-                                    "type_name":"string",
-                                    "value":"normal"
+                                "vnic_type": {
+                                    "type_name": "string",
+                                    "value": "normal"
                                 },
-                                "sfc_encapsulation":{
-                                    "type_name":"string",
-                                    "value":"mac"
+                                "sfc_encapsulation": {
+                                    "type_name": "string",
+                                    "value": "mac"
                                 },
-                                "order":{
-                                    "type_name":"integer",
-                                    "value":2
+                                "order": {
+                                    "type_name": "integer",
+                                    "value": 2
                                 }
                             },
-                            "relationships":[
+                            "relationships": [
                                 {
-                                    "name":"guest_os",
-                                    "source_requirement_index":0,
-                                    "target_node_id":"AAA_image_d8aseebr120nbm7bo1ohkj194",
-                                    "target_capability_name":"feature"
+                                    "name": "guest_os",
+                                    "source_requirement_index": 0,
+                                    "target_node_id": "AAA_image_d8aseebr120nbm7bo1ohkj194",
+                                    "target_capability_name": "feature"
                                 }
                             ]
                         },
                         {
-                            "id":"LB_Image_oj5l2ay8l2g6vcq6fsswzduha",
-                            "type_name":"tosca.nodes.nfv.ext.ImageFile",
-                            "template_name":"LB_Image",
-                            "properties":{
-                                "disk_format":{
-                                    "type_name":"string",
-                                    "value":"qcow2"
+                            "id": "LB_Image_oj5l2ay8l2g6vcq6fsswzduha",
+                            "type_name": "tosca.nodes.nfv.ext.ImageFile",
+                            "template_name": "LB_Image",
+                            "properties": {
+                                "disk_format": {
+                                    "type_name": "string",
+                                    "value": "qcow2"
                                 },
-                                "file_url":{
-                                    "type_name":"string",
-                                    "value":"/SoftwareImages/image-lb"
+                                "file_url": {
+                                    "type_name": "string",
+                                    "value": "/SoftwareImages/image-lb"
                                 },
-                                "name":{
-                                    "type_name":"string",
-                                    "value":"image-lb"
+                                "name": {
+                                    "type_name": "string",
+                                    "value": "image-lb"
                                 }
                             }
                         }
                     ]
                 },
-                "model":{
-                    "metadata":{
-                        "is_shared":False,
-                        "plugin_info":"vbrasplugin_1.0",
-                        "vendor":"zte",
-                        "request_reclassification":False,
-                        "name":"vbras",
-                        "version":1,
-                        "vnf_type":"vbras",
-                        "cross_dc":False,
-                        "vnfd_version":"1.0.0",
-                        "id":"zte_vbras_1.0",
-                        "nsh_aware":True
+                "model": {
+                    "metadata": {
+                        "is_shared": False,
+                        "plugin_info": "vbrasplugin_1.0",
+                        "vendor": "zte",
+                        "request_reclassification": False,
+                        "name": "vbras",
+                        "version": 1,
+                        "vnf_type": "vbras",
+                        "cross_dc": False,
+                        "vnfd_version": "1.0.0",
+                        "id": "zte_vbras_1.0",
+                        "nsh_aware": True
                     },
-                    "node_templates":[
+                    "node_templates": [
                         {
-                            "name":"aaa_dnet_cp",
-                            "type_name":"tosca.nodes.nfv.ext.zte.CP",
-                            "default_instances":1,
-                            "min_instances":0,
-                            "properties":{
-                                "bandwidth":{
-                                    "type_name":"integer",
-                                    "value":0
+                            "name": "aaa_dnet_cp",
+                            "type_name": "tosca.nodes.nfv.ext.zte.CP",
+                            "default_instances": 1,
+                            "min_instances": 0,
+                            "properties": {
+                                "bandwidth": {
+                                    "type_name": "integer",
+                                    "value": 0
                                 }
                             },
-                            "requirement_templates":[
+                            "requirement_templates": [
                                 {
-                                    "name":"virtualbinding",
-                                    "target_node_template_name":"AAA",
-                                    "target_capability_name":"virtualbinding"
+                                    "name": "virtualbinding",
+                                    "target_node_template_name": "AAA",
+                                    "target_capability_name": "virtualbinding"
                                 }
                             ]
                         }

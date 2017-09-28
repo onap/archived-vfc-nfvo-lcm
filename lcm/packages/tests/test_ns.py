@@ -28,102 +28,102 @@ class TestNsPackage(TestCase):
         NSInstModel.objects.filter().delete()
         NfPackageModel.objects.filter().delete()
         self.nsd_raw_data = {
-            "rawData":{
-                "instance":{
-                    "metadata":{
-                        "vendor":"ZTE",
-                        "name":"VBRAS_NS",
-                        "csarVersion":1,
-                        "csarType":"NSAR",
-                        "csarProvider":"ZTE",
-                        "version":1,
-                        "invariant_id":"VBRAS_NS_NO_SFC",
-                        "id":"VBRAS_NS_ZTE_1.0",
-                        "description":"VBRAS_ZTE_NS"
+            "rawData": {
+                "instance": {
+                    "metadata": {
+                        "vendor": "ZTE",
+                        "name": "VBRAS_NS",
+                        "csarVersion": 1,
+                        "csarType": "NSAR",
+                        "csarProvider": "ZTE",
+                        "version": 1,
+                        "invariant_id": "VBRAS_NS_NO_SFC",
+                        "id": "VBRAS_NS_ZTE_1.0",
+                        "description": "VBRAS_ZTE_NS"
                     },
-                    "nodes":[
+                    "nodes": [
                         {
-                            "id":"VBras_yfye7lsgi73p8j4p2a6vbguzd",
-                            "type_name":"tosca.nodes.nfv.ext.zte.VNF.VBras",
-                            "template_name":"VBras",
-                            "properties":{
-                                "vendor":{
-                                    "type_name":"string",
-                                    "value":"zte"
+                            "id": "VBras_yfye7lsgi73p8j4p2a6vbguzd",
+                            "type_name": "tosca.nodes.nfv.ext.zte.VNF.VBras",
+                            "template_name": "VBras",
+                            "properties": {
+                                "vendor": {
+                                    "type_name": "string",
+                                    "value": "zte"
                                 },
-                                "name":{
-                                    "type_name":"string",
-                                    "value":"vbras"
+                                "name": {
+                                    "type_name": "string",
+                                    "value": "vbras"
                                 },
-                                "version":{
-                                    "type_name":"string",
-                                    "value":"1.0"
+                                "version": {
+                                    "type_name": "string",
+                                    "value": "1.0"
                                 },
-                                "vnf_type":{
-                                    "type_name":"string",
-                                    "value":"vbras"
+                                "vnf_type": {
+                                    "type_name": "string",
+                                    "value": "vbras"
                                 },
-                                "vnfd_version":{
-                                    "type_name":"string",
-                                    "value":"1.0.0"
+                                "vnfd_version": {
+                                    "type_name": "string",
+                                    "value": "1.0.0"
                                 },
-                                "id":{
-                                    "type_name":"string",
-                                    "value":"zte_vbras_1.0"
+                                "id": {
+                                    "type_name": "string",
+                                    "value": "zte_vbras_1.0"
                                 }
                             }
                         }
                     ]
                 },
-                "model":{
-                    "metadata":{
-                        "vendor":"ZTE",
-                        "name":"VBRAS_NS",
-                        "csarVersion":1,
-                        "csarType":"NSAR",
-                        "csarProvider":"ZTE",
-                        "version":1,
-                        "invariant_id":"VBRAS_NS_NO_SFC",
-                        "id":"VBRAS_NS_ZTE_1.0",
-                        "description":"VBRAS_ZTE_NS"
+                "model": {
+                    "metadata": {
+                        "vendor": "ZTE",
+                        "name": "VBRAS_NS",
+                        "csarVersion": 1,
+                        "csarType": "NSAR",
+                        "csarProvider": "ZTE",
+                        "version": 1,
+                        "invariant_id": "VBRAS_NS_NO_SFC",
+                        "id": "VBRAS_NS_ZTE_1.0",
+                        "description": "VBRAS_ZTE_NS"
                     },
-                    "node_templates":[
+                    "node_templates": [
                         {
-                            "name":"VBras",
-                            "type_name":"tosca.nodes.nfv.ext.zte.VNF.VBras",
-                            "default_instances":1,
-                            "min_instances":0,
-                            "properties":{
-                                "vendor":{
-                                    "type_name":"string",
-                                    "value":"zte"
+                            "name": "VBras",
+                            "type_name": "tosca.nodes.nfv.ext.zte.VNF.VBras",
+                            "default_instances": 1,
+                            "min_instances": 0,
+                            "properties": {
+                                "vendor": {
+                                    "type_name": "string",
+                                    "value": "zte"
                                 },
-                                "name":{
-                                    "type_name":"string",
-                                    "value":"vbras"
+                                "name": {
+                                    "type_name": "string",
+                                    "value": "vbras"
                                 },
-                                "version":{
-                                    "type_name":"string",
-                                    "value":"1.0"
+                                "version": {
+                                    "type_name": "string",
+                                    "value": "1.0"
                                 },
-                                "vnf_type":{
-                                    "type_name":"string",
-                                    "value":"vbras"
+                                "vnf_type": {
+                                    "type_name": "string",
+                                    "value": "vbras"
                                 },
-                                "vnfd_version":{
-                                    "type_name":"string",
-                                    "value":"1.0.0"
+                                "vnfd_version": {
+                                    "type_name": "string",
+                                    "value": "1.0.0"
                                 },
-                                "id":{
-                                    "type_name":"string",
-                                    "value":"zte_vbras_1.0"
+                                "id": {
+                                    "type_name": "string",
+                                    "value": "zte_vbras_1.0"
                                 }
                             },
-                            "requirement_templates":[
+                            "requirement_templates": [
                                 {
-                                    "name":"lb_mnet_vl_cp",
-                                    "target_node_template_name":"ext_mnet_net",
-                                    "target_capability_name":"virtual_linkable"
+                                    "name": "lb_mnet_vl_cp",
+                                    "target_node_template_name": "ext_mnet_net",
+                                    "target_capability_name": "virtual_linkable"
                                 }
                             ]
                         }
