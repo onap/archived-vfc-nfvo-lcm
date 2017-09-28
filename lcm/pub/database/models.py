@@ -301,7 +301,8 @@ class ServiceBaseInfoModel(models.Model):
     status = models.CharField(db_column='status', max_length=20)
     creator = models.CharField(db_column='creator', max_length=50)
     create_time = models.BigIntegerField(db_column='createTime', max_length=20)
-    
+
+
 class WFPlanModel(models.Model):
     class Meta:
         db_table = 'NFVO_WF_PLAN'
@@ -311,4 +312,3 @@ class WFPlanModel(models.Model):
     status = models.CharField(db_column='STATUS', max_length=255)
     message = models.CharField(db_column='MESSAGE', max_length=1024)
     plan_name = models.CharField(db_column='PLANNAME', max_length=255)
-    
