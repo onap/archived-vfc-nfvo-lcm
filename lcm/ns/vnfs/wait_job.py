@@ -36,18 +36,16 @@ def calc_progress(vnfm_progress, target_range=None):
 
 def default_callback(vnfo_job_id, vnfm_job_id, job_status, jobs, progress_range, **kwargs):
     for job in jobs:
-        progress = calc_progress(
-            ignore_case_get(job, 'progress'), 
-            progress_range)
-        JobUtil.add_job_status(vnfo_job_id, progress, 
-            ignore_case_get(job, 'statusdescription'), 
-            ignore_case_get(job, 'errorcode'))
-    latest_progress = calc_progress(
-        ignore_case_get(job_status, 'progress'), 
-        progress_range)
-    JobUtil.add_job_status(vnfo_job_id, latest_progress, 
-        ignore_case_get(job_status, 'statusdescription'),
-        ignore_case_get(job_status, 'errorcode'))
+        progress = calc_progress(ignore_case_get(job, 'progress'),
+                                 progress_range)
+        JobUtil.add_job_status(vnfo_job_id, progress,
+                               ignore_case_get(job, 'statusdescription'),
+                               ignore_case_get(job, 'errorcode'))
+    latest_progress = calc_progress(ignore_case_get(job_status, 'progress'),
+                                    progress_range)
+    JobUtil.add_job_status(vnfo_job_id, latest_progress,
+                           ignore_case_get(job_status, 'statusdescription'),
+                           ignore_case_get(job_status, 'errorcode'))
     jobstatus = ignore_case_get(job_status, 'status')
     if jobstatus in (JOB_MODEL_STATUS.ERROR, JOB_MODEL_STATUS.FINISHED):
         return True, jobstatus
@@ -73,8 +71,7 @@ def wait_job_finish(vnfm_id, vnfo_job_id, vnfm_job_id, progress_range=None, time
         jobs = ignore_case_get(job_status, 'responsehistorylist', [])
         if jobs:
             jobs.reverse()
-        is_end, status = job_callback(vnfo_job_id, vnfm_job_id, job_status, 
-            jobs, progress_range, **kwargs)
+        is_end, status = job_callback(vnfo_job_id, vnfm_job_id, job_status, jobs, progress_range, **kwargs)
         if is_end:
             return status
     return JOB_MODEL_STATUS.TIMEOUT

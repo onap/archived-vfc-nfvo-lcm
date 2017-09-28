@@ -19,7 +19,7 @@ from rest_framework import status
 class TestGetVnfViews(TestCase):
     def setUp(self):
         self.client = Client()
-        self.data = {"PackageID":"1223334"}
+        self.data = {"PackageID": "1223334"}
         pass
 
     def tearDown(self):

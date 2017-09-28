@@ -61,7 +61,7 @@ class GrantVnfs(object):
             if not vnfinsts:
                 raise NSLCMException("Vnfinst(%s) is not found in vnfm(%s)" % (
                     m_vnf_inst_id, vnfm_inst_id))
-                
+
             vnf_pkg_id = vnfinsts[0].package_id
             # vnf_pkgs = NfPackageModel.objects.filter(nfpackageid=vnf_pkg_id)
             nfpackage_info = query_vnfpackage_by_id(vnf_pkg_id)
@@ -72,8 +72,8 @@ class GrantVnfs(object):
             vnfd = json.JSONDecoder().decode(vnf_pkgs[0].vnfdmodel)
 
             req_param = {
-                "vnfInstanceId": m_vnf_inst_id, 
-                "vimId": vim_id, 
+                "vnfInstanceId": m_vnf_inst_id,
+                "vimId": vim_id,
                 "additionalParam": additional_param,
                 grant_type: []
             }
@@ -81,7 +81,7 @@ class GrantVnfs(object):
                 vdu_name = ignore_case_get(res, "vdu")
                 grant_res = {
                     "resourceDefinitionId": ignore_case_get(res, "resourceDefinitionId"),
-                    "type": ignore_case_get(res,"type"),
+                    "type": ignore_case_get(res, "type"),
                     "vdu": vdu_name
                 }
                 for vdu in vnfd["vdus"]:
@@ -102,7 +102,7 @@ class GrantVnfs(object):
                     "numVirtualCpu": int(vdu["nfv_compute"]["num_cpus"])
                 },
                 "virtualMemory": {
-                    "virtualMemSize": int(vdu["nfv_compute"]["mem_size"]) 
+                    "virtualMemSize": int(vdu["nfv_compute"]["mem_size"])
                 }
             },
             "virtualStorageDescriptor": {

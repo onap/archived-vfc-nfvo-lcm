@@ -139,15 +139,15 @@ class CreateVnfs(Thread):
                 continue
             for network_info in vnf_info['networks']:
                 vl_instance = VLInstModel.objects.get(
-                    vldid=network_info['vl_id'], 
+                    vldid=network_info['vl_id'],
                     ownertype=OWNER_TYPE.NS,
                     ownerid=self.ns_inst_id)
                 vl_instance_id = vl_instance.vlinstanceid
                 network_name, subnet_name = self.get_network_info_of_vl(network_info['vl_id'])
                 virtual_link_list.append({
-                    'network_name': network_name, 
+                    'network_name': network_name,
                     'key_name': network_info['key_name'],
-                    'subnetwork_name': subnet_name, 
+                    'subnetwork_name': subnet_name,
                     'vl_instance_id': vl_instance_id
                 })
                 ext_virtual_link.append({
@@ -176,13 +176,16 @@ class CreateVnfs(Thread):
     def send_nf_init_request_to_vnfm(self):
         virtual_link_list, ext_virtual_link = self.get_virtual_link_info(self.vnf_id)
         req_param = json.JSONEncoder().encode({
-            'vnfInstanceName': self.vnf_inst_name, 
+            'vnfInstanceName': self.vnf_inst_name,
             'vnfPackageId': ignore_case_get(self.nf_package_info, "vnfPackageId"),
             'vnfDescriptorId': self.vnfd_id,
             'extVirtualLink': ext_virtual_link,
-            'additionalParam': {"inputs": self.inputs, 
+            'additionalParam': {
+                "inputs": self.inputs,
                 "vimId": self.vim_id,
-                "extVirtualLinks": virtual_link_list}})
+                "extVirtualLinks": virtual_link_list
+            }
+        })
         rsp = send_nf_init_request(self.vnfm_inst_id, req_param)
         self.vnfm_job_id = ignore_case_get(rsp, 'jobId')
         self.vnfm_nf_inst_id = ignore_case_get(rsp, 'vnfInstanceId')
@@ -225,9 +228,11 @@ class CreateVnfs(Thread):
         create_vnf(data)
 
     def wait_vnfm_job_finish(self):
-        ret = wait_job_finish(vnfm_id=self.vnfm_inst_id, vnfo_job_id=self.job_id, 
-            vnfm_job_id=self.vnfm_job_id, progress_range=[10, 90],
-            timeout=NFVO_VNF_INST_TIMEOUT_SECOND)
+        ret = wait_job_finish(vnfm_id=self.vnfm_inst_id,
+                              vnfo_job_id=self.job_id,
+                              vnfm_job_id=self.vnfm_job_id,
+                              progress_range=[10, 90],
+                              timeout=NFVO_VNF_INST_TIMEOUT_SECOND)
 
         if ret != JOB_MODEL_STATUS.FINISHED:
             logger.error('VNF instantiation failed on VNFM side.')

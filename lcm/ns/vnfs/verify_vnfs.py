@@ -58,8 +58,8 @@ class VerifyVnfs(threading.Thread):
     def do_on_boarding(self):
         self.update_job(10, "Start vnf on boarding.")
         onboarding_data = {
-            "csarId":self.data["PackageID"],
-            "labVimId":ignore_case_get(self.verify_config, "labVimId")
+            "csarId": self.data["PackageID"],
+            "labVimId": ignore_case_get(self.verify_config, "labVimId")
         }
         ret = req_by_msb("/api/nslcm/v1/vnfpackage", "POST", json.JSONEncoder().encode(onboarding_data))
         if ret[0] != 0:
@@ -68,7 +68,7 @@ class VerifyVnfs(threading.Thread):
         if not self.wait_until_job_done(rsp_data["jobId"], 15):
             raise NSLCMException("Vnf onboarding failed")
         self.update_job(20, "Vnf on boarding success.")
-        
+
     def do_inst_vnf(self):
         self.update_job(30, "Start inst vnf.")
         vnf_param = ignore_case_get(self.verify_config, "additionalParamForVnf")
@@ -87,10 +87,10 @@ class VerifyVnfs(threading.Thread):
         if not self.wait_until_job_done(rsp_data["jobId"], 40):
             raise NSLCMException("Vnf(%s) inst failed" % self.vnf_inst_id)
         self.update_job(50, "Inst vnf success.")
-        
+
     def do_func_test(self):
         self.update_job(60, "Start vnf function test.")
-        func_data = {"PackageID":self.data["PackageID"]}
+        func_data = {"PackageID": self.data["PackageID"]}
         ret = req_by_msb("/openapi/vnfsdk/v1/functest/taskmanager/testtasks", "POST", json.JSONEncoder().encode(func_data))
         if ret[0] != 0:
             raise NSLCMException("Failed to call func test: %s" % ret[1])
@@ -106,7 +106,7 @@ class VerifyVnfs(threading.Thread):
         rsp_result_data = json.JSONDecoder().decode(ret[1])
         logger.info("Func test(%s) result: %s", rsp_result_data)
         self.update_job(80, "Vnf function test success.")
-        
+
     def do_term_vnf(self):
         if not self.vnf_inst_id:
             return
@@ -125,10 +125,10 @@ class VerifyVnfs(threading.Thread):
             logger.error("Vnf(%s) term failed", self.vnf_inst_id)
             end_progress = JOB_ERROR
         self.update_job(end_progress, "Term vnf end.")
-        
+
     def update_job(self, progress, desc=''):
         JobUtil.add_job_status(self.job_id, progress, desc)
-        
+
     def wait_until_job_done(self, job_id, global_progress, retry_count=60, interval_second=3):
         count = 0
         response_id, new_response_id = 0, 0
@@ -176,8 +176,8 @@ class VerifyVnfs(threading.Thread):
         while count < retry_count:
             count = count + 1
             time.sleep(interval_second)
-            ret = req_by_msb("/openapi/vnfsdk/v1/functest/taskmanager/testtasks/%s?responseId=%s" %
-                (job_id, response_id), "GET")
+            ret = req_by_msb("/openapi/vnfsdk/v1/functest/taskmanager/testtasks/%s?responseId=%s"
+                             % (job_id, response_id), "GET")
             if ret[0] != 0:
                 logger.error("Failed to query job: %s:%s", ret[2], ret[1])
                 continue

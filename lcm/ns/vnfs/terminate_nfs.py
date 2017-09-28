@@ -106,7 +106,7 @@ class TerminateVnfs(threading.Thread):
 
     def send_nf_terminate_to_vnfmDriver(self):
         req_param = json.JSONEncoder().encode({
-            'terminationType': self.terminationType, 
+            'terminationType': self.terminationType,
             'gracefulTerminationTimeout': self.gracefulTerminationTimeout})
         rsp = send_nf_terminate_request(self.vnfm_inst_id, self.vnf_uuid, req_param)
         self.vnfm_job_id = ignore_case_get(rsp, 'jobId')
@@ -118,9 +118,11 @@ class TerminateVnfs(threading.Thread):
         if not self.vnfm_job_id:
             logger.warn("No Job, need not wait")
             return
-        ret = wait_job_finish(vnfm_id=self.vnfm_inst_id, vnfo_job_id=self.job_id, 
-            vnfm_job_id=self.vnfm_job_id, progress_range=[10, 90],
-            timeout=NFVO_VNF_INST_TIMEOUT_SECOND)
+        ret = wait_job_finish(vnfm_id=self.vnfm_inst_id,
+                              vnfo_job_id=self.job_id,
+                              vnfm_job_id=self.vnfm_job_id,
+                              progress_range=[10, 90],
+                              timeout=NFVO_VNF_INST_TIMEOUT_SECOND)
 
         if ret != JOB_MODEL_STATUS.FINISHED:
             logger.error('VNF terminate failed on VNFM side.')

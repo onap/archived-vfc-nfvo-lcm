@@ -340,23 +340,23 @@ class TestScaleVnfViews(TestCase):
                 "properties": {
                     "name": "elementGroup1",
                 },
-                "members": ["gsu_vm","pfu_vm"]
+                "members": ["gsu_vm", "pfu_vm"]
             }]
         }
 
         req_data = {
             "scaleVnfData": [
                 {
-                    "type":"SCALE_OUT",
-                    "aspectId":"demo_aspect1",
-                    "numberOfSteps":1,
-                    "additionalParam":vnfd_info
+                    "type": "SCALE_OUT",
+                    "aspectId": "demo_aspect1",
+                    "numberOfSteps": 1,
+                    "additionalParam": vnfd_info
                 },
                 {
-                    "type":"SCALE_OUT",
-                    "aspectId":"demo_aspect2",
-                    "numberOfSteps":1,
-                    "additionalParam":vnfd_info
+                    "type": "SCALE_OUT",
+                    "aspectId": "demo_aspect2",
+                    "numberOfSteps": 1,
+                    "additionalParam": vnfd_info
                 }
             ]
         }
