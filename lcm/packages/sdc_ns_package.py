@@ -14,18 +14,16 @@
 
 import json
 import logging
-
-import traceback
-import sys
 import os
+import sys
+import traceback
 
+from lcm.pub.config.config import CATALOG_ROOT_PATH
 from lcm.pub.database.models import NSDModel, NSInstModel, NfPackageModel
-from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import sdc
-from lcm.pub.config.config import CATALOG_ROOT_PATH
-from lcm.pub.utils import toscaparser
 from lcm.pub.utils import fileutil
+from lcm.pub.utils import toscaparser
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +59,7 @@ def ns_delete_csar(csar_id, force_delete):
         return fmt_ns_pkg_rsp(STATUS_FAILED, str(sys.exc_info()))
     return fmt_ns_pkg_rsp(STATUS_SUCCESS, ret[1], "")
 
+
 def ns_get_csars():
     ret = None
     try:
@@ -71,6 +70,7 @@ def ns_get_csars():
         logger.error(traceback.format_exc())
         return [1, str(sys.exc_info())]
     return ret
+
 
 def ns_get_csar(csar_id):
     ret = None
@@ -100,9 +100,10 @@ class SdcNsPackage(object):
 
         artifact = sdc.get_artifact(sdc.ASSETTYPE_SERVICES, csar_id)
         local_path = os.path.join(CATALOG_ROOT_PATH, csar_id)
-        local_file_name = sdc.download_artifacts(artifact["toscaModelURL"], 
-            local_path, "%s.csar" % artifact.get("name", csar_id))
-        
+        local_file_name = sdc.download_artifacts(artifact["toscaModelURL"],
+                                                 local_path,
+                                                 "%s.csar" % artifact.get("name", csar_id))
+
         nsd_json = toscaparser.parse_nsd(local_file_name)
         nsd = json.JSONDecoder().decode(nsd_json)
 
@@ -128,7 +129,6 @@ class SdcNsPackage(object):
 
         return [0, "CSAR(%s) distributed successfully." % csar_id]
 
-
     def delete_csar(self, csar_id, force_delete):
         if force_delete:
             NSInstModel.objects.filter(nspackage_id=csar_id).delete()
@@ -137,7 +137,6 @@ class SdcNsPackage(object):
                 raise NSLCMException("CSAR(%s) is in using, cannot be deleted." % csar_id)
         NSDModel.objects.filter(id=csar_id).delete()
         return [0, "Delete CSAR(%s) successfully." % csar_id]
-
 
     def get_csars(self):
         csars = {"csars": []}
@@ -159,17 +158,11 @@ class SdcNsPackage(object):
 
         nss = NSInstModel.objects.filter(nspackage_id=csar_id)
         ns_instance_info = [{
-            "nsInstanceId": ns.id, 
+            "nsInstanceId": ns.id,
             "nsInstanceName": ns.name} for ns in nss]
 
-        return [0, {"csarId": csar_id, 
-            "packageInfo": package_info, 
-            "nsInstanceInfo": ns_instance_info}]
+        return [0, {"csarId": csar_id, "packageInfo": package_info, "nsInstanceInfo": ns_instance_info}]
 
     def delete_catalog(self, csar_id):
         local_path = os.path.join(CATALOG_ROOT_PATH, csar_id)
         fileutil.delete_dirs(local_path)
-
-
-
-       

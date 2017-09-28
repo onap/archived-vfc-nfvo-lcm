@@ -14,26 +14,23 @@
 
 import json
 import logging
-import uuid
 import os
-import time
+import sys
 import threading
 import traceback
-import sys
 
-from lcm.pub.database.models import NfPackageModel, NfInstModel
-from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.utils import fileutil
-from lcm.pub.exceptions import NSLCMException
 from lcm.pub.config.config import CATALOG_ROOT_PATH
-from lcm.pub.msapi.extsys import get_vims
-from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.utils import toscaparser
+from lcm.pub.database.models import NfPackageModel, NfInstModel
+from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import sdc
+from lcm.pub.utils import fileutil
+from lcm.pub.utils import toscaparser
+from lcm.pub.utils.jobutil import JobUtil
 
 logger = logging.getLogger(__name__)
 
 JOB_ERROR = 255
+
 
 def nf_get_csars():
     ret = None
@@ -46,6 +43,7 @@ def nf_get_csars():
         return [1, str(sys.exc_info())]
     return ret
 
+
 def nf_get_csar(csar_id):
     ret = None
     try:
@@ -57,8 +55,8 @@ def nf_get_csar(csar_id):
         return [1, str(sys.exc_info())]
     return ret
 
-#####################################################################################
 
+#####################################################################################
 class SdcNfDistributeThread(threading.Thread):
     """
     Sdc NF Package Distribute
@@ -98,9 +96,10 @@ class SdcNfDistributeThread(threading.Thread):
 
         artifact = sdc.get_artifact(sdc.ASSETTYPE_RESOURCES, self.csar_id)
         local_path = os.path.join(CATALOG_ROOT_PATH, self.csar_id)
-        local_file_name = sdc.download_artifacts(artifact["toscaModelURL"], 
-            local_path, "%s.csar" % artifact.get("name", self.csar_id))
-        
+        local_file_name = sdc.download_artifacts(artifact["toscaModelURL"],
+                                                 local_path,
+                                                 "%s.csar" % artifact.get("name", self.csar_id))
+
         vnfd_json = toscaparser.parse_vnfd(local_file_name)
         vnfd = json.JSONDecoder().decode(vnfd_json)
 
@@ -121,11 +120,9 @@ class SdcNfDistributeThread(threading.Thread):
             vnfdversion=vnfd_ver,
             vnfversion=vnfd["metadata"].get("version", "undefined"),
             vnfdmodel=vnfd_json,
-            vnfd_path=local_file_name
-            ).save()
+            vnfd_path=local_file_name).save()
 
         JobUtil.add_job_status(self.job_id, 100, "CSAR(%s) distribute successfully." % self.csar_id)
-
 
     def rollback_distribute(self):
         try:
@@ -205,7 +202,7 @@ class SdcNfPackage(object):
                 "vnfdId": nf_pkg.vnfdid
             })
         return [0, csars]
-        
+
     def get_csar(self, csar_id):
         pkg_info = {}
         nf_pkg = NfPackageModel.objects.filter(nfpackageid=csar_id)
@@ -215,7 +212,6 @@ class SdcNfPackage(object):
             pkg_info["vnfdVersion"] = nf_pkg[0].vnfdversion
             pkg_info["vnfVersion"] = nf_pkg[0].vnfversion
 
-
         vnf_insts = NfInstModel.objects.filter(package_id=csar_id)
         vnf_inst_info = [{"vnfInstanceId": vnf_inst.nfinstid,
                           "vnfInstanceName": vnf_inst.nf_name} for vnf_inst in vnf_insts]
@@ -224,6 +220,3 @@ class SdcNfPackage(object):
                     "packageInfo": pkg_info,
                     "imageInfo": [],
                     "vnfInstanceInfo": vnf_inst_info}]
-
-
-        

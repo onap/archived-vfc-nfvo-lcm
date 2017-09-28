@@ -14,29 +14,28 @@
 
 import json
 import logging
-import uuid
 import os
-import time
-import threading
-import traceback
 import sys
+import threading
+import time
+import traceback
+import uuid
 
+from lcm.pub.config.config import IMAGE_ROOT_PATH, IGNORE_DEL_IMG_WEHN_DEL_CSAR
 from lcm.pub.database.models import NfPackageModel, VnfPackageFileModel, NfInstModel
-from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.utils import fileutil
-from lcm.pub.msapi.catalog import STATUS_ONBOARDED, P_STATUS_ENABLED
+from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.catalog import P_STATUS_DELETEFAILED, P_STATUS_DELETING
 from lcm.pub.msapi.catalog import P_STATUS_NORMAL, P_STATUS_ONBOARDING, P_STATUS_ONBOARDFAILED
+from lcm.pub.msapi.catalog import STATUS_ONBOARDED, P_STATUS_ENABLED
+from lcm.pub.msapi.catalog import get_download_url_from_catalog
 from lcm.pub.msapi.catalog import query_csar_from_catalog, set_csar_state
 from lcm.pub.msapi.catalog import query_rawdata_from_catalog, delete_csar_from_catalog
-from lcm.pub.msapi.catalog import get_download_url_from_catalog
-from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vims
-from lcm.pub.config.config import IMAGE_ROOT_PATH, IGNORE_DEL_IMG_WEHN_DEL_CSAR
 from lcm.pub.nfvi.vim.vimadaptor import VimAdaptor
-from lcm.pub.nfvi.vim import const
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.utils import fileutil
 from lcm.pub.utils import toscautil
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +114,7 @@ class NfOnBoardingThread(threading.Thread):
         JobUtil.add_job_status(self.job_id, 20, "Get model of CSAR(%s) from catalog." % self.csar_id)
 
         raw_data = query_rawdata_from_catalog(self.csar_id)
-        self.nfd = toscautil.convert_vnfd_model(raw_data["rawData"]) # convert to inner json
+        self.nfd = toscautil.convert_vnfd_model(raw_data["rawData"])  # convert to inner json
         self.nfd = json.JSONDecoder().decode(self.nfd)
         self.nfd_id = self.nfd["metadata"]["id"]
         if NfPackageModel.objects.filter(vnfdid=self.nfd_id):
@@ -134,7 +133,7 @@ class NfOnBoardingThread(threading.Thread):
             vnfdversion=vnfd_ver,
             vnfversion=self.nfd["metadata"].get("version", "undefined"),
             vnfdmodel=json.JSONEncoder().encode(self.nfd)
-            ).save()
+        ).save()
 
     def download_nf_images(self):
         nf_images = []
@@ -145,8 +144,7 @@ class NfOnBoardingThread(threading.Thread):
             img_desc = image_file.get("description", "")
             img_url, img_local_path = get_download_url_from_catalog(self.csar_id, img_relative_path)
             JobUtil.add_job_status(self.job_id, 50, "Start to download Image(%s)." % img_name)
-            is_download_ok, img_save_full_path = fileutil.download_file_from_http(img_url, 
-                self.img_save_path, img_name)
+            is_download_ok, img_save_full_path = fileutil.download_file_from_http(img_url, self.img_save_path, img_name)
             if not is_download_ok:
                 raise NSLCMException("Failed to download image from %s" % img_url)
             logger.debug("Download Image(%s) to %s successfully.", img_name, img_save_full_path)
@@ -350,7 +348,7 @@ class NfPackage(object):
                 "vnfdId": nf_pkg.vnfdid
             })
         return ret
-        
+
     def get_csar(self, csar_id):
         pkg_info = {}
         nf_pkg = NfPackageModel.objects.filter(nfpackageid=csar_id)

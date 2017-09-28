@@ -52,6 +52,7 @@ def ns_common_call(fun, csar_id, operation=""):
         return fmt_ns_pkg_rsp(STATUS_FAILED, str(sys.exc_info()))
     return fmt_ns_pkg_rsp(STATUS_SUCCESS, ret[1], "")
 
+
 def ns_on_boarding(csar_id):
     return ns_common_call(NsPackage().on_boarding, csar_id)
 
@@ -97,7 +98,7 @@ class NsPackage(object):
             raise NSLCMException("CSAR(%s) already onBoarded." % csar_id)
 
         raw_data = query_rawdata_from_catalog(csar_id)
-        nsd = toscautil.convert_nsd_model(raw_data["rawData"]) # convert to inner json
+        nsd = toscautil.convert_nsd_model(raw_data["rawData"])  # convert to inner json
         nsd = json.JSONDecoder().decode(nsd)
         nsd_id = nsd["metadata"]["id"]
         if NSDModel.objects.filter(nsd_id=nsd_id):
@@ -176,7 +177,6 @@ class NsPackage(object):
         ns_instance_info = [{"nsInstanceId": ns.id, "nsInstanceName": ns.name} for ns in nss]
 
         return [0, {"csarId": csar_id, "packageInfo": package_info, "nsInstanceInfo": ns_instance_info}]
-
 
     def set_state_csar(self, csar_id, operation):
         if not NSDModel.objects.filter(id=csar_id):

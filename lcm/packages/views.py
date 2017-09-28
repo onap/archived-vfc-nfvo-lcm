@@ -25,6 +25,7 @@ from lcm.packages import ns_package, nf_package, sdc_ns_package, sdc_nf_package
 
 logger = logging.getLogger(__name__)
 
+
 @api_view(http_method_names=['POST', 'GET'])
 def ns_distribute_get(request, *args, **kwargs):
     logger.debug("Enter %s, method is %s", fun_name(), request.method)
@@ -35,12 +36,13 @@ def ns_distribute_get(request, *args, **kwargs):
     else:
         csar_id = ignore_case_get(request.data, "csarId")
         logger.debug("csar_id is %s", csar_id)
-        ret = sdc_ns_package.ns_on_distribute(csar_id)      
+        ret = sdc_ns_package.ns_on_distribute(csar_id)
         normal_status = status.HTTP_202_ACCEPTED
     logger.debug("Leave %s, Return value is %s", fun_name(), ret)
     if ret[0] != 0:
         return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data=ret[1], status=normal_status)
+
 
 @api_view(http_method_names=['GET', 'DELETE'])
 def ns_rd_csar(request, *args, **kwargs):
@@ -61,8 +63,8 @@ def ns_rd_csar(request, *args, **kwargs):
         return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data=ret[1], status=normal_status)
 
-####################################################################################################    
 
+####################################################################################################
 @api_view(http_method_names=['POST', 'GET'])
 def nf_distribute_get(request, *args, **kwargs):
     logger.debug("Enter %s%s, method is %s", fun_name(), request.data, request.method)
@@ -82,6 +84,7 @@ def nf_distribute_get(request, *args, **kwargs):
     if ret[0] != 0:
         return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data=ret[1], status=normal_status)
+
 
 @api_view(http_method_names=['GET', 'DELETE'])
 def nf_rd_csar(request, *args, **kwargs):
@@ -104,8 +107,8 @@ def nf_rd_csar(request, *args, **kwargs):
         return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data=ret[1], status=normal_status)
 
-####################################################################################################    
 
+####################################################################################################
 @api_view(http_method_names=['POST'])
 def ns_on_boarding(request, *args, **kwargs):
     csar_id = ignore_case_get(request.data, "csarId")
@@ -155,6 +158,7 @@ def ns_set_state_csar(request, *args, **kwargs):
     if ret[0] != 0:
         return Response(data={'error': ret[1]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data=ret[1], status=status.HTTP_202_ACCEPTED)
+
 
 #################################################################################################################
 @api_view(http_method_names=['POST', 'GET'])
