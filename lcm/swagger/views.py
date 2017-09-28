@@ -53,6 +53,14 @@ class SwaggerJsonView(APIView):
         json_data["paths"].update(json_data_temp["paths"])
         json_data["definitions"].update(json_data_temp["definitions"])
 
+        json_file = os.path.join(os.path.dirname(__file__), 'vfc.db.swagger.json')
+        f = open(json_file)
+        json_data_temp = json.JSONDecoder().decode(f.read())
+        f.close()
+
+        json_data["paths"].update(json_data_temp["paths"])
+        json_data["definitions"].update(json_data_temp["definitions"])
+
         json_file = os.path.join(os.path.dirname(__file__), 'vfc.others.swagger.json')
         f = open(json_file)
         json_data_temp = json.JSONDecoder().decode(f.read())
