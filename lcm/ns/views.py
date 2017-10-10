@@ -53,11 +53,12 @@ class CreateNSView(APIView):
         logger.debug("Enter CreateNS: %s", request.data)
         if ignore_case_get(request.data, 'test') == "test":
             return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
-        nsd_id = ignore_case_get(request.data, 'nsdId')
+        # nsd_id = ignore_case_get(request.data, 'nsdId')
+        csar_id = ignore_case_get(request.data, 'csarId')
         ns_name = ignore_case_get(request.data, 'nsName')
         description = ignore_case_get(request.data, 'description')
         try:
-            ns_inst_id = CreateNSService(nsd_id, ns_name, description).do_biz()
+            ns_inst_id = CreateNSService(csar_id, ns_name, description).do_biz()
         except Exception as e:
             logger.error("Exception in CreateNS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

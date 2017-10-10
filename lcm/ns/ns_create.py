@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 
 
 class CreateNSService(object):
-    def __init__(self, nsd_id, ns_name, description):
-        self.nsd_id = nsd_id
+    def __init__(self, csar_id, ns_name, description):
+        self.csar_id = csar_id
         self.ns_name = ns_name
         self.description = description
         self.ns_inst_id = ''
@@ -43,13 +43,14 @@ class CreateNSService(object):
         return self.ns_inst_id
 
     def check_nsd_valid(self):
-        logger.debug("CreateNSService::check_nsd_valid::nsd_id=%s" % self.nsd_id)
-        ns_package_info = query_nspackage_by_id(self.nsd_id)
+        logger.debug("CreateNSService::check_nsd_valid::csar_id=%s" % self.csar_id)
+        ns_package_info = query_nspackage_by_id(self.csar_id)
         if not ns_package_info:
-            raise NSLCMException("nsd(%s) not exists." % self.nsd_id)
+            raise NSLCMException("nsd(%s) not exists." % self.csar_id)
         packageInfo = ns_package_info["packageInfo"]
         self.ns_package_id = ignore_case_get(packageInfo, "nsPackageId")
-        logger.debug("CreateNSService::check_nsd_valid::ns_package_id=%s" % self.ns_package_id)
+        self.nsd_id = ignore_case_get(packageInfo, "nsdId")
+        logger.debug("CreateNSService::check_nsd_valid::ns_package_id=%s,nsd_id=%s", self.ns_package_id, self.nsd_id)
 
     def check_ns_inst_name_exist(self):
         is_exist = NSInstModel.objects.filter(name=self.ns_name).exists()
