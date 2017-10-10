@@ -74,13 +74,13 @@ class CreateNSService(object):
             "service-subscriptions": {
                 "service-subscription": [
                     {
-                        "service-type": "service-type-" + self.ns_inst_id,
+                        "service-type": "Network",
                         "service-instances": {
                             "service-instance": [
                                 {
                                     "service-instance-id": self.ns_inst_id,
                                     "service-instance-name": self.ns_name,
-                                    "service-type": "service-type-" + self.ns_inst_id,
+                                    "service-type": "Network",
                                     "service-role": "service-role-" + self.ns_inst_id
                                 }
                             ]

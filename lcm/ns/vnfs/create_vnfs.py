@@ -295,7 +295,7 @@ class CreateVnfs(Thread):
                             },
                             {
                                 "relationship-key": "service-subscription.service-type",
-                                "relationship-value": "service-type-" + self.ns_inst_id
+                                "relationship-value": "Network"
                             },
                             {
                                 "relationship-key": "service-instance.service-instance-id",

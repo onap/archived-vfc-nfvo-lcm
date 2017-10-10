@@ -62,5 +62,5 @@ class DeleteNsService(object):
         if resp_data:
             logger.debug("Fail to delete ns instance[%s] from aai, resp_status: [%s]." % (self.ns_inst_id, resp_status))
         else:
-            logger.debug(
-                "Success to delete ns instance[%s] from aai, resp_status: [%s]." % (self.ns_inst_id, resp_status))
+            logger.debug("Success to delete ns instance[%s] from aai, resp_status: [%s]."
+                         % (self.ns_inst_id, resp_status))

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import logging
 import traceback
 import json
@@ -142,7 +143,8 @@ class TerminateVnfs(threading.Thread):
         # delete vnf instance from aai
         resp_data, resp_status = delete_vnf_aai(self.vnf_inst_id, resource_version)
         if resp_data:
-            logger.debug("Fail to delete vnf instance[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
+            logger.debug("Fail to delete vnf instance[%s] from aai, resp_status: [%s]."
+                         % (self.vnf_inst_id, resp_status))
         else:
             logger.debug(
                 "Success to delete vnf instance[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
