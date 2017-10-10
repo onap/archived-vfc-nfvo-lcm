@@ -246,3 +246,32 @@ def delete_vserver_relationship(cloud_owner, cloud_region_id, tenant_id, vserver
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete vserver relationship exception in AAI")
     return json.JSONDecoder().decode(ret[1]), ret[2]
+
+
+def create_network_aai(network_id, data):
+    resource = "/network/l3-networks/l3-network/%s" % network_id
+    ret = call_aai(resource, "PUT", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Network creation exception in AAI")
+    return json.JSONDecoder().decode(ret[1]), ret[2]
+
+
+def query_network_aai(network_id):
+    resource = "/network/l3-networks/l3-network/%s" % network_id
+    ret = call_aai(resource, "GET")
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Network query exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
+
+
+def delete_network_aai(network_id, resource_version=""):
+    resource = "/network/l3-networks/l3-network/%s" % network_id
+    if resource_version:
+        resource = resource + "?resource-version=%s" % resource_version
+    ret = call_aai(resource, "DELETE")
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Network delete exception in AAI")
+    return json.JSONDecoder().decode(ret[1]), ret[2]
