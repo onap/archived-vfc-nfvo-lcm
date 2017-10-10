@@ -275,3 +275,21 @@ def delete_network_aai(network_id, resource_version=""):
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Network delete exception in AAI")
     return json.JSONDecoder().decode(ret[1]), ret[2]
+
+
+def put_network_relationship(network_id, data):
+    resource = "/network/l3-networks/l3-network/%s/relationship-list/relationship" % network_id
+    ret = call_aai(resource, "PUT", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Put or update network relationship exception in AAI")
+    return json.JSONDecoder().decode(ret[1]), ret[2]
+
+
+def delete_network_relationship(network_id):
+    resource = "/network/l3-networks/l3-network/%s/relationship-list/relationship" % network_id
+    ret = call_aai(resource, "DELETE")
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Delete network relationship exception in AAI")
+    return json.JSONDecoder().decode(ret[1]), ret[2]
