@@ -18,9 +18,11 @@ import traceback
 import uuid
 
 from lcm.ns.const import OWNER_TYPE
+from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import VLInstModel, NSInstModel, VNFFGInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import extsys, resmgr
+from lcm.pub.msapi.aai import create_network_aai
 from lcm.pub.nfvi.vim import const
 from lcm.pub.nfvi.vim import vimadaptor
 from lcm.pub.utils.values import ignore_case_get
@@ -54,6 +56,8 @@ class CreateVls(object):
             self.create_vl_to_vim()
             self.create_vl_to_resmgr()
             self.save_vl_to_db()
+            if REPORT_TO_AAI:
+                self.create_network_in_aai()
             return {"result": 0, "detail": "instantiation vl success", "vlId": self.vl_inst_id}
         except NSLCMException as e:
             return self.exception_handle(e)
@@ -132,13 +136,6 @@ class CreateVls(object):
             raise NSLCMException("Send post vl request to vim failed.")
         return vl_ret[1]
 
-    def save_vl_to_db(self):
-        VLInstModel(vlinstanceid=self.vl_inst_id, vldid=self.vld_id, vlinstancename=self.vl_inst_name,
-                    ownertype=self.owner_type, ownerid=self.owner_id, relatednetworkid=self.related_network_id,
-                    relatedsubnetworkid=self.related_subnetwork_id, vimid=self.vim_id, tenant=self.tenant).save()
-        # do_biz_with_share_lock("create-vllist-in-vnffg-%s" % self.owner_id, self.create_vl_inst_id_in_vnffg)
-        self.create_vl_inst_id_in_vnffg()
-
     def create_vl_to_resmgr(self):
         req_param = {
             "vlInstanceId": self.vl_inst_id,
@@ -189,3 +186,39 @@ class CreateVls(object):
                     vl_inst_id_str = vl_inst_id_str[:-1]
                     VNFFGInstModel.objects.filter(vnffgdid=vnffg_info["vnffg_id"], nsinstid=self.owner_id).update(
                         vllist=vl_inst_id_str)
+
+    def save_vl_to_db(self):
+        VLInstModel(vlinstanceid=self.vl_inst_id, vldid=self.vld_id, vlinstancename=self.vl_inst_name,
+                    ownertype=self.owner_type, ownerid=self.owner_id, relatednetworkid=self.related_network_id,
+                    relatedsubnetworkid=self.related_subnetwork_id, vimid=self.vim_id, tenant=self.tenant).save()
+        # do_biz_with_share_lock("create-vllist-in-vnffg-%s" % self.owner_id, self.create_vl_inst_id_in_vnffg)
+        self.create_vl_inst_id_in_vnffg()
+
+    def create_network_in_aai(self):
+        logger.debug("CreateVls::create_network_in_aai::report network[%s] to aai." % self.vl_inst_id)
+        data = {
+            "network-id": self.vl_inst_id,
+            "network-name": self.vl_inst_name,
+            "is-bound-to-vpn": "false",
+            "is-provider-network": "true",
+            "is-shared-network": "true",
+            "is-external-network": "true",
+            "relationship-list": {
+                "relationship": [
+                    {
+                        "related-to": "generic-vnf",
+                        "relationship-data": [
+                            {
+                                "relationship-key": "generic-vnf.vnf-id",
+                                "relationship-value": self.owner_id
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+        resp_data, resp_status = create_network_aai(self.vl_inst_id, data)
+        if resp_data:
+            logger.debug("Fail to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
+        else:
+            logger.debug("Success to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
