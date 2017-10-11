@@ -22,6 +22,7 @@ from lcm.pub.msapi.aai import create_ns_aai
 from lcm.pub.msapi.sdc_run_catalog import query_nspackage_by_id
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
+from lcm.ns.const import SERVICE_ROLE, SERVICE_TYPE
 
 logger = logging.getLogger(__name__)
 
@@ -104,10 +105,10 @@ class CreateNSService(object):
             data = {
                 "service-instance-id": self.ns_inst_id,
                 "service-instance-name": self.ns_name,
-                "service-type": "Network",
-                "service-role": "service-role-" + self.ns_inst_id
+                "service-type": SERVICE_TYPE,
+                "service-role": SERVICE_ROLE
             }
-            resp_data, resp_status = create_ns_aai(self.global_customer_id, self.service_type, self.ns_inst_id, data)
+            resp_data, resp_status = create_ns_aai(self.global_customer_id, SERVICE_TYPE, self.ns_inst_id, data)
             if resp_data:
                 logger.debug("Fail to create ns[%s] to aai: [%s].", self.ns_inst_id, resp_status)
             else:
