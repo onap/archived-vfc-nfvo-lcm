@@ -46,6 +46,8 @@ class NSInstModel(models.Model):
     scale_params = models.TextField(db_column='SCALEPARAMS', max_length=2000, null=True, blank=True)
     create_time = models.CharField(db_column='CREATETIME', max_length=200, null=True, blank=True)
     lastuptime = models.CharField(db_column='LASTUPTIME', max_length=200, null=True, blank=True)
+    global_customer_id = models.CharField(db_column='GLOBALCUSTOMERID', max_length=50, null=True, blank=True)
+    service_type = models.CharField(db_column='SERVICETYPE', max_length=50, null=True, blank=True)
 
 
 class NfPackageModel(models.Model):
