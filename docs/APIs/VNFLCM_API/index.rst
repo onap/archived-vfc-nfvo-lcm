@@ -1,5 +1,5 @@
 VNF LCM API
----------
+------------
 
 .. toctree::
     :titlesonly:

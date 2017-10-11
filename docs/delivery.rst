@@ -1,5 +1,5 @@
 VF-C Delivery
---------
+-------------
 VF-C includs the following components in R1.
 
 |image0|
