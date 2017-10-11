@@ -538,7 +538,7 @@
           }
         }
       }
-    },    
+    }
   },
   "definitions": {
     "jobResponseInfo": {
