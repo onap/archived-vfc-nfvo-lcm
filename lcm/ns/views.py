@@ -57,8 +57,9 @@ class CreateNSView(APIView):
         csar_id = ignore_case_get(request.data, 'csarId')
         ns_name = ignore_case_get(request.data, 'nsName')
         description = ignore_case_get(request.data, 'description')
+        context = ignore_case_get(request.data, 'context')
         try:
-            ns_inst_id = CreateNSService(csar_id, ns_name, description).do_biz()
+            ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
         except Exception as e:
             logger.error("Exception in CreateNS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
