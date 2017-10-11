@@ -293,3 +293,32 @@ def delete_network_relationship(network_id):
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete network relationship exception in AAI")
     return json.JSONDecoder().decode(ret[1]), ret[2]
+
+
+def create_subnet_aai(network_id, subnet_id, data):
+    resource = "/network/l3-networks/l3-network/%s/subnets/subnet/%s" % (network_id, subnet_id)
+    ret = call_aai(resource, "PUT", data)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Subnetwork creation exception in AAI")
+    return json.JSONDecoder().decode(ret[1]), ret[2]
+
+
+def query_subnet_aai(network_id, subnet_id):
+    resource = "/network/l3-networks/l3-network/%s/subnets/subnet/%s" % (network_id, subnet_id)
+    ret = call_aai(resource, "GET")
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Subnetwork query exception in AAI")
+    return json.JSONDecoder().decode(ret[1])
+
+
+def delete_subnet_aai(network_id, subnet_id, resource_version=""):
+    resource = "/network/l3-networks/l3-network/%s/subnets/subnet/%s" % (network_id, subnet_id)
+    if resource_version:
+        resource = resource + "?resource-version=%s" % resource_version
+    ret = call_aai(resource, "DELETE")
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Subnetwork delete exception in AAI")
+    return json.JSONDecoder().decode(ret[1]), ret[2]
