@@ -199,10 +199,10 @@ class CreateVls(object):
         data = {
             "network-id": self.vl_inst_id,
             "network-name": self.vl_inst_name,
-            "is-bound-to-vpn": "false",
-            "is-provider-network": "true",
-            "is-shared-network": "true",
-            "is-external-network": "true",
+            "is-bound-to-vpn": False,
+            "is-provider-network": True,
+            "is-shared-network": True,
+            "is-external-network": True,
             "relationship-list": {
                 "relationship": [
                     {

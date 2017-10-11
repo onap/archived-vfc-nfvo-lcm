@@ -135,45 +135,51 @@ class TerminateVnfs(threading.Thread):
 
     def delete_vnf_in_aai(self):
         logger.debug("TerminateVnfs::delete_vnf_in_aai::delete vnf instance[%s] in aai." % self.vnf_inst_id)
+        try:
+            # query vnf instance in aai, get resource_version
+            customer_info = query_vnf_aai(self.vnf_inst_id)
+            resource_version = customer_info["resource-version"]
 
-        # query vnf instance in aai, get resource_version
-        customer_info = query_vnf_aai(self.vnf_inst_id)
-        resource_version = customer_info["resource-version"]
-
-        # delete vnf instance from aai
-        resp_data, resp_status = delete_vnf_aai(self.vnf_inst_id, resource_version)
-        if resp_data:
-            logger.debug("Fail to delete vnf instance[%s] from aai, resp_status: [%s]."
-                         % (self.vnf_inst_id, resp_status))
-        else:
-            logger.debug(
-                "Success to delete vnf instance[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
+            # delete vnf instance from aai
+            resp_data, resp_status = delete_vnf_aai(self.vnf_inst_id, resource_version)
+            if resp_data:
+                logger.debug("Fail to delete vnf[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
+            else:
+                logger.debug(
+                    "Success to delete vnf[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
+        except NSLCMException as e:
+            logger.debug("Fail to delete vnf from aai[%s], detail message: %s" % (self.vnf_inst_id, e.message))
+        except:
+            logger.error(traceback.format_exc())
 
     def delete_vserver_in_aai(self):
         logger.debug("delete_vserver_in_aai start!")
+        try:
+            vm_inst_infos = VmInstModel.objects.filter(insttype=INST_TYPE.VNF, instid=self.vnf_inst_id)
+            for vm_inst_info in vm_inst_infos:
+                vserver_id = vm_inst_info.resouceid
+                vim_id = vm_inst_info.vimid
+                cloud_owner, cloud_region_id = split_vim_to_owner_region(vim_id)
+                # query vim_info from aai, get tenant
+                vim_info = get_vim_by_id(vim_id)
+                tenant_id = vim_info["tenant"]
 
-        vm_inst_infos = VmInstModel.objects.filter(insttype=INST_TYPE.VNF, instid=self.vnf_inst_id)
-        for vm_inst_info in vm_inst_infos:
-            vserver_id = vm_inst_info.resouceid
-            vim_id = vm_inst_info.vimid
-            cloud_owner, cloud_region_id = split_vim_to_owner_region(vim_id)
-            # query vim_info from aai, get tenant
-            vim_info = get_vim_by_id(vim_id)
-            tenant_id = vim_info["tenant"]
+                # query vserver instance in aai, get resource_version
+                vserver_info = query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id)
+                resource_version = vserver_info["resource-version"]
 
-            # query vserver instance in aai, get resource_version
-            vserver_info = query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id)
-            resource_version = vserver_info["resource-version"]
-
-            # delete vserver instance from aai
-            resp_data, resp_status = delete_vserver_aai(cloud_owner, cloud_region_id,
-                                                        tenant_id, vserver_id, resource_version)
-            if resp_data:
-                logger.debug("Fail to delete vserver instance[%s] from aai, resp_status: [%s]." %
-                             (vserver_id, resp_status))
-            else:
-                logger.debug(
-                    "Success to delete vserver instance[%s] from aai, resp_status: [%s]." %
-                    (vserver_id, resp_status))
-
-        logger.debug("delete_vserver_in_aai end!")
+                # delete vserver instance from aai
+                resp_data, resp_status = delete_vserver_aai(cloud_owner, cloud_region_id,
+                                                            tenant_id, vserver_id, resource_version)
+                if resp_data:
+                    logger.debug("Fail to delete vserver instance[%s] from aai, resp_status: [%s]." %
+                                 (vserver_id, resp_status))
+                else:
+                    logger.debug(
+                        "Success to delete vserver instance[%s] from aai, resp_status: [%s]." %
+                        (vserver_id, resp_status))
+            logger.debug("delete_vserver_in_aai end!")
+        except NSLCMException as e:
+            logger.debug("Fail to delete vserver from aai, detail message: %s" % e.message)
+        except:
+            logger.error(traceback.format_exc())
