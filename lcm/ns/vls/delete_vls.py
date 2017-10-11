@@ -15,9 +15,11 @@
 import logging
 import traceback
 
+from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import VLInstModel, VNFFGInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import resmgr, extsys
+from lcm.pub.msapi.aai import query_network_aai, delete_network_aai
 from lcm.pub.nfvi.vim import vimadaptor
 
 logger = logging.getLogger(__name__)
@@ -40,6 +42,8 @@ class DeleteVls(object):
             network_id = vl_inst_info[0].relatednetworkid
             self.delete_vl_from_vim(vim_id, subnetwork_id_list, network_id)
             self.delete_vl_from_resmgr()
+            if REPORT_TO_AAI:
+                self.delete_network_in_aai()
             self.delete_vl_from_db(vl_inst_info)
             return {"result": 0, "detail": "delete vl success"}
         except NSLCMException as e:
@@ -67,11 +71,6 @@ class DeleteVls(object):
             vim_api.delete_subnet(subnet_id=subnetwork_id)
         vim_api.delete_network(network_id=network_id)
 
-    def delete_vl_from_db(self, vl_inst_info):
-        # do_biz_with_share_lock("delete-vllist-in-vnffg-%s" % self.ns_inst_id, self.delete_vl_inst_id_in_vnffg)
-        self.delete_vl_inst_id_in_vnffg()
-        vl_inst_info.delete()
-
     def delete_vl_from_resmgr(self):
         resmgr.delete_vl(self.vl_inst_id)
 
@@ -83,3 +82,22 @@ class DeleteVls(object):
                     new_vl_id_list += old_vl_id + ","
             new_vl_id_list = new_vl_id_list[:-1]
             VNFFGInstModel.objects.filter(vnffginstid=vnffg_info.vnffginstid).update(vllist=new_vl_id_list)
+
+    def delete_network_in_aai(self):
+        logger.debug("DeleteVls::delete_network_in_aai::delete network[%s] in aai." % self.vl_inst_id)
+
+        # query network in aai, get resource_version
+        customer_info = query_network_aai(self.vl_inst_id)
+        resource_version = customer_info["resource-version"]
+
+        # delete network from aai
+        resp_data, resp_status = delete_network_aai(self.vl_inst_id, resource_version)
+        if resp_data:
+            logger.debug("Fail to delete network[%s] from aai, resp_status: [%s]." % (self.vl_inst_id, resp_status))
+        else:
+            logger.debug("Success to delete network[%s] from aai, resp_status: [%s]." % (self.vl_inst_id, resp_status))
+
+    def delete_vl_from_db(self, vl_inst_info):
+        # do_biz_with_share_lock("delete-vllist-in-vnffg-%s" % self.ns_inst_id, self.delete_vl_inst_id_in_vnffg)
+        self.delete_vl_inst_id_in_vnffg()
+        vl_inst_info.delete()
