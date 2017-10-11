@@ -43,9 +43,15 @@ class TestNsInstantiate(TestCase):
         r2_create_ns_to_aai = [0, json.JSONEncoder().encode({}), '201']
         mock_call_req.side_effect = [r1_query_nspackage_from_catalog, r2_create_ns_to_aai]
         data = {
+            'context': {
+                 "global-customer-id": "111111",
+                 "service-type": "network service"
+            },
+            'csarId': self.ns_package_id,
             'nsdid': self.nsd_id,
             'nsname': 'ns',
-            'description': 'description'}
+            'description': 'description'
+        }
         response = self.client.post("/api/nslcm/v1/ns", data=data)
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
 
