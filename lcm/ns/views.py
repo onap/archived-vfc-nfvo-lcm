@@ -33,6 +33,7 @@ from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
+from lcm.pub.msapi.catalog import query_csar_from_catalog
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +54,24 @@ class CreateNSView(APIView):
         logger.debug("Enter CreateNS: %s", request.data)
         if ignore_case_get(request.data, 'test') == "test":
             return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
+        context = ignore_case_get(request.data, 'context')
+        global_customer_id = ""
+        service_type = ""
+        if context:
+            global_customer_id = ignore_case_get(request.data, 'context')[0]
+            service_type = ignore_case_get(request.data, 'context')[1]
+        csar_id = ignore_case_get(request.data, 'csarId')
         nsd_id = ignore_case_get(request.data, 'nsdId')
+        if not nsd_id:
+            if csar_id:
+                nspkginfo = query_csar_from_catalog(csar_id)
+                if nspkginfo:
+                    nsd_id = nspkginfo["packageInfo"]["nsdId"]
         ns_name = ignore_case_get(request.data, 'nsName')
         description = ignore_case_get(request.data, 'description')
         try:
-            ns_inst_id = CreateNSService(nsd_id, ns_name, description).do_biz()
+            ns_inst_id = CreateNSService(csar_id, nsd_id, ns_name, global_customer_id, service_type,
+                                         description).do_biz()
         except Exception as e:
             logger.error("Exception in CreateNS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
