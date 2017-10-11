@@ -61,6 +61,7 @@ class CreateNSView(APIView):
         try:
             ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
         except Exception as e:
+            logger.error(traceback.format_exc())
             logger.error("Exception in CreateNS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
