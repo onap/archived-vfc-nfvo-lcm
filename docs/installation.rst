@@ -52,3 +52,12 @@ Steps
      docker run -i -t -d --name vfc_wfengine_mgrservice -p 8805:10550 -e SERVICE_IP=$OPENO_IP -e SERVICE_PORT=8805 \
      -e OPENPALETTE_MSB_IP=$OPENO_IP -e OPENPALETTE_MSB_PORT=80 $NEXUS_DOCKER_REPO/onap/vfc/wfengine-mgrservice:$DOCKER_IMAGE_VERSION
 
+- Install vfc-nfvo-resmanagement component.
+
+::
+
+  docker run -d --name vfc-resmanagement -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/resmanagement
+    
+  For testing, we can use curl command to access the swagger api.
+
+  curl http://${MSB_IP}:80/api/resmgr/v1/swagger.json
