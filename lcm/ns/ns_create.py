@@ -32,8 +32,8 @@ class CreateNSService(object):
         self.csar_id = csar_id
         self.ns_name = ns_name
         self.description = description
-        self.global_customer_id = ignore_case_get(context, 'global-customer-id')
-        self.service_type = ignore_case_get(context, 'service-type')
+        self.global_customer_id = ignore_case_get(context, 'globalCustomerId')
+        self.service_type = ignore_case_get(context, 'serviceType')
         self.ns_inst_id = ''
         self.ns_package_id = ''
 
