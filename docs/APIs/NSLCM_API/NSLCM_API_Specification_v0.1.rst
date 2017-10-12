@@ -569,11 +569,11 @@ NS LCM API
          "context":{
             "type": "object",
             "properties": {
-              "global-customer-id":{
+              "globalCustomerId":{
                  "type": "string",
                  "description": "the global customer id"
               },
-              "service-type":{
+              "serviceType":{
                  "type": "string",
                  "description": "service type"
               }
