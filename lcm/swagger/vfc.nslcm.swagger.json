@@ -264,7 +264,7 @@
             }
           }
         }
-      },      
+      },
       "delete": {
         "tags": [
           "ns"
@@ -329,12 +329,12 @@
       "properties": {
         "context":{
           "type": "object",
-           "properties": {          
-              "global-customer-id":{
+           "properties": {
+              "globalCustomerId":{
                  "type": "string",
                  "description": "the global customer id"
               },
-              "service-type":{
+              "serviceType":{
                  "type": "string",
                  "description": "service type"
               }
@@ -605,7 +605,7 @@
             "jobId": {
                "type": "string"
              },
-            "responseDescriptor": 
+            "responseDescriptor":
             {
                 "type":"object",
                 "properties": {
