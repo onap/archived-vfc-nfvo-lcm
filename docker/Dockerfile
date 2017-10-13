@@ -37,8 +37,7 @@ RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/m
 RUN sed -i "s|bind-address.*|# bind-address = 127.0.0.1|" /etc/mysql/my.cnf
 
 WORKDIR /service/vfc/nfvo/lcm
-RUN pip install --pre nfv-toscaparser
-RUN pip install -r requirements.txt
+RUN pip install --pre -r requirements.txt
 
 EXPOSE 8403
 EXPOSE 3306
