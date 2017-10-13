@@ -60,3 +60,106 @@ SERVICE_IP represents the docker run environment server address.
      docker run -i -t -d --name vfc_wfengine_mgrservice -p 8805:10550 -e SERVICE_IP=$OPENO_IP -e SERVICE_PORT=8805 
      -e OPENPALETTE_MSB_IP=$OPENO_IP -e OPENPALETTE_MSB_PORT=80 $NEXUS_DOCKER_REPO/onap/vfc/wfengine-mgrservice:$DOCKER_IMAGE_VERSION
 
+- Install vfc-nfvo-catalog component.
+
+::
+
+  docker run -d --name vfc-catalog -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/catalog
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/catalog/v1/swagger.json
+
+- Install vfc-nfvo-resmanagement component.
+
+::
+
+  docker run -d --name vfc-resmanagement -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/resmanagement
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/resmgr/v1/swagger.json
+
+- Install vfc-nfvo-resmanagement component.
+
+::
+
+  docker run -d --name vfc-resmanagement -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/resmanagement
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/resmgr/v1/swagger.json
+
+- Install vfc-nfvo-sfcdriver component.
+
+::
+
+  docker run -d --name vfc-ztesdncdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztesdncdriver
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/ztesdncdriver/v1/swagger
+
+- Install vfc-nfvo-emsdriver component.
+
+::
+
+  docker run -d --name vfc-emsdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/emsdriver
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/emsdriver/v1/swagger
+
+- Install vfc-gvnfm components.
+
+::
+
+  docker run -d --name vfc-vnflcm -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnflcm
+  docker run -d --name vfc-vnfmgr -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnfmgr
+  docker run -d --name vfc-vnfres -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnfres
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/vnflcm/v1/swagger.json
+  curl http://${MSB_IP}:80/api/vnfmgr/v1/swagger.json
+  curl http://${MSB_IP}:80/api/vnfres/v1/swagger.json
+
+- Install vfc-gvnfmdriver components.
+
+::
+
+  docker run -d --name vfc-gvnfmdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/gvnfmdriver
+  docker run -d --name vfc-jujudriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/jujudriver
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/gvnfmdriver/v1/swagger.json
+  curl http://${MSB_IP}:80/openoapi/jujuvnfm/v1/swagger.json
+
+- Install vfc-svnfmdriver components.
+
+::
+
+  docker run -d --name vfc-ztevmanagerdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztevmanagerdriver
+  docker run -d --name vfc-svnfm-huawei -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/huawei
+    
+For testing, we can use curl command to access the swagger api.
+
+::
+
+  curl http://${MSB_IP}:80/api/ztevmanagerdriver/v1/swagger.json
+  curl http://${MSB_IP}:80/api/hwvnfm/v1/swagger.json
