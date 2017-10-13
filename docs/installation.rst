@@ -15,10 +15,11 @@ Steps
 
 - Install MSB components.
   
-  VF-C components need to register to MSB when starting, so MSB components should be installed first, \
-  you can ref the following link to install MSB.
-  http://onap.readthedocs.io/en/latest/submodules/msb/apigateway.git/docs/platform/installation.html
-  Note: In the following steps, we use ${MSB_IP} as the IP of msb_apigateway component.
+VF-C components need to register to MSB when starting, so MSB components should be installed first, you can ref the following link to install MSB.
+
+http://onap.readthedocs.io/en/latest/submodules/msb/apigateway.git/docs/platform/installation.html
+
+Note: In the following steps, we use ${MSB_IP} as the IP of msb_apigateway component.
 
 - Install vfc-nfvo-lcm component.
 
@@ -34,22 +35,22 @@ For testing, we can use curl command to access the swagger api.
 
 - Install vfc-nfvo-wfengine components.
 
-  Totally, there are two docker images should be installed before you can use the workflow normally, \
-  one is wfengine-activiti for manage the original activiti service, the other is for manage engine service.
+Totally, there are two docker images should be installed before you can use the workflow normally, \
+one is wfengine-activiti for manage the original activiti service, the other is for manage engine service.
 
 
-  1. Pull related docker images
+1. Pull related docker images
 
 ::
 
     docker pull $NEXUS_DOCKER_REPO/onap/vfc/wfengine-activiti:$DOCKER_IMAGE_VERSION
     docker pull $NEXUS_DOCKER_REPO/onap/vfc/wfengine-mgrservice:$DOCKER_IMAGE_VERSION
 
-  2. Run the two docker images 
+2. Run the two docker images 
      
-     The first container is wfengine-activiti,there are some parameters should be injected into container. \
-     OPENPALETTE_MSB_IP represents msb server address and OPENPALETTE_MSB_PORT is the relative port, \
-     SERVICE_IP represents the docker run environment server address. 
+The first container is wfengine-activiti,there are some parameters should be injected into container. \
+OPENPALETTE_MSB_IP represents msb server address and OPENPALETTE_MSB_PORT is the relative port, \
+SERVICE_IP represents the docker run environment server address. 
 
 ::
 
