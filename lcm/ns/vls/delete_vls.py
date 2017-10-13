@@ -43,7 +43,7 @@ class DeleteVls(object):
             self.delete_vl_from_vim(vim_id, subnetwork_id_list, network_id)
             self.delete_vl_from_resmgr()
             if REPORT_TO_AAI:
-                self.delete_network_in_aai()
+                self.delete_network_and_subnet_in_aai()
             self.delete_vl_from_db(vl_inst_info)
             return {"result": 0, "detail": "delete vl success"}
         except NSLCMException as e:
@@ -83,7 +83,7 @@ class DeleteVls(object):
             new_vl_id_list = new_vl_id_list[:-1]
             VNFFGInstModel.objects.filter(vnffginstid=vnffg_info.vnffginstid).update(vllist=new_vl_id_list)
 
-    def delete_network_in_aai(self):
+    def delete_network_and_subnet_in_aai(self):
         logger.debug("DeleteVls::delete_network_in_aai::delete network[%s] in aai." % self.vl_inst_id)
 
         # query network in aai, get resource_version
