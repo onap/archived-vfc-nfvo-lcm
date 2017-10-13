@@ -46,8 +46,8 @@ class TestNsInstantiate(TestCase):
         mock_call_req.side_effect = [r1_query_nspackage_from_catalog, r2_create_ns_to_aai]
         data = {
             "context": {
-                "global-customer-id": "global-customer-id-test1",
-                "service-type": "service-type-test1"
+                "globalCustomerId": "global-customer-id-test1",
+                "serviceType": "service-type-test1"
             },
             "csarId": self.nsd_id,
             "nsName": "ns",
