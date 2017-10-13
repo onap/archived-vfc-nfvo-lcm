@@ -196,37 +196,42 @@ class CreateVls(object):
 
     def create_network_and_subnet_in_aai(self):
         logger.debug("CreateVls::create_network_in_aai::report network[%s] to aai." % self.vl_inst_id)
-        data = {
-            "network-id": self.vl_inst_id,
-            "network-name": self.vl_inst_name,
-            "is-bound-to-vpn": False,
-            "is-provider-network": True,
-            "is-shared-network": True,
-            "is-external-network": True,
-            "subnets": {
-                "subnet": [
-                    {
-                        "subnet-id": self.related_subnetwork_id,
-                        "dhcp-enabled": False
-                    }
-                ]
-            },
-            "relationship-list": {
-                "relationship": [
-                    {
-                        "related-to": "generic-vnf",
-                        "relationship-data": [
-                            {
-                                "relationship-key": "generic-vnf.vnf-id",
-                                "relationship-value": self.owner_id
-                            }
-                        ]
-                    }
-                ]
+        try:
+            data = {
+                "network-id": self.vl_inst_id,
+                "network-name": self.vl_inst_name,
+                "is-bound-to-vpn": False,
+                "is-provider-network": True,
+                "is-shared-network": True,
+                "is-external-network": True,
+                "subnets": {
+                    "subnet": [
+                        {
+                            "subnet-id": self.related_subnetwork_id,
+                            "dhcp-enabled": False
+                        }
+                    ]
+                },
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "generic-vnf",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "generic-vnf.vnf-id",
+                                    "relationship-value": self.owner_id
+                                }
+                            ]
+                        }
+                    ]
+                }
             }
-        }
-        resp_data, resp_status = create_network_aai(self.vl_inst_id, data)
-        if resp_data:
-            logger.debug("Fail to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
-        else:
-            logger.debug("Success to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
+            resp_data, resp_status = create_network_aai(self.vl_inst_id, data)
+            if resp_data:
+                logger.debug("Fail to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
+            else:
+                logger.debug("Success to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
+        except NSLCMException as e:
+            logger.debug("Fail to create network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.message))
+        except:
+            logger.error(traceback.format_exc())

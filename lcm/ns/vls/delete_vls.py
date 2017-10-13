@@ -85,17 +85,23 @@ class DeleteVls(object):
 
     def delete_network_and_subnet_in_aai(self):
         logger.debug("DeleteVls::delete_network_in_aai::delete network[%s] in aai." % self.vl_inst_id)
+        try:
+            # query network in aai, get resource_version
+            customer_info = query_network_aai(self.vl_inst_id)
+            resource_version = customer_info["resource-version"]
 
-        # query network in aai, get resource_version
-        customer_info = query_network_aai(self.vl_inst_id)
-        resource_version = customer_info["resource-version"]
-
-        # delete network from aai
-        resp_data, resp_status = delete_network_aai(self.vl_inst_id, resource_version)
-        if resp_data:
-            logger.debug("Fail to delete network[%s] from aai, resp_status: [%s]." % (self.vl_inst_id, resp_status))
-        else:
-            logger.debug("Success to delete network[%s] from aai, resp_status: [%s]." % (self.vl_inst_id, resp_status))
+            # delete network from aai
+            resp_data, resp_status = delete_network_aai(self.vl_inst_id, resource_version)
+            if resp_data:
+                logger.debug("Fail to delete network[%s] from aai, resp_status: [%s]."
+                             % (self.vl_inst_id, resp_status))
+            else:
+                logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
+                             % (self.vl_inst_id, resp_status))
+        except NSLCMException as e:
+            logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.message))
+        except:
+            logger.error(traceback.format_exc())
 
     def delete_vl_from_db(self, vl_inst_info):
         # do_biz_with_share_lock("delete-vllist-in-vnffg-%s" % self.ns_inst_id, self.delete_vl_inst_id_in_vnffg)
