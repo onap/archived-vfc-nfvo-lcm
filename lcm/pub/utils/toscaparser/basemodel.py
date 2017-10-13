@@ -21,6 +21,7 @@ import re
 import shutil
 import urllib
 
+import paramiko
 from toscaparser.functions import GetInput
 from toscaparser.tosca_template import ToscaTemplate
 
@@ -120,16 +121,16 @@ class BaseInfoModel(object):
         return localFileName
 
     def sftp_get(self, userName, userPwd, hostIp, hostPort, remoteFileName, localFileName):
-        return
-        # t = None
-        # try:
-        #     t = paramiko.Transport(hostIp, int(hostPort))
-        #     t.connect(username=userName, password=userPwd)
-        #     sftp = paramiko.SFTPClient.from_transport(t)
-        #     sftp.get(remoteFileName, localFileName)
-        # finally:
-        #     if t is not None:
-        #         t.close()
+        # return
+        t = None
+        try:
+            t = paramiko.Transport(hostIp, int(hostPort))
+            t.connect(username=userName, password=userPwd)
+            sftp = paramiko.SFTPClient.from_transport(t)
+            sftp.get(remoteFileName, localFileName)
+        finally:
+            if t is not None:
+                t.close()
 
     def ftp_get(self, userName, userPwd, hostIp, hostPort, remoteFileName, localFileName):
         f = None
