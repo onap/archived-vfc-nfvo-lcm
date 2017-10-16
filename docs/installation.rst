@@ -8,7 +8,15 @@ Describe the environment and steps to install VF-C components.
 
 Environment
 +++++++++++
-VF-C components can run as docker, docker server should be installed before install VF-C components.
+VF-C components can run as docker, docker service should be installed before install VF-C components.
+
+The following scripts show the docker service install commands in centos7.
+
+::
+
+  yum install docker
+  systemctl enable docker.service
+  systemctl start docker.service
 
 Steps
 +++++
