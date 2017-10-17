@@ -60,17 +60,22 @@ class BaseInfoModel(object):
     def _create_tosca_template(self, file_name, valid_params):
         tosca_tpl = None
         try:
-            tosca_tpl = ToscaTemplate(file_name, valid_params)
-            print "-----------------------------"
-            print '\n'.join(['%s:%s' % item for item in tosca_tpl.__dict__.items()])
-            print "-----------------------------"
-            return tosca_tpl
+            tosca_tpl = ToscaTemplate(path=file_name,
+                                      parsed_params=valid_params,
+                                      no_required_paras_check=True,
+                                      debug_mode=True)
+        except Exception as e:
+            print e.message
         finally:
             if tosca_tpl is not None and hasattr(tosca_tpl, "temp_dir") and os.path.exists(tosca_tpl.temp_dir):
                 try:
                     shutil.rmtree(tosca_tpl.temp_dir)
-                except Exception as e:
+                except Exception, e:
                     logger.error("Failed to create tosca template, error: %s", e.message)
+            print "-----------------------------"
+            print '\n'.join(['%s:%s' % item for item in tosca_tpl.__dict__.items()])
+            print "-----------------------------"
+            return tosca_tpl
 
     def _check_download_file(self, path):
         if (path.startswith("ftp") or path.startswith("sftp")):
@@ -217,7 +222,8 @@ class BaseInfoModel(object):
         return None
 
     def isVnf(self, node):
-        return node['nodeType'].upper().find('.VNF.') >= 0 or node['nodeType'].upper().endswith('.VNF')
+        # return node['nodeType'].upper().find('.VNF.') >= 0 or node['nodeType'].upper().endswith('.VNF')
+        return node['nodeType'].upper().find('.VF.') >= 0 or node['nodeType'].upper().endswith('.VF')
 
     def isPnf(self, node):
         return node['nodeType'].upper().find('.PNF.') >= 0 or node['nodeType'].upper().endswith('.PNF')
