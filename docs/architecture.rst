@@ -13,6 +13,13 @@ Following is the VF-C architecture.
    :width: 5.97047in
    :height: 5.63208in
    
-VF-C includes two components: NFVO and GVNFM
+   
+VF-C as one controller in ONAP includes two components NFV-O and GVNFM. 
 
-VF-C has many dependencies with other projects,such as SO,Policy,A&AI,SDC,DCAE,Multi-cloud and so on.
+For NFV-O, it provides north bound interface to SO to take part in fulfilling the orchestration and operation of end2end service.and provides standard south bound interface to VNFMs. 
+
+For GVNFM, it provides LCM for VNFs which do not require a vendor VNFM and works with NFV-O component to take part in fulfilling the LCM of NS.
+
+In addition, VF-C provides interface to Policy and works with DCAE for Close Loop Automation.
+   
+As you can see in this picture,VF-C has many dependencies with other projects,such as SO,Policy,A&AI,SDC,DCAE,Multi-cloud and so on.
