@@ -126,7 +126,7 @@ For testing, we can use curl command to access the swagger api.
 
 ::
 
-  curl http://${MSB_IP}:80/api/emsdriver/v1/swagger
+  curl http://${MSB_IP}:80/api/emsdriver/v1/swagger.json
 
 - Install vfc-gvnfm components.
 

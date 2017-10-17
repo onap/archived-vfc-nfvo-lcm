@@ -566,19 +566,31 @@ NS LCM API
        "type": "object",
 
        "properties": {
+
          "context":{
+
             "type": "object",
+
             "properties": {
+
               "globalCustomerId":{
+
                  "type": "string",
                  "description": "the global customer id"
+
               },
+
               "serviceType":{
                  "type": "string",
+
                  "description": "service type"
+
               }
+
             }
+
          },
+
          "csarId": {
 
            "type": "string",
