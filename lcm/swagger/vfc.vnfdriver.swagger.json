@@ -595,6 +595,21 @@
         }
       }
     },
+    "ResourceChange" : {
+       "type": "object",
+       "properties": {
+         "type": {
+           "type": "string",
+           "description": " The value should be VDU,VL,CP,Strorage."
+         },
+         "resourceDefinitionId": {
+           "type": "string"
+         },
+         "vdu": {
+           "type": "string"
+         }
+       }
+    },
     "GrantVNFRequest": {
       "type": "object",
       "properties": {
@@ -612,33 +627,15 @@
           "type": "string"
         },
         "addResource": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "description": " The value should be VDU,VL,CP,Strorage."
-            },
-            "resourceDefinitionId": {
-              "type": "string"
-            },
-            "vdu": {
-              "type": "string"
-            }
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResourceChange"
           }
         },
         "removeResource": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "description": " The value should be VDU,VL,CP,Strorage."
-            },
-            "resourceDefinitionId": {
-              "type": "string"
-            },
-            "vdu": {
-              "type": "string"
-            }
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResourceChange"
           }
         },
         "additionalParam": {
