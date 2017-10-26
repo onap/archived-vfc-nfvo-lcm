@@ -19,7 +19,6 @@ import traceback
 from requests import RequestException
 
 from lcm.pub.nfvi.vim.lib.syscomm import fun_name
-from lcm.pub.nfvi.vim import const
 from lcm.pub.nfvi.vim.lib.vimexception import VimException
 
 logger = logging.getLogger(__name__)
@@ -35,11 +34,8 @@ class VimAdaptor:
     def create_api(self, connectInfo):
         vimtype = connectInfo['vimtype'] if 'vimtype' in connectInfo else None
         logger.info("call %s, vimtype=%s" % (fun_name(), vimtype))
-        if vimtype in (const.VIM_OPENSTACK, const.VIM_VMWARE):
-            from lcm.pub.nfvi.vim.api.multivim.api import MultiVimApi
-            self.apiImpl = MultiVimApi()
-        else:
-            self.authInfo = [1, "Unsupported vimtype(%s)" % vimtype]
+        from lcm.pub.nfvi.vim.api.multivim.api import MultiVimApi
+        self.apiImpl = MultiVimApi()
 
     def api_call(self, funname, fun, *args):
         logger.info("call %s%s" % (funname, str(args)))
