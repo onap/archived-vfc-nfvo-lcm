@@ -698,6 +698,186 @@
         }
       }
     },
+    "VnfNotificationType": {
+      "description": "The type of the notification",
+      "type": "string",
+      "enum": [
+        "added",
+        "removed",
+        "modified"
+      ]
+    },
+    "AffectedVnfc": {
+       "type": "object",
+       "properties": {
+         "vnfcInstanceId": {
+           "type": "string",
+           "description": "Identifier of the VNFC instance"
+         },
+         "vduId": {
+           "type": "string",
+           "description": "Identifier of the VDU in the VNFD"
+         },
+         "changeType": {
+           "$ref": "#/definitions/VnfNotificationType",
+           "description": "The type of the change"
+         },
+         "vimid": {
+           "type": "string",
+           "description": "Identifier of vim"
+         },
+         "vmid": {
+           "type": "string",
+           "description": "Identifier of virtual machine"
+         },
+         "vmname": {
+           "type": "string",
+           "description": "Name of virtual machine"
+         }
+       }
+    },
+    "AffectedVirtualLinkType": {
+      "description": "The type of the affected virtual link",
+      "type": "string",
+      "enum": [
+        "network",
+        "port"
+      ]
+    },
+    "AffectedVirtualLink":{
+       "type": "object",
+       "properties": {
+         "vlInstanceId": {
+           "type": "string",
+           "description": "Identifier of the VL instance"
+         },
+         "vldid": {
+           "type": "string",
+           "description": "Identifier of the VLD in the VNFD"
+         },
+         "changeType": {
+           "$ref": "#/definitions/VnfNotificationType",
+           "description": "The type of the change"
+         },
+         "networkResource": {
+           "type": "object",
+           "description": "network Resource",
+           "properties": {
+             "resourceType": {
+               "$ref": "#/definitions/AffectedVirtualLinkType",
+               "description": "Must be network"
+             },
+             "resourceId": {
+               "type": "string",
+               "description": "Identifier of the resource in the scope of the VIM"
+             },
+             "resourceName": {
+               "type": "string",
+               "description": "Resource name in the vim"
+             }
+           }
+         }
+       }
+    },
+    "VnfCpNotificationType": {
+      "description": "The type of the notification for connection points",
+      "type": "string",
+      "enum": [
+        "added",
+        "removed",
+        "changed"
+      ]
+    },
+    "AffectedCp":{
+       "type": "object",
+       "properties": {
+         "virtualLinkInstanceId": {
+           "type": "string",
+           "description": "Identifier of the VL instance"
+         },
+         "cpinstanceid": {
+           "type": "string",
+           "description": "Identifier of the connection point"
+         },
+         "cpdid": {
+           "type": "string",
+           "description": "Identifier of the connection point in the VNFD"
+         },
+         "ownerType": {
+           "type": "string",
+           "description": "The type of the owner."
+         },
+         "ownerId": {
+           "type": "string",
+           "description": "Identifier of the owner. Mandatory if ownerType is specified."
+         },
+         "changeType": {
+           "$ref": "#/definitions/VnfCpNotificationType",
+           "description": "The type of the change"
+         },
+         "portResource": {
+           "type": "object",
+           "description": "port Resource",
+           "properties": {
+             "vimid": {
+               "type": "string",
+               "description": "Identifier of the VIM"
+             },
+             "resourceid": {
+               "type": "string",
+               "description": "Identifier of the resource in the scope of the VIM"
+             },
+             "resourceName": {
+               "type": "string",
+               "description": "Resource name in the vim"
+             },
+             "tenant": {
+               "type": "string",
+               "description": "The identifier of the tenant"
+             },
+             "ipAddress": {
+               "type": "string",
+               "description": "The IP address of the port"
+             },
+             "instId": {
+               "type": "string",
+               "description": "The instance id of the server to which the port is attached to"
+             }
+           }
+         }
+       }
+    },
+    "AffectedVirtualStorage" : {
+       "type": "object",
+       "properties": {
+         "vsInstanceId": {
+           "type": "string",
+           "description": "Identifier of the virtual storage instance"
+         },
+         "vsdId": {
+           "type": "string",
+           "description": "Identifier of the virtual storage descriptor"
+         },
+         "changeType": {
+           "$ref": "#/definitions/VnfNotificationType",
+           "description": "The type of the change"
+         },
+         "storageResource": {
+           "type": "object",
+           "description": "storage Resource",
+           "properties": {
+             "resourceId": {
+               "type": "string",
+               "description": "Identifier of the resource in the scope of the VIM"
+             },
+             "resourceName": {
+               "type": "string",
+               "description": "Resource name in the vim"
+             }
+           }
+         }
+       }
+     },
     "VNFLCMNotification": {
       "type": "object",
       "properties": {
@@ -714,102 +894,31 @@
           "type": "string"
         },
         "affectedVnfc": {
-          "type": "object",
-          "properties": {
-            "vnfcInstanceId": {
-              "type": "string",
-              "description": "Identifier of the VNFC instance"
-            },
-            "vduId": {
-              "type": "string",
-              "description": "Identifier of the VDU in the VNFD"
-            },
-            "changeType": {
-              "type": "string",
-              "description": "Signals the type of change: added,removed, modified"
-            },
-            "vimid": {
-              "type": "string",
-              "description": "Identifier of vim"
-            },
-            "vmid": {
-              "type": "string",
-              "description": "Identifier of virtual machine"
-            },
-            "vmname": {
-              "type": "string",
-              "description": "Name of virtual machine"
-            }
+          "type": "array",
+          "description": "The affected VNFCs",
+          "items": {
+            "$ref": "#/definitions/AffectedVnfc"
+          }
+        },
+        "affectedCp": {
+          "type": "array",
+          "description": "The affected VNFCs",
+          "items": {
+            "$ref": "#/definitions/AffectedVnfc"
           }
         },
         "affectedVl": {
-          "type": "object",
-          "properties": {
-            "vlInstanceId": {
-              "type": "string",
-              "description": "Identifier of the VL instance"
-            },
-            "vldid": {
-              "type": "string",
-              "description": "Identifier of the VLD in the VNFD"
-            },
-            "changeType": {
-              "type": "string",
-              "description": "Signals the type of change: vl_added,vl_removed,vl_modified"
-            },
-            "networkResource": {
-              "type": "object",
-              "description": "storage Resource",
-              "properties": {
-                "resourceType": {
-                  "type": "string",
-                  "description": "The value should be vm,volume,network,port"
-                },
-                "resourceId": {
-                  "type": "string",
-                  "description": "Identifier of the resource in the scope of the VIM"
-                },
-                "resourceName": {
-                  "type": "string",
-                  "description": "Resource name in the vim"
-                }
-              }
-            }
+          "type": "array",
+          "description": "The affected virtual links",
+          "items": {
+            "$ref": "#/definitions/AffectedVirtualLink"
           }
         },
         "affectedVirtualStorage": {
-          "type": "object",
-          "properties": {
-            "vsInstanceId": {
-              "type": "string",
-              "description": "Identifier of the VL instance"
-            },
-            "vsdId": {
-              "type": "string",
-              "description": "Identifier of the VLD in the VNFD"
-            },
-            "changeType": {
-              "type": "string",
-              "description": "Signals the type of change: vl_added,vl_removed,vl_modified"
-            },
-            "storageResource": {
-              "type": "object",
-              "description": "storage Resource",
-              "properties": {
-                "resourceType": {
-                  "type": "string",
-                  "description": "The value should be vm,volume,network,port"
-                },
-                "resourceId": {
-                  "type": "string",
-                  "description": "Identifier of the resource in the scope of the VIM"
-                },
-                "resourceName": {
-                  "type": "string",
-                  "description": "Resource name in the vim"
-                }
-              }
-            }
+          "type": "array",
+          "description": "The affected virtual storages. (Not supported)",
+          "items": {
+            "$ref": "#/definitions/AffectedVirtualStorage"
           }
         }
       }
