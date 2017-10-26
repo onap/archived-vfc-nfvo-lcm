@@ -53,9 +53,9 @@ def run_ns_instantiate(input_data):
     nsd_json = ignore_case_get(input_data, "object_context")
     ns_param_json = ignore_case_get(input_data, "object_additionalParamForNs")
     vnf_param_json = ignore_case_get(input_data, "object_additionalParamForVnf")
-    vl_count = ignore_case_get(input_data, "vlCount")
-    vnf_count = ignore_case_get(input_data, "vnfCount")
-    sfc_count = ignore_case_get(input_data, "sfcCount")
+    vl_count = int(ignore_case_get(input_data, "vlCount", 0))
+    vnf_count = int(ignore_case_get(input_data, "vnfCount", 0))
+    sfc_count = int(ignore_case_get(input_data, "sfcCount", 0))
     sdnc_id = ignore_case_get(input_data, "sdnControllerId")
     g_jobs_status[job_id] = [1 for i in range(vnf_count)]
     try:
