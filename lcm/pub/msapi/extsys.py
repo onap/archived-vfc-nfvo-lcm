@@ -142,7 +142,7 @@ def convert_vnfm_info(vnfm_info_aai):
 
 
 def select_vnfm(vnfm_type, vim_id):
-    uri = "/external-system/esr-vnfm-list?depth=all"
+    uri = "/external-system/esr-vnfm-list"
     ret = call_aai(uri, "GET")
     if ret[0] > 0:
         logger.error("Failed to call %s: %s", uri, ret[1])
@@ -150,11 +150,9 @@ def select_vnfm(vnfm_type, vim_id):
     vnfms = json.JSONDecoder().decode(ret[1])
     vnfms = ignore_case_get(vnfms, "esr-vnfm")
     for vnfm in vnfms:
-        esr_system_info = ignore_case_get(vnfm, "esr-system-info")
-        type = ignore_case_get(esr_system_info, "type")
-        vimId = vnfm["vnfm-id"]
-        if type == vnfm_type and vimId == vim_id:
-            # convert vnfm_info_aai to internal vnfm_info
-            vnfm = convert_vnfm_info(vnfm)
-            return vnfm
+        vnfm_info = get_vnfm_by_id(vnfm.get("vnfm-id"))
+        vnfmtype = ignore_case_get(vnfm_info, "type")
+        vimid = ignore_case_get(vnfm_info, "vimId")
+        if vnfmtype == vnfm_type and vimid == vim_id:
+            return vnfm_info
     raise NSLCMException('No vnfm found with %s in vim(%s)' % (vnfm_type, vim_id))
