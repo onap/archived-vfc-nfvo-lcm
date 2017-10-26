@@ -27,7 +27,8 @@ def parse_nsd(csar_id, input_parameters=[]):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to parsernsd of CSAR(%s) from catalog." % csar_id)
-    return json.JSONDecoder().decode(ret[1])
+    ns_model = json.JSONDecoder().decode(ret[1])
+    return ns_model.get("model")
 
 
 def parse_vnfd(csar_id, input_parameters=[]):
@@ -36,7 +37,8 @@ def parse_vnfd(csar_id, input_parameters=[]):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to parse_vnfd of CSAR(%s) from catalog." % csar_id)
-    return json.JSONDecoder().decode(ret[1])
+    vnf_model = json.JSONDecoder().decode(ret[1])
+    return vnf_model.get("model")
 
 
 def query_nspackage_by_id(csar_id):
