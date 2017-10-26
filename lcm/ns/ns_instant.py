@@ -127,18 +127,20 @@ class InstantNSService(object):
                                    service_def_id=service_tpl['csarId'],
                                    template_name=service_tpl['templateName'],
                                    template_id=service_tpl['serviceTemplateId']).save()
+
+                for key, val in self.req_data['additionalParamForNs'].items():
+                    InputParamMappingModel(service_id=self.ns_inst_id, 
+                                           input_key=key, 
+                                           input_value=val).save()
+
+                for vnffg in ignore_case_get(plan_dict, "vnffgs"):
+                    VNFFGInstModel(vnffgdid=vnffg["vnffg_id"],
+                                   vnffginstid=str(uuid.uuid4()),
+                                   nsinstid=self.ns_inst_id,
+                                   endpointnumber=0).save()
             else:
                 # TODO:
                 pass
-
-            for key, val in self.req_data['additionalParamForNs'].items():
-                InputParamMappingModel(service_id=self.ns_inst_id, input_key=key, input_value=val).save()
-
-            for vnffg in ignore_case_get(plan_dict, "vnffgs"):
-                VNFFGInstModel(vnffgdid=vnffg["vnffg_id"],
-                               vnffginstid=str(uuid.uuid4()),
-                               nsinstid=self.ns_inst_id,
-                               endpointnumber=0).save()
 
             if WORKFLOW_OPTION == "wso2":
                 return self.start_wso2_workflow(job_id, ns_inst, plan_input)
