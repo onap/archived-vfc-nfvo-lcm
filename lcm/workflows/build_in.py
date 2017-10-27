@@ -124,7 +124,7 @@ def create_vnf(ns_inst_id, vnf_index, nf_param):
     data = json.JSONEncoder().encode({
         "nsInstanceId": ns_inst_id,
         "vnfIndex": vnf_index,
-        "additionalParamForVnf": nf_param
+        "additionalParamForVnf": json.JSONDecoder().decode(nf_param)
     })
 
     ret = restcall.req_by_msb(uri, "POST", data)
