@@ -28,7 +28,6 @@ from lcm.pub.msapi import sdc_run_catalog
 from lcm.pub.msapi.catalog import get_process_id, query_rawdata_from_catalog
 from lcm.pub.msapi.catalog import get_servicetemplate_id, get_servicetemplate
 from lcm.pub.msapi.extsys import select_vnfm
-from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.msapi.wso2bpel import workflow_run
 from lcm.pub.utils import toscautil
 from lcm.pub.utils.jobutil import JobUtil
@@ -79,9 +78,10 @@ class InstantNSService(object):
             for vnf in ignore_case_get(plan_dict, "vnfs"):
                 vnfd_id = vnf['properties']['id']
                 # vnfd = NfPackageModel.objects.get(vnfdid=vnfd_id)
-                vnfpackage_info = query_vnfpackage_by_id(vnfd_id)
-                vnfd_model = json.JSONDecoder().decode(ignore_case_get(vnfpackage_info["packageInfo"], "vnfdModel"))
-                vnfm_type = vnfd_model["metadata"].get("vnfmType", "ztevmanagerdriver")
+                # vnfpackage_info = query_vnfpackage_by_id(vnfd_id)
+                # vnfd_model = json.JSONDecoder().decode(ignore_case_get(vnfpackage_info["packageInfo"], "vnfdModel"))
+                # vnfm_type = vnfd_model["metadata"].get("vnfmType", "ztevmanagerdriver")
+                vnfm_type = vnf['properties'].get("nf_type", "ztevmanagerdriver")
                 vimid = self.get_vnf_vim_id(vim_id, location_constraints, vnfd_id)
                 vnfm_info = select_vnfm(vnfm_type=vnfm_type, vim_id=vimid)
                 params_vnf.append({
