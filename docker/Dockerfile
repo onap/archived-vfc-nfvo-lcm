@@ -30,7 +30,7 @@ ADD . /service
 WORKDIR /service
 
 # get binary zip from nexus - vfc-nfvo-lcm
-RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.lcm&a=vfc-nfvo-lcm&v=LATEST&e=zip' && \
+RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=staging&g=org.onap.vfc.nfvo.lcm&a=vfc-nfvo-lcm&v=LATEST&e=zip' && \
     unzip vfc-nfvo-lcm.zip && \
     rm -rf vfc-nfvo-lcm.zip
 
