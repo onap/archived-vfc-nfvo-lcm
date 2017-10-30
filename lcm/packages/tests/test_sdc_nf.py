@@ -316,9 +316,18 @@ class TestNfPackage(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual({"csars": [{"csarId": "3", "vnfdId": "4"}]}, resp.data)
 
-    def test_nf_pkg_get_one(self):
+    @mock.patch.object(restcall, 'call_req')
+    def test_nf_pkg_get_one(self, mock_call_req):
         NfPackageModel(uuid="4", nfpackageid="4", vnfdid="5", vendor="6", vnfdversion="7", vnfversion="8").save()
         NfInstModel(nfinstid="1", package_id="4", nf_name="3").save()
+        mock_call_req.return_value = [0, json.JSONEncoder().encode([{
+            "packageInfo": {
+                "vnfdId": "5",
+                "vnfdProvider": "6",
+                "vnfdVersion": "7",
+                "vnfVersion": "8"
+            }
+        }]), '200']
 
         resp = self.client.get("/api/nslcm/v1/vnfpackage/4")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
