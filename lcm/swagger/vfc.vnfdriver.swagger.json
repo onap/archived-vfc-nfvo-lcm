@@ -610,6 +610,19 @@
          }
        }
     },
+    "OperationType" : {
+      "description": "The type of operation",
+      "type": "string",
+      "enum": [
+        "Terminal",
+        "Instantiate",
+        "Scalein",
+        "Scaleout",
+        "Scaledown",
+        "Scaleup",
+        "Heal"
+      ]
+    },
     "GrantVNFRequest": {
       "type": "object",
       "properties": {
@@ -620,8 +633,8 @@
           "type": "string"
         },
         "lifecycleOperation": {
-          "type": "string",
-          "description": "The value should be Instantiate,Scaleout,Scalein,Scaleup,Scaledown, Heal, Terminal"
+          "description" : "The type of the operation.",
+          "$ref": "#/definitions/OperationType"
         },
         "jobId": {
           "type": "string"
@@ -850,19 +863,30 @@
     "AffectedVirtualStorage" : {
        "type": "object"
      },
-    "VNFLCMNotification": {
+   "VnfLcmNotificationStatus" : {
+      "description": "The status of the operation",
+      "type": "string",
+      "enum": [
+        "result",
+        "start"
+      ]
+    },
+   "VNFLCMNotification": {
       "type": "object",
       "properties": {
         "status": {
-          "type": "string"
+          "description" : "The status of the operation that triggered the LCN.",
+          "$ref": "#/definitions/VnfLcmNotificationStatus"
         },
         "vnfInstanceId": {
           "type": "string"
         },
         "operation": {
-          "type": "string"
+          "description" : "The type of the operation that tiggered the LCN.",
+          "$ref": "#/definitions/OperationType"
         },
         "jobId": {
+          "description" : "The identifier fo the job that triggered the LCN.",
           "type": "string"
         },
         "affectedVnfc": {
@@ -950,12 +974,20 @@
         }
       }
     },
+    "ScaleDirection" : {
+      "description": "The direction of the scaling",
+      "type": "string",
+      "enum": [
+        "SCALE_IN",
+        "SCALE_OUT"
+      ]
+    },
     "VnfScaleRequest":{
       "type": "object",
       "properties": {
         "type": {
-          "type": "string",
-          "description": "The VNF scale type value should be SCALE_OUT, SCALE_IN"
+          "description" : "The direction of the scaling.",
+          "$ref": "#/definitions/ScaleDirection"
         },
         "aspectId":{
           "type": "string",
@@ -993,15 +1025,25 @@
         }
       }
     },
+    "VnfTerminationType": {
+      "description": "The type of the termination.",
+      "type": "string",
+      "enum": [
+        "graceful",
+        "forceful"
+      ]
+    },
     "VnfTerminateRequest":{
       "type": "object",
       "properties": {
         "terminationType": {
-          "type": "string"
+          "description" : "The type of the termination",
+          "$ref": "#/definitions/VnfTerminationType"
         },
         "gracefulTerminationTimeout": {
+          "desciption" : "The time interval(second) to wait for the VNF to be taken out of service during graceful termination.",
           "type": "string"
-        }        
+        }
       }      
     },
     "JobInfo": {
