@@ -131,6 +131,7 @@ class CreateVnfs(Thread):
         nfpackage_info = query_vnfpackage_by_id(self.vnfd_id)
         self.nf_package_info = nfpackage_info["packageInfo"]
         self.vnfd_model = ignore_case_get(self.nf_package_info, "vnfdModel")
+        self.vnfd_model = json.loads(self.vnfd_model)
 
     def get_virtual_link_info(self, vnf_id):
         virtual_link_list, ext_virtual_link = [], []
