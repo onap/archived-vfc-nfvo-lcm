@@ -22,7 +22,7 @@ import traceback
 from lcm.pub.config.config import CATALOG_ROOT_PATH
 from lcm.pub.database.models import NfPackageModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import sdc
+from lcm.pub.msapi import sdc, sdc_run_catalog
 from lcm.pub.utils import fileutil
 from lcm.pub.utils import toscaparser
 from lcm.pub.utils.jobutil import JobUtil
@@ -204,6 +204,7 @@ class SdcNfPackage(object):
         return [0, csars]
 
     def get_csar(self, csar_id):
+        """
         pkg_info = {}
         nf_pkg = NfPackageModel.objects.filter(nfpackageid=csar_id)
         if nf_pkg:
@@ -211,6 +212,9 @@ class SdcNfPackage(object):
             pkg_info["vnfdProvider"] = nf_pkg[0].vendor
             pkg_info["vnfdVersion"] = nf_pkg[0].vnfdversion
             pkg_info["vnfVersion"] = nf_pkg[0].vnfversion
+        """
+        nf_pkg = sdc_run_catalog.query_vnfpackage_by_id(csar_id)
+        pkg_info = nf_pkg["packageInfo"]
 
         vnf_insts = NfInstModel.objects.filter(package_id=csar_id)
         vnf_inst_info = [{"vnfInstanceId": vnf_inst.nfinstid,
