@@ -33,7 +33,7 @@ Note: In the following steps, we use ${MSB_IP} as the IP of msb_apigateway compo
 
 ::
 
-  docker run -d --name vfc-nslcm -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/nslcm
+  docker run -d --name vfc-nslcm -v /var/lib/mysql -p 8403:8403 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/nslcm
     
 For testing, we can use curl command to access the swagger api.
 
@@ -72,7 +72,7 @@ SERVICE_IP represents the docker run environment server address.
 
 ::
 
-  docker run -d --name vfc-catalog -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/catalog
+  docker run -d --name vfc-catalog -v /var/lib/mysql -p 8806:8806 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/catalog
     
 For testing, we can use curl command to access the swagger api.
 
@@ -108,7 +108,7 @@ For testing, we can use curl command to access the swagger api.
 
 ::
 
-  docker run -d --name vfc-ztesdncdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztesdncdriver
+  docker run -d --name vfc-ztesdncdriver -p 8411:8411 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztesdncdriver
     
 For testing, we can use curl command to access the swagger api.
 
@@ -132,9 +132,9 @@ For testing, we can use curl command to access the swagger api.
 
 ::
 
-  docker run -d --name vfc-vnflcm -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnflcm
-  docker run -d --name vfc-vnfmgr -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnfmgr
-  docker run -d --name vfc-vnfres -v /var/lib/mysql -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnfres
+  docker run -d --name vfc-vnflcm -v /var/lib/mysql -p 8801:8801 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnflcm
+  docker run -d --name vfc-vnfmgr -v /var/lib/mysql -p 8803:8803 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnfmgr
+  docker run -d --name vfc-vnfres -v /var/lib/mysql -p 8802:8802 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/vnfres
     
 For testing, we can use curl command to access the swagger api.
 
@@ -148,7 +148,7 @@ For testing, we can use curl command to access the swagger api.
 
 ::
 
-  docker run -d --name vfc-gvnfmdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/gvnfmdriver
+  docker run -d --name vfc-gvnfmdriver -p 8484:8484 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/gvnfmdriver
   docker run -d --name vfc-jujudriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/jujudriver
     
 For testing, we can use curl command to access the swagger api.
@@ -162,7 +162,7 @@ For testing, we can use curl command to access the swagger api.
 
 ::
 
-  docker run -d --name vfc-ztevmanagerdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztevmanagerdriver
+  docker run -d --name vfc-ztevmanagerdriver -p 8410:8410 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztevmanagerdriver
   docker run -d --name vfc-svnfm-huawei -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/huawei
   docker run -d --name vfc-svnfm-nokia -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/nokia
     
