@@ -18,6 +18,7 @@ import traceback
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from lcm.pub.database import models
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,8 @@ class SampleList(APIView):
     List all samples.
     """
     def get(self, request, format=None):
-        logger.debug("get")
+        count = len(models.NSDModel.objects.filter())
+        logger.debug("get, count of NSDModel is %s", count)
         return Response({"status": "active"})
 
 
