@@ -65,11 +65,9 @@ class GrantVnfs(object):
             vnf_pkg_id = vnfinsts[0].package_id
             # vnf_pkgs = NfPackageModel.objects.filter(nfpackageid=vnf_pkg_id)
             nfpackage_info = query_vnfpackage_by_id(vnf_pkg_id)
-            vnf_pkgs = nfpackage_info["packageInfo"]
-            if not vnf_pkgs:
-                raise NSLCMException("vnfpkg(%s) is not found" % vnf_pkg_id)
+            vnf_pkg = nfpackage_info["packageInfo"]
 
-            vnfd = json.JSONDecoder().decode(vnf_pkgs[0].vnfdmodel)
+            vnfd = json.JSONDecoder().decode(vnf_pkg["vnfdModel"])
 
             req_param = {
                 "vnfInstanceId": m_vnf_inst_id,
