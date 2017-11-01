@@ -27,12 +27,11 @@ Version: x.y.z
 
 **New Features**
 
- - 
  - NS lifecycle management, including NS instance creation,termination and healing
  - VNF lifecycle management, including VNF nstance creation,termination and healing
  - VNF FCAPS, collecting FCAPS data from vendor EMS
- - VNFM Integration, Integration with specific VNFMs of vendors to deploy commercial VNFs
- - VNF Integration, Integration with VNF via GVNFM
+ - VNFM Integration, integration with specific VNFMs of vendors to deploy commercial VNFs
+ - VNF Integration, integration with VNF via GVNFM
 
 
 **Bug Fixes**
