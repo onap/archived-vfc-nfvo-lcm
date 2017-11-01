@@ -16,6 +16,7 @@ import logging
 import time
 import traceback
 import uuid
+from threading import Thread
 
 from rest_framework import status
 
@@ -35,6 +36,15 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.workflows import build_in
 
 logger = logging.getLogger(__name__)
+
+
+class BuildInWorkflowThread(Thread):
+    def __init__(self, plan_input):
+        Thread.__init__(self)
+        self.plan_input = plan_input
+
+    def run(self):
+        build_in.run_ns_instantiate(self.plan_input)
 
 
 class InstantNSService(object):
@@ -187,7 +197,7 @@ class InstantNSService(object):
 
     def start_buildin_workflow(self, job_id, plan_input):
         JobUtil.add_job_status(job_id, 10, 'NS inst(%s) buildin workflow started.' % self.ns_inst_id)
-        build_in.run_ns_instantiate(plan_input)
+        BuildInWorkflowThread(plan_input).start()
         return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
 
     def get_vnf_vim_id(self, vim_id, location_constraints, vnfdid):
