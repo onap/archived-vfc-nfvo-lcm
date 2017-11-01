@@ -687,7 +687,7 @@
               }
             },
             "accessInfo": {
-              "type": "string",
+              "type": "object",
               "properties": {
                 "tenant": {
                   "type": "string",
@@ -1041,7 +1041,7 @@
           "$ref": "#/definitions/VnfTerminationType"
         },
         "gracefulTerminationTimeout": {
-          "desciption" : "The time interval(second) to wait for the VNF to be taken out of service during graceful termination.",
+          "description": "The time interval(second) to wait for the VNF to be taken out of service during graceful termination.",
           "type": "string"
         }
       }      
@@ -1113,7 +1113,7 @@
               }
             },
             "accessInfo": {
-              "type": "string",
+              "type": "object",
               "properties": {
                 "tenant": {
                   "type": "string",
