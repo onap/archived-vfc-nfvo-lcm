@@ -59,27 +59,27 @@ def run_ns_instantiate(input_data):
     sdnc_id = ignore_case_get(input_data, "sdnControllerId")
     g_jobs_status[job_id] = [1 for i in range(vnf_count)]
     try:
-        update_job(job_id, 10, "0", "Start to create VL")
+        update_job(job_id, 10, "true", "Start to create VL")
         for i in range(vl_count):
             create_vl(ns_inst_id, i + 1, nsd_json, ns_param_json)
 
-        update_job(job_id, 30, "0", "Start to create VNF")
+        update_job(job_id, 30, "true", "Start to create VNF")
         jobs = [create_vnf(ns_inst_id, i + 1, vnf_param_json) for i in range(vnf_count)]
         wait_until_jobs_done(job_id, jobs)
 
         [confirm_vnf_status(inst_id) for inst_id, _, _ in jobs]
 
-        update_job(job_id, 70, "0", "Start to create SFC")
+        update_job(job_id, 70, "true", "Start to create SFC")
         g_jobs_status[job_id] = [1 for i in range(sfc_count)]
         jobs = [create_sfc(ns_inst_id, i + 1, nsd_json, sdnc_id) for i in range(sfc_count)]
         wait_until_jobs_done(job_id, jobs)
 
         [confirm_sfc_status(inst_id) for inst_id, _, _ in jobs]
 
-        update_job(job_id, 90, "0", "Start to post deal")
+        update_job(job_id, 90, "true", "Start to post deal")
         post_deal(ns_inst_id, "true")
 
-        update_job(job_id, 100, "0", "Create NS successfully.")
+        update_job(job_id, 100, "true", "Create NS successfully.")
         ns_instantiate_ok = True
     except NSLCMException as e:
         logger.error("Failded to Create NS: %s", e.message)
