@@ -1283,23 +1283,23 @@
         },
         "name": {
           "type": "string",
-          "description": "vnfm name"
+          "description": "vim name"
         },
         "type": {
           "type": "string",
-          "description": "vnfm type"
+          "description": "vim type"
         },  
         "url": {
           "type": "string",
-          "description": "vnfm url"
+          "description": "vim url"
         },
         "userName": {
           "type": "string",
-          "description": "vnfm login username"
+          "description": "vim login username"
         },
         "password": {
           "type": "string",
-          "description": "vnfm login password"
+          "description": "vim login password"
         },  
         "vendor": {
           "type": "string",
@@ -1307,15 +1307,27 @@
         },
         "version": {
           "type": "string",
-          "description": "vnfm version"
+          "description": "vim version"
         }, 
         "description": {
           "type": "string",
-          "description": "vnfm description"
+          "description": "vim description"
         }, 
         "createTime": {
           "type": "string",
-          "description": "vnfm info createTime"
+          "description": "vim info createTime"
+        },
+        "sslCacert": {
+          "type": "string",
+          "description": "CA file content if enabled ssl on auth-url"         
+        },
+        "sslInsecure": {
+          "type": "string",
+          "description": "Whether to verify VIM's certificate"         
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of external system"
         }
       }      
     }
