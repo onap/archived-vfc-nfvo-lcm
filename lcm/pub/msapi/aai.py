@@ -42,6 +42,7 @@ def call_aai(resource, method, content=''):
 
 def create_customer_aai(global_customer_id, data):
     resource = "/business/customers/customer/%s" % global_customer_id
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -71,6 +72,7 @@ def delete_customer_aai(global_customer_id, resource_version=""):
 
 def put_customer_relationship(global_customer_id, data):
     resource = "/business/customers/customer/{global-customer-id}/relationship-list/relationship" % global_customer_id
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -91,6 +93,7 @@ def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
     resource = "/business/customers/customer/%s/service-subscriptions/service-subscription/" \
                "%s/service-instances/service-instance/%s" % \
                (global_customer_id, service_type, service_instance_id)
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -126,6 +129,7 @@ def put_ns_relationship(global_customer_id, service_type, service_instance_id, d
     resource = "/business/customers/customer/%s/service-subscriptions/service-subscription/" \
                "%s/service-instances/service-instance/%s/relationship-list/relationship" % \
                (global_customer_id, service_type, service_instance_id)
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -146,6 +150,7 @@ def delete_ns_relationship(global_customer_id, service_type, service_instance_id
 
 def create_vnf_aai(vnf_id, data):
     resource = "/network/generic-vnfs/generic-vnf/%s" % vnf_id
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -175,6 +180,7 @@ def delete_vnf_aai(vnf_id, resource_version=""):
 
 def put_vnf_relationship(vnf_id, data):
     resource = "/network/generic-vnfs/generic-vnf/%s/relationship-list/relationship" % vnf_id
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -195,6 +201,7 @@ def create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data
     resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
                "%s/tenants/tenant/%s/vservers/vserver/%s" % \
                (cloud_owner, cloud_region_id, tenant_id, vserver_id)
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -230,6 +237,7 @@ def put_vserver_relationship(cloud_owner, cloud_region_id, tenant_id, vserver_id
     resource = "/cloud-infrastructure/cloud-regions/cloud-region/%s/" \
                "%s/tenants/tenant/%s/vservers/vserver/%s/relationship-list/relationship" % \
                (cloud_owner, cloud_region_id, tenant_id, vserver_id)
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -250,6 +258,7 @@ def delete_vserver_relationship(cloud_owner, cloud_region_id, tenant_id, vserver
 
 def create_network_aai(network_id, data):
     resource = "/network/l3-networks/l3-network/%s" % network_id
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -279,6 +288,7 @@ def delete_network_aai(network_id, resource_version=""):
 
 def put_network_relationship(network_id, data):
     resource = "/network/l3-networks/l3-network/%s/relationship-list/relationship" % network_id
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -297,6 +307,7 @@ def delete_network_relationship(network_id):
 
 def create_subnet_aai(network_id, subnet_id, data):
     resource = "/network/l3-networks/l3-network/%s/subnets/subnet/%s" % (network_id, subnet_id)
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
@@ -327,6 +338,7 @@ def delete_subnet_aai(network_id, subnet_id, resource_version=""):
 def put_subnet_relationship(network_id, subnet_id, data):
     resource = "/network/l3-networks/l3-network/%s/subnets/subnet/%s/relationship-list/relationship"\
                % (network_id, subnet_id)
+    data = json.JSONEncoder().encode(data)
     ret = call_aai(resource, "PUT", data)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
