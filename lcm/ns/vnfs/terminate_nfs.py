@@ -142,11 +142,8 @@ class TerminateVnfs(threading.Thread):
 
             # delete vnf instance from aai
             resp_data, resp_status = delete_vnf_aai(self.vnf_inst_id, resource_version)
-            if resp_data:
-                logger.debug("Fail to delete vnf[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
-            else:
-                logger.debug(
-                    "Success to delete vnf[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
+            logger.debug(
+                "Success to delete vnf[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to delete vnf from aai[%s], detail message: %s" % (self.vnf_inst_id, e.message))
         except:
@@ -171,13 +168,9 @@ class TerminateVnfs(threading.Thread):
                 # delete vserver instance from aai
                 resp_data, resp_status = delete_vserver_aai(cloud_owner, cloud_region_id,
                                                             tenant_id, vserver_id, resource_version)
-                if resp_data:
-                    logger.debug("Fail to delete vserver instance[%s] from aai, resp_status: [%s]." %
-                                 (vserver_id, resp_status))
-                else:
-                    logger.debug(
-                        "Success to delete vserver instance[%s] from aai, resp_status: [%s]." %
-                        (vserver_id, resp_status))
+                logger.debug(
+                    "Success to delete vserver instance[%s] from aai, resp_status: [%s]." %
+                    (vserver_id, resp_status))
             logger.debug("delete_vserver_in_aai end!")
         except NSLCMException as e:
             logger.debug("Fail to delete vserver from aai, detail message: %s" % e.message)

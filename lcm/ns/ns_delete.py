@@ -73,11 +73,7 @@ class DeleteNsService(object):
             logger.debug("ns instance resource_version=[%s]" % resource_version)
             resp_data, resp_status = delete_ns_aai(self.global_customer_id, self.service_type,
                                                    self.ns_inst_id, resource_version)
-            if resp_data:
-                logger.debug("Fail to delete ns[%s] from aai, resp_status: [%s]." % (self.ns_inst_id, resp_status))
-            else:
-                logger.debug("Success to delete ns[%s] from aai, resp_status: [%s]."
-                             % (self.ns_inst_id, resp_status))
+            logger.debug("Success to delete ns[%s] from aai, resp_status: [%s]." % (self.ns_inst_id, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to delete ns[%s] from aai, detail message: %s" % (self.ns_inst_id, e.message))
         except:

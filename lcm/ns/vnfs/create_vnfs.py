@@ -312,12 +312,8 @@ class CreateVnfs(Thread):
                 }
             }
             resp_data, resp_status = create_vnf_aai(self.nf_inst_id, data)
-            if resp_data:
-                logger.debug("Fail to create vnf[%s] to aai, ns instance=[%s], resp_status: [%s]."
-                             % (self.nf_inst_id, self.ns_inst_id, resp_status))
-            else:
-                logger.debug("Success to create vnf[%s] to aai, ns instance=[%s], resp_status: [%s]."
-                             % (self.nf_inst_id, self.ns_inst_id, resp_status))
+            logger.debug("Success to create vnf[%s] to aai, ns instance=[%s], resp_status: [%s]."
+                         % (self.nf_inst_id, self.ns_inst_id, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to create vnf[%s] to aai, ns instance=[%s], detail message: %s"
                          % (self.nf_inst_id, self.ns_inst_id, e.message))
@@ -359,12 +355,8 @@ class CreateVnfs(Thread):
 
                 # create vserver instance in aai
                 resp_data, resp_status = create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data)
-                if resp_data:
-                    logger.debug("Fail to create vserver[%s] to aai, vnf instance=[%s], resp_status: [%s]."
-                                 % (vserver_id, self.nf_inst_id, resp_status))
-                else:
-                    logger.debug("Success to create vserver[%s] to aai, vnf instance=[%s], resp_status: [%s]."
-                                 % (vserver_id, self.nf_inst_id, resp_status))
+                logger.debug("Success to create vserver[%s] to aai, vnf instance=[%s], resp_status: [%s]."
+                             % (vserver_id, self.nf_inst_id, resp_status))
             logger.debug("Success to create all vserver to aai.")
         except NSLCMException as e:
             logger.debug("Fail to create vserver to aai, vnf instance=[%s], detail message: %s"

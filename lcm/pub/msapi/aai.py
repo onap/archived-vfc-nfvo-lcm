@@ -47,7 +47,7 @@ def create_customer_aai(global_customer_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Customer creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def query_customer_aai(global_customer_id):
@@ -56,7 +56,7 @@ def query_customer_aai(global_customer_id):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Get customer info exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def delete_customer_aai(global_customer_id, resource_version=""):
@@ -67,7 +67,7 @@ def delete_customer_aai(global_customer_id, resource_version=""):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Customer delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def put_customer_relationship(global_customer_id, data):
@@ -77,7 +77,7 @@ def put_customer_relationship(global_customer_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Put or update customer relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def delete_customer_relationship(global_customer_id):
@@ -86,7 +86,7 @@ def delete_customer_relationship(global_customer_id):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete customer relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
@@ -98,7 +98,7 @@ def create_ns_aai(global_customer_id, service_type, service_instance_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Ns instance creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.loads(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def query_ns_aai(global_customer_id, service_type, service_instance_id):
@@ -122,7 +122,7 @@ def delete_ns_aai(global_customer_id, service_type, service_instance_id, resourc
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Ns instance delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def put_ns_relationship(global_customer_id, service_type, service_instance_id, data):
@@ -134,7 +134,7 @@ def put_ns_relationship(global_customer_id, service_type, service_instance_id, d
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Put or update ns instance relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def delete_ns_relationship(global_customer_id, service_type, service_instance_id):
@@ -145,7 +145,7 @@ def delete_ns_relationship(global_customer_id, service_type, service_instance_id
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete ns instance relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def create_vnf_aai(vnf_id, data):
@@ -155,7 +155,7 @@ def create_vnf_aai(vnf_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vnf instance creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def query_vnf_aai(vnf_id):
@@ -175,7 +175,7 @@ def delete_vnf_aai(vnf_id, resource_version=""):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vnf instance delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def put_vnf_relationship(vnf_id, data):
@@ -185,7 +185,7 @@ def put_vnf_relationship(vnf_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Put or update vnf instance relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def delete_vnf_relationship(vnf_id):
@@ -194,7 +194,7 @@ def delete_vnf_relationship(vnf_id):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete vnf instance relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
@@ -206,7 +206,7 @@ def create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vserver creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id):
@@ -230,7 +230,7 @@ def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, reso
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vserver delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def put_vserver_relationship(cloud_owner, cloud_region_id, tenant_id, vserver_id, data):
@@ -242,7 +242,7 @@ def put_vserver_relationship(cloud_owner, cloud_region_id, tenant_id, vserver_id
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Put or update vserver relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def delete_vserver_relationship(cloud_owner, cloud_region_id, tenant_id, vserver_id):
@@ -253,7 +253,7 @@ def delete_vserver_relationship(cloud_owner, cloud_region_id, tenant_id, vserver
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete vserver relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def create_network_aai(network_id, data):
@@ -263,7 +263,7 @@ def create_network_aai(network_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Network creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def query_network_aai(network_id):
@@ -283,7 +283,7 @@ def delete_network_aai(network_id, resource_version=""):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Network delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def put_network_relationship(network_id, data):
@@ -293,7 +293,7 @@ def put_network_relationship(network_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Put or update network relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def delete_network_relationship(network_id):
@@ -302,7 +302,7 @@ def delete_network_relationship(network_id):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete network relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def create_subnet_aai(network_id, subnet_id, data):
@@ -312,7 +312,7 @@ def create_subnet_aai(network_id, subnet_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Subnetwork creation exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def query_subnet_aai(network_id, subnet_id):
@@ -332,7 +332,7 @@ def delete_subnet_aai(network_id, subnet_id, resource_version=""):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Subnetwork delete exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def put_subnet_relationship(network_id, subnet_id, data):
@@ -343,7 +343,7 @@ def put_subnet_relationship(network_id, subnet_id, data):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Put or update subnetwork relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
 def delete_subnet_relationship(network_id, subnet_id):
@@ -353,4 +353,4 @@ def delete_subnet_relationship(network_id, subnet_id):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Delete subnetwork relationship exception in AAI")
-    return json.JSONDecoder().decode(ret[1]), ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]

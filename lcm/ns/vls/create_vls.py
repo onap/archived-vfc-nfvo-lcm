@@ -227,10 +227,7 @@ class CreateVls(object):
                 }
             }
             resp_data, resp_status = create_network_aai(self.vl_inst_id, data)
-            if resp_data:
-                logger.debug("Fail to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
-            else:
-                logger.debug("Success to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
+            logger.debug("Success to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
         except NSLCMException as e:
             logger.debug("Fail to create network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.message))
         except:

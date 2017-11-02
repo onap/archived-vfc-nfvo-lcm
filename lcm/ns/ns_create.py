@@ -109,10 +109,7 @@ class CreateNSService(object):
                 "service-role": SERVICE_ROLE
             }
             resp_data, resp_status = create_ns_aai(self.global_customer_id, self.service_type, self.ns_inst_id, data)
-            if resp_data:
-                logger.debug("Fail to create ns[%s] to aai: [%s].", self.ns_inst_id, resp_status)
-            else:
-                logger.debug("Success to create ns[%s] to aai: [%s].", self.ns_inst_id, resp_status)
+            logger.debug("Success to create ns[%s] to aai:[%s],[%s].", self.ns_inst_id, resp_data, resp_status)
         except NSLCMException as e:
             logger.debug("Fail to createns[%s] to aai, detail message: %s" % (self.ns_inst_id, e.message))
         except:

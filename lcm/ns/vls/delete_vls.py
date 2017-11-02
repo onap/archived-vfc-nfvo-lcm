@@ -92,12 +92,8 @@ class DeleteVls(object):
 
             # delete network from aai
             resp_data, resp_status = delete_network_aai(self.vl_inst_id, resource_version)
-            if resp_data:
-                logger.debug("Fail to delete network[%s] from aai, resp_status: [%s]."
-                             % (self.vl_inst_id, resp_status))
-            else:
-                logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
-                             % (self.vl_inst_id, resp_status))
+            logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
+                         % (self.vl_inst_id, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.message))
         except:
