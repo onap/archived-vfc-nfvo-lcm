@@ -36,6 +36,7 @@ def deploy_workflow(file_path):
     file_data = {
         'file': open(file_path, 'rb'),
         'filename': file_name}
+    file_data = json.JSONEncoder().encode(file_data)
     ret = restcall.upload_by_msb("api/workflow/v1/package", "POST", file_data)
     if ret[0] != 0:
         raise NSLCMException("Status code is %s, detail is %s.", ret[2], ret[1])
