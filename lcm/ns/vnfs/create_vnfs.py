@@ -279,6 +279,9 @@ class CreateVnfs(Thread):
     def create_vnf_in_aai(self):
         logger.debug("CreateVnfs::create_vnf_in_aai::report vnf instance[%s] to aai." % self.nf_inst_id)
         try:
+            ns_insts = NSInstModel.objects.filter(id=self.ns_inst_id)
+            self.global_customer_id = ns_insts[0].global_customer_id
+            self.service_type = ns_insts[0].service_type
             data = {
                 "vnf-id": self.nf_inst_id,
                 "vnf-name": self.vnf_inst_name,
@@ -293,11 +296,11 @@ class CreateVnfs(Thread):
                             "relationship-data": [
                                 {
                                     "relationship-key": "customer.global-customer-id",
-                                    "relationship-value": "global-customer-id-" + self.ns_inst_id
+                                    "relationship-value": self.global_customer_id
                                 },
                                 {
                                     "relationship-key": "service-subscription.service-type",
-                                    "relationship-value": "Network"
+                                    "relationship-value": self.service_type
                                 },
                                 {
                                     "relationship-key": "service-instance.service-instance-id",
