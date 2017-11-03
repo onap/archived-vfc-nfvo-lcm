@@ -461,7 +461,7 @@
         }
       }
     },
-    "/nslcm/vl/vnfms/{vnfmid}":{
+    "/nslcm/v1/vnfms/{vnfmid}":{
       "get": {
         "tags": [
           "NSLCM"
@@ -500,7 +500,7 @@
         }
       }
     },
-    "/nslcm/vl/vims/{vimid}":{
+    "/nslcm/v1/vims/{vimid}":{
       "get": {
         "tags": [
           "NSLCM"
