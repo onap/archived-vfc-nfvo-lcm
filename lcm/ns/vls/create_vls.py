@@ -197,6 +197,9 @@ class CreateVls(object):
     def create_network_and_subnet_in_aai(self):
         logger.debug("CreateVls::create_network_in_aai::report network[%s] to aai." % self.vl_inst_id)
         try:
+            ns_insts = NSInstModel.objects.filter(id=self.owner_id)
+            self.global_customer_id = ns_insts[0].global_customer_id
+            self.service_type = ns_insts[0].service_type
             data = {
                 "network-id": self.vl_inst_id,
                 "network-name": self.vl_inst_name,
@@ -215,10 +218,18 @@ class CreateVls(object):
                 "relationship-list": {
                     "relationship": [
                         {
-                            "related-to": "generic-vnf",
+                            "related-to": "service-instance",
                             "relationship-data": [
                                 {
-                                    "relationship-key": "generic-vnf.vnf-id",
+                                    "relationship-key": "customer.global-customer-id",
+                                    "relationship-value": self.global_customer_id
+                                },
+                                {
+                                    "relationship-key": "service-subscription.service-type",
+                                    "relationship-value": self.service_type
+                                },
+                                {
+                                    "relationship-key": "service-instance.service-instance-id",
                                     "relationship-value": self.owner_id
                                 }
                             ]

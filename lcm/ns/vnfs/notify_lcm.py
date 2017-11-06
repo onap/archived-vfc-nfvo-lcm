@@ -220,10 +220,7 @@ class NotifyLcm(object):
                 }
             }
             resp_data, resp_status = create_network_aai(vlInstanceId, data)
-            if resp_data:
-                logger.debug("Fail to create network[%s] to aai: [%s].", vlInstanceId, resp_status)
-            else:
-                logger.debug("Success to create network[%s] to aai: [%s].", vlInstanceId, resp_status)
+            logger.debug("Success to create network[%s] to aai: [%s].", vlInstanceId, resp_status)
         except NSLCMException as e:
             logger.debug("Fail to create network[%s] to aai, detail message: %s" % (vlInstanceId, e.message))
         except:
@@ -238,12 +235,8 @@ class NotifyLcm(object):
 
             # delete network from aai
             resp_data, resp_status = delete_network_aai(vlInstanceId, resource_version)
-            if resp_data:
-                logger.debug("Fail to delete network[%s] from aai, resp_status: [%s]."
-                             % (vlInstanceId, resp_status))
-            else:
-                logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
-                             % (vlInstanceId, resp_status))
+            logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
+                         % (vlInstanceId, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (vlInstanceId, e.message))
         except:
