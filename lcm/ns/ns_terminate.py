@@ -24,9 +24,10 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.utils.values import ignore_case_get
+from lcm.pub.utils import restcall
+from lcm.ns.const import OWNER_TYPE
 
 JOB_ERROR = 255
-# [delete vnf try times]
 
 logger = logging.getLogger(__name__)
 
@@ -38,218 +39,130 @@ class TerminateNsService(threading.Thread):
         self.terminate_type = terminate_type
         self.terminate_timeout = terminate_timeout
         self.job_id = job_id
-        self.vnfm_inst_id = ''
 
     def run(self):
         try:
-            self.do_biz()
+            if not NSInstModel.objects.filter(id=self.ns_inst_id):
+                JobUtil.add_job_status(self.job_id, 100, "Need not terminate.", '')
+                return               
+            JobUtil.add_job_status(self.job_id, 10, "Starting terminate...", '')
+
+            self.cancel_sfc_list()
+            self.cancel_vnf_list()
+            self.cancel_vl_list()
+            
+            NSInstModel.objects.filter(id=self.ns_inst_id).update(status='null')
+            JobUtil.add_job_status(self.job_id, 100, "ns terminate ends.", '')
         except NSLCMException as e:
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
         except:
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, "ns terminate fail.", '')
+            JobUtil.add_job_status(self.job_id, JOB_ERROR, "ns terminate fail.")
 
-    def do_biz(self):
-        if not self.check_data():
-            JobUtil.add_job_status(self.job_id, 100, "Need not terminate.", '')
-            return
-
-        self.cancel_sfc_list()
-        self.cancel_vnf_list()
-        time.sleep(4)
-        self.cancel_vl_list()
-
-        self.finaldata()
-
-    def check_data(self):
-        JobUtil.add_job_status(self.job_id, 0, "TERMINATING...", '')
-        ns_inst = NSInstModel.objects.filter(id=self.ns_inst_id)
-        if not ns_inst.exists():
-            logger.warn('ns instance [%s] does not exist.' % self.ns_inst_id)
-            return False
-        JobUtil.add_job_status(self.job_id, 10, "Ns cancel: check ns_inst_id success", '')
-        return True
-
-    # delete VLINST
     def cancel_vl_list(self):
-        array_vlinst = VLInstModel.objects.filter(ownertype='2', ownerid=self.ns_inst_id)
+        array_vlinst = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=self.ns_inst_id)
         if not array_vlinst:
-            logger.error("[cancel_vl_list] no vlinst attatch to ns_inst_id:%s" % self.ns_inst_id)
+            logger.info("[cancel_vl_list] no vlinst attatch to ns_inst_id: %s" % self.ns_inst_id)
             return
         step_progress = 20 / len(array_vlinst)
         cur_progress = 70
         for vlinst in array_vlinst:
-            tmp_msg = vlinst.vlinstanceid
+            delete_result = "failed"
+            cur_progress += step_progress
             try:
-                ret = self.delete_vl(tmp_msg)
+                ret = call_from_ns_cancel_resource('vl', vlinst.vlinstanceid)
                 if ret[0] == 0:
-                    cur_progress += step_progress
                     result = json.JSONDecoder().decode(ret[1]).get("result", "")
                     if str(result) == '0':
-                        JobUtil.add_job_status(self.job_id, cur_progress, "Delete vlinst:[%s] success." % tmp_msg, '')
-                    else:
-                        JobUtil.add_job_status(self.job_id, cur_progress, "Delete vlinst:[%s] failed." % tmp_msg, '')
-                        return 'false'
-                else:
-                    NSInstModel.objects.filter(id=self.ns_inst_id).update(status='FAILED')
-                    return 'false'
+                        delete_result = "success"
             except Exception as e:
                 logger.error("[cancel_vl_list] error[%s]!" % e.message)
                 logger.error(traceback.format_exc())
-                JobUtil.add_job_status(self.job_id, cur_progress, "Delete vlinst:[%s] Failed." % tmp_msg, '')
-                return 'false'
-        return 'true'
+            job_msg = "Delete vlinst:[%s] %s." % (vlinst.vlinstanceid, delete_result)
+            JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
 
-    # delete SFC
     def cancel_sfc_list(self):
         array_sfcinst = FPInstModel.objects.filter(nsinstid=self.ns_inst_id)
         if not array_sfcinst:
-            logger.info("[cancel_sfc_list] no sfcinst attatch to ns_inst_id:%s" % self.ns_inst_id)
+            logger.info("[cancel_sfc_list] no sfcinst attatch to ns_inst_id: %s" % self.ns_inst_id)
             return
         step_progress = 20 / len(array_sfcinst)
         cur_progress = 30
         for sfcinst in array_sfcinst:
-            tmp_msg = sfcinst.sfcid
+            cur_progress += step_progress
+            delete_result = "failed"
             try:
-                ret = self.delete_sfc(tmp_msg)
+                ret = call_from_ns_cancel_resource('sfc', sfcinst.sfcid)
                 if ret[0] == 0:
-                    cur_progress += step_progress
                     result = json.JSONDecoder().decode(ret[1]).get("result", "")
                     if str(result) == '0':
-                        JobUtil.add_job_status(self.job_id, cur_progress, "Delete sfcinst:[%s] success." % tmp_msg, '')
-                    else:
-                        JobUtil.add_job_status(self.job_id, cur_progress, "Delete sfcinst:[%s] failed." % tmp_msg, '')
-                        return 'false'
-                else:
-                    NSInstModel.objects.filter(id=self.ns_inst_id).update(status='FAILED')
-                    return 'false'
+                        delete_result = "success"
             except Exception as e:
                 logger.error("[cancel_sfc_list] error[%s]!" % e.message)
                 logger.error(traceback.format_exc())
-                JobUtil.add_job_status(self.job_id, cur_progress, "Delete sfcinst:[%s] Failed." % tmp_msg, '')
-                return 'false'
-        return 'true'
+            job_msg = "Delete sfcinst:[%s] %s." % (sfcinst.sfcid, delete_result)
+            JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
 
-    # delete Vnf
     def cancel_vnf_list(self):
         array_vnfinst = NfInstModel.objects.filter(ns_inst_id=self.ns_inst_id)
         if not array_vnfinst:
-            logger.error("[cancel_vnf_list] no vnfinst attatch to ns_inst_id:%s" % self.ns_inst_id)
+            logger.info("[cancel_vnf_list] no vnfinst attatch to ns_inst_id: %s" % self.ns_inst_id)
             return
         step_progress = 20 / len(array_vnfinst)
         cur_progress = 50
         for vnfinst in array_vnfinst:
-            tmp_msg = vnfinst.nfinstid
+            cur_progress += step_progress
+            delete_result = "failed"
             try:
-                self.delete_vnf(tmp_msg)
-                cur_progress += step_progress
-                JobUtil.add_job_status(self.job_id, cur_progress, "Delete vnfinst:[%s] success." % tmp_msg, '')
+                if self.delete_vnf(vnfinst.nfinstid):
+                    delete_result = "success"
             except Exception as e:
                 logger.error("[cancel_vnf_list] error[%s]!" % e.message)
                 logger.error(traceback.format_exc())
-                JobUtil.add_job_status(self.job_id, cur_progress, "Delete vnfinst:[%s] Failed." % tmp_msg, '')
-                return 'false'
-        return 'true'
+            job_msg = "Delete vnfinst:[%s] %s." % (vnfinst.nfinstid, delete_result)
+            JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
 
     def delete_vnf(self, nf_instid):
         ret = call_from_ns_cancel_resource('vnf', nf_instid)
-        self.delete_resource(ret)
+        if result[0] != 0:
+            return False
+        job_info = json.JSONDecoder().decode(result[1])
+        vnf_job_id = ignore_case_get(job_info, "jobid")
+        return self.wait_delete_vnf_job_finish(vnf_job_id)
 
-    def delete_sfc(self, sfc_instid):
-        ret = call_from_ns_cancel_resource('sfc', sfc_instid)
-        return ret
-
-    def delete_vl(self, vl_instid):
-        ret = call_from_ns_cancel_resource('vl', vl_instid)
-        return ret
-
-    def delete_resource(self, result):
-        logger.debug("terminate_type=%s, result=%s", self.terminate_type, result)
-        if result[0] == 0:
-            job_info = json.JSONDecoder().decode(result[1])
-            vnfm_job_id = ignore_case_get(job_info, "jobid")
-            self.add_progress(5, "SEND_TERMINATE_REQ_SUCCESS")
-            if self.terminate_type == 'forceful':
-                ret = wait_job_finish(self.vnfm_inst_id, self.job_id, vnfm_job_id,
-                                      progress_range=[10, 50],
-                                      timeout=self.terminate_timeout,
-                                      job_callback=TerminateNsService.wait_job_mode_callback, mode='1')
-                if ret != JOB_MODEL_STATUS.FINISHED:
-                    logger.error('[NS terminate] VNFM terminate ns failed')
-                    NSInstModel.objects.filter(id=self.ns_inst_id).update(status='FAILED')
-                    raise NSLCMException("DELETE_NS_RESOURCE_FAILED")
-        else:
-            logger.error('[NS terminate] VNFM terminate ns failed')
-            NSInstModel.objects.filter(id=self.ns_inst_id).update(status='FAILED')
-            raise NSLCMException("DELETE_NS_RESOURCE_FAILED")
-
-    def exception(self):
-        NSInstModel.objects.filter(id=self.ns_inst_id).update(status='FAILED')
-        raise NSLCMException("DELETE_NS_RESOURCE_FAILED")
-
-    def finaldata(self):
-        NSInstModel.objects.filter(id=self.ns_inst_id).update(status='null')
-        JobUtil.add_job_status(self.job_id, 100, "ns terminate ends.", '')
-
-    @staticmethod
-    def call_vnfm_to_cancel_resource(res_type, instid):
-        ret = call_from_ns_cancel_resource(res_type, instid)
-        return ret
-
-    def add_progress(self, progress, status_decs, error_code=""):
-        JobUtil.add_job_status(self.job_id, progress, status_decs, error_code)
-
-    @staticmethod
-    def wait_job_mode_callback(vnfo_job_id, vnfm_job_id, job_status, jobs, progress_range, **kwargs):
-        for job in jobs:
-            progress = TerminateNsService.calc_progress_over_100(job['progress'], progress_range)
-            if 255 == progress and '1' == kwargs['mode']:
+    def wait_delete_vnf_job_finish(self, vnf_job_id):
+        count = 0
+        retry_count = 30
+        interval_second = 1
+        response_id, new_response_id = 0, 0
+        job_end_normal, job_timeout = False, True
+        while count < retry_count:
+            count = count + 1
+            time.sleep(interval_second)
+            uri = "/api/nslcm/v1/jobs/%s?responseId=%s" % (vnf_job_id, response_id)
+            ret = restcall.req_by_msb(uri, "GET")
+            if ret[0] != 0:
+                logger.error("Failed to query job: %s:%s", ret[2], ret[1])
+                continue
+            job_result = json.JSONDecoder().decode(ret[1])
+            if "responseDescriptor" not in job_result:
+                logger.error("Job(%s) does not exist.", vnf_job_id)
+                continue
+            progress = job_result["responseDescriptor"]["progress"]
+            new_response_id = job_result["responseDescriptor"]["responseId"]
+            job_desc = job_result["responseDescriptor"]["statusDescription"]
+            if new_response_id != response_id:
+                logger.debug("%s:%s:%s", progress, new_response_id, job_desc)
+                response_id = new_response_id
+                count = 0
+            if progress == JOB_ERROR:
+                job_timeout = False
+                logger.error("Job(%s) failed: %s", vnf_job_id, job_desc)
                 break
-            JobUtil.add_job_status(vnfo_job_id, progress, job.get('statusdescription', ''), job.get('errorcode', ''))
-
-        latest_progress = TerminateNsService.calc_progress_over_100(job_status['progress'], progress_range)
-        if 255 == latest_progress and '1' == kwargs['mode']:
-            JobUtil.add_job_status(vnfo_job_id, progress_range[1], job_status.get('statusdescription', ''),
-                                   job_status.get('errorcode', ''))
-        else:
-            JobUtil.add_job_status(vnfo_job_id, latest_progress, job_status.get('statusdescription', ''),
-                                   job_status.get('errorcode', ''))
-        if job_status['status'] in ('error', 'finished'):
-            return True, job_status['status']
-        return False, 'processing'
-
-    @staticmethod
-    def wait_job_finish_common_call_back(vnfo_job_id, vnfm_job_id, job_status, jobs, progress_range, **kwargs):
-        error_254 = False
-        for job in jobs:
-            progress = TerminateNsService.calc_progress_over_100(job['progress'], progress_range)
-            if 254 == progress:
-                logger.debug("=========254==============")
-                progress = 255
-                error_254 = True
-            JobUtil.add_job_status(vnfo_job_id, progress, job.get('statusdescription', ""), job.get('errorcode', ""))
-        latest_progress = TerminateNsService.calc_progress_over_100(job_status['progress'], progress_range)
-        if 254 == latest_progress:
-            logger.debug("=========254==============")
-            latest_progress = 255
-            error_254 = True
-        JobUtil.add_job_status(vnfo_job_id, latest_progress, job_status.get('statusdescription', ""),
-                               job_status.get('errorcode', ""))
-        # return error_254
-        if error_254:
-            logger.debug("return 254")
-            return True, 'error_254'
-        if job_status['status'] in ('error', 'finished'):
-            return True, job_status['status']
-        return False, 'processing'
-
-    @staticmethod
-    def calc_progress_over_100(vnfm_progress, target_range=None):
-        if target_range is None:
-            target_range = [0, 100]
-        progress = int(vnfm_progress)
-        if progress > 100:
-            return progress
-        floor_progress = int(math.floor(float(target_range[1] - target_range[0]) / 100 * progress))
-        target_range = floor_progress + target_range[0]
-        return target_range
+            elif progress == 100:
+                job_end_normal, job_timeout = True, False
+                logger.info("Job(%s) ended normally", vnf_job_id)
+                break
+        if job_timeout:
+            logger.error("Job(%s) timeout", vnf_job_id)
+        return job_end_normal
