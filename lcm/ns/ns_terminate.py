@@ -104,7 +104,7 @@ class TerminateNsService(threading.Thread):
     def cancel_sfc_list(self):
         array_sfcinst = FPInstModel.objects.filter(nsinstid=self.ns_inst_id)
         if not array_sfcinst:
-            logger.error("[cancel_sfc_list] no sfcinst attatch to ns_inst_id:%s" % self.ns_inst_id)
+            logger.info("[cancel_sfc_list] no sfcinst attatch to ns_inst_id:%s" % self.ns_inst_id)
             return
         step_progress = 20 / len(array_sfcinst)
         cur_progress = 30
