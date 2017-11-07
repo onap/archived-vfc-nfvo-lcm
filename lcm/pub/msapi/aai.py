@@ -56,7 +56,7 @@ def query_customer_aai(global_customer_id):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Get customer info exception in AAI")
-    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1]
 
 
 def delete_customer_aai(global_customer_id, resource_version=""):
