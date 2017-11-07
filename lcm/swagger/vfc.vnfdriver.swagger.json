@@ -461,7 +461,7 @@
         }
       }
     },
-    "/nslcm/vl/vnfms/{vnfmid}":{
+    "/nslcm/v1/vnfms/{vnfmid}":{
       "get": {
         "tags": [
           "NSLCM"
@@ -500,7 +500,7 @@
         }
       }
     },
-    "/nslcm/vl/vims/{vimid}":{
+    "/nslcm/v1/vims/{vimid}":{
       "get": {
         "tags": [
           "NSLCM"
@@ -561,6 +561,16 @@
         }
       }
     },
+    "JobStatus" : {
+      "description": "The status of the job",
+      "type": "string",
+      "enum": [
+        "started",
+        "processing",
+        "finished",
+        "error"
+      ]
+    },
     "JobDetailInfo": {
       "type": "object",
       "properties": {
@@ -571,13 +581,16 @@
           "type": "object",
           "properties": {
             "status": {
-              "type": "string"
+              "$ref": "#/definitions/JobStatus",
+              "description": "The status of the job"
             },
             "progress": {
-              "type": "string"
+              "type": "string",
+              "description": "The progress of the job. Value between 0 and 100."
             },
             "statusDescription": {
-              "type": "string"
+              "type": "string",
+              "description": "The reason of the current status of the job."
             },
             "errorCode": {
               "type": "string"
@@ -595,17 +608,26 @@
         }
       }
     },
+    "ChangeType" : {
+      "description": "The type of the change",
+      "type": "string",
+      "enum": [
+        "VDU"
+      ]
+    },
     "ResourceChange" : {
        "type": "object",
        "properties": {
          "type": {
-           "type": "string",
-           "description": " The value should be VDU,VL,CP,Strorage."
+           "$ref": "#/definitions/ChangeType",
+           "description": "The type of the resource."
          },
          "resourceDefinitionId": {
+           "description": "The identifier of the resource within the grant request.",
            "type": "string"
          },
          "vdu": {
+           "description": "The identifier of the VDU.",
            "type": "string"
          }
        }
@@ -1319,10 +1341,10 @@
         },
         "sslCacert": {
           "type": "string",
-          "description": "CA file content if enabled ssl on auth-url"         
+          "description": "The collection of trusted certificates towards the VIM connection in PEM format."
         },
         "sslInsecure": {
-          "type": "string",
+          "type": "boolean",
           "description": "Whether to verify VIM's certificate"         
         },
         "status": {
