@@ -1,6 +1,6 @@
 
 
-NS LCM API
+Network services lifecycle management northbound APIs
 ==========
 
  {
