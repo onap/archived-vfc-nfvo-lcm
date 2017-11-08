@@ -71,11 +71,11 @@ juju
 |                       |            |             |          | description  of  the  VNF    |
 |                       |            |             |          | instance to be created.      |
 +-----------------------+------------+-------------+----------+------------------------------+
-| extVirtualLink        | M          | 0..N        | String   | References  to  external     |
-|                       |            |             |          | virtual links to connect the |
-|                       |            |             |          | VNF to.                      |
+| extVirtualLink        | M          | 0..N        | Ext      | References  to  external     |
+|                       |            |             | Virtual  | virtual links to connect the |
+|                       |            |             | LinkData | VNF to.                      |
 +-----------------------+------------+-------------+----------+------------------------------+
-| additionalParam       | M          | 0..N        | String   |Additional  parameters        |
+| additionalParam       | M          | 0..N        | Object   |Additional  parameters        |
 |                       |            |             |          |passed  by  the  NFVO  as     |
 |                       |            |             |          |input  to  the  instantiation |
 |                       |            |             |          |process,  specific  to  the   |
@@ -130,7 +130,7 @@ juju
 +--------------+------------+-------------+----------+-------------------------------+
 | Attribute    | Qualifier  | Cardinality | Content  | Description                   |
 +==============+============+=============+==========+===============================+
-| vimType      | M          | 1           | String   | vim                           |
+| vimType      | M          | 1           | String   | Type of the VIM               |
 +--------------+------------+-------------+----------+-------------------------------+
 | apiVersion   | M          | 1           | String   |                               |
 +--------------+------------+-------------+----------+-------------------------------+
@@ -168,7 +168,7 @@ juju
         "vimid":"1", 
         "interfaceInfo":{
 
-          "vimType":"vim",
+          "vimType":"openstack",
           "apiVersion":"v2",
           "protocolType":"http"
 
@@ -197,17 +197,17 @@ juju
 
 **3.1.2  Response**
 
-+--------------+------------+-------------+-----------+-------------------------------+
-| Parameter    | Qualifier  | Cardinality | Content   | Description                   |
-+==============+============+=============+===========+===============================+
-| jobId        | M          | 1           | Identifier| Tenant Name of tenant         |
-|              |            |             |           | operation occurrence.         |
-|              |            |             |           |                               |
-|              |            |             |           | [lifecycleOperationOccurren   |
-|              |            |             |           |  ceId]                        |
-+--------------+------------+-------------+-----------+-------------------------------+
-| password     | M          | 1           | String    | Password of login user        |
-+--------------+------------+-------------+-----------+-------------------------------+
++-------------------+------------+-------------+-----------+-------------------------------+
+| Parameter         | Qualifier  | Cardinality | Content   | Description                   |
++===================+============+=============+===========+===============================+
+| jobId             | M          | 1           | Identifier| Tenant Name of tenant         |
+|                   |            |             |           | operation occurrence.         |
+|                   |            |             |           |                               |
+|                   |            |             |           | [lifecycleOperationOccurren   |
+|                   |            |             |           |  ceId]                        |
++-------------------+------------+-------------+-----------+-------------------------------+
+| vnfInstanceId     | M          | 1           | String    | VNF instance identifier.      |
++-------------------+------------+-------------+-----------+-------------------------------+
 
 {
   "jobId":"1",
@@ -340,7 +340,6 @@ VNF filter: vnfInstanceId via url [R1]
 |              |            |             |           | attributeSelector will be       |
 |              |            |             |           | returned for the selected       |
 |              |            |             |           | VNF instance(s).                |
-|              |            |             |           | See note.                       |
 +--------------+------------+-------------+-----------+---------------------------------+
 
 **VnfInfo Table**
@@ -350,7 +349,7 @@ VNF filter: vnfInstanceId via url [R1]
 +=================+============+=============+==========+=================================+
 | vnfInstanceId   | M          | 1           | String   | VNF instance identifier.        |
 +-----------------+------------+-------------+----------+---------------------------------+
-| vnfInstanceName | M          | o..1        | String   | VNF instance name. See note.    |
+| vnfInstanceName | M          | o..1        | String   | VNF instance name.              |
 +-----------------+------------+-------------+----------+---------------------------------+
 | vnfInstance     | M          | o..1        | String   | Human-readable description of   |
 | Description     |            |             |          | the VNF instance.               |
@@ -511,7 +510,7 @@ VNF filter: vnfInstanceId via url [R1]
 |               |            |             |             | declared in the VNFD. See note 1.           |
 +---------------+------------+-------------+-------------+---------------------------------------------+
 | aspectId      | M          | 1           | Identifier  | Identifies the aspect of the VNF that is    |
-|               |            |             |             | requested to be scaled, as declared in the  |
+|               |            |             |             | requested to be scaled                      |
 +---------------+------------+-------------+-------------+---------------------------------------------+
 | numberOfSteps | M          | 1           | Integer     | Number of scaling steps to be executed as   |
 |               |            |             |             | part of this ScaleVnf operation. It shall   |
@@ -532,7 +531,7 @@ VNF filter: vnfInstanceId via url [R1]
 |        scaling (scale up, scale down) is not supported in the present document.                      |
 |        SCALE_IN designates scaling in.                                                               |
 |        SCALE_OUT 1 designates scaling out.                                                           |
-| NOTE 2:  A scaling step is the smallest unit by which a VNF can be scaled w.r.t a particular scaling |
+| NOTE 2: A scaling step is the smallest unit by which a VNF can be scaled w.r.t a particular scaling  |
 |          aspect.                                                                                     |
 +------------------------------------------------------------------------------------------------------+
 
@@ -614,7 +613,7 @@ VNF filter: vnfInstanceId via url [R1]
     "vduid": "vdu_100",
     "vmname": "ZTE_SSS_111_PP_2_L"
 
-  },
+  }
 
 }
 
@@ -631,3 +630,237 @@ VNF filter: vnfInstanceId via url [R1]
   "jobId":"1"
 
 }
+
+
+**4.  Interfaces provided by VFC to integrate with VNFM driver**
+===========================================
+
+
+**4.1  VNF Lifecycle Operation Granting Interface**
+------------------------
+
+
++---------------+------------------------------------------------------------------+
+| IF Definition |  Description                                                     |
++===============+==================================================================+
+| URI           | http(s)://[hostname][:port]/api//nslcm/v1/ns/grantvnf            |
++---------------+------------------------------------------------------------------+
+| Operation     |  POST                                                            |
++---------------+------------------------------------------------------------------+
+| Direction     |  VNFMDriver -> NSLCM                                             |
++---------------+------------------------------------------------------------------+
+
+**4.1.1  Request**
+
+
+{
+  "vnfInstanceId": "string",
+  "vnfDescriptorId": "string",
+  "lifecycleOperation": "Terminal",
+  "jobId": "string",
+  "addResource": [
+    {
+      "type": "string",
+      "resourceDefinitionId": "string",
+      "vdu": "string"
+    }
+  ],
+  "removeResource": [
+    {
+      "type": "string",
+      "resourceDefinitionId": "string",
+      "vdu": "string"
+    }
+  ],
+  "additionalParam": {}
+}
+
+**4.1.2  Response**
+
+{
+  "vim": {
+    "vimInfoId": "string",
+    "vimId": "string",
+    "interfaceInfo": {
+      "vimType": "string",
+      "apiVersion": "string",
+      "protocolType": "string"
+    },
+    "accessInfo": {
+      "tenant": "string",
+      "username": "string",
+      "password": "string"
+    },
+    "interfaceEndpoint": "string"
+  }
+}
+
+**4.2  VNF LCM Notification Interface**
+------------------------
+
++---------------+------------------------------------------------------------------+
+| IF Definition |  Description                                                     |
++===============+==================================================================+
+| URI           | http(s)://[hostname][:port]/api/nslcm/v1/vnfs/                   |
+|               | {vnfInstanceId}/Notify                                           |
++---------------+------------------------------------------------------------------+
+| Operation     |  POST                                                            |
++---------------+------------------------------------------------------------------+
+| Direction     |  VNFMDriver -> NSLCM                                             |
++---------------+------------------------------------------------------------------+
+
+**4.2.1  Request**
+
+{
+  "status": "result",
+  "vnfInstanceId": "string",
+  "operation": "Terminal",
+  "jobId": "string",
+  "affectedVnfc": [
+    {
+      "vnfcInstanceId": "string",
+      "vduId": "string",
+      "changeType": "added",
+      "vimid": "string",
+      "vmid": "string",
+      "vmname": "string"
+    }
+  ],
+  "affectedCp": [
+    {
+      "virtualLinkInstanceId": "string",
+      "cpinstanceid": "string",
+      "cpdid": "string",
+      "ownerType": "string",
+      "ownerId": "string",
+      "changeType": "added",
+      "portResource": {
+        "vimid": "string",
+        "resourceid": "string",
+        "resourceName": "string",
+        "tenant": "string",
+        "ipAddress": "string",
+        "macAddress": "string",
+        "instId": "string"
+      }
+    }
+  ],
+  "affectedVl": [
+    {
+      "vlInstanceId": "string",
+      "vldid": "string",
+      "changeType": "added",
+      "networkResource": {
+        "resourceType": "network",
+        "resourceId": "string"
+      }
+    }
+  ],
+  "affectedVirtualStorage": [
+    {}
+  ]
+}
+
+**4.2.2  Response**
+
+N/A
+
+
+**4.3  Query VNFM Register Info Interface**
+------------------------
+
++---------------+------------------------------------------------------------------+
+| IF Definition |  Description                                                     |
++===============+==================================================================+
+| URI           | http(s)://[hostname][:port]/api/nslcm/v1/vnfms/{vnfmid}          |
++---------------+------------------------------------------------------------------+
+| Operation     |  GET                                                             |
++---------------+------------------------------------------------------------------+
+| Direction     |  VNFMDriver -> NSLCM                                             |
++---------------+------------------------------------------------------------------+
+
+**4.3.1  Request**
+N/A
+
+**4.3.2  Response**
+{
+  "vnfmId": "string",
+  "name": "string",
+  "type": "string",
+  "url": "string",
+  "userName": "string",
+  "password": "string",
+  "vimId": "string",
+  "vendor": "string",
+  "version": "string",
+  "description": "string",
+  "certificateUrl": "string",
+  "createTime": "string"
+}
+
+
+**4.4  Query VIM Register Info Interface**
+------------------------
+
++---------------+------------------------------------------------------------------+
+| IF Definition |  Description                                                     |
++===============+==================================================================+
+| URI           | http(s)://[hostname][:port]/api/nslcm/v1/vims/{vimid}            |
++---------------+------------------------------------------------------------------+
+| Operation     |  GET                                                             |
++---------------+------------------------------------------------------------------+
+| Direction     |  VNFMDriver -> NSLCM                                             |
++---------------+------------------------------------------------------------------+
+
+**4.4.1  Request**
+N/A
+
+**4.4.2  Response**
+
++--------------------+------------+-------------+-------------+---------------------------------+
+| Parameter          | Qualifier  | Cardinality | Content     | Description                     |
++====================+============+=============+=============+=================================+
+| vimId              | M          | 1           | string      | The identifier of the VIM       |
++--------------------+------------+-------------+-------------+---------------------------------+
+| name               | M          | 1           | string      | The name of the VIM             | 
++--------------------+------------+-------------+-------------+---------------------------------+
+| type               | M          | 1           | string      | The type of the VIM             |
++--------------------+------------+-------------+-------------+---------------------------------+
+| url                | M          | 1           | string      | The access URL of the VIM       |
++--------------------+------------+-------------+-------------+---------------------------------+
+| userName           | M          | 1           | string      | The user name of the VIM        |
++--------------------+------------+-------------+-------------+---------------------------------+
+| password           | M          | 1           | string      | The password of the VIM         |
++--------------------+------------+-------------+-------------+---------------------------------+
+| vendor             | M          | 1           | string      | The vendor of the VIM           |
++--------------------+------------+-------------+-------------+---------------------------------+
+| version            | M          | 1           | version     | The version of the VIM          |
++--------------------+------------+-------------+-------------+---------------------------------+
+| description        | O          | 1           | description | The description of the VIM      |
++--------------------+------------+-------------+-------------+---------------------------------+
+| sslCacert          | O          | 1           | Identifier  | The collection of trusted       |
+|                    |            |             |             | certificates towards the VIM.   |
++--------------------+------------+-------------+-------------+---------------------------------+
+| sslInsecure        | O          | 1           | Identifier  | Whether to verify VIM's         |
+|                    |            |             |             | certificate.                    |
++--------------------+------------+-------------+-------------+---------------------------------+
+| status             | O          | 1           | Identifier  | The status of external system   |
++--------------------+------------+-------------+-------------+---------------------------------+
+
+
+{
+  "vimId": "string",
+  "name": "string",
+  "type": "string",
+  "url": "string",
+  "userName": "string",
+  "password": "string",
+  "vendor": "string",
+  "version": "string",
+  "description": "string",
+  "createTime": "string",
+  "sslCacert": "string",
+  "sslInsecure": "string",
+  "status": "string"
+}
+
