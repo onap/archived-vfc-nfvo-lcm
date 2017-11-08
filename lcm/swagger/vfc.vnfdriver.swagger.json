@@ -345,7 +345,7 @@
         }
       }
     },
-    "/nslcm/v1/vnfs/{vnfInstanceId}/Notify": {
+    "/nslcm/v1/{vnfmid}/vnfs/{vnfInstanceId}/Notify": {
       "post": {
         "tags": [
           "NSLCM"
@@ -354,6 +354,13 @@
         "description": "VNF LCM Notification API should be provided by NSLCM component",
         "operationId": "VNF_LCM_Notification",
         "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "VNFM Instance Id",
+            "name": "vnfmid",
+            "in": "path"
+          },
           {
             "required": true,
             "type": "string",
