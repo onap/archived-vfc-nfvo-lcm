@@ -345,7 +345,7 @@
         }
       }
     },
-    "/nslcm/v1/{vnfmid}/vnfs/{vnfInstanceId}/Notify": {
+    "/nslcm/v1/ns/{vnfmid}/vnfs/{vnfInstanceId}/Notify": {
       "post": {
         "tags": [
           "NSLCM"

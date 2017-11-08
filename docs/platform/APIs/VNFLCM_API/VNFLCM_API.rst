@@ -2,14 +2,14 @@
    :depth: 3
 ..
 
-   **VNFM API**
+   **GVNFM Northbound & Southbound APIs**
    **V0.1**
 
 **1 Scope**
 =============
 
-    The scope of the present document is to describe the VNFM exposed
-    API specification over Or-Vnfm Reference Point.
+    The scope of the present document is to describe the GVNFM exposed
+    API specification over Or-Vnfm reference point and Ve-Vnfm-vnf reference point.
 
 **2 Terms, Definitions and Abbreviations**
 ===========================================
@@ -29,7 +29,7 @@
 
 Table 2-1 abbreviations
 
-**3. Interfaces provided by VNFM**  (Or-Vnfm/Ve-Vnfm-vnf) 
+**3. Interfaces provided by GVNFM**  (Or-Vnfm) 
 ==========================================================
 
    Interfaces use RESTful API and the format is as follows:
