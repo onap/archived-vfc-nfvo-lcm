@@ -7,7 +7,7 @@
 
 **1.  Scope**
 ==============
-The scope of the present document is to describe the VNFM Driver exposed API specification.
+The scope of the present document is to describe the VNFM driver integrated related API specification.
 
 **2.  Terms, Definitions and Abbreviations**
 =============================================
@@ -34,7 +34,7 @@ Interfaces use RESTful API and the format is as follows:
 http(s)://[hostname][:port]/api/{vnfmtype}/v1/{vnfm_id}/[……]
 R1 vnfmtype:
 zte-vnfm
-fw-vnfm
+hw-vnfm
 juju
 
 **3.1  Instantiate VNF**

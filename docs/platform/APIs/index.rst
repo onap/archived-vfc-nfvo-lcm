@@ -7,7 +7,7 @@ VF-C Offered APIs
 List VF-C APIs offered.
 
 
-NS LCM API
+VFC Northbound API
 ----------
 
 Network services lifecycle management APIs
@@ -19,10 +19,10 @@ Network services lifecycle management APIs
    NSLCM_API/index
 
 
-VNFM Driver API 
+VNFM Integration APIs 
 ---------------
 
-VNFM Driver component northbound APIs
+VNFM Driver Integration Related APIs
 
 .. toctree:: 
    :maxdepth: 1
@@ -31,10 +31,10 @@ VNFM Driver component northbound APIs
 
 
 
-VNF LCM API
+GVNFM Northbound & Southbound APIs
 -----------
 
-VNF lifecycle management APIs
+GVNFM Northbound & Southbound APIs for VNF Integration
 
 .. toctree:: 
    :maxdepth: 1
