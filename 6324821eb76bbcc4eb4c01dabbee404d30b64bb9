@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a4e6583_5903a573",
+        "filename": "lcm/swagger/vfc.vnfdriver.swagger.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2017-11-08T10:00:51Z",
+      "side": 1,
+      "message": "This is already repaired, please check the newest code",
+      "range": {
+        "startLine": 464,
+        "startChar": 15,
+        "endLine": 464,
+        "endChar": 20
+      },
+      "revId": "6324821eb76bbcc4eb4c01dabbee404d30b64bb9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_39f8e97b",
+        "filename": "lcm/swagger/vfc.vnfdriver.swagger.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2017-11-08T10:00:51Z",
+      "side": 1,
+      "message": "This is already repaired, please check the newest code",
+      "range": {
+        "startLine": 503,
+        "startChar": 14,
+        "endLine": 503,
+        "endChar": 15
+      },
+      "revId": "6324821eb76bbcc4eb4c01dabbee404d30b64bb9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
