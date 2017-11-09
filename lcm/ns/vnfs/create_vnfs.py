@@ -80,7 +80,7 @@ class CreateVnfs(Thread):
             self.save_info_to_db()
             if REPORT_TO_AAI:
                 self.create_vnf_in_aai()
-                self.create_vserver_in_aai()
+                # self.create_vserver_in_aai()
             JobUtil.add_job_status(self.job_id, 100, 'vnf instantiation success', 0)
         except NSLCMException as e:
             self.vnf_inst_failed_handle(e.message)
