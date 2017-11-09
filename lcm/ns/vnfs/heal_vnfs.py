@@ -66,7 +66,7 @@ class NFHealService(threading.Thread):
             logger.error('NF instance[id=%s] does not exist' % self.vnf_instance_id)
             raise NSLCMException('NF instance[id=%s] does not exist' % self.vnf_instance_id)
         logger.debug('vnfd_model = %s, vnf_instance_id = %s' % (nf_info[0].vnfd_model, self.vnf_instance_id))
-        self.nf_model = json.loads(nf_info[0].vnfd_model)
+        self.nf_model = nf_info[0].vnfd_model
         self.m_nf_inst_id = nf_info[0].mnfinstid
         self.vnfm_inst_id = nf_info[0].vnfm_inst_id
         self.nf_additional_params = ignore_case_get(self.data, 'additionalParams')
@@ -83,7 +83,7 @@ class NFHealService(threading.Thread):
         vmid = ignore_case_get(actionvminfo, 'vmid')
         vmname = ignore_case_get(actionvminfo, 'vmname')
 
-        vduid = self.get_vudId(vmid, self.vnf_instance_id)
+        vduid = self.get_vudId(vmid)
 
         self.nf_heal_params = {
             "action": action,
