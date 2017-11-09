@@ -81,6 +81,7 @@ class CreateVnfs(Thread):
             if REPORT_TO_AAI:
                 self.create_vnf_in_aai()
                 self.create_vserver_in_aai()
+            JobUtil.add_job_status(self.job_id, 100, 'vnf instantiation success', 0)
         except NSLCMException as e:
             self.vnf_inst_failed_handle(e.message)
         except Exception:
@@ -119,7 +120,8 @@ class CreateVnfs(Thread):
             if self.vnf_id == vnf_info['vnf_id']:
                 self.vnfd_id = vnf_info['properties']['id']
                 if 'name' not in vnf_info['properties']:
-                    self.vnf_inst_name = self.vnfd_id + str(uuid.uuid4())
+                    # HW vnf instance name must start with alphabet
+                    self.vnf_inst_name = 'vnf' + self.vnfd_id + str(uuid.uuid4())
                 else:
                     self.vnf_inst_name = vnf_info['properties']['name'] + str(uuid.uuid4())
                 self.vnf_inst_name = self.vnf_inst_name[:30]
@@ -255,7 +257,6 @@ class CreateVnfs(Thread):
         logger.debug("save_info_to_db start")
         do_biz_with_share_lock("set-vnflist-in-vnffginst-%s" % self.ns_inst_id, self.save_vnf_inst_id_in_vnffg)
         NfInstModel.objects.filter(nfinstid=self.nf_inst_id).update(status=VNF_STATUS.ACTIVE, lastuptime=now_time())
-        JobUtil.add_job_status(self.job_id, 100, 'vnf instantiation success', 0)
         logger.debug("save_info_to_db end")
 
     def vnf_inst_failed_handle(self, error_msg):

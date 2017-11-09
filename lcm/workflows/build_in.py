@@ -192,7 +192,7 @@ class JobWaitThread(Thread):
         self.job_id = job_id
         self.ns_job_id = ns_job_id
         self.index = index
-        self.retry_count = 60
+        self.retry_count = 600
         self.interval_second = 3
 
     def run(self):
