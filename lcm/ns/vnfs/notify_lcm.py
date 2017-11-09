@@ -23,6 +23,9 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.database.models import VNFCInstModel, VLInstModel, NfInstModel, PortInstModel, CPInstModel, VmInstModel
 from lcm.pub.msapi.aai import create_network_aai, query_network_aai, delete_network_aai
 from lcm.pub.utils.values import ignore_case_get
+from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
+from lcm.pub.msapi.aai import create_vserver_aai
+from lcm.pub.config.config import REPORT_TO_AAI
 
 
 logger = logging.getLogger(__name__)
@@ -84,6 +87,9 @@ class NotifyLcm(object):
                               nfinstid=self.vnf_instid, vmid=vmId).save()
                 VmInstModel(vmid=vmId, vimid=vimId, resouceid=vmId, insttype=INST_TYPE.VNF,
                             instid=self.vnf_instid, vmname=vmName, hostid='1').save()
+                if REPORT_TO_AAI:
+                    self.create_vserver_in_aai(vimId, vmId, vmName)
+                logger.debug("Success to create all vserver to aai.")
             elif changeType == 'removed':
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).delete()
             elif changeType == 'modified':
@@ -239,5 +245,45 @@ class NotifyLcm(object):
                          % (vlInstanceId, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (vlInstanceId, e.message))
+        except:
+            logger.error(traceback.format_exc())
+
+    def create_vserver_in_aai(self, vim_id, vserver_id, vserver_name):
+        logger.debug("NotifyLcm::create_vserver_in_aai::report vserver instance to aai.")
+        try:
+            cloud_owner, cloud_region_id = split_vim_to_owner_region(vim_id)
+
+            # query vim_info from aai
+            vim_info = get_vim_by_id(vim_id)
+            tenant_id = vim_info["tenantId"]
+            data = {
+                "vserver-id": vserver_id,
+                "vserver-name": vserver_name,
+                "prov-status": "ACTIVE",
+                "vserver-selflink": "",
+                "in-maint": True,
+                "is-closed-loop-disabled": False,
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "generic-vnf",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "generic-vnf.vnf-id",
+                                    "relationship-value": self.vnf_instid
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+
+            # create vserver instance in aai
+            resp_data, resp_status = create_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, data)
+            logger.debug("Success to create vserver[%s] to aai, vnf instance=[%s], resp_status: [%s]."
+                         % (vserver_id, self.vnf_instid, resp_status))
+        except NSLCMException as e:
+            logger.debug("Fail to create vserver to aai, vnf instance=[%s], detail message: %s"
+                         % (self.vnf_instid, e.message))
         except:
             logger.error(traceback.format_exc())
