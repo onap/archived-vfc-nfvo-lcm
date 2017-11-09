@@ -61,6 +61,13 @@ def convert_vim_info(vim_info_aai):
     vim_id = vim_info_aai["cloud-owner"] + "_" + vim_info_aai["cloud-region-id"]
     esr_system_info = ignore_case_get(ignore_case_get(vim_info_aai, "esr-system-info-list"), "esr-system-info")
     # tenants = ignore_case_get(vim_info_aai, "tenants")
+    default_tenant = ignore_case_get(esr_system_info[0], "default-tenant")
+    tenants = ignore_case_get(ignore_case_get(vim_info_aai, "tenants"), "tenant")
+    tenant_id = ""
+    for tenant_info in tenants:
+        if tenant_info["tenant-name"] == default_tenant:
+            tenant_id = tenant_info["tenant-id"]
+            break
     vim_info = {
         "vimId": vim_id,
         "name": vim_id,
@@ -68,7 +75,8 @@ def convert_vim_info(vim_info_aai):
         "userName": ignore_case_get(esr_system_info[0], "user-name"),
         "password": ignore_case_get(esr_system_info[0], "password"),
         # "tenant": ignore_case_get(tenants[0], "tenant-id"),
-        "tenant": ignore_case_get(esr_system_info[0], "default-tenant"),
+        "tenantId": tenant_id,
+        "tenant": default_tenant,
         "vendor": ignore_case_get(esr_system_info[0], "vendor"),
         "version": ignore_case_get(esr_system_info[0], "version"),
         "description": "vim",

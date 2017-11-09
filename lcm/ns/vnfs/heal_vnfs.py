@@ -76,7 +76,7 @@ class NFHealService(threading.Thread):
             raise NSLCMException('additionalParams parameter does not exist or value incorrect')
 
         action = ignore_case_get(self.nf_additional_params, 'action')
-        if action is "restartvm":
+        if action == "restartvm":
             action = "vmReset"
 
         actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
