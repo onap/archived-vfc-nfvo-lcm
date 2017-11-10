@@ -13,6 +13,6 @@ Use docker logs command to get the log.
 
 ::
 
-  docker logs &{docker-name}
+  docker logs ${docker-name}
   
 

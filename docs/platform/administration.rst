@@ -15,6 +15,7 @@ Processes
 Actions
 +++++++
 All actions performed on the VF-C components are docker-based.
+
 * Action X
 * Action Y
 
