@@ -71,6 +71,9 @@ class CreateVnfs(Thread):
             self.get_params()
             self.check_nf_name_exist()
             self.get_vnfd_id()
+            if REPORT_TO_AAI:
+                self.create_vnf_in_aai()
+                # self.create_vserver_in_aai()
             self.check_nf_package_valid()
             self.send_nf_init_request_to_vnfm()
             self.send_get_vnfm_request_to_extsys()
@@ -78,9 +81,6 @@ class CreateVnfs(Thread):
             self.wait_vnfm_job_finish()
             self.write_vnf_creation_info()
             self.save_info_to_db()
-            if REPORT_TO_AAI:
-                self.create_vnf_in_aai()
-                # self.create_vserver_in_aai()
             JobUtil.add_job_status(self.job_id, 100, 'vnf instantiation success', 0)
         except NSLCMException as e:
             self.vnf_inst_failed_handle(e.message)
@@ -328,7 +328,7 @@ class CreateVnfs(Thread):
 
             # query vim_info from aai
             vim_info = get_vim_by_id(self.vim_id)
-            tenant_id = vim_info["tenant"]
+            tenant_id = vim_info["tenantId"]
             vm_inst_infos = VmInstModel.objects.filter(insttype=INST_TYPE.VNF, instid=self.nf_inst_id)
             for vm_inst_info in vm_inst_infos:
                 vserver_id = vm_inst_info.resouceid
