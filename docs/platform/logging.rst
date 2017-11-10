@@ -3,12 +3,16 @@
 
 Logging & Diagnostic Information
 --------------------------------
-Description of how to interact with and diagnose problems with the components
-as delivered.
+
+In Amsterdam release, VF-Clogs are kept inside the docker containers.
+You can get the log when the dockers start.
 
 Where to Access Information
 +++++++++++++++++++++++++++
+Use docker logs command to get the log.
 
+::
 
-Error / Warning Messages
-++++++++++++++++++++++++
+  docker logs &{docker-name}
+  
+

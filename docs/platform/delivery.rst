@@ -25,3 +25,23 @@ VF-C provides vnfm driver northbound api,then Vendor can implement this APIs to 
 For the EMS driver,it can collect VNF lay’s Fcaps data from Vendor EMS, and then translate and put these data to DCAE Vescollector
 
 
+For the Amsterdan release, VF-C includes the following components:
+
+NFVO
+ - vfc-nfvo-lcm
+ - vfc-nfvo-catalog
+ - vfc-nfvo-resmgr
+ - vfc-nfvo-driver-emsdriver
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter
+ - vfc-nfvo-driver-gvnfm-jujudriver
+ - vfc-nfvo-driver-svnfm-ztedriver
+ - vfc-nfvo-driver-svnfm-huaweidriver
+ - vfc-nfvo-driver-svnfm-nokiadriver
+ - vfc-nfvo-driver-sfc-ztesfcdriver
+GVNFM
+ - vfc-gvnfm-vnflcm
+ - vfc-gvnfm-vnfmgr
+ - vfc-gvnfm-vnfres
+Workflow
+ - workflow-engine-mgr-service
+ - activiti-extension

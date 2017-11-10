@@ -17,11 +17,11 @@ VF-C also provides standard south bound interface to VNFMs and can integration w
 
 
 
-Version: x.y.z
+Version: 1.0.0
 --------------
 
 
-:Release Date: yyyy-mm-dd
+:Release Date: 2017-11-16
 
 
 
@@ -32,20 +32,44 @@ Version: x.y.z
  - VNF FCAPS, collecting FCAPS data from vendor EMS
  - VNFM Integration, integration with specific VNFMs of vendors to deploy commercial VNFs
  - VNF Integration, integration with VNF via GVNFM
+ 
+released components:
 
+NFVO
+ - vfc-nfvo-lcm
+ - vfc-nfvo-catalog
+ - vfc-nfvo-resmgr
+ - vfc-nfvo-driver-emsdriver
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter
+ - vfc-nfvo-driver-gvnfm-jujudriver
+ - vfc-nfvo-driver-svnfm-ztedriver
+ - vfc-nfvo-driver-svnfm-huaweidriver
+ - vfc-nfvo-driver-svnfm-nokiadriver
+ - vfc-nfvo-driver-sfc-ztesfcdriver
+GVNFM
+ - vfc-gvnfm-vnflcm
+ - vfc-gvnfm-vnfmgr
+ - vfc-gvnfm-vnfres
+Workflow
+ - workflow-engine-mgr-service
+ - activiti-extension
 
 **Bug Fixes**
 
-
+This is the initial release
 **Known Issues**
+
+None
 
 **Security Issues**
 
-
+None
 **Upgrade Notes**
 
+This is the initial release
 **Deprecation Notes**
 
+This is the initial release
 **Other**
 
 ===========

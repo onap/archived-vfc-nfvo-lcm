@@ -19,6 +19,9 @@ As part of the integration between OpenECOMP and OPEN-O, VF-C leverages ETSI NFV
    :maxdepth: 1
 
    architecture.rst
-   delivery.rst
    APIs/index
+   consumedapis.rst
+   delivery.rst
+   logging.rst
    installation.rst
+   administration.rst
