@@ -238,7 +238,7 @@ class CreateVnfs(Thread):
                               timeout=NFVO_VNF_INST_TIMEOUT_SECOND)
 
         if ret != JOB_MODEL_STATUS.FINISHED:
-            logger.error('VNF instantiation failed on VNFM side.')
+            logger.error('VNF instantiation failed on VNFM side. ret=[%s]', ret)
             raise NSLCMException('VNF instantiation failed on VNFM side.')
 
     def write_vnf_creation_info(self):

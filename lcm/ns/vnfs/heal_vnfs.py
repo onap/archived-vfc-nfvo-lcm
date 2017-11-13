@@ -77,7 +77,8 @@ class NFHealService(threading.Thread):
 
         action = ignore_case_get(self.nf_additional_params, 'action')
         if action == "restartvm":
-            action = "vmReset"
+            # action = "vmReset"
+            action = "vmStart"
 
         actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
         vmid = ignore_case_get(actionvminfo, 'vmid')
