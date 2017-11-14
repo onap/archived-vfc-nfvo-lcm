@@ -77,7 +77,7 @@ class CreateVls(object):
         self.vld_id = ignore_case_get(vl_info, "vl_id")
         self.description = ignore_case_get(vl_info, "description")
         self.vl_properties = ignore_case_get(vl_info, "properties")
-        self.vl_inst_name = ignore_case_get(self.vl_properties, "name")
+        self.vl_inst_name = ignore_case_get(self.vl_properties, "network_name")
         self.route_external = ignore_case_get(vl_info, "route_external")
         ns_info = NSInstModel.objects.filter(id=self.owner_id)
         self.ns_name = ns_info[0].name if ns_info else ""
