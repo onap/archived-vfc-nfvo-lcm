@@ -63,7 +63,6 @@ class GrantVnfs(object):
                     m_vnf_inst_id, vnfm_inst_id))
 
             vnf_pkg_id = vnfinsts[0].package_id
-            # vnf_pkgs = NfPackageModel.objects.filter(nfpackageid=vnf_pkg_id)
             nfpackage_info = query_vnfpackage_by_id(vnf_pkg_id)
             vnf_pkg = nfpackage_info["packageInfo"]
 
