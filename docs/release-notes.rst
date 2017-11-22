@@ -6,34 +6,29 @@ VF-C Release Notes
 ==================
 
 .. note::
-	* This Release Notes must be updated each time the team decides to Release new artifacts.
-	* The scope of this Release Notes is for this particular component. In other words, each ONAP component has its Release Notes.
-	* This Release Notes is cumulative, the most recently Released artifact is made visible in the top of this Release Notes.
-	* Except the date and the version number, all the other sections are optional but there must be at least one section describing the purpose of this new release.
-	* This note must be removed after content has been added.
+..	* This Release Notes must be updated each time the team decides to Release new artifacts.
+..	* The scope of this Release Notes is for this particular component. In other words, each ONAP component has its Release Notes.
+..	* This Release Notes is cumulative, the most recently Released artifact is made visible in the top of this Release Notes.
+..	* Except the date and the version number, all the other sections are optional but there must be at least one section describing the purpose of this new release.
+..	* This note must be removed after content has been added.
 
-VF-C includes two main component:NFV-O and GVNFM, can implement life cycle management and FCAPS of VNF and NS. VF-C takes part in end2end service orchestration and close loop automatiion by working with SO,DCAE and Policy. 
-VF-C also provides standard south bound interface to VNFMs and can integration with multi vendor VNFMs via drivers.
-
-
+VF-C includes two main components, NFV-O and GVNFM, to implement life cycle management and FCAPS of VNF and NS. VF-C takes part in end to end service orchestration and close loop automation by working with SO, DCAE and Policy. 
+VF-C also provides standard southbound interface to VNFMs and can integrate with multi vendor VNFMs via drivers.
 
 Version: 1.0.0
 --------------
 
-
 :Release Date: 2017-11-16
-
-
 
 **New Features**
 
- - NS lifecycle management, including NS instance creation,termination and healing
- - VNF lifecycle management, including VNF nstance creation,termination and healing
- - VNF FCAPS, collecting FCAPS data from vendor EMS
- - VNFM Integration, integration with specific VNFMs of vendors to deploy commercial VNFs
- - VNF Integration, integration with VNF via GVNFM
+- NS lifecycle management, including NS instance creation, termination and healing
+- VNF lifecycle management, including VNF nstance creation, termination and healing
+- VNF FCAPS, collecting FCAPS data from vendor EMS
+- VNFM Integration, integration with specific VNFMs of vendors to deploy commercial VNFs
+- VNF Integration, integration with VNF via GVNFM
  
-released components:
+Released components:
 
 NFVO
  - vfc-nfvo-lcm
