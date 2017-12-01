@@ -72,7 +72,7 @@ class TestTerminateNsViews(TestCase):
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
             "/api/nslcm/v1/ns/vnfs/1":
                 [0, json.JSONEncoder().encode({}), '200'],
-            "/api/ztevmanagerdriver/v1/jobs/" + self.job_id + "&responseId=0":
+            "/api/ztevnfmdriver/v1/jobs/" + self.job_id + "&responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
                                                                       "status": JOB_MODEL_STATUS.FINISHED,
