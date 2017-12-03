@@ -693,49 +693,17 @@
         "vim": {
           "type": "object",
           "properties": {
-            "vimInfoId": {
+            "vimid": {
               "type": "string"
             },
-            "vimId": {
-              "type": "string"
-            },
-            "interfaceInfo": {
-              "type": "object",
-              "properties": {
-                "vimType": {
-                  "type": "string",
-                  "description": "The vim Type value wil be openstack"
-                },
-                "apiVersion": {
-                  "type": "string",
-                  "description": "The api Version Type value will be "
-                },
-                "protocolType": {
-                  "type": "string",
-                  "description": "The protocol Type value will be http or https"
-                }
-              }
-            },
-            "accessInfo": {
+            "accessinfo": {
               "type": "object",
               "properties": {
                 "tenant": {
                   "type": "string",
                   "description": "Tenant Name of tenant"
-                },
-                "username": {
-                  "type": "string",
-                  "description": "Username for login"
-                },
-                "password": {
-                  "type": "string",
-                  "description": "Password of login user"
                 }
               }
-            },
-            "interfaceEndpoint": {
-              "type": "string",
-              "description": "Information about the interface endpoint. It is a URL"
             }
           }
         }
