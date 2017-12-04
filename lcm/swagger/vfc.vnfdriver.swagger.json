@@ -1155,9 +1155,13 @@
       "type": "object",
       "description": "vnf package infomation",
       "properties": {
-        "csarId": {
+        "vnfPackageId": {
           "type": "string",
-          "description": "vnf package id, UUID"
+          "description": "vnf package id (csarId)"
+        },
+        "csarName": {
+          "type": "string",
+          "description": "The name of the csar"
         },
         "vnfdId": {
           "type": "string",
@@ -1167,6 +1171,10 @@
           "type": "string",
           "description": "VNF descriptor vendor ID"
         },
+        "vnfdModel": {
+          "type": "string",
+          "description": "The model of the VNF (JSON) encoded to string"
+        },
         "vnfdVersion": {
           "type": "string",
           "description": "VNF descriptor version"
@@ -1175,9 +1183,9 @@
           "type": "string",
           "description": "VNF Software version"
         },
-        "downloadUri":{
+        "downloadUrl":{
           "type": "string",
-          "description": "The download uri of VNF package"
+          "description": "The URL from which the VNF package can be downloaded"
         }
       }
     },
