@@ -70,10 +70,10 @@ class TerminateVnfs(threading.Thread):
             vnf_inst_info.status = VNF_STATUS.TERMINATING
             vnf_inst_info.save()
 
-    def check_vnf_is_exist(self):
+    def get_vnf_inst(self):
         vnf_inst = NfInstModel.objects.filter(nfinstid=self.vnf_inst_id)
         if not vnf_inst.exists():
-            logger.warning('[VNF terminate] Vnf terminate [%s] is not exist.' % self.vnf_inst_id)
+            logger.warning('[VNF terminate] Vnf terminate [%s] does not exist.' % self.vnf_inst_id)
             return None
         return vnf_inst[0]
 
@@ -81,7 +81,7 @@ class TerminateVnfs(threading.Thread):
         JobUtil.add_job_status(self.job_id, progress, status_decs, error_code)
 
     def initdata(self):
-        vnf_inst_info = self.check_vnf_is_exist()
+        vnf_inst_info = self.get_vnf_inst()
         if not vnf_inst_info:
             self.add_progress(100, "TERM_VNF_NOT_EXIST_SUCCESS", "finished")
         self.add_progress(2, "GET_VNF_INST_SUCCESS")
