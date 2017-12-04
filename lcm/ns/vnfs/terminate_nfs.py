@@ -57,9 +57,9 @@ class TerminateVnfs(threading.Thread):
             self.delete_data_from_db()
         except NSLCMException as e:
             self.set_job_err(e.message)
-        except Exception:
+        except Exception as ex:
             logger.error(traceback.format_exc())
-            self.set_job_err('unexpected exception')
+            self.set_job_err(ex.message)
 
     def set_vnf_status(self, vnf_inst_info):
         vnf_status = vnf_inst_info.status
