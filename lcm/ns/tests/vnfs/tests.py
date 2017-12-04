@@ -96,7 +96,7 @@ class TestCreateVnfViews(TestCase):
     def test_create_vnf_thread(self, mock_call_req):
         nf_inst_id, job_id = create_vnfs.prepare_create_params()
         mock_vals = {
-            "/api/ztevmanagerdriver/v1/1/vnfs":
+            "/api/ztevnfmdriver/v1/1/vnfs":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), '200'],
             "/api/catalog/v1/vnfpackages/zte_vbras":
                 [0, json.JSONEncoder().encode(nf_package_info), '200'],
@@ -112,7 +112,7 @@ class TestCreateVnfViews(TestCase):
                 [0, json.JSONEncoder().encode(vim_info), '201'],
             "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1":
                 [0, json.JSONEncoder().encode({}), '201'],
-            "/api/ztevmanagerdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
+            "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
                                                                       "status": JOB_MODEL_STATUS.FINISHED,
@@ -243,7 +243,7 @@ class TestTerminateVnfViews(TestCase):
         mock_vals = {
             "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
                 [0, json.JSONEncoder().encode(vnfm_info), '200'],
-            "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
+            "/api/ztevnfmdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
             "/api/resmgr/v1/vnf/1":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
@@ -253,7 +253,7 @@ class TestTerminateVnfViews(TestCase):
                 [0, json.JSONEncoder().encode(vserver_info), '201'],
             "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1?resource-version=1505465356263":
                 [0, json.JSONEncoder().encode({}), '200'],
-            "/api/ztevmanagerdriver/v1/1/jobs/" + job_id + "?responseId=0":
+            "/api/ztevnfmdriver/v1/1/jobs/" + job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode(job_info), '200'],
             "/network/generic-vnfs/generic-vnf/1?depth=all":
             [0, json.JSONEncoder().encode(vnf_info), '200'],
@@ -362,7 +362,7 @@ class TestScaleVnfViews(TestCase):
         }
 
         mock_vals = {
-            "/api/ztevmanagerdriver/v1/1/vnfs/111/terminate":
+            "/api/ztevnfmdriver/v1/1/vnfs/111/terminate":
                 [0, json.JSONEncoder().encode({"jobId": job_id}), '200']
         }
 
@@ -407,13 +407,13 @@ class TestHealVnfViews(TestCase):
     def test_heal_vnf(self, mock_call_req):
 
         mock_vals = {
-            "/api/ztevmanagerdriver/v1/1/vnfs/111/heal":
+            "/api/ztevnfmdriver/v1/1/vnfs/111/heal":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
             "/external-system/esr-vnfm-list/esr-vnfm/1":
                 [0, json.JSONEncoder().encode(vnfm_info), '200'],
             "/api/resmgr/v1/vnf/1":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/api/ztevmanagerdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
+            "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id,
                                                "responsedescriptor": {"progress": "100",
                                                                       "status": JOB_MODEL_STATUS.FINISHED,
@@ -1235,7 +1235,7 @@ vnfm_info = {
             {
                 "esr-system-info-id": "example-esr-system-info-id-val-7713",
                 "system-name": "example-system-name-val-19801",
-                "type": "ztevmanagerdriver",
+                "type": "ztevnfmdriver",
                 "vendor": "example-vendor-val-50079",
                 "version": "example-version-val-93146",
                 "service-url": "example-service-url-val-68090",
