@@ -56,10 +56,10 @@ class TerminateVnfs(threading.Thread):
                 self.delete_vnf_in_aai()
             self.delete_data_from_db()
         except NSLCMException as e:
-            self.exception(e.message)
+            self.set_job_err(e.message)
         except Exception:
             logger.error(traceback.format_exc())
-            self.exception('unexpected exception')
+            self.set_job_err('unexpected exception')
 
     def set_vnf_status(self, vnf_inst_info):
         vnf_status = vnf_inst_info.status
@@ -100,7 +100,7 @@ class TerminateVnfs(threading.Thread):
             raise NSLCMException('[VNF terminate] Vnf instance is not exist.')
         self.set_vnf_status(vnf_inst[0])
 
-    def exception(self, error_msg):
+    def set_job_err(self, error_msg):
         logger.error('VNF Terminate failed, detail message: %s' % error_msg)
         NfInstModel.objects.filter(nfinstid=self.vnf_inst_id).update(status=VNF_STATUS.FAILED)
         JobUtil.add_job_status(self.job_id, 255, 'VNF Terminate failed, detail message: %s' % error_msg, 0)
