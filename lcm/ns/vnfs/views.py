@@ -71,6 +71,7 @@ class NfDetailView(APIView):
         try:
             TerminateVnfs(data, vnf_inst_id, job_id).start()
         except Exception as e:
+            logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
         rsp = {'jobId': job_id}
         return Response(data=rsp, status=status.HTTP_201_CREATED)
@@ -95,6 +96,7 @@ class NfGrant(APIView):
             """
             return Response(data=rsp, status=status.HTTP_201_CREATED)
         except Exception as e:
+            logger.error(e.message)
             logger.error(traceback.format_exc())
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
 
@@ -106,6 +108,7 @@ class LcmNotify(APIView):
             NotifyLcm(vnfmid, vnfInstanceId, request_paras.data).do_biz()
             return Response(data={}, status=status.HTTP_201_CREATED)
         except Exception as e:
+            logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
 
 
@@ -116,6 +119,7 @@ class NfScaleView(APIView):
             NFManualScaleService(vnfinstid, request_paras.data).start()
             return Response(data={}, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
+            logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
 
 
@@ -135,7 +139,8 @@ class NfVnfmInfoView(APIView):
         except NSLCMException as e:
             logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except:
+        except Exception as e:
+            logger.error(e.message)
             logger.error(traceback.format_exc())
             return Response(data={'error': 'Failed to get vnfm info.'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -150,7 +155,8 @@ class NfVimInfoView(APIView):
         except NSLCMException as e:
             logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except:
+        except Exception as e:
+            logger.error(e.message)
             logger.error(traceback.format_exc())
             return Response(data={'error': 'Failed to get vim info.'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
