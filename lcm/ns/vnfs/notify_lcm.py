@@ -110,17 +110,16 @@ class NotifyLcm(object):
             if resourceType != 'network':
                 self.exception('affectedVl struct error: resourceType not euqal network')
 
-            ownerId = self.vnf_instid
-            ownerId = self.get_vnfinstid(self.vnf_instid, self.vnfmid)
+            ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
 
             if changeType == 'added':
-                VLInstModel(vlInstanceId=vlInstanceId, vldId=vldid, ownerType=0, ownerId=ownerId,
-                            relatedNetworkId=resourceId, vlType=0).save()
+                VLInstModel(vlinstanceid=vlInstanceId, vldid=vldid, ownertype=0, ownerid=ownerId,
+                            relatednetworkid=resourceId, vltype=0).save()
             elif changeType == 'removed':
-                VLInstModel.objects.filter(vlInstanceId=vlInstanceId).delete()
+                VLInstModel.objects.filter(vlinstanceid=vlInstanceId).delete()
             elif changeType == 'modified':
-                VLInstModel.objects.filter(vlInstanceId=vlInstanceId)\
-                    .update(vldId=vldid, ownerType=0, ownerId=ownerId, relatedNetworkId=resourceId, vlType=0)
+                VLInstModel.objects.filter(vlinstanceid=vlInstanceId)\
+                    .update(vldid=vldid, ownertype=0, ownerid=ownerId, relatednetworkid=resourceId, vltype=0)
             else:
                 self.exception('affectedVl struct error: changeType not in {added,removed,modified}')
 
@@ -186,8 +185,7 @@ class NotifyLcm(object):
                     logger.error('affectedVl struct error: resourceType not euqal network')
                     raise NSLCMException("affectedVl struct error: resourceType not euqal network")
 
-                # ownerId = self.vnf_instid
-                ownerId = self.get_vnfinstid(self.vnf_instid, self.vnfmid)
+                ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
 
                 if changeType in ['added', 'modified']:
                     self.create_network_and_subnet_in_aai(vlInstanceId, ownerId)
