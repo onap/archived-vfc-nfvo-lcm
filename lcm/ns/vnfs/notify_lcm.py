@@ -88,7 +88,6 @@ class NotifyLcm(object):
                             instid=self.vnf_instid, vmname=vmName, hostid='1').save()
                 if REPORT_TO_AAI:
                     self.create_vserver_in_aai(vimId, vmId, vmName)
-                logger.debug("Success to create all vserver to aai.")
             elif changeType == 'removed':
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).delete()
             elif changeType == 'modified':
@@ -97,6 +96,7 @@ class NotifyLcm(object):
                                                                                    vmid=vmId)
             else:
                 self.exception('affectedVnfc struct error: changeType not in {added,removed,modified}')
+        logger.debug("Success to create all vserver to aai.")
 
     def update_Vl(self):
         for vl in self.affectedVl:
