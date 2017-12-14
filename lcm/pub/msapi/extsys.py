@@ -47,6 +47,7 @@ def get_vim_by_id(vim_id):
     # convert vim_info_aai to internal vim_info
     vim_info_aai = json.JSONDecoder().decode(ret[1])
     vim_info = convert_vim_info(vim_info_aai)
+    logger.debug("vim_id=%s, vim_info=%s", vim_id, vim_info)
     return vim_info
 
 

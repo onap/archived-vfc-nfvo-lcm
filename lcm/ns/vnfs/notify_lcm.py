@@ -77,9 +77,9 @@ class NotifyLcm(object):
             vnfcInstanceId = ignore_case_get(vnfc, 'vnfcInstanceId')
             vduId = ignore_case_get(vnfc, 'vduId')
             changeType = ignore_case_get(vnfc, 'changeType')
-            vimId = ignore_case_get(vnfc, 'vimid')
-            vmId = ignore_case_get(vnfc, 'vmid')
-            vmName = ignore_case_get(vnfc, 'vmname')
+            vimId = ignore_case_get(vnfc, 'vimId')
+            vmId = ignore_case_get(vnfc, 'vmId')
+            vmName = ignore_case_get(vnfc, 'vmName')
 
             if changeType == 'added':
                 VNFCInstModel(vnfcinstanceid=vnfcInstanceId, vduid=vduId,
@@ -101,7 +101,7 @@ class NotifyLcm(object):
     def update_Vl(self):
         for vl in self.affectedVl:
             vlInstanceId = ignore_case_get(vl, 'vlInstanceId')
-            vldid = ignore_case_get(vl, 'vldid')
+            vldid = ignore_case_get(vl, 'vldId')
             changeType = ignore_case_get(vl, 'changeType')
             networkResource = ignore_case_get(vl, 'networkResource')
             resourceType = ignore_case_get(networkResource, 'resourceType')
@@ -126,18 +126,18 @@ class NotifyLcm(object):
     def update_Cp(self):
         for cp in self.affectedCp:
             virtualLinkInstanceId = ignore_case_get(cp, 'virtualLinkInstanceId')
-            ownertype = ignore_case_get(cp, 'ownertype')
+            ownertype = ignore_case_get(cp, 'ownerType')
             if not ownertype:
                 ownertype = 0
-            ownerid = self.vnf_instid if str(ownertype) == "0" else ignore_case_get(cp, 'ownerid')
-            cpInstanceId = ignore_case_get(cp, 'cpinstanceid')
-            cpdId = ignore_case_get(cp, 'cpdid')
-            changeType = ignore_case_get(cp, 'changetype')
+            ownerid = self.vnf_instid if str(ownertype) == "0" else ignore_case_get(cp, 'ownerId')
+            cpInstanceId = ignore_case_get(cp, 'cpInstanceId')
+            cpdId = ignore_case_get(cp, 'cpdId')
+            changeType = ignore_case_get(cp, 'changeType')
             relatedportId = ''
             portResource = ignore_case_get(cp, 'portResource')
             if portResource:
-                vimId = ignore_case_get(portResource, 'vimid')
-                resourceId = ignore_case_get(portResource, 'resourceid')
+                vimId = ignore_case_get(portResource, 'vimId')
+                resourceId = ignore_case_get(portResource, 'resourceId')
                 resourceName = ignore_case_get(portResource, 'resourceName')
                 tenant = ignore_case_get(portResource, 'tenant')
                 ipAddress = ignore_case_get(portResource, 'ipAddress')

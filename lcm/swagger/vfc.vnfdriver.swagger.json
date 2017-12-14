@@ -733,15 +733,15 @@
            "$ref": "#/definitions/VnfNotificationType",
            "description": "The type of the change"
          },
-         "vimid": {
+         "vimId": {
            "type": "string",
            "description": "Identifier of vim"
          },
-         "vmid": {
+         "vmId": {
            "type": "string",
            "description": "Identifier of virtual machine"
          },
-         "vmname": {
+         "vmName": {
            "type": "string",
            "description": "Name of virtual machine"
          }
@@ -762,7 +762,7 @@
            "type": "string",
            "description": "Identifier of the VL instance"
          },
-         "vldid": {
+         "vldId": {
            "type": "string",
            "description": "Identifier of the VLD in the VNFD"
          },
@@ -802,11 +802,11 @@
            "type": "string",
            "description": "Identifier of the VL instance"
          },
-         "cpinstanceid": {
+         "cpInstanceId": {
            "type": "string",
            "description": "Identifier of the connection point"
          },
-         "cpdid": {
+         "cpdId": {
            "type": "string",
            "description": "Identifier of the connection point in the VNFD"
          },
@@ -826,11 +826,11 @@
            "type": "object",
            "description": "port Resource",
            "properties": {
-             "vimid": {
+             "vimId": {
                "type": "string",
                "description": "Identifier of the VIM"
              },
-             "resourceid": {
+             "resourceId": {
                "type": "string",
                "description": "Identifier of the resource in the scope of the VIM"
              },
