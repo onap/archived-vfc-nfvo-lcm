@@ -130,8 +130,8 @@ class TerminateNsService(threading.Thread):
 
     def wait_delete_vnf_job_finish(self, vnf_job_id):
         count = 0
-        retry_count = 30
-        interval_second = 1
+        retry_count = 400
+        interval_second = 2
         response_id, new_response_id = 0, 0
         job_end_normal, job_timeout = False, True
         while count < retry_count:
