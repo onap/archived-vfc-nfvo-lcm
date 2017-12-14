@@ -34,6 +34,7 @@ def get_vims():
     for vim in vims_aai:
         vim = convert_vim_info(vim)
         vims_info.append(vim)
+    logger.debug("vims_info=%s", vims_info)
     return vims_info
 
 
@@ -83,7 +84,7 @@ def convert_vim_info(vim_info_aai):
         "description": "vim",
         "domain": "",
         "type": ignore_case_get(esr_system_info[0], "type"),
-        "createTime": "2016-07-18 12:22:53",
+        "createTime": "",
         "sslCacert": ignore_case_get(esr_system_info[0], "ssl-cacert"),
         "sslInsecure": ignore_case_get(esr_system_info[0], "ssl-insecure"),
         "status": ignore_case_get(esr_system_info[0], "system-status")
@@ -100,6 +101,7 @@ def get_sdn_controller_by_id(sdn_ontroller_id):
     # convert vim_info_aai to internal vim_info
     sdnc_info_aai = json.JSONDecoder().decode(ret[1])
     sdnc_info = convert_sdnc_info(sdnc_info_aai)
+    logger.debug("sdn_ontroller_id=%s, sdnc_info=%s", sdn_ontroller_id, sdnc_info)
     return sdnc_info
 
 
@@ -117,7 +119,7 @@ def convert_sdnc_info(sdnc_info_aai):
         "protocol": ignore_case_get(esr_system_info[0], "protocal"),
         "productName": ignore_case_get(sdnc_info_aai, "product-name"),
         "type": ignore_case_get(esr_system_info[0], "type"),
-        "createTime": "2016-07-18 12:22:53"
+        "createTime": ""
     }
     return sdnc_info
 
@@ -131,6 +133,7 @@ def get_vnfm_by_id(vnfm_inst_id):
     # convert vnfm_info_aai to internal vnfm_info
     vnfm_info_aai = json.JSONDecoder().decode(ret[1])
     vnfm_info = convert_vnfm_info(vnfm_info_aai)
+    logger.debug("vnfm_inst_id=%s, vnfm_info=%s", vnfm_inst_id, vnfm_info)
     return vnfm_info
 
 
@@ -148,7 +151,7 @@ def convert_vnfm_info(vnfm_info_aai):
         "url": ignore_case_get(esr_system_info[0], "service-url"),
         "userName": ignore_case_get(esr_system_info[0], "user-name"),
         "password": ignore_case_get(esr_system_info[0], "password"),
-        "createTime": "2016-07-06 15:33:18"
+        "createTime": ""
     }
     return vnfm_info
 

@@ -516,7 +516,7 @@ class TestGetVnfmInfoViews(TestCase):
             "url": ignore_case_get(esr_system_info[0], "service-url"),
             "userName": ignore_case_get(esr_system_info[0], "user-name"),
             "password": ignore_case_get(esr_system_info[0], "password"),
-            "createTime": "2016-07-06 15:33:18"
+            "createTime": ""
         }
 
         response = self.client.get("/api/nslcm/v1/vnfms/%s" % self.vnfm_id)
@@ -551,7 +551,7 @@ class TestGetVimInfoViews(TestCase):
             "description": "vim",
             "domain": "",
             "type": ignore_case_get(esr_system_info[0], "type"),
-            "createTime": "2016-07-18 12:22:53"
+            "createTime": ""
         }
 
         response = self.client.get("/api/nslcm/v1/vims/%s" % self.vim_id)
