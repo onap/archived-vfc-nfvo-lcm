@@ -57,13 +57,13 @@ CATALOG_ROOT_PATH = None
 CATALOG_URL_PATH = None
 
 # [aai config]
-AAI_BASE_URL = "http://%s:%s/aai/v11" % (MSB_SERVICE_IP, MSB_SERVICE_PORT)
+AAI_BASE_URL = "http://127.0.0.1:80/aai/v11"
 AAI_USER = "AAI"
 AAI_PASSWD = "AAI"
 REPORT_TO_AAI = True
 
 # [sdc config]
-SDC_BASE_URL = "http://%s:%s/api" % (MSB_SERVICE_IP, MSB_SERVICE_PORT)
+SDC_BASE_URL = "http://127.0.0.1:80/api"
 SDC_USER = "SDC"
 SDC_PASSWD = "SDC"
 
