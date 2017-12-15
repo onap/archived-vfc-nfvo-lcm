@@ -150,7 +150,7 @@ For testing, we can use curl command to access the swagger api.
 
 ::
 
-  docker run -d --name vfc-ztevnfmdriver -p 8410:8410 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztevnfmdriver
+  docker run -d --name vfc-ztevmanagerdriver -p 8410:8410 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/ztevmanagerdriver
   docker run -d --name vfc-svnfm-huawei -p 8482:8482 -p 8443:8443 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/huawei
   docker run -d --name vfc-svnfm-nokia -p 8486:8486 -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/nokia
     
@@ -158,6 +158,6 @@ For testing, we can use curl command to access the swagger api.
 
 ::
 
-  curl http://${MSB_IP}:80/api/ztevnfmdriver/v1/swagger.json
+  curl http://${MSB_IP}:80/api/ztevmanagerdriver/v1/swagger.json
   curl http://${MSB_IP}:80/api/huaweivnfmdriver/v1/swagger.json
   curl http://${MSB_IP}:80/api/nokiavnfmdriver/v1/swagger.json
