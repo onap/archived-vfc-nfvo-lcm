@@ -781,6 +781,10 @@
              "resourceId": {
                "type": "string",
                "description": "Identifier of the resource in the scope of the VIM"
+             },
+             "resourceName": {
+               "type": "string",
+               "description": "Name of the resource in the scope of the VIM"
              }
            }
          }

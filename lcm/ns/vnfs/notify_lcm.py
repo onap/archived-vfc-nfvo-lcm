@@ -106,6 +106,7 @@ class NotifyLcm(object):
             networkResource = ignore_case_get(vl, 'networkResource')
             resourceType = ignore_case_get(networkResource, 'resourceType')
             resourceId = ignore_case_get(networkResource, 'resourceId')
+            resourceName = ignore_case_get(networkResource, 'resourceName')
 
             if resourceType != 'network':
                 self.exception('affectedVl struct error: resourceType not euqal network')
@@ -113,13 +114,14 @@ class NotifyLcm(object):
             ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
 
             if changeType == 'added':
-                VLInstModel(vlinstanceid=vlInstanceId, vldid=vldid, ownertype=0, ownerid=ownerId,
-                            relatednetworkid=resourceId, vltype=0).save()
+                VLInstModel(vlinstanceid=vlInstanceId, vldid=vldid, vlinstancename=resourceName, ownertype=0,
+                            ownerid=ownerId, relatednetworkid=resourceId, vltype=0).save()
             elif changeType == 'removed':
                 VLInstModel.objects.filter(vlinstanceid=vlInstanceId).delete()
             elif changeType == 'modified':
                 VLInstModel.objects.filter(vlinstanceid=vlInstanceId)\
-                    .update(vldid=vldid, ownertype=0, ownerid=ownerId, relatednetworkid=resourceId, vltype=0)
+                    .update(vldid=vldid, vlinstancename=resourceName, ownertype=0, ownerid=ownerId,
+                            relatednetworkid=resourceId, vltype=0)
             else:
                 self.exception('affectedVl struct error: changeType not in {added,removed,modified}')
 
