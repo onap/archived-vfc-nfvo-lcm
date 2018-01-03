@@ -683,7 +683,7 @@
         },
         "additionalParam": {
           "type": "object",
-          "description": "The data type is KeyValuePair. Additional parameters passed by the NFVO, specific to the VNF and the LCM operation."
+          "description": "Additional parameters passed to the NFVO, specific to the VNF and the LCM operation. The currently interpreted keys are the following: vimId"
         }
       }
     },
@@ -701,7 +701,7 @@
               "properties": {
                 "tenant": {
                   "type": "string",
-                  "description": "Tenant Name of tenant"
+                  "description": "The name of the tenant"
                 }
               }
             }
@@ -943,7 +943,8 @@
           }
         },
         "additionalParam": {
-          "type": "object"
+          "type": "object",
+          "description": "Additional parameters passed to the VNFM. The vimId may be passed in the additional parameter section by the NFVO to VNFM."
         }
       }
     },
@@ -964,7 +965,6 @@
           }
         }
     },
-            
     "VnfInstantiateResponse": {
       "type": "object",
       "properties": {
