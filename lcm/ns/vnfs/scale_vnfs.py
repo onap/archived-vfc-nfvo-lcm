@@ -46,7 +46,8 @@ class NFManualScaleService(threading.Thread):
             self.do_biz()
         except NSLCMException as e:
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
-        except:
+        except Exception as ex:
+            logger.error(ex.message)
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_ERROR, 'nf scale fail')
         finally:
