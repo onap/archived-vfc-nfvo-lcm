@@ -137,3 +137,35 @@ class WorkflowViewTest(unittest.TestCase):
         mock_call_req.side_effect = side_effect
 
         self.assertTrue(build_in.run_ns_instantiate(wf_input))
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_buildin_workflow_when_create_vl_failed(self, mock_call_req):
+        ns_inst_id = "1"
+        job_id = "1234"
+        wf_input = {
+            "jobId": job_id,
+            "nsInstanceId": ns_inst_id,
+            "object_context": '{"a": "b"}',
+            "object_additionalParamForNs": '{"c": "d"}',
+            "object_additionalParamForVnf": '{"e": "f"}',
+            "vlCount": 1,
+            "vnfCount": 1,
+            "sfcCount": 1,
+            "sdnControllerId": "2"
+        }
+        mock_vals = {
+            "api/nslcm/v1/ns/vls":
+                [0, json.JSONEncoder().encode({
+                    "result": "1",
+                    "detail": "vl1",
+                    "vlId": "1"
+                }), '201'],
+            "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
+                [0, '{}', '201']
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+        mock_call_req.side_effect = side_effect
+
+        self.assertFalse(build_in.run_ns_instantiate(wf_input))
