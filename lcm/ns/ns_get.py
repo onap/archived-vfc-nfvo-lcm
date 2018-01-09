@@ -25,39 +25,28 @@ class GetNSInfoService(object):
         self.ns_filter = nsfilter
 
     def get_ns_info(self):
-        if self.ns_filter:
-            if ("ns_inst_id" in self.ns_filter):
-                ns_inst_id = self.ns_filter["ns_inst_id"]
-                ns_inst_infos = NSInstModel.objects.filter(id=ns_inst_id)
-            if ("csarId" in self.ns_filter):
-                csar_id = self.ns_filter["csarId"]
-                ns_inst_infos = NSInstModel.objects.filter(nsd_id=csar_id)
+        ns_insts = None
+        if self.ns_filter and "ns_inst_id" in self.ns_filter:
+            ns_inst_id = self.ns_filter["ns_inst_id"]
+            ns_insts = NSInstModel.objects.filter(id=ns_inst_id)
+        elif self.ns_filter and "csarId" in self.ns_filter:
+            csar_id = self.ns_filter["csarId"]
+            ns_insts = NSInstModel.objects.filter(nsd_id=csar_id)
         else:
-            ns_inst_infos = NSInstModel.objects.all()
+            ns_insts = NSInstModel.objects.all()
 
-        ns_info_list = []
-        for info in ns_inst_infos:
-            ret = self.get_single_ns_info(info.id)
-            if not ret:
-                continue
-            ns_info_list.append(ret)
-        return ns_info_list
+        return [self.get_single_ns_info(ns_inst) for ns_inst in ns_insts]
 
-    def get_single_ns_info(self, ns_inst_id):
-        ns_insts = NSInstModel.objects.filter(id=ns_inst_id)
-        if not ns_insts:
-            return None
-        ns_inst_info = ns_insts[0]
-        ret = {
-            'nsInstanceId': ns_inst_info.id,
-            'nsName': ns_inst_info.name,
-            'description': ns_inst_info.description,
-            'nsdId': ns_inst_info.nsd_id,
-            'vnfInfoId': self.get_vnf_infos(ns_inst_id),
-            'vlInfo': self.get_vl_infos(ns_inst_id),
-            'vnffgInfo': self.get_vnffg_infos(ns_inst_id, ns_inst_info.nsd_model),
-            'nsState': ns_inst_info.status}
-        return ret
+    def get_single_ns_info(self, ns_inst):
+        return {
+            'nsInstanceId': ns_inst.id,
+            'nsName': ns_inst.name,
+            'description': ns_inst.description,
+            'nsdId': ns_inst.nsd_id,
+            'vnfInfoId': self.get_vnf_infos(ns_inst.id),
+            'vlInfo': self.get_vl_infos(ns_inst.id),
+            'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
+            'nsState': ns_inst.status}
 
     @staticmethod
     def get_vnf_infos(ns_inst_id):
