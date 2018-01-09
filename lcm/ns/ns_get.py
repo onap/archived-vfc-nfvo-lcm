@@ -46,66 +46,52 @@ class GetNSInfoService(object):
             'vnfInfoId': self.get_vnf_infos(ns_inst.id),
             'vlInfo': self.get_vl_infos(ns_inst.id),
             'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
-            'nsState': ns_inst.status}
+            'nsState': ns_inst.status
+            }
 
     @staticmethod
     def get_vnf_infos(ns_inst_id):
-        ns_inst_infos = NfInstModel.objects.filter(ns_inst_id=ns_inst_id)
-        vnf_info_list = []
-        for info in ns_inst_infos:
-            vnf_info = {
-                'vnfInstanceId': info.nfinstid,
-                'vnfInstanceName': info.nf_name,
-                'vnfProfileId': info.vnf_id}
-            vnf_info_list.append(vnf_info)
-        return vnf_info_list
+        vnfs = NfInstModel.objects.filter(ns_inst_id=ns_inst_id)
+        return [{
+            'vnfInstanceId': vnf.nfinstid,
+            'vnfInstanceName': vnf.nf_name,
+            'vnfProfileId': vnf.vnf_id
+            } for vnf in vnfs]
 
     def get_vl_infos(self, ns_inst_id):
-        vl_inst_infos = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=ns_inst_id)
-        vl_info_list = []
-        for info in vl_inst_infos:
-            vl_info = {
-                'vlInstanceId': info.vlinstanceid,
-                'vlInstanceName': info.vlinstancename,
-                'vldId': info.vldid,
-                'relatedCpInstanceId': self.get_cp_infos(info.vlinstanceid)}
-            vl_info_list.append(vl_info)
-        return vl_info_list
+        vls = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=ns_inst_id)
+        return [{
+            'vlInstanceId': vl.vlinstanceid,
+            'vlInstanceName': vl.vlinstancename,
+            'vldId': vl.vldid,
+            'relatedCpInstanceId': self.get_cp_infos(vl.vlinstanceid)
+            } for vl in vls]
 
     @staticmethod
     def get_cp_infos(vl_inst_id):
-        cp_inst_infos = CPInstModel.objects.filter(relatedvl__icontains=vl_inst_id)
-        cp_info_list = []
-        for info in cp_inst_infos:
-            cp_info = {
-                'cpInstanceId': info.cpinstanceid,
-                'cpInstanceName': info.cpname,
-                'cpdId': info.cpdid}
-            cp_info_list.append(cp_info)
-        return cp_info_list
+        cps = CPInstModel.objects.filter(relatedvl__icontains=vl_inst_id)
+        return [{
+            'cpInstanceId': cp.cpinstanceid,
+            'cpInstanceName': cp.cpname,
+            'cpdId': cp.cpdid
+            } for cp in cps]
 
     def get_vnffg_infos(self, ns_inst_id, nsd_model):
-        vnffg_inst_infos = VNFFGInstModel.objects.filter(nsinstid=ns_inst_id)
-        vnffg_info_list = []
-        for info in vnffg_inst_infos:
-            vnffg_info = {
-                'vnffgInstanceId': info.vnffginstid,
-                'vnfId': self.convert_string_to_list(info.vnflist),
-                'pnfId': self.get_pnf_infos(nsd_model),
-                'virtualLinkId': self.convert_string_to_list(info.vllist),
-                'cpId': self.convert_string_to_list(info.cplist),
-                'nfp': self.convert_string_to_list(info.fplist)}
-            vnffg_info_list.append(vnffg_info)
-        return vnffg_info_list
+        vnffgs = VNFFGInstModel.objects.filter(nsinstid=ns_inst_id)
+        return [{
+            'vnffgInstanceId': vnffg.vnffginstid,
+            'vnfId': self.convert_string_to_list(vnffg.vnflist),
+            'pnfId': self.get_pnf_infos(nsd_model),
+            'virtualLinkId': self.convert_string_to_list(vnffg.vllist),
+            'cpId': self.convert_string_to_list(vnffg.cplist),
+            'nfp': self.convert_string_to_list(vnffg.fplist)
+            } for vnffg in vnffgs]
 
     @staticmethod
     def get_pnf_infos(nsd_model):
         context = json.loads(nsd_model)
         pnfs = context['pnfs']
-        pnf_list = []
-        for pnf in pnfs:
-            pnf_list.append(pnf['pnf_id'])
-        return pnf_list
+        return [(pnf['pnf_id'] for pnf in pnfs]
 
     @staticmethod
     def convert_string_to_list(detail_id_string):
