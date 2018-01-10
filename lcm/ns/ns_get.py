@@ -29,9 +29,6 @@ class GetNSInfoService(object):
         if self.ns_filter and "ns_inst_id" in self.ns_filter:
             ns_inst_id = self.ns_filter["ns_inst_id"]
             ns_insts = NSInstModel.objects.filter(id=ns_inst_id)
-        elif self.ns_filter and "csarId" in self.ns_filter:
-            csar_id = self.ns_filter["csarId"]
-            ns_insts = NSInstModel.objects.filter(nsd_id=csar_id)
         else:
             ns_insts = NSInstModel.objects.all()
 

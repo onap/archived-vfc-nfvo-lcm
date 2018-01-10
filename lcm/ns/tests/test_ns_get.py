@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import uuid
-
 from django.test import TestCase, Client
 from rest_framework import status
 
@@ -22,18 +20,14 @@ from lcm.pub.database.models import NSInstModel
 class TestNsQuery(TestCase):
     def setUp(self):
         self.client = Client()
-        self.nsd_id = str(uuid.uuid4())
-        self.ns_package_id = str(uuid.uuid4())
-        NSInstModel(id=1, nsd_id=1, name='test01').save()
-        NSInstModel(id=2, nsd_id=1, name='test02').save()
-
-    def test_query_ns_by_csarId(self):
-        response = self.client.get("/api/nslcm/v1/ns?csarId=1")
-        self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
+        NSInstModel(id=1, nsd_id=11, name='test01').save()
+        NSInstModel(id=2, nsd_id=22, name='test02').save()
 
     def test_query_ns_by_nsinstance_id(self):
         response = self.client.get("/api/nslcm/v1/ns/1")
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
+        self.assertIsNotNone(response.data)
+        self.assertEqual(1, len(response.data))
 
     def test_query_all_nsinstance(self):
         response = self.client.get("/api/nslcm/v1/ns")
@@ -43,4 +37,4 @@ class TestNsQuery(TestCase):
 
     def test_query_ns_by_non_existing_nsinstance_id(self):
         response = self.client.get("/api/nslcm/v1/ns/200")
-        self.assertIsNone(response.data)
+        self.failUnlessEqual(status.HTTP_404_NOT_FOUND, response.status_code)
