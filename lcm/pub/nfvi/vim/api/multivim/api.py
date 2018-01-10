@@ -179,6 +179,8 @@ def list_tenant(vim_id, tenant_name=""):
         res = "%s?name=%s" % (res, tenant_name)
     return call(vim_id, "", res, "GET")
 
+def get_token(vim_id):
+    return call(vim_id, "", "identity/v3/auth/tokens", "POST")
 
 ######################################################################
 
@@ -188,12 +190,10 @@ class MultiVimApi:
     def login(self, connect_info):
         self.vim_id = connect_info["vimid"]
         self.tenant_name = connect_info["tenant"]
-        tenants = list_tenant(self.vim_id)
-        for tenant in tenants["tenants"]:
-            if self.tenant_name == tenant["name"]:
-                self.tenant_id = tenant["id"]
-                return [0, connect_info]
-        raise VimException(1, "Tenant(%s) not exist" % self.tenant_name)
+        token = get_token(self.vim_id)
+        self.tenant_id = token['token']['project']['id']
+        logger.info("Logged in successfully with tenant %s", self.tenant_id)
+        return [0, connect_inf]
 
     def query_net(self, auth_info, net_id):
         net = get_network(self.vim_id, self.tenant_id, net_id)
