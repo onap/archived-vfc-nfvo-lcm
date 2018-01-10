@@ -951,17 +951,30 @@
     "extVirtualLinkInfo":{
         "type": "object",
         "properties": {
-          "vlInstanceId": {
-            "type": "string"
+          "resourceSubnetId": {
+            "type": "string",
+            "description": "The provider id of the subnet"
           },
-          "networkId": {
-            "type": "string"
+          "vlInstanceId": {
+            "type": "string",
+            "description" : "The identifier of the virtual link"
+          },
+          "resourceId": {
+            "type": "string",
+            "description": "The provider id of the network"
           },
           "cpdId": {
-            "type": "string"
+            "type": "string",
+            "description": "The identifier of the connection point descriptor"
           },
           "vim": {
-            "$ref": "#/definitions/vimInfo"
+            "type": "object",
+            "properties": {
+               "vimid": {
+                  "type": "string",
+                  "description": "The identifier of the VIM"
+               }
+            }
           }
         }
     },
