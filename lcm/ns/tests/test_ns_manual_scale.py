@@ -29,8 +29,6 @@ from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
 class TestNsManualScale(TestCase):
     def setUp(self):
-        self.nsd_id = str(uuid.uuid4())
-        self.ns_package_id = str(uuid.uuid4())
         self.ns_inst_id = str(uuid.uuid4())
         self.job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
 
@@ -43,9 +41,7 @@ class TestNsManualScale(TestCase):
     @mock.patch.object(NSManualScaleService, 'run')
     def test_ns_manual_scale(self, mock_run):
         data = {
-            'nsdid': self.nsd_id,
-            'nsname': 'ns',
-            'description': 'description',
+            "scaleType": "SCALE_NS",
             "scaleNsByStepsData": [{
                 "scaleNsByStepsData": [{
                     "aspectId": "1",
@@ -54,15 +50,13 @@ class TestNsManualScale(TestCase):
                 }]
             }]
         }
-        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.nsd_id, data=data)
+        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data=data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
     def test_ns_manual_scale_thread(self, mock_call):
         data = {
-            'nsdid': self.nsd_id,
-            'nsname': 'ns',
-            'description': 'description',
+            "scaleType": "SCALE_NS",
             "scaleNsByStepsData": [{
                 "scaleNsByStepsData": [{
                     "aspectId": "1",
@@ -81,21 +75,15 @@ class TestNsManualScale(TestCase):
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_empty_data(self, mock_start):
         mock_start.side_effect = NSLCMException("NS scale failed.")
-
-        data = {}
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.nsd_id, data=data)
+        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data={})
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
 
     @mock.patch.object(NSManualScaleService, 'start')
-    def test_ns_manual_scale_non_existing_nsd_id(self, mock_start):
+    def test_ns_manual_scale_when_ns_not_exist(self, mock_start):
         mock_start.side_effect = NSLCMException("NS scale failed.")
-        nsd_id = '1111'
         data = {
-            'nsdid': nsd_id,
-            'nsname': 'ns',
-            'description': 'description',
+            "scaleType": "SCALE_NS",
             "scaleNsByStepsData": [{
                 "scaleNsByStepsData": [{
                     "aspectId": "1",
@@ -104,6 +92,6 @@ class TestNsManualScale(TestCase):
                 }]
             }]
         }
-        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % nsd_id, data=data)
+        response = self.client.post("/api/nslcm/v1/ns/11/scale", data=data)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
