@@ -69,7 +69,7 @@ class NFManualScaleService(threading.Thread):
         self.nf_model = json.loads(nf_info[0].vnfd_model)
         self.m_nf_inst_id = nf_info[0].mnfinstid
         self.vnfm_inst_id = nf_info[0].vnfm_inst_id
-        self.scale_vnf_data = ignore_case_get(self.data, 'scaleVnfData')
+        self.scale_vnf_data = ignore_case_get(self.data, 'scaleByStepData')
         if not self.scale_vnf_data:
             logger.error('scaleVnfData parameter does not exist or value incorrect')
             raise NSLCMException('scaleVnfData parameter does not exist or value incorrect')
