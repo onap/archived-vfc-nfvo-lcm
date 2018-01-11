@@ -96,10 +96,10 @@ class GrantVnfs(object):
         resourceTemplate = {
             "virtualComputeDescriptor": {
                 "virtualCpu": {
-                    "numVirtualCpu": int(vdu["nfv_compute"]["num_cpus"])
+                        "numVirtualCpu": int(vdu["virtual_compute"]["virtual_cpu"]["num_virtual_cpu"])
                 },
                 "virtualMemory": {
-                    "virtualMemSize": int(vdu["nfv_compute"]["mem_size"])
+                    "virtualMemSize": vdu["virtual_compute"]["virtual_memory"]["virtual_mem_size"]
                 }
             },
             "virtualStorageDescriptor": {
