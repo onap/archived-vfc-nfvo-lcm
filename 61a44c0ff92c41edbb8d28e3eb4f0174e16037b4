@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_fec31d55",
+        "filename": "lcm/pub/nfvi/vim/api/multivim/api.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-01-11T11:01:08Z",
+      "side": 1,
+      "message": "\"identity/v3/auth/tokens\" is proxy interface which only supports openstack, VF-C uses the adaptor interfaces of MultiCloud in order to support other vim like azure, vio, windriver cloud and so on, and no login interface exists in those interfaces, so we use list tenants interface to replace the login interface call, and we already suppose that tenant which is defined in ESR should be admin tenant, so list tenants interface has the right to list all tenants.",
+      "range": {
+        "startLine": 183,
+        "startChar": 3,
+        "endLine": 183,
+        "endChar": 62
+      },
+      "revId": "61a44c0ff92c41edbb8d28e3eb4f0174e16037b4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
