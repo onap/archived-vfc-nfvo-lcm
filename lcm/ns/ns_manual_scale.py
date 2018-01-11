@@ -92,7 +92,7 @@ class NSManualScaleService(threading.Thread):
         scale_by_step_data = ignore_case_get(vnf_data, 'scaleByStepData')
         result = {
             "vnfInstanceId": vnf_instance_id,
-            "scaleByStepData": scale_by_step_data,
+            "scaleVnfData": scale_by_step_data,
             "nsInstanceId": self.ns_instance_id
         }
         return result
