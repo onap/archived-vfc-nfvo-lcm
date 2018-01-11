@@ -95,12 +95,12 @@ class GrantVnfs(object):
             storage_size = storage_size + self.get_storage_size(storage_id, vnfd)
         resourceTemplate = {
             "virtualComputeDescriptor": {
-                "virtualCpu": {
-                    "numVirtualCpu": int(vdu["nfv_compute"]["num_cpus"])
-                },
-                "virtualMemory": {
-                    "virtualMemSize": int(vdu["nfv_compute"]["mem_size"])
-                }
+                   "virtualCpu": {
+                           "numVirtualCpu": int(vdu["virtual_compute"]["virtual_cpu"]["num_virtual_cpu"])
+                   },
+                   "virtualMemory": {
+                       "virtualMemSize": vdu["virtual_compute"]["virtual_memory"]["virtual_mem_size"]
+                   }
             },
             "virtualStorageDescriptor": {
                 "typeOfStorage": "",
