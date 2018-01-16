@@ -62,11 +62,11 @@ class NotifyLcm(object):
             self.exception('unexpected exception')
 
     def get_vnfinstid(self, mnfinstid, vnfm_inst_id):
+        logger.debug("mnfinstid=%s, vnfm_inst_id=%s", mnfinstid, vnfm_inst_id)
         nfinst = NfInstModel.objects.filter(mnfinstid=mnfinstid, vnfm_inst_id=vnfm_inst_id).first()
         if nfinst:
             return nfinst.nfinstid
-        else:
-            self.exception('vnfinstid not exist')
+        raise NSLCMException("vnfinstid not exist")
 
     def exception(self, error_msg):
         logger.error('Notify Lcm failed, detail message: %s' % error_msg)
