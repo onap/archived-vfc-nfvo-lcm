@@ -53,7 +53,8 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, 100, "ns terminate ends.", '')
         except NSLCMException as e:
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
-        except:
+        except Exception as ex:
+            logger.error(ex.message)
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_ERROR, "ns terminate fail.")
 
