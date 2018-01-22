@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import json
 import uuid
 
@@ -29,41 +30,11 @@ class TestNsDelelete(TestCase):
         NSInstModel.objects.filter().delete()
         NSInstModel(id=self.ns_inst_id, nspackage_id="7", nsd_id="2").save()
 
-        # self.nsd_id = str(uuid.uuid4())
-        # self.ns_package_id = str(uuid.uuid4())
-        # NSDModel(id=self.ns_package_id, nsd_id=self.nsd_id, name='name').save()
-
     def tearDown(self):
-        # NSDModel.objects.all().delete()
         NSInstModel.objects.all().delete()
 
     @mock.patch.object(restcall, 'call_req')
     def test_delete_ns(self, mock_call_req):
-        # customer_info = {
-        #     "global-customer-id": "global-customer-id-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #     "subscriber-name": "subscriber-name-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #     "subscriber-type": "subscriber-type-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #     "resource-version": "1505350719754",
-        #     "service-subscriptions": {
-        #         "service-subscription": [
-        #             {
-        #                 "service-type": "service-type-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #                 "resource-version": "1505350719887",
-        #                 "service-instances": {
-        #                     "service-instance": [
-        #                         {
-        #                             "service-instance-id": "service-instance-id-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #                             "service-instance-name": "service-instance-name-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #                             "service-type": "service-type-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #                             "service-role": "service-role-9b9348f2-f75d-4559-823d-db7ac138ed34",
-        #                             "resource-version": "1505350720009"
-        #                         }
-        #                     ]
-        #                 }
-        #             }
-        #         ]
-        #     }
-        # }
         ns_info = {
             "service-instance-id": "service-instance-id-9b9348f2-f75d-4559-823d-db7ac138ed34",
             "service-instance-name": "service-instance-name-9b9348f2-f75d-4559-823d-db7ac138ed34",

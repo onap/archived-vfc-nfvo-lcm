@@ -62,6 +62,7 @@ class NotifyLcm(object):
             self.exception('unexpected exception')
 
     def get_vnfinstid(self, mnfinstid, vnfm_inst_id):
+        logger.debug("vnfinstid in vnfm is:%s,vnfmid is:%s", mnfinstid, vnfm_inst_id)
         logger.debug("mnfinstid=%s, vnfm_inst_id=%s", mnfinstid, vnfm_inst_id)
         nfinst = NfInstModel.objects.filter(mnfinstid=mnfinstid, vnfm_inst_id=vnfm_inst_id).first()
         if nfinst:
