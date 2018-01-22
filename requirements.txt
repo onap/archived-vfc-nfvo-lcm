@@ -1,6 +1,6 @@
 # rest framework
-Django==1.9.6
-djangorestframework==3.3.3
+Django==1.11.9
+djangorestframework==3.7.7
 
 # for access MySQL
 MySQL-python==1.2.5
@@ -29,3 +29,17 @@ unittest_xml_reporting==1.12.0
 cryptography==2.0.3
 paramiko==2.0.2
 nfv-toscaparser>=0.5.0
+
+# for swagger
+Pillow>=4.3.0
+pygments>=2.2.0
+django-cors-headers>=2.1.0
+django-filter>=1.1.0,<2.0
+djangorestframework-camel-case>=0.2.0
+dj-database-url>=0.4.2
+user_agents>=1.1.0
+
+# for the validation feature
+flex>=6.11.1
+swagger-spec-validator>=2.1.0
+

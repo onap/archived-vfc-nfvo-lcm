@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns.vls.views import VlView, VlDetailView
 
-urlpatterns = patterns('',
-                       url(r'^api/nslcm/v1/ns/vls$', VlView.as_view()),
-                       url(r'^api/nslcm/v1/ns/vls/(?P<vl_inst_id>[0-9a-zA-Z_-]+)$', VlDetailView.as_view()),
-                       )
+urlpatterns = [
+    url(r'^api/nslcm/v1/ns/vls$', VlView.as_view()),
+    url(r'^api/nslcm/v1/ns/vls/(?P<vl_inst_id>[0-9a-zA-Z_-]+)$', VlDetailView.as_view()),
+]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

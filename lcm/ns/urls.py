@@ -11,25 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView, NSInstPostDealView, \
     NSManualScaleView, NSHealView
 
-urlpatterns = patterns('',
-                       url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
-                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$',
-                           NSInstView.as_view()),
-                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$',
-                           TerminateNSView.as_view()),
-                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', NSDetailView.as_view()),
-                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$',
-                           NSInstPostDealView.as_view()),
-                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$',
-                           NSManualScaleView.as_view()),
-                       url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$',
-                           NSHealView.as_view())
-                       )
+urlpatterns = [
+    url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$', NSInstView.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNSView.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', NSDetailView.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$', NSInstPostDealView.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$', NSManualScaleView.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', NSHealView.as_view())
+]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

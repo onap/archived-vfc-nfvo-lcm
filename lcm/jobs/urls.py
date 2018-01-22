@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.jobs.views import JobView
 
-urlpatterns = patterns('',
-                       url(r'^api/nslcm/v1/jobs/(?P<job_id>[0-9a-zA-Z_-]+)$', JobView.as_view()),
-                       )
+urlpatterns = [
+    url(r'^api/nslcm/v1/jobs/(?P<job_id>[0-9a-zA-Z_-]+)$', JobView.as_view()),
+]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
