@@ -17,8 +17,17 @@ import os
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
 
 logger = logging.getLogger(__name__)
+
+
+SchemaView = get_schema_view(
+    validators=['ssv', 'flex'],
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 
 class SwaggerJsonView(APIView):
