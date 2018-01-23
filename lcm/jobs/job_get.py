@@ -33,14 +33,14 @@ class GetJobInfoService(object):
             "responseDescriptor": {
                 "status": jobs[0].status,
                 "progress": jobs[0].progress,
-                "statusDescription": jobs[0].descp,
-                "errorCode": jobs[0].errcode,
+                "statusDescription": jobs[0].descp if jobs[0].descp else "",
+                "errorCode": jobs[0].errcode if jobs[0].errcode else "",
                 "responseId": jobs[0].indexid,
                 "responseHistoryList": [
                     {
                         "status": job.status,
                         "progress": job.progress,
-                        "statusDescription": job.descp,
-                        "errorCode": job.errcode,
+                        "statusDescription": job.descp if job.descp else "",
+                        "errorCode": job.errcode if job.errcode else "",
                         "responseId": job.indexid} for job in jobs[1:]]}}
         return ret
