@@ -113,7 +113,7 @@ class JobUtil(object):
                 job_status.status = "error"
 
             job_status.descp = status_decs
-            job_status.errcode = error_code
+            job_status.errcode = error_code if error_code else "0"
             job_status.addtime = datetime.datetime.now().strftime('%Y-%m-%d %X')
             job_status.save()
             logger.debug("Add a new job status, jobid=%s, indexid=%d,"
