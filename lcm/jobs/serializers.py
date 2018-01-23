@@ -34,7 +34,7 @@ class JobDescriptorSerializer(serializers.Serializer):
 
 class JobQueryRespSerializer(serializers.Serializer):
     jobId = serializers.CharField(help_text="UUID of job", required=True)
-    responseDescriptor = JobDescriptorSerializer(help_text="Descriptor of job", required=True)
+    responseDescriptor = JobDescriptorSerializer(help_text="Descriptor of job", required=False)
 
 
 class JobUpdReqSerializer(serializers.Serializer):
