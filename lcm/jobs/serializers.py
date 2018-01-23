@@ -15,6 +15,12 @@
 from rest_framework import serializers
 
 
+class JobUpdReqSerializer(serializers.Serializer):
+    progress = serializers.CharField(help_text="Progress of job", required=True)
+    desc = serializers.CharField(help_text="Desc of job", required=False)
+    errcode = serializers.CharField(help_text="Error code of job", required=False)
+
+
 class JobUpdRespSerializer(serializers.Serializer):
     result = serializers.CharField(help_text="Result of job update", required=True)
     msg = serializers.CharField(help_text="Detail of job update", required=False)
