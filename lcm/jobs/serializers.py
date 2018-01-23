@@ -18,23 +18,23 @@ from rest_framework import serializers
 class JobHistorySerializer(serializers.Serializer):
     status = serializers.CharField(help_text="Status of job", required=True)
     progress = serializers.CharField(help_text="Progress of job", required=True)
-    statusDescription = serializers.CharField(help_text="Description of job", required=True)
-    errorCode = serializers.CharField(help_text="Error code of job", required=True)
+    statusDescription = serializers.CharField(help_text="Description of job", required=False)
+    errorCode = serializers.CharField(help_text="Error code of job", required=False)
     responseId = serializers.CharField(help_text="Response index of job", required=True)
 
 
 class JobDescriptorSerializer(serializers.Serializer):
     status = serializers.CharField(help_text="Status of job", required=True)
     progress = serializers.CharField(help_text="Progress of job", required=True)
-    statusDescription = serializers.CharField(help_text="Description of job", required=True)
-    errorCode = serializers.CharField(help_text="Error code of job", required=True)
+    statusDescription = serializers.CharField(help_text="Description of job", required=False)
+    errorCode = serializers.CharField(help_text="Error code of job", required=False)
     responseId = serializers.CharField(help_text="Response index of job", required=True)
     responseHistoryList = JobHistorySerializer(help_text="History of job", many=True)
 
 
 class JobQueryRespSerializer(serializers.Serializer):
     jobId = serializers.CharField(help_text="UUID of job", required=True)
-    responseDescriptor = JobDescriptorSerializer(help_text="Descriptor of job", required=True)
+    responseDescriptor = JobDescriptorSerializer(help_text="Descriptor of job", required=False)
 
 
 class JobUpdReqSerializer(serializers.Serializer):
