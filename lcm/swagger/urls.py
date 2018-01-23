@@ -12,9 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from django.conf.urls import url
+from drf_yasg import openapi
 
 from lcm.swagger.views import SchemaView
 from lcm.swagger.views import SwaggerJsonView
+
+swagger_info = openapi.Info(
+    title="vfc-nfvo-lcm API",
+    default_version='v1',
+    description="""
+
+The `swagger-ui` view can be found [here](/cached/swagger).
+The `ReDoc` view can be found [here](/cached/redoc).
+The swagger YAML document can be found [here](/cached/swagger.yaml)."""
+)
 
 urlpatterns = [
     url(r'^api/nslcm/v1/swagger.json$', SwaggerJsonView.as_view()),

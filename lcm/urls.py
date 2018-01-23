@@ -13,20 +13,9 @@
 # limitations under the License.
 
 from django.conf.urls import include, url
-from drf_yasg import openapi
 
 from lcm.pub.config.config import REG_TO_MSB_WHEN_START, REG_TO_MSB_REG_URL, REG_TO_MSB_REG_PARAM
 from lcm.pub.config.config import DEPLOY_WORKFLOW_WHEN_START
-
-swagger_info = openapi.Info(
-    title="vfc-nfvo-lcm API",
-    default_version='v1',
-    description="""
-
-The `swagger-ui` view can be found [here](/cached/swagger).
-The `ReDoc` view can be found [here](/cached/redoc).
-The swagger YAML document can be found [here](/cached/swagger.yaml)."""
-)
 
 urlpatterns = [
     url(r'^', include('lcm.samples.urls')),
