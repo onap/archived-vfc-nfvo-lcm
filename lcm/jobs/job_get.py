@@ -34,7 +34,7 @@ class GetJobInfoService(object):
                 "status": jobs[0].status,
                 "progress": jobs[0].progress,
                 "statusDescription": jobs[0].descp,
-                "errorCode": jobs[0].errcode,
+                "errorCode": jobs[0].errcode if jobs[0].errcode else "",
                 "responseId": jobs[0].indexid,
                 "responseHistoryList": [
                     {

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+import traceback
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,16 +23,32 @@ from lcm.jobs.job_get import GetJobInfoService
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.jobs.serializers import JobUpdReqSerializer, JobUpdRespSerializer
+from lcm.jobs.serializers import JobQueryRespSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
 
 
 class JobView(APIView):
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_200_OK: JobQueryRespSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def get(self, request, job_id):
-        response_id = ignore_case_get(request.META, 'responseId')
-        ret = GetJobInfoService(job_id, response_id).do_biz()
-        return Response(data=ret)
+        try:
+            response_id = ignore_case_get(request.META, 'responseId')
+            ret = GetJobInfoService(job_id, response_id).do_biz()
+            resp_serializer = JobQueryRespSerializer(data=ret)
+            if not resp_serializer.is_valid():
+                raise NSLCMException(resp_serializer.errors)
+            return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            return Response(data={'error': e.message},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         request_body=JobUpdReqSerializer(),
