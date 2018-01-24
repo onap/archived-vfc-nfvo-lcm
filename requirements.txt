@@ -32,15 +32,7 @@ nfv-toscaparser>=0.5.0
 
 # for swagger
 drf-yasg>=1.2.2
-Pillow>=4.3.0
-pygments>=2.2.0
-django-cors-headers>=2.1.0
-django-filter>=1.1.0,<2.0
-djangorestframework-camel-case>=0.2.0
-dj-database-url>=0.4.2
-user_agents>=1.1.0
 
 # for the validation feature
 flex>=6.11.1
 swagger-spec-validator>=2.1.0
-
