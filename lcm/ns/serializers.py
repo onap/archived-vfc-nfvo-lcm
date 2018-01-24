@@ -25,3 +25,7 @@ class CreateNsReqSerializer(serializers.Serializer):
     nsName = serializers.CharField(help_text="Name of NS", required=False, allow_null=True)
     description = serializers.CharField(help_text="Description of NS", required=False, allow_null=True)
     context = ContextSerializer(help_text="Context of NS", required=False)
+
+
+class CreateNsRespSerializer(serializers.Serializer):
+    nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=True)
