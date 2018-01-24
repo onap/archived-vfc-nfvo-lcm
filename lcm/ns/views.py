@@ -58,20 +58,28 @@ class CreateNSView(APIView):
     )
     def post(self, request):
         logger.debug("Enter CreateNS: %s", request.data)
-        if ignore_case_get(request.data, 'test') == "test":
-            return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
-        csar_id = ignore_case_get(request.data, 'csarId')
-        ns_name = ignore_case_get(request.data, 'nsName')
-        description = ignore_case_get(request.data, 'description')
-        context = ignore_case_get(request.data, 'context')
         try:
+            req_serializer = CreateNsReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise NSLCMException(req_serializer.errors)
+
+            if ignore_case_get(request.data, 'test') == "test":
+                return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
+            csar_id = ignore_case_get(request.data, 'csarId')
+            ns_name = ignore_case_get(request.data, 'nsName')
+            description = ignore_case_get(request.data, 'description')
+            context = ignore_case_get(request.data, 'context')
             ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
+
+            logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
+            resp_serializer = CreateNsRespSerializer(data={'nsInstanceId': ns_inst_id})
+            if not resp_serializer.is_valid():
+                raise NSLCMException(resp_serializer.errors)
+            return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("Exception in CreateNS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
-        return Response(data={'nsInstanceId': ns_inst_id}, status=status.HTTP_201_CREATED)
 
 
 class NSInstView(APIView):
