@@ -21,7 +21,7 @@ class ContextSerializer(serializers.Serializer):
 
 
 class CreateNsReqSerializer(serializers.Serializer):
-    csarId = serializers.CharField(help_text="Package ID of NS", required=True)
+    csarId = serializers.CharField(help_text="Package ID of NS", required=False, allow_null=True)
     nsName = serializers.CharField(help_text="Name of NS", required=False, allow_null=True)
     description = serializers.CharField(help_text="Description of NS", required=False, allow_null=True)
     context = ContextSerializer(help_text="Context of NS", required=False)

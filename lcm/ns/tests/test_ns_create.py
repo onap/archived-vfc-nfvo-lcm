@@ -70,8 +70,8 @@ class TestNsInstantiate(TestCase):
         mock_do_biz.side_effect = NSLCMException("nsd not exists.")
         new_nsd_id = '1'
         data = {
-            'nsdid': new_nsd_id,
-            'nsname': 'ns',
+            'csarId': new_nsd_id,
+            'nsName': 'ns',
             'description': 'description'
         }
         response = self.client.post("/api/nslcm/v1/ns", data=data)
