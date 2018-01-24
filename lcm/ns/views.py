@@ -19,6 +19,7 @@ import traceback
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.ns_create import CreateNSService
 from lcm.ns.ns_delete import DeleteNsService
@@ -31,6 +32,7 @@ from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
+from lcm.ns.serializers import CreateNsReqSerializer, CreateNsRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -47,11 +49,17 @@ class CreateNSView(APIView):
         logger.debug("CreateNSView::get::ret=%s", ret)
         return Response(data=ret, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        request_body=CreateNsReqSerializer(),
+        responses={
+            status.HTTP_201_CREATED: CreateNsRespSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request):
         logger.debug("Enter CreateNS: %s", request.data)
         if ignore_case_get(request.data, 'test') == "test":
             return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
-        # nsd_id = ignore_case_get(request.data, 'nsdId')
         csar_id = ignore_case_get(request.data, 'csarId')
         ns_name = ignore_case_get(request.data, 'nsName')
         description = ignore_case_get(request.data, 'description')
