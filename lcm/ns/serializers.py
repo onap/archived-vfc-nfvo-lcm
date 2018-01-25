@@ -85,4 +85,9 @@ class InstantNsReqSerializer(serializers.Serializer):
 
 
 class InstantNsRespSerializer(serializers.Serializer):
-    jobId = serializers.CharField(help_text="ID of NS instant Job", required=True)
+    jobId = serializers.CharField(help_text="ID of NS instant job", required=True)
+
+
+class TerminateNsReqSerializer(serializers.Serializer):
+    terminationType = serializers.CharField(help_text="Type of NS termination", required=False, allow_null=True)
+    gracefulTerminationTimeout = serializers.CharField(help_text="Timeout of NS graceful termination", required=False, allow_null=True)
