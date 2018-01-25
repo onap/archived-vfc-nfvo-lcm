@@ -33,22 +33,38 @@ from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.serializers import CreateNsReqSerializer, CreateNsRespSerializer
+from lcm.ns.serializers import QueryNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
 
 
 class CreateNSView(APIView):
+    @swagger_auto_schema(
+        request_body=None(),
+        responses={
+            status.HTTP_200_OK: QueryNsRespSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def get(self, request):
-        logger.debug("CreateNSView::get")
-        filter = None
-        csarId = ignore_case_get(request.META, 'csarId')
-        if csarId:
-            filter = {"csarId": csarId}
+        try:
+            logger.debug("CreateNSView::get")
+            filter = None
+            csarId = ignore_case_get(request.META, 'csarId')
+            if csarId:
+                filter = {"csarId": csarId}
 
-        ret = GetNSInfoService(filter).get_ns_info()
-        logger.debug("CreateNSView::get::ret=%s", ret)
-        return Response(data=ret, status=status.HTTP_200_OK)
+            ret = GetNSInfoService(filter).get_ns_info()
+            logger.debug("CreateNSView::get::ret=%s", ret)
+            resp_serializer = QueryNsRespSerializer(data=ret)
+            if not resp_serializer.is_valid():
+                raise NSLCMException(resp_serializer.errors)
+            return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error("Exception in GetNS: %s", e.message)
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         request_body=CreateNsReqSerializer(),
