@@ -68,3 +68,17 @@ class QueryNsRespSerializer(serializers.Serializer):
     vlInfo = VlInstSerializer(help_text="VL instances", many=True, required=False, allow_null=True)
     vnffgInfo = VnffgInstSerializer(help_text="VNFFG instances", many=True, required=False, allow_null=True)
     nsState = serializers.CharField(help_text="State of NS instance", required=False, allow_null=True)
+
+
+class VimSerializer(serializers.Serializer):
+    vimid = serializers.CharField(help_text="ID of VIM", required=False, allow_null=True)
+
+
+class LocationConstraintSerializer(serializers.Serializer):
+    vnfProfileId = serializers.CharField(help_text="ID of VNF profile", required=False, allow_null=True)
+    locationConstraints = VimSerializer(help_text="Location constraints", required=False, allow_null=True)
+
+
+class InstantNsReqSerializer(serializers.Serializer):
+    locationConstraints = LocationConstraintSerializer(required=False, allow_null=True)
+    additionalParamForNs = serializers.CharField(help_text="Additional param for NS", required=False, allow_null=True)
