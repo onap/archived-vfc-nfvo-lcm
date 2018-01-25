@@ -34,6 +34,7 @@ from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.serializers import CreateNsReqSerializer, CreateNsRespSerializer
 from lcm.ns.serializers import QueryNsRespSerializer
+from lcm.ns.serializers import InstantNsReqSerializer, InstantNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
@@ -100,10 +101,26 @@ class CreateNSView(APIView):
 
 
 class NSInstView(APIView):
+    @swagger_auto_schema(
+        request_body=InstantNsReqSerializer(),
+        responses={
+            status.HTTP_200_OK: InstantNsRespSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request, ns_instance_id):
+        logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
+        req_serializer = InstantNsReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            return Response({'error': req_serializer.errors},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         ack = InstantNSService(ns_instance_id, request.data).do_biz()
+        resp_serializer = InstantNsRespSerializer(data=ack['data'])
+        if not resp_serializer.is_valid():
+            return Response({'error': resp_serializer.errors},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         logger.debug("Leave NSInstView::post::ack=%s", ack)
-        return Response(data=ack['data'], status=ack['status'])
+        return Response(data=resp_serializer.data, status=ack['status'])
 
 
 class TerminateNSView(APIView):
