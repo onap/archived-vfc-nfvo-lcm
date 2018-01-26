@@ -51,12 +51,12 @@ class TestTerminateNsViews(TestCase):
 
     @mock.patch.object(TerminateNsService, 'run')
     def test_terminate_vnf_url(self, mock_run):
-        mock_run.re.return_value = None
+        mock_run.re.return_value = "1"
         req_data = {
             "terminationType": "forceful",
             "gracefulTerminationTimeout": "600"}
         response = self.client.post("/api/nslcm/v1/ns/%s/terminate" % self.ns_inst_id, data=req_data)
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
 
         response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
         self.failUnlessEqual(status.HTTP_204_NO_CONTENT, response.status_code)
@@ -100,7 +100,7 @@ class TestTerminateNsViews(TestCase):
 
     @mock.patch.object(TerminateNsService, 'run')
     def test_terminate_non_existing_ns_inst_id(self, mock_run):
-        mock_run.re.return_value = None
+        mock_run.re.return_value = "1"
 
         ns_inst_id = '100'
 
@@ -108,6 +108,6 @@ class TestTerminateNsViews(TestCase):
             "terminationType": "forceful",
             "gracefulTerminationTimeout": "600"}
         response = self.client.post("/api/nslcm/v1/ns/%s/terminate" % ns_inst_id, data=req_data)
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
 
         self.assertRaises(NSInstModel.DoesNotExist, NSInstModel.objects.get, id=ns_inst_id)
