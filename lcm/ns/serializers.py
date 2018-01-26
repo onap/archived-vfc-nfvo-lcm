@@ -103,7 +103,11 @@ class HealNsAdditionalParamsSerializer(serializers.Serializer):
     actionvminfo = ActionVmSerializer(help_text="VM info of action", required=False, allow_null=True)
 
 
-class HealNsReqSerializer(serializers.Serializer):
+class HealVnfDataSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="ID of VNF Instance", required=True)
     cause = serializers.CharField(help_text="Cause of NS heal", required=False, allow_null=True)
     additionalParams = HealNsAdditionalParamsSerializer(help_text="Additional params of NS heal", required=False, allow_null=True)
+
+
+class HealNsReqSerializer(serializers.Serializer):
+    healVnfData = HealVnfDataSerializer(help_text="Data of heal VNF", required=False, allow_null=True)
