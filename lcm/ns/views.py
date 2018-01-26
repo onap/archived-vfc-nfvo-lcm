@@ -37,6 +37,7 @@ from lcm.ns.serializers import QueryNsRespSerializer
 from lcm.ns.serializers import NsOperateJobSerializer
 from lcm.ns.serializers import InstantNsReqSerializer
 from lcm.ns.serializers import TerminateNsReqSerializer
+from lcm.ns.serializers import HealNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
@@ -156,17 +157,32 @@ class TerminateNSView(APIView):
 
 
 class NSHealView(APIView):
+    @swagger_auto_schema(
+        request_body=HealNsReqSerializer(),
+        responses={
+            status.HTTP_202_ACCEPTED: NsOperateJobSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request, ns_instance_id):
-        logger.debug("Enter HealNSView::post %s", request.data)
-        job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
         try:
+            logger.debug("Enter HealNSView::post %s", request.data)
+            req_serializer = HealNsReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise NSLCMException(req_serializer.errors)
+
+            job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
             NSHealService(ns_instance_id, request.data, job_id).start()
+
+            resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
+            if not resp_serializer.is_valid():
+                raise NSLCMException(resp_serializer.errors)
+
+            logger.debug("Leave HealNSView::post ret=%s", resp_serializer.data)
+            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             logger.error("Exception in HealNSView: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        ret = {'jobId': job_id}
-        logger.debug("Leave HealNSView::post ret=%s", ret)
-        return Response(data=ret, status=status.HTTP_202_ACCEPTED)
 
 
 class NSDetailView(APIView):
