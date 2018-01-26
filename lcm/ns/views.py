@@ -168,7 +168,6 @@ class NSHealView(APIView):
         try:
             logger.debug("Enter HealNSView::post %s", request.data)
             logger.debug("Enter HealNSView:: %s", ns_instance_id)
-            job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
             req_serializer = HealNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
