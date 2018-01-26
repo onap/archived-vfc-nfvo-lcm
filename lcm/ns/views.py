@@ -34,7 +34,7 @@ from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.serializers import CreateNsReqSerializer, CreateNsRespSerializer
 from lcm.ns.serializers import QueryNsRespSerializer
-from lcm.ns.serializers import InstantNsReqSerializer, InstantNsRespSerializer
+from lcm.ns.serializers import InstantNsReqSerializer, NsOperateJobSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
@@ -104,7 +104,7 @@ class NSInstView(APIView):
     @swagger_auto_schema(
         request_body=InstantNsReqSerializer(),
         responses={
-            status.HTTP_200_OK: InstantNsRespSerializer(),
+            status.HTTP_200_OK: NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -115,7 +115,7 @@ class NSInstView(APIView):
             return Response({'error': req_serializer.errors},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         ack = InstantNSService(ns_instance_id, request.data).do_biz()
-        resp_serializer = InstantNsRespSerializer(data=ack['data'])
+        resp_serializer = NsOperateJobSerializer(data=ack['data'])
         if not resp_serializer.is_valid():
             return Response({'error': resp_serializer.errors},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)

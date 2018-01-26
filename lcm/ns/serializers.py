@@ -84,8 +84,8 @@ class InstantNsReqSerializer(serializers.Serializer):
     additionalParamForNs = serializers.CharField(help_text="Additional param for NS", required=False, allow_null=True)
 
 
-class InstantNsRespSerializer(serializers.Serializer):
-    jobId = serializers.CharField(help_text="ID of NS instant job", required=True)
+class NsOperateJobSerializer(serializers.Serializer):
+    jobId = serializers.CharField(help_text="ID of NS operate job", required=True)
 
 
 class TerminateNsReqSerializer(serializers.Serializer):
