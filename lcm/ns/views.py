@@ -34,7 +34,9 @@ from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.serializers import CreateNsReqSerializer, CreateNsRespSerializer
 from lcm.ns.serializers import QueryNsRespSerializer
-from lcm.ns.serializers import InstantNsReqSerializer, NsOperateJobSerializer
+from lcm.ns.serializers import NsOperateJobSerializer
+from lcm.ns.serializers import InstantNsReqSerializer
+from lcm.ns.serializers import TerminateNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
@@ -124,19 +126,33 @@ class NSInstView(APIView):
 
 
 class TerminateNSView(APIView):
+    @swagger_auto_schema(
+        request_body=TerminateNsReqSerializer(),
+        responses={
+            status.HTTP_202_ACCEPTED: NsOperateJobSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request, ns_instance_id):
-        logger.debug("Enter TerminateNSView::post %s", request.data)
-        termination_type = ignore_case_get(request.data, 'terminationType')
-        graceful_termination_timeout = ignore_case_get(request.data, 'gracefulTerminationTimeout')
-        job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, ns_instance_id)
         try:
+            logger.debug("Enter TerminateNSView::post %s", request.data)
+            req_serializer = TerminateNsReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise NSLCMException(req_serializer.errors)
+
+            termination_type = ignore_case_get(request.data, 'terminationType')
+            graceful_termination_timeout = ignore_case_get(request.data, 'gracefulTerminationTimeout')
+            job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, ns_instance_id)
             TerminateNsService(ns_instance_id, termination_type, graceful_termination_timeout, job_id).start()
+
+            resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
+            if not resp_serializer.is_valid():
+                raise NSLCMException(resp_serializer.errors)
+            logger.debug("Leave TerminateNSView::post ret=%s", ret)
+            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             logger.error("Exception in CreateNS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        ret = {'jobId': job_id}
-        logger.debug("Leave TerminateNSView::post ret=%s", ret)
-        return Response(data=ret, status=status.HTTP_202_ACCEPTED)
 
 
 class NSHealView(APIView):
