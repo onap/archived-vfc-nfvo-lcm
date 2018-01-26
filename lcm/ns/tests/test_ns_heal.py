@@ -66,7 +66,7 @@ class TestHealNsViews(TestCase):
         }
 
         response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
-        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
         self.assertIsNotNone(response.data)
         self.assertIn("jobId", response.data)
         self.assertNotIn("error", response.data)
@@ -128,6 +128,5 @@ class TestHealNsViews(TestCase):
         data = {}
 
         response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
-        self.assertEqual(response.data["error"], "healVnfData parameter does not exist or value is incorrect.")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
