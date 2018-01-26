@@ -158,6 +158,7 @@ class TerminateNSView(APIView):
 class NSHealView(APIView):
     def post(self, request, ns_instance_id):
         logger.debug("Enter HealNSView::post %s", request.data)
+        logger.debug("Enter HealNSView:: %s", ns_instance_id)
         job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
         try:
             NSHealService(ns_instance_id, request.data, job_id).start()
