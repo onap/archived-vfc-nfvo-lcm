@@ -91,3 +91,19 @@ class NsOperateJobSerializer(serializers.Serializer):
 class TerminateNsReqSerializer(serializers.Serializer):
     terminationType = serializers.CharField(help_text="Type of NS termination", required=False, allow_null=True)
     gracefulTerminationTimeout = serializers.CharField(help_text="Timeout of NS graceful termination", required=False, allow_null=True)
+
+
+class ActionVmSerializer(serializers.Serializer):
+    vmid = serializers.CharField(help_text="ID of VM", required=False, allow_null=True)
+    vmname = serializers.CharField(help_text="Name of VM", required=False, allow_null=True)
+
+
+class HealNsAdditionalParamsSerializer(serializers.Serializer):
+    action = serializers.CharField(help_text="Action of NS heal", required=False, allow_null=True)
+    actionvminfo = ActionVmSerializer(help_text="VM info of action", required=False, allow_null=True)
+
+
+class HealNsReqSerializer(serializers.Serializer):
+    vnfInstanceId = serializers.CharField(help_text="ID of VNF Instance", required=True)
+    cause = serializers.CharField(help_text="Cause of NS heal", required=False, allow_null=True)
+    additionalParams = HealNsAdditionalParamsSerializer(help_text="Additional params of NS heal", required=False, allow_null=True)
