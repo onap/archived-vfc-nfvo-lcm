@@ -13,7 +13,6 @@
 # limitations under the License.
 import json
 import logging
-import os
 import traceback
 
 from rest_framework import status
@@ -228,15 +227,6 @@ class NSDetailView(APIView):
             logger.error(traceback.format_exc())
             logger.error("Exception in delete NS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class SwaggerJsonView(APIView):
-    def get(self, request):
-        json_file = os.path.join(os.path.dirname(__file__), 'swagger.json')
-        f = open(json_file)
-        json_data = json.JSONDecoder().decode(f.read())
-        f.close()
-        return Response(json_data)
 
 
 class NSInstPostDealView(APIView):
