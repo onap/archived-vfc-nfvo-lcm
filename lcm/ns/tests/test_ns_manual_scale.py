@@ -42,7 +42,7 @@ class TestNsManualScale(TestCase):
     def test_ns_manual_scale(self, mock_run):
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsByStepsData": [{
+            "scaleNsData": [{
                 "scaleNsByStepsData": [{
                     "aspectId": "1",
                     "numberOfSteps": 1,
@@ -57,7 +57,7 @@ class TestNsManualScale(TestCase):
     def test_ns_manual_scale_thread(self, mock_call):
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsByStepsData": [{
+            "scaleNsData": [{
                 "scaleNsByStepsData": [{
                     "aspectId": "1",
                     "numberOfSteps": 1,
@@ -84,7 +84,7 @@ class TestNsManualScale(TestCase):
         mock_start.side_effect = NSLCMException("NS scale failed.")
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsByStepsData": [{
+            "scaleNsData": [{
                 "scaleNsByStepsData": [{
                     "aspectId": "1",
                     "numberOfSteps": 1,
