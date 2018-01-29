@@ -37,6 +37,7 @@ from lcm.ns.serializers import NsOperateJobSerializer
 from lcm.ns.serializers import InstantNsReqSerializer
 from lcm.ns.serializers import TerminateNsReqSerializer
 from lcm.ns.serializers import HealNsReqSerializer
+from lcm.ns.serializers import InstNsPostDealReqSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
@@ -230,12 +231,22 @@ class NSDetailView(APIView):
 
 
 class NSInstPostDealView(APIView):
+    @swagger_auto_schema(
+        request_body=InstNsPostDealReqSerializer(help_text="NS instant post deal"),
+        responses={
+            status.HTTP_202_ACCEPTED: "NS instant post deal success",
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstPostDealView::post %s, %s", request.data, ns_instance_id)
         ns_post_status = ignore_case_get(request.data, 'status')
         ns_status = 'ACTIVE' if ns_post_status == 'true' else 'FAILED'
         ns_opr_status = 'success' if ns_post_status == 'true' else 'failed'
         try:
+            req_serializer = InstNsPostDealReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise NSLCMException(req_serializer.errors)
             NSInstModel.objects.filter(id=ns_instance_id).update(status=ns_status)
             ServiceBaseInfoModel.objects.filter(service_id=ns_instance_id).update(
                 active_status=ns_status, status=ns_opr_status)
