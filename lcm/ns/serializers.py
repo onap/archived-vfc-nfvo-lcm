@@ -115,3 +115,18 @@ class HealNsReqSerializer(serializers.Serializer):
 
 class InstNsPostDealReqSerializer(serializers.Serializer):
     status = serializers.CharField(help_text="Status of NS Inst", required=True)
+
+
+class ScaleNsByStepsSerializer(serializers.Serializer):
+    aspectId = serializers.CharField(help_text="ID of aspect", required=True)
+    numberOfSteps = serializers.CharField(help_text="Number of steps", required=True)
+    scalingDirection = serializers.CharField(help_text="Scaling direction", required=True)
+
+
+class ScaleNsDataSerializer(serializers.Serializer):
+    scaleNsByStepsData = ScaleNsByStepsSerializer(help_text="Scale NS by steps data", many=True)
+
+
+class ManualScaleNsReqSerializer(serializers.Serializer):
+    scaleType = serializers.CharField(help_text="Type of NS Scale", required=True)
+    scaleNsData = ScaleNsDataSerializer(help_text="Scale NS data", many=True)
