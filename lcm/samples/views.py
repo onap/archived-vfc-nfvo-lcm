@@ -18,6 +18,8 @@ import traceback
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
+
 from lcm.pub.database import models
 
 logger = logging.getLogger(__name__)
@@ -27,6 +29,12 @@ class SampleList(APIView):
     """
     List all samples.
     """
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_200_OK: "Status is active"
+        }
+    )
     def get(self, request, format=None):
         count = len(models.NSDModel.objects.filter())
         logger.debug("get, count of NSDModel is %s", count)
@@ -34,6 +42,13 @@ class SampleList(APIView):
 
 
 class TablesList(APIView):
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def delete(self, request, modelName):
         logger.debug("Start delete model %s", modelName)
         try:
