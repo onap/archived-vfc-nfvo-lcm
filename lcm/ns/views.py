@@ -212,10 +212,22 @@ class NSDetailView(APIView):
             logger.error("Exception in GetNSDetail: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def delete(self, request, ns_instance_id):
-        logger.debug("Enter NSDetailView::delete ns(%s)", ns_instance_id)
-        DeleteNsService(ns_instance_id).do_biz()
-        return Response(data={}, status=status.HTTP_204_NO_CONTENT)
+        try:
+            logger.debug("Enter NSDetailView::delete ns(%s)", ns_instance_id)
+            DeleteNsService(ns_instance_id).do_biz()
+            return Response(data={}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error("Exception in delete NS: %s", e.message)
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class SwaggerJsonView(APIView):
