@@ -230,15 +230,6 @@ class NSDetailView(APIView):
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class SwaggerJsonView(APIView):
-    def get(self, request):
-        json_file = os.path.join(os.path.dirname(__file__), 'swagger.json')
-        f = open(json_file)
-        json_data = json.JSONDecoder().decode(f.read())
-        f.close()
-        return Response(json_data)
-
-
 class NSInstPostDealView(APIView):
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstPostDealView::post %s, %s", request.data, ns_instance_id)
