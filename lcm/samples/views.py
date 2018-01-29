@@ -22,6 +22,8 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.pub.database import models
 
+from lcm.samples.serializers import RecordCountSerializer
+
 logger = logging.getLogger(__name__)
 
 
@@ -62,13 +64,24 @@ class TablesList(APIView):
             return Response(data={"error": "failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
 
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_200_OK: RecordCountSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def get(self, request, modelName):
         logger.debug("Get model %s", modelName)
         count = 0
         try:
             model_obj = eval("models.%s.objects" % modelName)
             count = len(model_obj.filter())
-        except:
+            resp_serializer = RecordCountSerializer(data={"count": count})
+            if not resp_serializer.is_valid():
+                raise Exception(resp_serializer.errors)
+            return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(e.message)
             logger.error(traceback.format_exc())
-            return Response(data={"error": "failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(data={"count": count}, status=status.HTTP_200_OK)
+            return Response(data={"error": e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
