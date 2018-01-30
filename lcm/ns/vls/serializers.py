@@ -20,3 +20,9 @@ class CreateVlReqSerializer(serializers.Serializer):
     nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=False, allow_null=True)
     context = serializers.CharField(help_text="Context of VL instance", required=False, allow_null=True)
     additionalParamForNs = serializers.CharField(help_text="Additional param for NS", required=False, allow_null=True)
+
+
+class CreateVlRespSerializer(serializers.Serializer):
+    result = serializers.IntegerField(help_text="Index of VL instance", required=True)
+    detail = serializers.CharField(help_text="Detail of result", required=False, allow_null=True)
+    vlId = serializers.CharField(help_text="ID of VL instance", required=True)
