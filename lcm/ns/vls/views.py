@@ -15,10 +15,12 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.vls.create_vls import CreateVls
 from lcm.ns.vls.delete_vls import DeleteVls
 from lcm.ns.vls.get_vls import GetVls
+from lcm.ns.vls.serializers import CreateVlReqSerializer, CreateVlRespSerializer
 
 import logging
 
@@ -26,9 +28,29 @@ logger = logging.getLogger(__name__)
 
 
 class VlView(APIView):
+    @swagger_auto_schema(
+        request_body=CreateVlReqSerializer(),
+        responses={
+            status.HTTP_201_CREATED: CreateVlRespSerializer()
+        }
+    )
     def post(self, request):
         logger.debug("VlsCreateView--post::> %s" % request.data)
+
+        req_serializer = CreateVlReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.error(req_serializer.errors)
+            resp = {"result": 1, "detail": req_serializer.errors, "vlId": ""}
+            return Response(data=resp, status=status.HTTP_201_CREATED)
+
         resp = CreateVls(request.data).do()
+
+        resp_serializer = CreateVlRespSerializer(data=resp)
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+            resp = {"result": 1, "detail": resp_serializer.errors, "vlId": ""}
+            return Response(data=resp, status=status.HTTP_201_CREATED)
+
         return Response(data=resp, status=status.HTTP_201_CREATED)
 
 

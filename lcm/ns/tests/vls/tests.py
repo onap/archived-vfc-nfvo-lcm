@@ -84,10 +84,10 @@ class TestVlViews(TestCase):
         req_data = {
             "nsInstanceId": self.ns_inst_id,
             "context": json.JSONEncoder().encode(self.context),
-            "vlindex": vl_id}
+            "vlIndex": vl_id}
         response = self.client.post("/api/nslcm/v1/ns/vls", data=req_data)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        self.assertEqual(0, response.data["result"])
+        self.assertEqual(0, response.data["result"], response.data)
 
     @mock.patch.object(restcall, "call_req")
     @mock.patch.object(vimadaptor.VimAdaptor, "create_network")
@@ -96,7 +96,7 @@ class TestVlViews(TestCase):
         req_data = {
             "nsInstanceId": self.ns_inst_id,
             "context": json.JSONEncoder().encode(self.context),
-            "vlindex": self.vl_id_1}
+            "vlIndex": self.vl_id_1}
         mock_uuid4.return_value = '999'
         mock_req_by_rest.return_value = [0, json.JSONEncoder().encode(vim_info), '200']
         mock_create_network.return_value = [1, (1)]

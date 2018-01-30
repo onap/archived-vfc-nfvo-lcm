@@ -16,13 +16,13 @@ from rest_framework import serializers
 
 
 class CreateVlReqSerializer(serializers.Serializer):
-    index = serializers.CharField(help_text="Index of VL instance", required=True)
+    vlIndex = serializers.CharField(help_text="Index of VL instance", required=True)
     nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=False, allow_null=True)
     context = serializers.CharField(help_text="Context of VL instance", required=False, allow_null=True)
     additionalParamForNs = serializers.CharField(help_text="Additional param for NS", required=False, allow_null=True)
 
 
 class CreateVlRespSerializer(serializers.Serializer):
-    result = serializers.IntegerField(help_text="Index of VL instance", required=True)
+    result = serializers.IntegerField(help_text="Index of VL instance(0: success, 1: failed)", required=True)
     detail = serializers.CharField(help_text="Detail of result", required=False, allow_null=True)
     vlId = serializers.CharField(help_text="ID of VL instance", required=True)
