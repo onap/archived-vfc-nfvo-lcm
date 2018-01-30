@@ -26,3 +26,9 @@ class CreateVlRespSerializer(serializers.Serializer):
     result = serializers.IntegerField(help_text="Index of VL instance(0: success, 1: failed)", required=True)
     detail = serializers.CharField(help_text="Detail of result", required=False, allow_null=True)
     vlId = serializers.CharField(help_text="ID of VL instance", required=True)
+
+
+class GetVlRespSerializer(serializers.Serializer):
+    vlId = serializers.CharField(help_text="ID of VL instance", required=False, allow_null=True)
+    vlName = serializers.CharField(help_text="Name of VL instance", required=False, allow_null=True)
+    vlStatus = serializers.CharField(help_text="Status of VL instance", required=False, allow_null=True)
