@@ -21,6 +21,7 @@ from lcm.ns.vls.create_vls import CreateVls
 from lcm.ns.vls.delete_vls import DeleteVls
 from lcm.ns.vls.get_vls import GetVls
 from lcm.ns.vls.serializers import CreateVlReqSerializer, CreateVlRespSerializer
+from lcm.ns.vls.serializers import GetVlRespSerializer
 
 import logging
 
@@ -55,14 +56,30 @@ class VlView(APIView):
 
 
 class VlDetailView(APIView):
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_200_OK: GetVlRespSerializer(),
+            status.HTTP_404_NOT_FOUND: "VL instance is not found",
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def get(self, request, vl_inst_id):
         logger.debug("VlDetailView--get::> %s" % vl_inst_id)
         vl_inst_info = GetVls(vl_inst_id).do()
         if not vl_inst_info:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(status=status.HTTP_200_OK, data={'vlId': vl_inst_id,
-                                                         'vlName': vl_inst_info[0].vlinstancename,
-                                                         'vlStatus': "active"})
+
+        resp_serializer = GetVlRespSerializer(data={
+            'vlId': vl_inst_id,
+            'vlName': vl_inst_info[0].vlinstancename,
+            'vlStatus': "active"})
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+            return Response(data={'error': resp_serializer.errors},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(status=status.HTTP_200_OK, data=resp_serializer.data)
 
     def delete(self, request_paras, vl_inst_id):
         logger.debug("VlDetailView--delete::> %s" % vl_inst_id)
