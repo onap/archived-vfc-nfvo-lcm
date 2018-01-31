@@ -22,6 +22,7 @@ import time
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.sfcs.create_flowcla import CreateFlowClassifier
 from lcm.ns.sfcs.create_port_chain import CreatePortChain
@@ -29,20 +30,41 @@ from lcm.ns.sfcs.create_portpairgp import CreatePortPairGroup
 from lcm.ns.sfcs.create_sfc_worker import CreateSfcWorker
 from lcm.ns.sfcs.sfc_instance import SfcInstance
 from lcm.ns.sfcs.utils import get_fp_id, ignorcase_get
+from lcm.ns.sfcs.serializers import CreateSfcReqSerializer, CreateSfcRespSerializer
 
 logger = logging.getLogger(__name__)
 
 
 class SfcInstanceView(APIView):
+    @swagger_auto_schema(
+        request_body=CreateSfcReqSerializer(),
+        responses={
+            status.HTTP_200_OK: CreateSfcRespSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request):
-        data = {
-            'nsinstid': request.data['nsInstanceId'],
-            "ns_model_data": json.loads(request.data['context']),
-            'fpindex': request.data['fpindex'],
-            'fpinstid': str(uuid.uuid4()),
-            'sdncontrollerid': request.data["sdnControllerId"]}
-        rsp = SfcInstance(data).do_biz()
-        return Response(data=rsp, status=status.HTTP_200_OK)
+        try:
+            req_serializer = CreateSfcReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
+
+            data = {
+                'nsinstid': request.data['nsInstanceId'],
+                "ns_model_data": json.loads(request.data['context']),
+                'fpindex': request.data['fpindex'],
+                'fpinstid': str(uuid.uuid4()),
+                'sdncontrollerid': request.data["sdnControllerId"]}
+            rsp = SfcInstance(data).do_biz()
+
+            resp_serializer = CreateSfcRespSerializer(data=rsp)
+            if not resp_serializer.is_valid():
+                raise Exception(resp_serializer.errors)
+
+            return Response(data=rsp, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class PortPairGpView(APIView):
