@@ -15,12 +15,12 @@
 from rest_framework import serializers
 
 
-class CreateSfcReqSerializer(serializers.Serializer):
+class CreateSfcInstReqSerializer(serializers.Serializer):
     fpindex = serializers.CharField(help_text="Index of FP", required=True)
     nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=False, allow_null=True)
     context = serializers.CharField(help_text="Context of NS instance", required=False, allow_null=True)
     sdnControllerId = serializers.CharField(help_text="ID of SDN controller", required=False, allow_null=True)
 
 
-class CreateSfcRespSerializer(serializers.Serializer):
+class CreateSfcInstRespSerializer(serializers.Serializer):
     fpinstid = serializers.CharField(help_text="ID of FP instance", required=True)

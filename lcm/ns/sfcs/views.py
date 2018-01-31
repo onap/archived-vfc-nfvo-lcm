@@ -30,22 +30,22 @@ from lcm.ns.sfcs.create_portpairgp import CreatePortPairGroup
 from lcm.ns.sfcs.create_sfc_worker import CreateSfcWorker
 from lcm.ns.sfcs.sfc_instance import SfcInstance
 from lcm.ns.sfcs.utils import get_fp_id, ignorcase_get
-from lcm.ns.sfcs.serializers import CreateSfcReqSerializer, CreateSfcRespSerializer
+from lcm.ns.sfcs.serializers import CreateSfcInstReqSerializer, CreateSfcInstRespSerializer
 
 logger = logging.getLogger(__name__)
 
 
 class SfcInstanceView(APIView):
     @swagger_auto_schema(
-        request_body=CreateSfcReqSerializer(),
+        request_body=CreateSfcInstReqSerializer(),
         responses={
-            status.HTTP_200_OK: CreateSfcRespSerializer(),
+            status.HTTP_200_OK: CreateSfcInstRespSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
     def post(self, request):
         try:
-            req_serializer = CreateSfcReqSerializer(data=request.data)
+            req_serializer = CreateSfcInstReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise Exception(req_serializer.errors)
 
@@ -57,7 +57,7 @@ class SfcInstanceView(APIView):
                 'sdncontrollerid': request.data["sdnControllerId"]}
             rsp = SfcInstance(data).do_biz()
 
-            resp_serializer = CreateSfcRespSerializer(data=rsp)
+            resp_serializer = CreateSfcInstRespSerializer(data=rsp)
             if not resp_serializer.is_valid():
                 raise Exception(resp_serializer.errors)
 
