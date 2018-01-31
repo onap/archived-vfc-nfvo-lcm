@@ -21,6 +21,7 @@ from drf_yasg.utils import swagger_auto_schema
 from lcm.ns.sfcs.delete_sfcs import DeleteSfcs
 from lcm.ns.sfcs.get_sfcs import GetSfcs
 from lcm.ns.sfcs.serializers import GetSfcRespSerializer
+from lcm.ns.sfcs.serializers import DeleteSfcRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +53,21 @@ class SfcDetailView(APIView):
 
         return Response(status=status.HTTP_200_OK, data=resp_serializer.data)
 
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_202_ACCEPTED: DeleteSfcRespSerializer()
+        }
+    )
     def delete(self, request_paras, sfc_inst_id):
         resp = DeleteSfcs(sfc_inst_id).do()
+
+        resp_serializer = DeleteSfcRespSerializer(data=resp)
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+            return Response(data={"result": 1, "detail": resp_serializer.errors},
+                            status=status.HTTP_202_ACCEPTED)
+
         return Response(data=resp, status=status.HTTP_202_ACCEPTED)
 
 
