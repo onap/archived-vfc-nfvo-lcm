@@ -36,11 +36,11 @@ logger = logging.getLogger(__name__)
 class SfcInstanceView(APIView):
     def post(self, request):
         data = {
-            'nsinstid': request.data['nsinstanceid'],
+            'nsinstid': request.data['nsInstanceId'],
             "ns_model_data": json.loads(request.data['context']),
             'fpindex': request.data['fpindex'],
             'fpinstid': str(uuid.uuid4()),
-            'sdncontrollerid': request.data["sdncontrollerid"]}
+            'sdncontrollerid': request.data["sdnControllerId"]}
         rsp = SfcInstance(data).do_biz()
         return Response(data=rsp, status=status.HTTP_200_OK)
 
