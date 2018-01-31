@@ -22,6 +22,7 @@ from lcm.ns.vls.delete_vls import DeleteVls
 from lcm.ns.vls.get_vls import GetVls
 from lcm.ns.vls.serializers import CreateVlReqSerializer, CreateVlRespSerializer
 from lcm.ns.vls.serializers import GetVlRespSerializer
+from lcm.ns.vls.serializers import DeleteVlRespSerializer
 
 import logging
 
@@ -81,7 +82,20 @@ class VlDetailView(APIView):
 
         return Response(status=status.HTTP_200_OK, data=resp_serializer.data)
 
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_202_ACCEPTED: DeleteVlRespSerializer()
+        }
+    )
     def delete(self, request_paras, vl_inst_id):
         logger.debug("VlDetailView--delete::> %s" % vl_inst_id)
         resp = DeleteVls(vl_inst_id).do()
+
+        resp_serializer = DeleteVlRespSerializer(data=resp)
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+            resp = {"result": 0, "detail": resp_serializer.errors}
+            return Response(data=resp, status=status.HTTP_202_ACCEPTED)
+
         return Response(data=resp, status=status.HTTP_202_ACCEPTED)
