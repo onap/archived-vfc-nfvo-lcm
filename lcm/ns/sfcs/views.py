@@ -31,6 +31,7 @@ from lcm.ns.sfcs.create_sfc_worker import CreateSfcWorker
 from lcm.ns.sfcs.sfc_instance import SfcInstance
 from lcm.ns.sfcs.utils import get_fp_id, ignorcase_get
 from lcm.ns.sfcs.serializers import CreateSfcInstReqSerializer, CreateSfcInstRespSerializer
+from lcm.ns.sfcs.serializers import CreateSfcReqSerializer, CreateSfcRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -96,25 +97,35 @@ class PortChainView(APIView):
 
 
 class SfcView(APIView):
+    @swagger_auto_schema(
+        request_body=CreateSfcReqSerializer(),
+        responses={
+            status.HTTP_200_OK: CreateSfcRespSerializer()
+        }
+    )
     def post(self, request):
         try:
             logger.info("Create Service Function Chain start")
             logger.info("service_function_chain_request: %s" % json.dumps(request.data))
             logger.info("service_function_chain_context  : %s" % json.dumps(request.data['context']))
             logger.info("service_function_chain_context  : %s" % request.data['context'])
-            logger.info("service_function_chain_instanceid : %s" % ignorcase_get(request.data, 'nsinstanceid'))
-            logger.info("service_function_chain_sdncontrollerid : %s" % ignorcase_get(request.data, 'sdncontrollerid'))
+            logger.info("service_function_chain_instanceid : %s" % ignorcase_get(request.data, 'nsInstanceId'))
+            logger.info("service_function_chain_sdncontrollerid : %s" % ignorcase_get(request.data, 'sdnControllerId'))
             logger.info("service_function_chain_fpindex : %s" % ignorcase_get(request.data, 'fpindex'))
             ns_model_data = request.data['context']
+
+            req_serializer = CreateSfcReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
         except Exception as e:
             logger.error("Exception occurs: %s", e.message)
             logger.error(traceback.format_exc())
         data = {
-            'nsinstid': ignorcase_get(request.data, 'nsinstanceid'),
+            'nsinstid': ignorcase_get(request.data, 'nsInstanceId'),
             "ns_model_data": ns_model_data,
             'fpindex': get_fp_id(ignorcase_get(request.data, 'fpindex'), ns_model_data),
             'fpinstid': str(uuid.uuid4()),
-            'sdncontrollerid': ignorcase_get(request.data, 'sdncontrollerid')
+            'sdncontrollerid': ignorcase_get(request.data, 'sdnControllerId')
         }
         logger.info("Save FPInstModel start: ")
         SfcInstance(data).do_biz()
@@ -126,6 +137,12 @@ class SfcView(APIView):
         time.sleep(2)
         logger.info("Service Function Chain Thread Sleep end: %s" % time.ctime())
         logger.info("Create Service Function Chain end")
+
+        resp_serializer = CreateSfcRespSerializer(data={"jobId": job_id,
+                                                        "sfcInstId": data["fpinstid"]})
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+
         return Response(data={"jobId": job_id,
                               "sfcInstId": data["fpinstid"]},
                         status=status.HTTP_200_OK)
