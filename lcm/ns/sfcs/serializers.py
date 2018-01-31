@@ -36,3 +36,9 @@ class CreateSfcReqSerializer(serializers.Serializer):
 class CreateSfcRespSerializer(serializers.Serializer):
     jobId = serializers.CharField(help_text="ID of job", required=True)
     sfcInstId = serializers.CharField(help_text="ID of SFC instance", required=True)
+
+
+class GetSfcRespSerializer(serializers.Serializer):
+    sfcInstId = serializers.CharField(help_text="ID of SFC instance", required=True)
+    sfcName = serializers.CharField(help_text="Name of SFC instance", required=True)
+    sfcStatus = serializers.CharField(help_text="Status of SFC instance", required=True)
