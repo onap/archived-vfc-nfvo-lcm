@@ -42,3 +42,8 @@ class GetSfcRespSerializer(serializers.Serializer):
     sfcInstId = serializers.CharField(help_text="ID of SFC instance", required=True)
     sfcName = serializers.CharField(help_text="Name of SFC instance", required=True)
     sfcStatus = serializers.CharField(help_text="Status of SFC instance", required=True)
+
+
+class DeleteSfcRespSerializer(serializers.Serializer):
+    result = serializers.CharField(help_text="Delete SFC result(0: success, 1: failed)", required=True)
+    detail = serializers.CharField(help_text="Result detail", required=False, allow_null=True)
