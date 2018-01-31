@@ -20,3 +20,7 @@ class CreateSfcReqSerializer(serializers.Serializer):
     nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=False, allow_null=True)
     context = serializers.CharField(help_text="Context of NS instance", required=False, allow_null=True)
     sdnControllerId = serializers.CharField(help_text="ID of SDN controller", required=False, allow_null=True)
+
+
+class CreateSfcRespSerializer(serializers.Serializer):
+    fpinstid = serializers.CharField(help_text="ID of FP instance", required=True)
