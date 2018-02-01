@@ -47,3 +47,9 @@ class GetSfcRespSerializer(serializers.Serializer):
 class DeleteSfcRespSerializer(serializers.Serializer):
     result = serializers.CharField(help_text="Delete SFC result(0: success, 1: failed)", required=True)
     detail = serializers.CharField(help_text="Result detail", required=False, allow_null=True)
+
+
+class CreatePortPairGpSerializer(serializers.Serializer):
+    fpinstid = serializers.CharField(help_text="ID of FP instance", required=False, allow_null=True)
+    context = serializers.CharField(help_text="Context of NS instance", required=False, allow_null=True)
+    nsinstanceid = serializers.CharField(help_text="ID of NS instance", required=False, allow_null=True)
