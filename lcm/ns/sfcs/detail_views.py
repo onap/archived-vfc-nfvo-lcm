@@ -69,9 +69,3 @@ class SfcDetailView(APIView):
                             status=status.HTTP_202_ACCEPTED)
 
         return Response(data=resp, status=status.HTTP_202_ACCEPTED)
-
-
-class SfcCreateView(APIView):
-    def post(self, request):
-        print "SfcCreateView--post::> %s" % request.stream.body
-        return Response(data={"jobId": "1234", "sfcInstId": "1"}, status=status.HTTP_201_CREATED)
