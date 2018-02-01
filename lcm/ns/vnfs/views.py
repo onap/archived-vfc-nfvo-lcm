@@ -18,6 +18,7 @@ import uuid
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.vnfs import create_vnfs
 from lcm.ns.vnfs.create_vnfs import CreateVnfs
@@ -31,13 +32,26 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
+from lcm.ns.vnfs.serializers import InstVnfReqSerializer
+from lcm.ns.vnfs.serializers import InstVnfRespSerializer
 
 logger = logging.getLogger(__name__)
 
 
 class NfView(APIView):
+    @swagger_auto_schema(
+        request_body=InstVnfReqSerializer(),
+        responses={
+            status.HTTP_202_ACCEPTED: InstVnfRespSerializer(),
+        }
+    )
     def post(self, request):
         logger.debug("VnfCreateView--post::> %s" % request.data)
+
+        req_serializer = InstVnfReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.error(req_serializer.errors)
+
         data = {'ns_instance_id': ignore_case_get(request.data, 'nsInstanceId'),
                 'additional_param_for_ns': ignore_case_get(request.data, 'additionalParamForVnf'),
                 'additional_param_for_vnf': ignore_case_get(request.data, 'additionalParamForVnf'),
@@ -47,6 +61,11 @@ class NfView(APIView):
         rsp = {
             "vnfInstId": nf_inst_id,
             "jobId": job_id}
+
+        resp_serializer = InstVnfRespSerializer(data=rsp)
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+
         return Response(data=rsp, status=status.HTTP_202_ACCEPTED)
 
 
