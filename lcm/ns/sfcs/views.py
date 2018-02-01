@@ -33,6 +33,7 @@ from lcm.ns.sfcs.utils import get_fp_id, ignorcase_get
 from lcm.ns.sfcs.serializers import CreateSfcInstReqSerializer, CreateSfcInstRespSerializer
 from lcm.ns.sfcs.serializers import CreateSfcReqSerializer, CreateSfcRespSerializer
 from lcm.ns.sfcs.serializers import CreatePortPairGpSerializer
+from lcm.ns.sfcs.serializers import CreateFlowClaSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +78,10 @@ class PortPairGpView(APIView):
         }
     )
     def post(self, request):
+        req_serializer = CreatePortPairGpSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.error(req_serializer.errors)
+
         data = {
             'fpinstid': request.data["fpinstid"],
             "ns_model_data": json.loads(request.data['context']),
@@ -86,7 +91,17 @@ class PortPairGpView(APIView):
 
 
 class FlowClaView(APIView):
+    @swagger_auto_schema(
+        request_body=CreateFlowClaSerializer(),
+        responses={
+            status.HTTP_200_OK: None
+        }
+    )
     def post(self, request):
+        req_serializer = CreateFlowClaSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.error(req_serializer.errors)
+
         data = {
             'fpinstid': request.data["fpinstid"],
             "ns_model_data": json.loads(request.data['context'])}
