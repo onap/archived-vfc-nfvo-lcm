@@ -34,6 +34,7 @@ from lcm.ns.sfcs.serializers import CreateSfcInstReqSerializer, CreateSfcInstRes
 from lcm.ns.sfcs.serializers import CreateSfcReqSerializer, CreateSfcRespSerializer
 from lcm.ns.sfcs.serializers import CreatePortPairGpSerializer
 from lcm.ns.sfcs.serializers import CreateFlowClaSerializer
+from lcm.ns.sfcs.serializers import CreatePortChainSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +111,17 @@ class FlowClaView(APIView):
 
 
 class PortChainView(APIView):
+    @swagger_auto_schema(
+        request_body=CreatePortChainSerializer(),
+        responses={
+            status.HTTP_200_OK: None
+        }
+    )
     def post(self, request):
+        req_serializer = CreatePortChainSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.error(req_serializer.errors)
+
         data = {
             'fpinstid': request.data["fpinstid"],
             "ns_model_data": json.loads(request.data['context'])}
