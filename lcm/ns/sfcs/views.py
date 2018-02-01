@@ -32,6 +32,7 @@ from lcm.ns.sfcs.sfc_instance import SfcInstance
 from lcm.ns.sfcs.utils import get_fp_id, ignorcase_get
 from lcm.ns.sfcs.serializers import CreateSfcInstReqSerializer, CreateSfcInstRespSerializer
 from lcm.ns.sfcs.serializers import CreateSfcReqSerializer, CreateSfcRespSerializer
+from lcm.ns.sfcs.serializers import CreatePortPairGpSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,12 @@ class SfcInstanceView(APIView):
 
 
 class PortPairGpView(APIView):
+    @swagger_auto_schema(
+        request_body=CreatePortPairGpSerializer(),
+        responses={
+            status.HTTP_200_OK: None
+        }
+    )
     def post(self, request):
         data = {
             'fpinstid': request.data["fpinstid"],
