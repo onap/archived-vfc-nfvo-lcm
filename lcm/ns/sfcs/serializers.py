@@ -53,3 +53,8 @@ class CreatePortPairGpSerializer(serializers.Serializer):
     fpinstid = serializers.CharField(help_text="ID of FP instance", required=False, allow_null=True)
     context = serializers.CharField(help_text="Context of NS instance", required=False, allow_null=True)
     nsinstanceid = serializers.CharField(help_text="ID of NS instance", required=False, allow_null=True)
+
+
+class CreateFlowClaSerializer(serializers.Serializer):
+    fpinstid = serializers.CharField(help_text="ID of FP instance", required=False, allow_null=True)
+    context = serializers.CharField(help_text="Context of NS instance", required=False, allow_null=True)
