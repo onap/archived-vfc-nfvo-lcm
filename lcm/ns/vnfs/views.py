@@ -35,6 +35,8 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.vnfs.serializers import InstVnfReqSerializer
 from lcm.ns.vnfs.serializers import InstVnfRespSerializer
 from lcm.ns.vnfs.serializers import GetVnfRespSerializer
+from lcm.ns.vnfs.serializers import TerminateVnfReqSerializer
+from lcm.ns.vnfs.serializers import TerminateVnfRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -95,8 +97,20 @@ class NfDetailView(APIView):
 
         return Response(status=status.HTTP_200_OK, data=rsp)
 
+    @swagger_auto_schema(
+        request_body=TerminateVnfReqSerializer(),
+        responses={
+            status.HTTP_200_OK: TerminateVnfRespSerializer(),
+            status.HTTP_409_CONFLICT: "Inner error"
+        }
+    )
     def post(self, request_paras, vnfinstid):
         logger.debug("VnfTerminateView--post::> %s, %s", vnfinstid, request_paras.data)
+
+        req_serializer = TerminateVnfReqSerializer(data=request_paras.data)
+        if not req_serializer.is_valid():
+            logger.error(req_serializer.errors)
+
         vnf_inst_id = vnfinstid
         terminationType = ignore_case_get(request_paras.data, 'terminationType')
         gracefulTerminationTimeout = ignore_case_get(request_paras.data, 'gracefulTerminationTimeout')
@@ -109,6 +123,11 @@ class NfDetailView(APIView):
             logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
         rsp = {'jobId': job_id}
+
+        resp_serializer = TerminateVnfRespSerializer(data=rsp)
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+
         return Response(data=rsp, status=status.HTTP_201_CREATED)
 
 
