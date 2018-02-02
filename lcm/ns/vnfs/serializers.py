@@ -35,3 +35,7 @@ class GetVnfRespSerializer(serializers.Serializer):
 class TerminateVnfReqSerializer(serializers.Serializer):
     terminationType = serializers.CharField(help_text="Termination Type", required=False, allow_null=True)
     gracefulTerminationTimeout = serializers.CharField(help_text="Graceful Termination Timeout", required=False, allow_null=True)
+
+
+class TerminateVnfRespSerializer(serializers.Serializer):
+    jobId = serializers.CharField(help_text="ID of Job", required=True)
