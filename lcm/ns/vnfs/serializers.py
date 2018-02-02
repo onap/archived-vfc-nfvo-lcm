@@ -24,3 +24,9 @@ class InstVnfReqSerializer(serializers.Serializer):
 class InstVnfRespSerializer(serializers.Serializer):
     vnfInstId = serializers.CharField(help_text="ID of VNF instance", required=True)
     jobId = serializers.CharField(help_text="ID of Job", required=True)
+
+
+class GetVnfRespSerializer(serializers.Serializer):
+    vnfInstId = serializers.CharField(help_text="ID of VNF instance", required=True)
+    vnfName = serializers.CharField(help_text="Name of VNF instance", required=True)
+    vnfStatus = serializers.CharField(help_text="Status of VNF instance", required=True)
