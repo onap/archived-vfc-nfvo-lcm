@@ -34,6 +34,7 @@ from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.vnfs.serializers import InstVnfReqSerializer
 from lcm.ns.vnfs.serializers import InstVnfRespSerializer
+from lcm.ns.vnfs.serializers import GetVnfRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ class NfView(APIView):
     @swagger_auto_schema(
         request_body=InstVnfReqSerializer(),
         responses={
-            status.HTTP_202_ACCEPTED: InstVnfRespSerializer(),
+            status.HTTP_202_ACCEPTED: InstVnfRespSerializer()
         }
     )
     def post(self, request):
@@ -70,14 +71,29 @@ class NfView(APIView):
 
 
 class NfDetailView(APIView):
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_200_OK: GetVnfRespSerializer(),
+            status.HTTP_404_NOT_FOUND: "VNF not found"
+        }
+    )
     def get(self, request, vnfinstid):
         logger.debug("VnfQueryView--get::> %s" % vnfinstid)
         nf_inst_info = GetVnf(vnfinstid).do_biz()
         if not nf_inst_info:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(status=status.HTTP_200_OK,
-                        data={'vnfInstId': nf_inst_info[0].nfinstid, 'vnfName': nf_inst_info[0].nf_name,
-                              'vnfStatus': nf_inst_info[0].status})
+
+        rsp = {
+            'vnfInstId': nf_inst_info[0].nfinstid,
+            'vnfName': nf_inst_info[0].nf_name,
+            'vnfStatus': nf_inst_info[0].status
+        }
+        resp_serializer = GetVnfRespSerializer(data=rsp)
+        if not resp_serializer.is_valid():
+            logger.error(resp_serializer.errors)
+
+        return Response(status=status.HTTP_200_OK, data=rsp)
 
     def post(self, request_paras, vnfinstid):
         logger.debug("VnfTerminateView--post::> %s, %s", vnfinstid, request_paras.data)
