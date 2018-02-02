@@ -30,3 +30,8 @@ class GetVnfRespSerializer(serializers.Serializer):
     vnfInstId = serializers.CharField(help_text="ID of VNF instance", required=True)
     vnfName = serializers.CharField(help_text="Name of VNF instance", required=True)
     vnfStatus = serializers.CharField(help_text="Status of VNF instance", required=True)
+
+
+class TerminateVnfReqSerializer(serializers.Serializer):
+    terminationType = serializers.CharField(help_text="Termination Type", required=False, allow_null=True)
+    gracefulTerminationTimeout = serializers.CharField(help_text="Graceful Termination Timeout", required=False, allow_null=True)
