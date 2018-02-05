@@ -37,6 +37,8 @@ from lcm.ns.vnfs.serializers import InstVnfRespSerializer
 from lcm.ns.vnfs.serializers import GetVnfRespSerializer
 from lcm.ns.vnfs.serializers import TerminateVnfReqSerializer
 from lcm.ns.vnfs.serializers import TerminateVnfRespSerializer
+from lcm.ns.vnfs.serializers import GrantVnfReqSerializer
+from lcm.ns.vnfs.serializers import GrantVnfRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -132,9 +134,20 @@ class NfDetailView(APIView):
 
 
 class NfGrant(APIView):
+    @swagger_auto_schema(
+        request_body=GrantVnfReqSerializer(),
+        responses={
+            status.HTTP_201_CREATED: GrantVnfRespSerializer(),
+            status.HTTP_409_CONFLICT: "Inner error"
+        }
+    )
     def post(self, request):
         logger.debug("NfGrant--post::> %s" % request.data)
         try:
+            req_serializer = GrantVnfReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
+
             vnf_inst_id = ignore_case_get(request.data, 'vnfInstanceId')
             job_id = JobUtil.create_job("VNF", JOB_TYPE.GRANT_VNF, vnf_inst_id)
             rsp = GrantVnfs(request.data, job_id).send_grant_vnf_to_resMgr()
@@ -148,6 +161,10 @@ class NfGrant(APIView):
                 }
             }
             """
+            resp_serializer = GrantVnfRespSerializer(data=rsp)
+            if not resp_serializer.is_valid():
+                raise Exception(resp_serializer.errors)
+
             return Response(data=rsp, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(e.message)

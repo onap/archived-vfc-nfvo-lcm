@@ -76,5 +76,5 @@ class VimSerializer(serializers.Serializer):
 
 
 class GrantVnfRespSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=True)
+    vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=False, allow_null=True)
     vim = VimSerializer(help_text="VIM Info", required=True)
