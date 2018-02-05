@@ -39,3 +39,26 @@ class TerminateVnfReqSerializer(serializers.Serializer):
 
 class TerminateVnfRespSerializer(serializers.Serializer):
     jobId = serializers.CharField(help_text="ID of Job", required=True)
+
+
+class ResourceChangeSerializer(serializers.Serializer):
+    type = serializers.ChoiceField(help_text="Change Type", choices=["VDU"], required=True)
+    resourceDefinitionId = serializers.CharField(help_text="Identifier of resource", required=False, allow_null=True)
+    vdu = serializers.CharField(help_text="Identifier identifier of VDU", required=False, allow_null=True)
+
+
+class GrantVnfReqSerializer(serializers.Serializer):
+    vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=True)
+    vnfDescriptorId = serializers.CharField(help_text="ID of VNF Descriptor", required=False, allow_null=True)
+    lifecycleOperation = serializers.ChoiceField(help_text="Lifecycle Operation",
+        choices=["Terminal", "Instantiate", "Scalein", "Scaleout", "Scaledown", "Scaleup", "Heal"],
+        required=True)
+    jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True)
+    addResource = ResourceChangeSerializer(help_text="Add resources", many=True)
+    removeResource = ResourceChangeSerializer(help_text="Remove resources", many=True)
+    additionalParam = serializers.DictField(
+        help_text="Additional parameters passed to the NFVO, specific to the VNF and the LCM operation. The currently interpreted keys are the following: vimId",
+        child=serializers.CharField(help_text="Additional parameters", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
