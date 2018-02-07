@@ -78,3 +78,32 @@ class VimSerializer(serializers.Serializer):
 class GrantVnfRespSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=False, allow_null=True)
     vim = VimSerializer(help_text="VIM Info", required=True)
+
+
+class AffectedVnfcSerializer(serializers.Serializer):
+    vnfcInstanceId = serializers.CharField(help_text="ID of VNFC instance", required=False, allow_null=True)
+    vduId = serializers.CharField(help_text="ID of VDU in VNFD", required=False, allow_null=True)
+    changeType = serializers.ChoiceField(
+        help_text="Type of Change",
+        choices=["added", "removed", "modified"],
+        required=True
+    )
+    vimId = serializers.CharField(help_text="ID of VIM", required=False, allow_null=True)
+    vmId = serializers.CharField(help_text="ID of virtual machine", required=False, allow_null=True)
+    vmName = serializers.CharField(help_text="Name of virtual machine", required=False, allow_null=True)
+
+
+class NotifyLcmReqSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(
+        help_text="Status of operation",
+        choices=["result", "start"],
+        required=True
+    )
+    operation = serializers.ChoiceField(
+        help_text="Lifecycle Operation",
+        choices=["Terminal", "Instantiate", "Scalein", "Scaleout", "Scaledown", "Scaleup", "Heal"],
+        required=True
+    )
+    jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True)
+    vnfdmodule = serializers.CharField(help_text="VNFD Module", required=False, allow_null=True)
+    affectedVnfc = AffectedVnfcSerializer(help_text="Affected VNFC", required=False, allow_null=True)
