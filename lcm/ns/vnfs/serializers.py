@@ -114,6 +114,30 @@ class AffectedVirtualLinkSerializer(serializers.Serializer):
     networkResource = NetworkResourceSerializer(help_text="Network Resource", required=False, allow_null=True)
 
 
+class PortResourceSerializer(serializers.Serializer):
+    vimId = serializers.CharField(help_text="ID of VIM", required=False, allow_null=True)
+    resourceId = serializers.CharField(help_text="ID of Resource", required=False, allow_null=True)
+    resourceName = serializers.CharField(help_text="Name of Resource", required=False, allow_null=True)
+    tenant = serializers.CharField(help_text="ID of Tenant", required=False, allow_null=True)
+    ipAddress = serializers.CharField(help_text="IP address of port", required=False, allow_null=True)
+    macAddress = serializers.CharField(help_text="MAC address of port", required=False, allow_null=True)
+    instId = serializers.CharField(help_text="Instance id of server to which the port is attached to", required=False, allow_null=True)
+
+
+class AffectedCpSerializer(serializers.Serializer):
+    changeType = serializers.ChoiceField(
+        help_text="Type of Change",
+        choices=["added", "removed", "modified"],
+        required=True
+    )
+    virtualLinkInstanceId = serializers.CharField(help_text="ID of VL instance", required=False, allow_null=True)
+    cpInstanceId = serializers.CharField(help_text="ID of CP instance", required=False, allow_null=True)
+    cpdId = serializers.CharField(help_text="ID of CPD in VNFD", required=False, allow_null=True)
+    ownerType = serializers.CharField(help_text="Type of Owner", required=False, allow_null=True)
+    ownerId = serializers.CharField(help_text="ID of Owner", required=False, allow_null=True)
+    portResource = PortResourceSerializer(help_text="Port Resource", required=False, allow_null=True)
+
+
 class NotifyLcmReqSerializer(serializers.Serializer):
     status = serializers.ChoiceField(
         help_text="Status of operation",
@@ -129,3 +153,4 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     vnfdmodule = serializers.CharField(help_text="VNFD Module", required=False, allow_null=True)
     affectedVnfc = AffectedVnfcSerializer(help_text="Affected VNFC", required=False, allow_null=True)
     affectedVl = AffectedVirtualLinkSerializer(help_text="Affected VL", required=False, allow_null=True)
+    affectedCp = AffectedCpSerializer (help_text="Affected CP", required=False, allow_null=True)
