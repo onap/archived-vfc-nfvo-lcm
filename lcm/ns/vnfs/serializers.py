@@ -159,3 +159,19 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     affectedVl = AffectedVirtualLinkSerializer(help_text="Affected VL", many=True)
     affectedCp = AffectedCpSerializer(help_text="Affected CP", many=True)
     affectedVirtualStorage = AffectedVirtualStorage(help_text="Affected Virtual Storage(Not supported)", many=True)
+
+
+class VnfScaleReqSerializer(serializers.Serializer):
+    type = serializers.ChoiceField(
+        help_text="Direction of the scaling",
+        choices=["SCALE_IN", "SCALE_OUT"],
+        required=True
+    )
+    aspectId = serializers.CharField(help_text="Aspect ID of the VNF that is requested to be scaled", required=False, allow_null=True)
+    numberOfSteps = serializers.CharField(help_text="Number of scaling steps to be executed as part of this ScaleVnf operation", required=False, allow_null=True)
+    additionalParam = serializers.DictField(
+        help_text="Additional parameters passed by the NFVO as input to the scaling process, specific to the VNF being scaled",
+        child=serializers.CharField(help_text="Additional parameters", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
