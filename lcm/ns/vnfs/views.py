@@ -39,6 +39,7 @@ from lcm.ns.vnfs.serializers import TerminateVnfReqSerializer
 from lcm.ns.vnfs.serializers import TerminateVnfRespSerializer
 from lcm.ns.vnfs.serializers import GrantVnfReqSerializer
 from lcm.ns.vnfs.serializers import GrantVnfRespSerializer
+from lcm.ns.vnfs.serializers import NotifyLcmReqSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -173,10 +174,20 @@ class NfGrant(APIView):
 
 
 class LcmNotify(APIView):
-    def post(self, request_paras, vnfmid, vnfInstanceId):
-        logger.debug("LcmNotify--post::> %s" % request_paras.data)
+    @swagger_auto_schema(
+        request_body=NotifyLcmReqSerializer(),
+        responses={
+            status.HTTP_201_CREATED: None,
+            status.HTTP_409_CONFLICT: "Inner error"
+        }
+    )
+    def post(self, request, vnfmid, vnfInstanceId):
+        logger.debug("LcmNotify--post::> %s" % request.data)
         try:
-            NotifyLcm(vnfmid, vnfInstanceId, request_paras.data).do_biz()
+            req_serializer = NotifyLcmReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
+            NotifyLcm(vnfmid, vnfInstanceId, request.data).do_biz()
             return Response(data={}, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(e.message)
