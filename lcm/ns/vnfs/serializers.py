@@ -179,3 +179,7 @@ class ScaleVnfReqSerializer(serializers.Serializer):
 
 class ScaleVnfRespSerializer(serializers.Serializer):
     jobId = serializers.CharField(help_text="ID of Job", required=True)
+
+
+class VerifyVnfReqSerializer(serializers.Serializer):
+    PackageID = serializers.CharField(help_text="ID of Package", required=True)
