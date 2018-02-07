@@ -138,6 +138,10 @@ class AffectedCpSerializer(serializers.Serializer):
     portResource = PortResourceSerializer(help_text="Port Resource", required=False, allow_null=True)
 
 
+class AffectedVirtualStorage(serializers.Serializer):
+    pass
+
+
 class NotifyLcmReqSerializer(serializers.Serializer):
     status = serializers.ChoiceField(
         help_text="Status of operation",
@@ -151,6 +155,7 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     )
     jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True)
     vnfdmodule = serializers.CharField(help_text="VNFD Module", required=False, allow_null=True)
-    affectedVnfc = AffectedVnfcSerializer(help_text="Affected VNFC", required=False, allow_null=True)
-    affectedVl = AffectedVirtualLinkSerializer(help_text="Affected VL", required=False, allow_null=True)
-    affectedCp = AffectedCpSerializer(help_text="Affected CP", required=False, allow_null=True)
+    affectedVnfc = AffectedVnfcSerializer(help_text="Affected VNFC", many=True)
+    affectedVl = AffectedVirtualLinkSerializer(help_text="Affected VL", many=True)
+    affectedCp = AffectedCpSerializer(help_text="Affected CP", many=True)
+    affectedVirtualStorage = AffectedVirtualStorage(help_text="Affected Virtual Storage(Not supported)", many=True)
