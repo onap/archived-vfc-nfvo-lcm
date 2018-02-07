@@ -42,6 +42,8 @@ from lcm.ns.vnfs.serializers import GrantVnfRespSerializer
 from lcm.ns.vnfs.serializers import NotifyLcmReqSerializer
 from lcm.ns.vnfs.serializers import ScaleVnfReqSerializer
 from lcm.ns.vnfs.serializers import ScaleVnfRespSerializer
+from lcm.ns.vnfs.serializers import VerifyVnfReqSerializer
+from lcm.ns.vnfs.serializers import VerifyVnfRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -218,11 +220,32 @@ class NfScaleView(APIView):
 
 
 class NfVerifyView(APIView):
+    @swagger_auto_schema(
+        request_body=VerifyVnfReqSerializer(),
+        responses={
+            status.HTTP_202_ACCEPTED: VerifyVnfRespSerializer(),
+            status.HTTP_409_CONFLICT: "Inner error"
+        }
+    )
     def post(self, request):
         job_id = "VNFSDK_" + str(uuid.uuid4())
         logger.debug("NfVerifyView--post::%s> %s", job_id, request.data)
-        VerifyVnfs(request.data, job_id).start()
-        return Response(data={"jobId": job_id}, status=status.HTTP_202_ACCEPTED)
+        try:
+            req_serializer = VerifyVnfReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
+
+            VerifyVnfs(request.data, job_id).start()
+
+            rsp = {"jobId": job_id}
+            resp_serializer = VerifyVnfRespSerializer(data=rsp)
+            if not resp_serializer.is_valid():
+                raise Exception(resp_serializer.errors)
+
+            return Response(data=rsp, status=status.HTTP_202_ACCEPTED)
+        except Exception as e:
+            logger.error(e.message)
+            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)    
 
 
 class NfVnfmInfoView(APIView):
