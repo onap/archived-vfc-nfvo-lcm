@@ -40,6 +40,8 @@ from lcm.ns.vnfs.serializers import TerminateVnfRespSerializer
 from lcm.ns.vnfs.serializers import GrantVnfReqSerializer
 from lcm.ns.vnfs.serializers import GrantVnfRespSerializer
 from lcm.ns.vnfs.serializers import NotifyLcmReqSerializer
+from lcm.ns.vnfs.serializers import ScaleVnfReqSerializer
+from lcm.ns.vnfs.serializers import ScaleVnfRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -195,10 +197,20 @@ class LcmNotify(APIView):
 
 
 class NfScaleView(APIView):
-    def post(self, request_paras, vnfinstid):
-        logger.debug("NfScaleView--post::> %s" % request_paras.data)
+    @swagger_auto_schema(
+        request_body=ScaleVnfReqSerializer(),
+        responses={
+            status.HTTP_202_ACCEPTED: ScaleVnfRespSerializer(),
+            status.HTTP_409_CONFLICT: "Inner error"
+        }
+    )
+    def post(self, request, vnfinstid):
+        logger.debug("NfScaleView--post::> %s" % request.data)
         try:
-            NFManualScaleService(vnfinstid, request_paras.data).start()
+            req_serializer = ScaleVnfReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
+            NFManualScaleService(vnfinstid, request.data).start()
             return Response(data={}, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             logger.error(e.message)
