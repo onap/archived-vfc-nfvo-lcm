@@ -93,6 +93,27 @@ class AffectedVnfcSerializer(serializers.Serializer):
     vmName = serializers.CharField(help_text="Name of virtual machine", required=False, allow_null=True)
 
 
+class NetworkResourceSerializer(serializers.Serializer):
+    resourceType = serializers.ChoiceField(
+        help_text="Type of Resource",
+        choices=["network", "port"],
+        required=True
+    )
+    resourceId = serializers.CharField(help_text="ID of network resource", required=False, allow_null=True)
+    resourceName = serializers.CharField(help_text="Name of network resource", required=False, allow_null=True)
+
+
+class AffectedVirtualLinkSerializer(serializers.Serializer):
+    vlInstanceId = serializers.CharField(help_text="ID of VL instance", required=False, allow_null=True)
+    vldId = serializers.CharField(help_text="ID of VLD in VNFD", required=False, allow_null=True)
+    changeType = serializers.ChoiceField(
+        help_text="Type of Change",
+        choices=["added", "removed", "modified"],
+        required=True
+    )
+    networkResource = NetworkResourceSerializer(help_text="Network Resource", required=False, allow_null=True)
+
+
 class NotifyLcmReqSerializer(serializers.Serializer):
     status = serializers.ChoiceField(
         help_text="Status of operation",
@@ -107,3 +128,4 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True)
     vnfdmodule = serializers.CharField(help_text="VNFD Module", required=False, allow_null=True)
     affectedVnfc = AffectedVnfcSerializer(help_text="Affected VNFC", required=False, allow_null=True)
+    affectedVl = AffectedVirtualLinkSerializer(help_text="Affected VL", required=False, allow_null=True)
