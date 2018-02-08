@@ -14,8 +14,9 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from lcm.ns.vnfs.views import NfView, NfDetailView, NfGrant, LcmNotify, NfScaleView, NfVerifyView, NfVnfmInfoView, \
-    NfVimInfoView
+from lcm.ns.vnfs.views import NfView, NfDetailView, NfGrant
+from lcm.ns.vnfs.views import LcmNotify, NfScaleView, NfVerifyView
+from lcm.ns.vnfs.views import NfVnfmInfoView, NfVimInfoView
 
 urlpatterns = [
     url(r'^api/nslcm/v1/ns/vnfs$', NfView.as_view()),
