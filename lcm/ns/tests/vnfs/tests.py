@@ -520,7 +520,7 @@ class TestGetVnfmInfoViews(TestCase):
         }
 
         response = self.client.get("/api/nslcm/v1/vnfms/%s" % self.vnfm_id)
-        self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
+        self.failUnlessEqual(status.HTTP_200_OK, response.status_code, response.content)
         context = json.loads(response.content)
         self.assertEqual(expect_data, context)
 

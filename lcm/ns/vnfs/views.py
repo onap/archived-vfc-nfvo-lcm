@@ -44,6 +44,7 @@ from lcm.ns.vnfs.serializers import ScaleVnfReqSerializer
 from lcm.ns.vnfs.serializers import ScaleVnfRespSerializer
 from lcm.ns.vnfs.serializers import VerifyVnfReqSerializer
 from lcm.ns.vnfs.serializers import VerifyVnfRespSerializer
+from lcm.ns.vnfs.serializers import VnfmInfoRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -249,10 +250,22 @@ class NfVerifyView(APIView):
 
 
 class NfVnfmInfoView(APIView):
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_200_OK: VnfmInfoRespSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def get(self, request, vnfmid):
         logger.debug("NfVnfmInfoView--get::> %s" % vnfmid)
         try:
             vnfm_info = get_vnfm_by_id(vnfmid)
+
+            resp_serializer = VnfmInfoRespSerializer(data=vnfm_info)
+            if not resp_serializer.is_valid():
+                raise Exception(resp_serializer.errors)
+
         except NSLCMException as e:
             logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
