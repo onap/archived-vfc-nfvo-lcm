@@ -187,3 +187,18 @@ class VerifyVnfReqSerializer(serializers.Serializer):
 
 class VerifyVnfRespSerializer(serializers.Serializer):
     jobId = serializers.CharField(help_text="ID of Job", required=True)
+
+
+class VnfmInfoRespSerializer(serializers.Serializer):
+    vnfmId = serializers.CharField(help_text="ID of VNFM", required=True)
+    name = serializers.CharField(help_text="Name of VNFM", required=True)
+    type = serializers.CharField(help_text="Type of VNFM", required=True)
+    vimId = serializers.CharField(help_text="ID of VIM", required=True)
+    vendor = serializers.CharField(help_text="Vendor of VNFM", required=True)
+    version = serializers.CharField(help_text="Version of VNFM", required=True)
+    description = serializers.CharField(help_text="Description of VNFM", required=True)
+    certificateUrl = serializers.CharField(help_text="Certificate Url of VNFM", required=True)
+    url = serializers.CharField(help_text="url of VNFM", required=True)
+    userName = serializers.CharField(help_text="User Name of VNFM", required=True)
+    password = serializers.CharField(help_text="Password of VNFM", required=True)
+    createTime = serializers.CharField(help_text="Create Time of VNFM", required=True)
