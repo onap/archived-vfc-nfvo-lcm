@@ -31,7 +31,13 @@ logger = logging.getLogger(__name__)
 
 class JobView(APIView):
     @swagger_auto_schema(
-        request_body=None,
+        manual_parameters=[
+            openapi.Parameter('responseId',
+                              openapi.IN_QUERY,
+                              "responseId",
+                              type=openapi.TYPE_INTEGER
+                              ),
+        ],
         responses={
             status.HTTP_200_OK: JobQueryRespSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
