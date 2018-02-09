@@ -202,3 +202,22 @@ class VnfmInfoRespSerializer(serializers.Serializer):
     userName = serializers.CharField(help_text="User Name of VNFM", required=True)
     password = serializers.CharField(help_text="Password of VNFM", required=True)
     createTime = serializers.CharField(help_text="Create Time of VNFM", required=False, allow_null=True, allow_blank=True)
+
+
+class VimInfoRespSerializer(serializers.Serializer):
+    vimId = serializers.CharField(help_text="ID of VIM", required=True)
+    name = serializers.CharField(help_text="Name of VIM", required=True)
+    url = serializers.CharField(help_text="Url of VIM", required=True)
+    userName = serializers.CharField(help_text="User Name of VIM", required=True)
+    password = serializers.CharField(help_text="Password of VIM", required=True)
+    tenantId = serializers.CharField(help_text="Tenant ID of VIM", required=True)
+    tenant = serializers.CharField(help_text="Default Tenant of VIM", required=True)
+    vendor = serializers.CharField(help_text="Vendor of VIM", required=False, allow_null=True, allow_blank=True)
+    version = serializers.CharField(help_text="Version of VIM", required=False, allow_null=True, allow_blank=True)
+    description = serializers.CharField(help_text="Description of VIM", required=False, allow_null=True, allow_blank=True)
+    domain = serializers.CharField(help_text="Domain of VIM", required=False, allow_null=True, allow_blank=True)
+    type = serializers.CharField(help_text="Type of VIM", required=True)
+    createTime = serializers.CharField(help_text="Create Time of VIM", required=False, allow_null=True, allow_blank=True)
+    sslCacert = serializers.CharField(help_text="SSL Cacert of VIM", required=False, allow_null=True, allow_blank=True)
+    sslInsecure = serializers.CharField(help_text="SSL Insecure of VIM", required=False, allow_null=True, allow_blank=True)
+    status = serializers.CharField(help_text="Status of VIM", required=True)
