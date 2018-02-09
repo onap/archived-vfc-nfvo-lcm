@@ -86,7 +86,7 @@ def convert_vim_info(vim_info_aai):
         "type": ignore_case_get(esr_system_info[0], "type"),
         "createTime": "",
         "sslCacert": ignore_case_get(esr_system_info[0], "ssl-cacert"),
-        "sslInsecure": ignore_case_get(esr_system_info[0], "ssl-insecure"),
+        "sslInsecure": str(ignore_case_get(esr_system_info[0], "ssl-insecure")),
         "status": ignore_case_get(esr_system_info[0], "system-status")
     }
     return vim_info

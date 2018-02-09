@@ -45,6 +45,7 @@ from lcm.ns.vnfs.serializers import ScaleVnfRespSerializer
 from lcm.ns.vnfs.serializers import VerifyVnfReqSerializer
 from lcm.ns.vnfs.serializers import VerifyVnfRespSerializer
 from lcm.ns.vnfs.serializers import VnfmInfoRespSerializer
+from lcm.ns.vnfs.serializers import VimInfoRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -278,10 +279,22 @@ class NfVnfmInfoView(APIView):
 
 
 class NfVimInfoView(APIView):
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_200_OK: VimInfoRespSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def get(self, request, vimid):
         logger.debug("NfVimInfoView--get::> %s" % vimid)
         try:
             vim_info = get_vim_by_id(vimid)
+
+            resp_serializer = VimInfoRespSerializer(data=vim_info)
+            if not resp_serializer.is_valid():
+                raise Exception(resp_serializer.errors)
+
         except NSLCMException as e:
             logger.error(e.message)
             return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
