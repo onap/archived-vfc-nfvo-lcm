@@ -166,7 +166,7 @@
         }
       }
     },
-    "/ns/{ns_instance_id}/heal": {
+    "/ns/{nsInstanceId}/heal": {
       "post": {
         "tags": [
           "ns"
@@ -179,7 +179,7 @@
             "required": true,
             "type": "string",
             "description": "Identifier of the NS instance.",
-            "name": "ns_instance_id",
+            "name": "nsInstanceId",
             "in": "path"
           },
           {
@@ -208,7 +208,7 @@
         }
       }
     },
-    "/ns/{ns_instance_id}/terminate": {
+    "/ns/{nsInstanceId}/terminate": {
       "post": {
         "tags": [
           "ns"
@@ -221,7 +221,7 @@
             "required": true,
             "type": "string",
             "description": "Identifier of the NS instance.",
-            "name": "ns_instance_id",
+            "name": "nsInstanceId",
             "in": "path"
           },
           {
@@ -247,7 +247,7 @@
         }
       }
     },
-    "/ns/{ns_instance_id}": {
+    "/ns/{nsInstanceId}": {
       "get": {
         "tags": [
           "ns"
@@ -255,7 +255,15 @@
         "summary": "ns get",
         "description": "ns get",
         "operationId": "ns_instance_get",
-        "parameters": [],
+        "parameters": [
+          {
+            "required": true,
+            "type": "string",
+            "description": "Identifier of the NS instance.",
+            "name": "nsInstanceId",
+            "in": "path"
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",
@@ -277,7 +285,7 @@
             "required": true,
             "type": "string",
             "description": "Identifier of the NS instance.",
-            "name": "ns_instance_id",
+            "name": "nsInstanceId",
             "in": "path"
           }
         ],
