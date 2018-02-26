@@ -102,6 +102,7 @@ nsd_model = {
                 "pnf_type": "TTGW",
                 "request_reclassification": False,
                 "nsh_aware": False,
+                "management_address": "10.34.45.67"
             },
             "cps": [
                 "cpd_1", "cpd_22",
