@@ -11,3 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from rest_framework import serializers
+
+
+class CreateVnfRequestSerializer(serializers.Serializer):
+    vnfdId = serializers.CharField(help_text="Identifier that identifies the VNFD which defines the VNF instance to be created", required=True)
+    vnfInstanceName = serializers.CharField(help_text="Human-readable name of the VNF instance to be created", required=False, allow_null=True, allow_blank=True)
+    vnfInstanceDescription = serializers.CharField(help_text="Human-readable description of the VNF instance to be created", required=False, allow_null=True, allow_blank=True)
