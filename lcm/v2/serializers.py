@@ -15,25 +15,31 @@
 from rest_framework import serializers
 
 
-class CreateVnfRequestSerializer(serializers.Serializer):
-    vnfdId = serializers.CharField(help_text="Identifier that identifies the VNFD which defines the VNF instance to be created.", required=True)
-    vnfInstanceName = serializers.CharField(help_text="Human-readable name of the VNF instance to be created.", required=False, allow_null=True, allow_blank=True)
-    vnfInstanceDescription = serializers.CharField(help_text="Human-readable description of the VNF instance to be created.", required=False, allow_null=True, allow_blank=True)
-
-
-class VnfInstanceSerializer(serializers.Serializer):
-    id = serializers.CharField(help_text="Identifier of the VNF instance", required=True)
-    vnfInstanceName = serializers.CharField(help_text="Name of the VNF instance.", required=False, allow_null=True, allow_blank=True)
-    vnfInstanceDescription = serializers.CharField(help_text="Human-readable description of the VNF instance.", required=False, allow_null=True, allow_blank=True)
-    vnfdId = serializers.CharField(help_text="Identifier of the VNFD on which the VNF instance is based.", required=False, allow_null=True, allow_blank=True)
-    vnfProvider = serializers.CharField(help_text="Provider of the VNF and the VNFD. The value is copied from the VNFD.", required=False, allow_null=True, allow_blank=True)
-    vnfProductName = serializers.CharField(help_text="Name to identify the VNF Product. The value is copied from the VNFD.", required=False, allow_null=True, allow_blank=True)
-    vnfSoftwareVersion = serializers.CharField(help_text="Software version of the VNF. The value is copied from the VNFD.", required=False, allow_null=True, allow_blank=True)
-    vnfdVersion = serializers.CharField(help_text="Identifies the version of the VNFD. The value is copied from the VNFD.", required=False, allow_null=True, allow_blank=True)
-    vnfPkgId = serializers.CharField(help_text="Identifier of information held by the NFVO about the specific VNF package on which the VNF is based.", required=False, allow_null=True, allow_blank=True)
-    vnfConfigurableProperties = serializers.DictField(
-        help_text="Current values of the configurable properties of the VNF instance.",
-        child=serializers.CharField(help_text="Vnf Configurable Properties", allow_blank=True),
+class GrantRequestSerializer(serializers.Serializer):
+    vnfInstanceId = serializers.CharField(
+        help_text="Identifier of the VNF instance which this grant request is related to.",
+        required=True
+    )
+    vnfLcmOpOccId = serializers.CharField(
+        help_text="The identifier of the VNF lifecycle management operation occurrence associated to the GrantRequest.",
         required=False,
-        allow_null=True
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfdId = serializers.CharField(
+        help_text="Identifier of the VNFD that defines the VNF for which the LCM operation is to be granted.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    flavourId = serializers.CharField(
+        help_text="Identifier of the VNF deployment flavour of the VNFD that defines the VNF for which the LCM operation is to be granted.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    operation = serializers.ChoiceField(
+        help_text="The lifecycle management operation for which granting is requested.",
+        choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
+        required=True
     )
