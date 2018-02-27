@@ -20,7 +20,7 @@ from rest_framework import status
 logger = logging.getLogger(__name__)
 
 
-class VnfInstancesView(APIView):
+class VnfGrantView(APIView):
     def post(self, request):
-        logger.debug("VnfInstancesView Post: %s" % request.data)
-        return Response(data={}, status=status.HTTP_202_ACCEPTED)
+        logger.debug("VnfGrantView Post: %s" % request.data)
+        return Response(data={}, status=status.HTTP_201_CREATED)
