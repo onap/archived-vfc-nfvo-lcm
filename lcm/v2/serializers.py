@@ -153,6 +153,33 @@ class GrantInfoSerializer(serializers.Serializer):
     )
 
 
+class VimComputeResourceFlavourSerializer(serializers.Serializer):
+    vimConnectionId = serializers.CharField(
+        help_text="Identifier of the VIM connection to access the flavour referenced in this structure.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifies the entity responsible for the management of the virtualised resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfdVirtualComputeDescId = serializers.CharField(
+        help_text="Identifier which references the virtual compute descriptor in the VNFD that maps to this flavour.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vimFlavourId = serializers.CharField(
+        help_text="Identifier of the compute resource flavour in the resource management layer (i.e. VIM).",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
