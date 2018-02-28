@@ -303,6 +303,17 @@ class VnfExtCpConfigSerializer(serializers.Serializer):
     )
 
 
+class VnfExtCpDataSerializer(serializers.Serializer):
+    cpdId = serializers.CharField(
+        help_text="The identifier of the CPD in the VNFD.",
+        required=True
+    )
+    cpConfig = VnfExtCpConfigSerializer(
+        help_text="List of instance data that need to be configured on the CP instances created from the respective CPD.",
+        many=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
