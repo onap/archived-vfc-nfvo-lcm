@@ -43,3 +43,20 @@ class GrantRequestSerializer(serializers.Serializer):
         choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
         required=True
     )
+
+
+class GrantSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of the grant.",
+        required=True
+    )
+    vnfInstanceId = serializers.CharField(
+        help_text="Identifier of the related VNF instance.",
+        required=True
+    )
+    vnfLcmOpOccId = serializers.CharField(
+        help_text="Identifier of the related VNF lifecycle management operation occurrence.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
