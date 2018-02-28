@@ -82,6 +82,31 @@ class VimConnectionInfoSerializer(serializers.Serializer):
     )
 
 
+class ZoneInfoSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="The identifier of this ZoneInfo instance, for the purpose of referencing it from other structures in the Grant structure.",
+        required=True
+    )
+    zoneId = serializers.CharField(
+        help_text="The identifier of the resource zone, as managed by the resource management layer(typically, the VIM).",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vimConnectionId = serializers.CharField(
+        help_text="Identifier of the connection to the VIM that manages the resource zone.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifies the entity responsible for the management the resource zone.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
@@ -96,4 +121,12 @@ class GrantSerializer(serializers.Serializer):
         required=False,
         allow_null=True,
         allow_blank=True
+    )
+    vimConnections = VimConnectionInfoSerializer(
+        help_text="Provides information regarding VIM connections that are approved to be used by the VNFM to allocate resources.",
+        many=True
+    )
+    zones = ZoneInfoSerializer(
+        help_text="Identifies resource zones where the resources are approved to be allocated by the VNFM.",
+        many=True
     )
