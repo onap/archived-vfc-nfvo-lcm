@@ -325,6 +325,37 @@ class ExtLinkPortDataSerializer(serializers.Serializer):
     )
 
 
+class ExtVirtualLinkDataSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="The identifier of the external VL instance.",
+        required=True
+    )
+    vimConnectionId = serializers.CharField(
+        help_text="Identifier of the VIM connection to manage this resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifies the entity responsible for the management of this resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceId = serializers.CharField(
+        help_text="The identifier of the resource in the scope of the VIM or the resource provider.",
+        required=True
+    )
+    extCps = VnfExtCpDataSerializer(
+        help_text="External CPs of the VNF to be connected to this external VL.",
+        many=True
+    )
+    extLinkPorts = ExtLinkPortDataSerializer(
+        help_text="Externally provided link ports to be used to connect external connection points to this external VL.",
+        many=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
