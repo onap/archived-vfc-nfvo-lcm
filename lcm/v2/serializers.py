@@ -218,6 +218,59 @@ class VimAssetsSerializer(serializers.Serializer):
     )
 
 
+class AddressRangeSerializer(serializers.Serializer):
+    minAddress =  serializers.CharField(
+        help_text="Lowest IP address belonging to the range.",
+        required=True
+    )
+    maxAddress =  serializers.CharField(
+        help_text="Highest IP address belonging to the range.",
+        required=True
+    )
+
+
+class IpAddresseSerializer(serializers.Serializer):
+    type = serializers.ChoiceField(
+        help_text="The type of the IP addresses.",
+        choices=["IPV4", "IPV6"],
+        required=True
+    )
+    fixedAddresses = serializers.ListSerializer(
+        help_text="Fixed addresses to assign.",
+        child=serializers.CharField(help_text="IpAddress"),
+        required=False,
+        allow_null=True
+    )
+    numDynamicAddresses = serializers.IntegerField(
+        help_text="Number of dynamic addresses to assign.",
+        required=True
+    )
+    addressRange = AddressRangeSerializer(
+        help_text="An IP address range to be used, e.g. in case of egress connections.",
+        required=False,
+        allow_null=True
+    )
+    subnetId = serializers.CharField(
+        help_text="Subnet defined by the identifier of the subnet resource in the VIM.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
+class IpOverEthernetAddressDataSerializer(serializers.Serializer):
+    macAddress = serializers.CharField(
+        help_text="MAC address.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    ipAddresses = IpAddresseSerializer(
+        help_text="List of IP addresses to assign to the CP instance.",
+        many=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
