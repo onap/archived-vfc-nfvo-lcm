@@ -107,6 +107,15 @@ class ZoneInfoSerializer(serializers.Serializer):
     )
 
 
+class ZoneGroupInfoSerializer(serializers.Serializer):
+    zoneId = serializers.ListSerializer(
+        help_text="References of identifiers of ZoneInfo structures.",
+        child=serializers.CharField(help_text="IdentifierLocal", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
@@ -128,5 +137,9 @@ class GrantSerializer(serializers.Serializer):
     )
     zones = ZoneInfoSerializer(
         help_text="Identifies resource zones where the resources are approved to be allocated by the VNFM.",
+        many=True
+    )
+    zoneGroups = ZoneGroupInfoSerializer(
+        help_text="Information about groups of resource zones",
         many=True
     )
