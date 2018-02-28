@@ -271,6 +271,19 @@ class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     )
 
 
+class CpProtocolDataSerializer(serializers.Serializer):
+    layerProtocol = serializers.ChoiceField(
+        help_text="Identifier of layer(s) and protocol(s).",
+        choices=["IP_OVER_ETHERNET"],
+        required=True
+    )
+    ipOverEthernet = IpOverEthernetAddressDataSerializer(
+        help_text="Network address data for IP over Ethernet to assign to the extCP instance.",
+        required=False,
+        allow_null=True,
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
