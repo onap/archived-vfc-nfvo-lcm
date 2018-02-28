@@ -284,6 +284,25 @@ class CpProtocolDataSerializer(serializers.Serializer):
     )
 
 
+class VnfExtCpConfigSerializer(serializers.Serializer):
+    cpInstanceId = serializers.CharField(
+        help_text="Identifier of the external CP instance to which this set of configuration parameters is requested to be applied.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    linkPortId = serializers.CharField(
+        help_text="Identifier of a pre-configured link port to which the external CP will be associated.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    cpProtocolData = CpProtocolDataSerializer(
+        help_text="Parameters for configuring the network protocols on the link port that connects the CP to a VL.",
+        many=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
