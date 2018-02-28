@@ -207,13 +207,23 @@ class VimSoftwareImageSerializer(serializers.Serializer):
     )
 
 
+class VimAssetsSerializer(serializers.Serializer):
+    computeResourceFlavours = VimComputeResourceFlavourSerializer(
+        help_text="Mappings between virtual compute descriptors defined in the VNFD and compute resource flavours managed in the VIM.",
+        many=True
+    )
+    softwareImages = VimSoftwareImageSerializer(
+        help_text="Mappings between software images defined in the VNFD and software images managed in the VIM.",
+        many=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
         required=True
     )
     vnfInstanceId = serializers.CharField(
-        help_text="Identifier of the related VNF instance.",
         required=True
     )
     vnfLcmOpOccId = serializers.CharField(
@@ -267,4 +277,9 @@ class GrantSerializer(serializers.Serializer):
     updateResources = GrantInfoSerializer(
         help_text="List of resources that are approved to be modified.",
         many=True
+    )
+    vimAssets = VimAssetsSerializer(
+        help_text="Information about assets for the VNF that are managed by the NFVO in the VIM.",
+        required=False,
+        allow_null=True
     )
