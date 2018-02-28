@@ -116,6 +116,43 @@ class ZoneGroupInfoSerializer(serializers.Serializer):
     )
 
 
+class GrantInfoSerializer(serializers.Serializer):
+    resourceDefinitionId = serializers.CharField(
+        help_text="Identifier of the related ResourceDefinition from the related GrantRequest.",
+        required=True
+    )
+    reservationId = serializers.CharField(
+        help_text="The reservation identifier applicable to the VNFC/VirtualLink/VirtualStorage.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vimConnectionId = serializers.CharField(
+        help_text="Identifier of the VIM connection to be used to manage this resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifies the entity responsible for the management of the virtualised resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    zoneId = serializers.CharField(
+        help_text="Reference to the identifier of the ZoneInfo in the Grant.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceGroupId = serializers.CharField(
+        help_text="Identifier of the infrastructure resource group.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
@@ -140,6 +177,40 @@ class GrantSerializer(serializers.Serializer):
         many=True
     )
     zoneGroups = ZoneGroupInfoSerializer(
-        help_text="Information about groups of resource zones",
+        help_text="Information about groups of resource zones.",
+        many=True
+    )
+    computeReservationId = serializers.CharField(
+        help_text="Information that identifies a reservation applicable to the compute resource requirements.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    networkReservationId = serializers.CharField(
+        help_text="Information that identifies a reservation applicable to the network resource requirements.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    storageReservationId = serializers.CharField(
+        help_text="Information that identifies a reservation applicable to the storage resource requirements.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    addResources = GrantInfoSerializer(
+        help_text="List of resources that are approved to be added.",
+        many=True
+    )
+    tempResources = GrantInfoSerializer(
+        help_text="List of resources that are approved to be temporarily instantiated during the runtime of the lifecycle operation.",
+        many=True
+    )
+    removeResources = GrantInfoSerializer(
+        help_text="List of resources that are approved to be removed.",
+        many=True
+    )
+    updateResources = GrantInfoSerializer(
+        help_text="List of resources that are approved to be modified.",
         many=True
     )
