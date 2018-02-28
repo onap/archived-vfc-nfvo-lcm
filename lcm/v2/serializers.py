@@ -356,6 +356,33 @@ class ExtVirtualLinkDataSerializer(serializers.Serializer):
     )
 
 
+class ExtManagedVirtualLinkDataSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="The identifier of the externally-managed internal VL instance.",
+        required=True
+    )
+    virtualLinkDescId = serializers.CharField(
+        help_text="The identifier of the VLD in the VNFD for this VL.",
+        required=True
+    )
+    vimConnectionId = serializers.CharField(
+        help_text="Identifier of the VIM connection to manage this resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifies the entity responsible for the management of this resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceId = serializers.CharField(
+        help_text="The identifier of the resource in the scope of the VIM or the resource provider.",
+        required=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
@@ -420,4 +447,12 @@ class GrantSerializer(serializers.Serializer):
         help_text="Information about assets for the VNF that are managed by the NFVO in the VIM.",
         required=False,
         allow_null=True
+    )
+    extVirtualLinks = ExtVirtualLinkDataSerializer(
+        help_text="Information about external VLs to connect the VNF to.",
+        many=True
+    )
+    extManagedVirtualLinks = ExtManagedVirtualLinkDataSerializer(
+        help_text="Information about internal VLs that are managed by other entities than the VNFM.",
+        many=True
     )
