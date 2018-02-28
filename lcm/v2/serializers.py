@@ -314,6 +314,17 @@ class VnfExtCpDataSerializer(serializers.Serializer):
     )
 
 
+class ExtLinkPortDataSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of this link port as provided by the entity that has created the link port.",
+        required=True
+    )
+    resourceHandle = serializers.CharField(
+        help_text="Reference to the virtualised resource realizing this link port.",
+        required=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
