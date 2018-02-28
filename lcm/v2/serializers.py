@@ -180,6 +180,33 @@ class VimComputeResourceFlavourSerializer(serializers.Serializer):
     )
 
 
+class VimSoftwareImageSerializer(serializers.Serializer):
+    vimConnectionId = serializers.CharField(
+        help_text="Identifier of the VIM connection to access the flavour referenced in this structure.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifies the entity responsible for the management of the virtualised resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfdSoftwareImageId = serializers.CharField(
+        help_text="Identifier which references the software image descriptor in the VNFD.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vimSoftwareImageId = serializers.CharField(
+        help_text="Identifier of the software image in the resource management layer (i.e. VIM).",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class GrantSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of the grant.",
