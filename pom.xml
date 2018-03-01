@@ -30,11 +30,21 @@
     <properties>
         <sonar.skip>false</sonar.skip>
         <sonar.sources>.</sonar.sources>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.language>py</sonar.language>
         <sonar.pluginName>Python</sonar.pluginName>
         <sonar.inclusions>**/*.py</sonar.inclusions>
     </properties>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>2.7.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
       <plugins>
         <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
