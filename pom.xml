@@ -27,6 +27,13 @@
     <packaging>pom</packaging>
     <name>vfc-nfvo-lcm</name>
     <description>vfc nfvo lcm</description>
+    <properties>
+        <sonar.skip>false</sonar.skip>
+        <sonar.sources>.</sonar.sources>
+        <sonar.language>py</sonar.language>
+        <sonar.pluginName>Python</sonar.pluginName>
+        <sonar.inclusions>**/*.py</sonar.inclusions>
+    </properties>
     <build>
       <plugins>
         <plugin>
