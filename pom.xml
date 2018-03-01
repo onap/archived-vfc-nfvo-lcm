@@ -35,18 +35,9 @@
         <sonar.language>py</sonar.language>
         <sonar.pluginname>python</sonar.pluginname>
         <sonar.inclusions>**/**.py</sonar.inclusions>
-        <sonar.exclusions>*tests*</sonar.exclusions>
+        <sonar.exclusions>**/tests/**.py,**/test*.py</sonar.exclusions>
     </properties>
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>sonar-maven-plugin</artifactId>
-                    <version>2.7.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
       <plugins>
         <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
