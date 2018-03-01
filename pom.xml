@@ -28,12 +28,14 @@
     <name>vfc-nfvo-lcm</name>
     <description>vfc nfvo lcm</description>
     <properties>
-        <sonar.skip>false</sonar.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.sources>.</sonar.sources>
-        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.junit.reportsPath>xunit-results.xml</sonar.junit.reportsPath>
+        <sonar.python.coverage.reportPath>coverage.xml</sonar.python.coverage.reportPath>
         <sonar.language>py</sonar.language>
-        <sonar.pluginName>Python</sonar.pluginName>
-        <sonar.inclusions>**/*.py</sonar.inclusions>
+        <sonar.pluginname>python</sonar.pluginname>
+        <sonar.inclusions>**/**.py</sonar.inclusions>
+        <sonar.exclusions>*tests*</sonar.exclusions>
     </properties>
     <build>
         <pluginManagement>
