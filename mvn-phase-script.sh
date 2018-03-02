@@ -71,7 +71,7 @@ clean)
   ;;
 test)
   echo "==> test phase script"
-  # run_tox_test
+  run_tox_test
   ;;
 *)
   echo "==> unprocessed phase"
