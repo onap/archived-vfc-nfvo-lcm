@@ -18,6 +18,7 @@ import logging
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.database.models import NSInstModel
 
 logger = logging.getLogger(__name__)
 
@@ -104,3 +105,13 @@ def get_servicetemplate(nsd_id):
         if stpl.get("id", "") == nsd_id:
             return stpl
     return NSLCMException('servicetemplate(%s) does not exist.' % nsd_id)
+
+
+# Gets scaling map json according to nsd id.
+def get_scalingmap_json_package(ns_InstanceId):
+    csar_id = NSInstModel.objects.filter(id=ns_InstanceId)[0]["nspackage_id"]
+    downloadUrl = query_csar_from_catalog(csar_id, "packageInfo")["downloadUrl"]
+    ret = req_by_msb(downloadUrl, 'GET')
+    scalingmap_json = json.JSONDecoder().decode(ret[1])
+
+    return scalingmap_json
