@@ -18,6 +18,7 @@ import os
 import copy
 from lcm.pub.database.models import NfInstModel
 from lcm.ns.vnfs.const import VNF_STATUS
+from lcm.pub.msapi import catalog
 
 
 logger = logging.getLogger(__name__)
@@ -68,7 +69,8 @@ def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
         ns_scale_option = scale_options[i]
         if (ignorcase_get(ns_scale_option, "ns_instanceId") == ns_instanceId) \
                 and (ignorcase_get(ns_scale_option, "ns_scale_aspect") == aspect):
-            ns_scale_info_list = ignorcase_get(ns_scale_option, "ns_scale_info_list")
+            ns_scale_info_list = ignorcase_get(
+                ns_scale_option, "ns_scale_info_list")
             for j in range(ns_scale_info_list.__len__()):
                 ns_scale_info = ns_scale_info_list[j]
                 if ns_scale_info["step"] == step:
@@ -78,10 +80,8 @@ def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
 
 
 # Get the vnf scaling info according to the ns package id.
-def get_vnf_scale_info_package(filename, nsd_id, aspect, step):
-
-    json_data = get_json_data(filename)
-    scale_options = ignorcase_get(json_data, "scale_options")
+def get_vnf_scale_info_package(scalingmap_json, nsd_id, aspect, step):
+    scale_options = ignorcase_get(scalingmap_json, "scale_options")
     for i in range(scale_options.__len__()):
         ns_scale_option = scale_options[i]
         if (ignorcase_get(ns_scale_option, "nsd_id") == nsd_id) and (
@@ -184,9 +184,15 @@ def get_vnf_data(filename, ns_instanceId, aspect, step, scale_type):
 
 
 # Get scaling data of vnf according to the package
-def get_vnf_data_package(filename, ns_instanceId, aspect, step, scale_type):
+def get_vnf_data_package(
+        scalingmap_json,
+        ns_instanceId,
+        aspect,
+        step,
+        scale_type):
     nsd_id = get_nsdId(ns_instanceId)
-    vnf_scale_list = get_vnf_scale_info_package(filename, nsd_id, aspect, step)
+    vnf_scale_list = get_vnf_scale_info_package(
+        scalingmap_json, nsd_id, aspect, step)
     check_scale_list(vnf_scale_list, ns_instanceId, aspect, step)
     scaleVnfDataList = set_scaleVnfData_type(vnf_scale_list, scale_type)
     logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
@@ -228,6 +234,21 @@ def get_scale_vnf_data(scaleNsData, ns_InstanceId):
         scaleNsData, ns_InstanceId)
     return get_vnf_data(
         filename,
+        ns_InstanceId,
+        aspect,
+        numberOfSteps,
+        scale_type)
+
+
+# Get scaling vnf data according to package by the scaling map json file.
+def get_scale_vnf_data_package(scaleNsData, ns_InstanceId):
+
+    scalingmap_json = catalog.get_scalingmap_json_package(ns_InstanceId)
+    logger.debug("scalingmap_json = %s" % scalingmap_json)
+    ns_InstanceId, aspect, numberOfSteps, scale_type = get_and_check_params(
+        scaleNsData, ns_InstanceId)
+    return get_vnf_data_package(
+        scalingmap_json,
         ns_InstanceId,
         aspect,
         numberOfSteps,
