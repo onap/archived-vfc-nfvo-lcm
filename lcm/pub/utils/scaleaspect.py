@@ -15,6 +15,10 @@
 import json
 import logging
 import os
+import copy
+from lcm.pub.database.models import NfInstModel
+from lcm.ns.vnfs.const import VNF_STATUS
+
 
 logger = logging.getLogger(__name__)
 SCALE_TYPE = ("SCALE_NS", "SCALE_VNF")
@@ -49,7 +53,9 @@ def mapping_conv(keyword_map, rest_return):
     for param in keyword_map:
         if keyword_map[param]:
             if isinstance(keyword_map[param], dict):
-                resp_data[param] = mapping_conv(keyword_map[param], ignorcase_get(rest_return, param))
+                resp_data[param] = mapping_conv(
+                    keyword_map[param], ignorcase_get(
+                        rest_return, param))
             else:
                 resp_data[param] = ignorcase_get(rest_return, param)
     return resp_data
@@ -71,6 +77,58 @@ def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
     return None
 
 
+# Get the vnf scaling info according to the ns package id.
+def get_vnf_scale_info_package(filename, nsd_id, aspect, step):
+
+    json_data = get_json_data(filename)
+    scale_options = ignorcase_get(json_data, "scale_options")
+    for i in range(scale_options.__len__()):
+        ns_scale_option = scale_options[i]
+        if (ignorcase_get(ns_scale_option, "nsd_id") == nsd_id) and (
+                ignorcase_get(ns_scale_option, "ns_scale_aspect") == aspect):
+            ns_scale_info_list = ignorcase_get(
+                ns_scale_option, "ns_scale_info")
+            for j in range(ns_scale_info_list.__len__()):
+                ns_scale_info = ns_scale_info_list[j]
+                if ns_scale_info["step"] == step:
+                    vnf_scale_info_list = ns_scale_info["vnf_scale_list"]
+
+                    return vnf_scale_info_list
+
+    return None
+
+
+# Gets the vnf instance id according to the vnfd_id and modify the list of
+# scaling vnf info accrodingly.
+def del_vnf_scale_info(vnf_scale_info_list):
+    result = list()
+    for i in range(vnf_scale_info_list.__len__()):
+        vnf_scale_info = vnf_scale_info_list[i]
+        vnfd_id = vnf_scale_info["vnfd_id"]
+        vnf_instance_id_list = get_vnf_instance_id_list(vnfd_id)
+        copy_vnf_scale_info = copy.deepcopy(vnf_scale_info)
+        copy_vnf_scale_info.pop("vnfd_id")
+        index = 0
+        while index < vnf_instance_id_list.__len__():
+            copy_vnf_scale_info["vnfInstanceId"] = vnf_instance_id_list[index]
+            ++index
+            result.append(copy_vnf_scale_info)
+
+    return result
+
+
+def get_vnf_instance_id_list(vnfd_id):
+    kwargs = {}
+    kwargs['package_id'] = vnfd_id
+    kwargs['status'] = VNF_STATUS.ACTIVE
+
+    nf_model_list = NfInstModel.objects.filter(**kwargs)
+    vnf_instance_id_list = list()
+    for i in range(nf_model_list.__len__()):
+        vnf_instance_id_list.append(nf_model_list[i]["nfinstid"])
+    return vnf_instance_id_list
+
+
 def get_json_data(filename):
     f = open(filename)
     json_str = f.read()
@@ -81,21 +139,26 @@ def get_json_data(filename):
 
 def check_scale_list(vnf_scale_list, ns_instanceId, aspect, step):
     if vnf_scale_list is None:
-        logger.debug("The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file."
-                     % (ns_instanceId, aspect, step))
-        raise Exception("The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file."
-                        % (ns_instanceId, aspect, step))
+        logger.debug(
+            "The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file." %
+            (ns_instanceId, aspect, step))
+        raise Exception(
+            "The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file." %
+            (ns_instanceId, aspect, step))
     else:
         return vnf_scale_list
 
 
 def set_scaleVnfData_type(vnf_scale_list, scale_type):
-    logger.debug("vnf_scale_list = %s, type = %s" % (vnf_scale_list, scale_type))
+    logger.debug(
+        "vnf_scale_list = %s, type = %s" %
+        (vnf_scale_list, scale_type))
     scaleVnfDataList = []
     if vnf_scale_list is not None:
         for i in range(vnf_scale_list.__len__()):
             scaleVnfData = scale_vnf_data_mapping
-            scaleVnfData["vnfInstanceId"] = get_vnfInstanceIdByName(vnf_scale_list[i]["vnfInstanceId"])
+            scaleVnfData["vnfInstanceId"] = get_vnfInstanceIdByName(
+                vnf_scale_list[i]["vnfInstanceId"])
             scaleVnfData["scaleByStepData"][0]["type"] = scale_type
             scaleVnfData["scaleByStepData"][0]["aspectId"] = vnf_scale_list[i]["vnf_scaleAspectId"]
             scaleVnfData["scaleByStepData"][0]["numberOfSteps"] = vnf_scale_list[i]["numberOfSteps"]
@@ -120,6 +183,22 @@ def get_vnf_data(filename, ns_instanceId, aspect, step, scale_type):
     # return Response(data={'success': 'success'},status=status.HTTP_200_OK)
 
 
+# Get scaling data of vnf according to the package
+def get_vnf_data_package(filename, ns_instanceId, aspect, step, scale_type):
+    nsd_id = get_nsdId(ns_instanceId)
+    vnf_scale_list = get_vnf_scale_info_package(filename, nsd_id, aspect, step)
+    check_scale_list(vnf_scale_list, ns_instanceId, aspect, step)
+    scaleVnfDataList = set_scaleVnfData_type(vnf_scale_list, scale_type)
+    logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
+
+    return scaleVnfDataList
+
+
+# Get the nsd id according to the ns instance id.
+def get_nsdId(ns_instanceId):
+    return None
+
+
 def get_and_check_params(scaleNsData, ns_InstanceId):
 
     if scaleNsData is None:
@@ -139,8 +218,17 @@ def get_and_check_params(scaleNsData, ns_InstanceId):
 
 
 def get_scale_vnf_data(scaleNsData, ns_InstanceId):
-    curdir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    curdir_path = os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__))))
     filename = curdir_path + "/ns/data/scalemapping.json"
     logger.debug("filename = %s" % filename)
-    ns_InstanceId, aspect, numberOfSteps, scale_type = get_and_check_params(scaleNsData, ns_InstanceId)
-    return get_vnf_data(filename, ns_InstanceId, aspect, numberOfSteps, scale_type)
+    ns_InstanceId, aspect, numberOfSteps, scale_type = get_and_check_params(
+        scaleNsData, ns_InstanceId)
+    return get_vnf_data(
+        filename,
+        ns_InstanceId,
+        aspect,
+        numberOfSteps,
+        scale_type)
