@@ -111,7 +111,7 @@ def del_vnf_scale_info(vnf_scale_info_list):
         index = 0
         while index < vnf_instance_id_list.__len__():
             copy_vnf_scale_info["vnfInstanceId"] = vnf_instance_id_list[index]
-            ++index
+            index += 1
             result.append(copy_vnf_scale_info)
 
     return result
