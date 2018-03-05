@@ -15,6 +15,30 @@
 from rest_framework import serializers
 
 
+class ResourceDefinitionSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of this ResourceDefinition, unique at least within the scope of the GrantRequest.",
+        required=True
+    )
+    type = serializers.ChoiceField(
+        help_text="Type of the resource definition referenced.",
+        choices=["COMPUTE", "VL", "STORAGE", "LINKPORT"],
+        required=True
+    )
+    vduId = serializers.CharField(
+        help_text="Reference to the related VDU in the VNFD applicable to this resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceTemplateId = serializers.CharField(
+        help_text="Reference to a resource template(such as VnfVirtualLinkDesc) in the VNFD.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class GrantRequestSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(
         help_text="Identifier of the VNF instance which this grant request is related to.",
@@ -42,6 +66,16 @@ class GrantRequestSerializer(serializers.Serializer):
         help_text="The lifecycle management operation for which granting is requested.",
         choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
         required=True
+    )
+    isAutomaticInvocation = serializers.BooleanField(
+        help_text="Set to true if this VNF LCM operation occurrence has been triggered by an automated procedure inside the VNFM, set to false otherwise.",
+        required=True
+    )
+    instantiationLevelId = serializers.CharField(
+        help_text="If operation=INSTANTIATE, the identifier of the instantiation level may be provided as an alternative way to define the resources to be added.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
     )
 
 
