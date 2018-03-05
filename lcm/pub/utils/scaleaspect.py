@@ -17,6 +17,7 @@ import logging
 import os
 import copy
 from lcm.pub.database.models import NfInstModel
+from lcm.pub.database.models import NSInstModel
 from lcm.ns.vnfs.const import VNF_STATUS
 from lcm.pub.msapi import catalog
 
@@ -100,7 +101,7 @@ def get_vnf_scale_info_package(scalingmap_json, nsd_id, aspect, step):
 
 # Gets the vnf instance id according to the vnfd_id and modify the list of
 # scaling vnf info accrodingly.
-def del_vnf_scale_info(vnf_scale_info_list):
+def deal_vnf_scale_info(vnf_scale_info_list):
     result = list()
     for i in range(vnf_scale_info_list.__len__()):
         vnf_scale_info = vnf_scale_info_list[i]
@@ -125,7 +126,8 @@ def get_vnf_instance_id_list(vnfd_id):
     nf_model_list = NfInstModel.objects.filter(**kwargs)
     vnf_instance_id_list = list()
     for i in range(nf_model_list.__len__()):
-        vnf_instance_id_list.append(nf_model_list[i]["nfinstid"])
+        vnf_instance_id_list.append(nf_model_list[i].nfinstid)
+
     return vnf_instance_id_list
 
 
@@ -194,6 +196,7 @@ def get_vnf_data_package(
     vnf_scale_list = get_vnf_scale_info_package(
         scalingmap_json, nsd_id, aspect, step)
     check_scale_list(vnf_scale_list, ns_instanceId, aspect, step)
+    vnf_scale_list = deal_vnf_scale_info(vnf_scale_list)
     scaleVnfDataList = set_scaleVnfData_type(vnf_scale_list, scale_type)
     logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
 
@@ -202,6 +205,10 @@ def get_vnf_data_package(
 
 # Get the nsd id according to the ns instance id.
 def get_nsdId(ns_instanceId):
+    if NSInstModel.objects.filter(id=ns_instanceId):
+        nsd_id = NSInstModel.objects.filter(id=ns_instanceId)[0].nsd_id
+        return nsd_id
+
     return None
 
 
