@@ -15,6 +15,31 @@
 from rest_framework import serializers
 
 
+class ResourceHandleSerializer(serializers.Serializer):
+    vimConnectionId = serializers.CharField(
+        help_text="Identifier of the VIM connection to manage the resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifier of the entity responsible for the management of the resource.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceId = serializers.CharField(
+        help_text="Identifier of the resource in the scope of the VIM or the resource provider.",
+        required=True
+    )
+    vimLevelResourceType = serializers.CharField(
+        help_text="Type of the resource in the scope of the VIM or the resource provider.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class ResourceDefinitionSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this ResourceDefinition, unique at least within the scope of the GrantRequest.",
@@ -36,6 +61,11 @@ class ResourceDefinitionSerializer(serializers.Serializer):
         required=False,
         allow_null=True,
         allow_blank=True
+    )
+    resource = ResourceHandleSerializer(
+        help_text="Resource information for an existing resource.",
+        required=False,
+        allow_null=True
     )
 
 
