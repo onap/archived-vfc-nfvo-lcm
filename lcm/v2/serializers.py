@@ -383,16 +383,23 @@ class ExtManagedVirtualLinkDataSerializer(serializers.Serializer):
     )
 
 
-class LinksSerializer(serializers.Serializer):
-    self = serializers.CharField(
+class LinkSerializer(serializers.Serializer):
+    href = serializers.CharField(
+        help_text="URI of the referenced resource.",
+        required=True
+    )
+
+
+class GrantLinksSerializer(serializers.Serializer):
+    self = LinkSerializer(
         help_text="URI of this resource.",
         required=True
     )
-    vnfLcmOpOcc = serializers.CharField(
+    vnfLcmOpOcc = LinkSerializer(
         help_text="Related VNF lifecycle management operation occurrence.",
         required=True
     )
-    vnfInstance = serializers.CharField(
+    vnfInstance = LinkSerializer(
         help_text="Related VNF instance.",
         required=True
     )
@@ -471,7 +478,7 @@ class GrantSerializer(serializers.Serializer):
         help_text="Information about internal VLs that are managed by other entities than the VNFM.",
         many=True
     )
-    links = LinksSerializer(
+    _links = GrantLinksSerializer(
         help_text="Links to resources related to this resource.",
         required=True
     )
