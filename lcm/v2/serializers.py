@@ -107,6 +107,22 @@ class GrantRequestSerializer(serializers.Serializer):
         allow_null=True,
         allow_blank=True
     )
+    addResources = ResourceDefinitionSerializer(
+        help_text="List of resource definitions in the VNFD for resources to be added by the LCM operation.",
+        many=True
+    )
+    tempResources = ResourceDefinitionSerializer(
+        help_text="List of resource definitions in the VNFD for resources to be temporarily instantiated during the runtime of the LCM operation.",
+        many=True
+    )
+    removeResources = ResourceDefinitionSerializer(
+        help_text="Provides the definitions of resources to be removed by the LCM operation.",
+        many=True
+    )
+    updateResources = ResourceDefinitionSerializer(
+        help_text="Provides the definitions of resources to be modified by the LCM operation.",
+        many=True
+    )
 
 
 class VimConnectionInfoSerializer(serializers.Serializer):
