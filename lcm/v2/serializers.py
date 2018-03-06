@@ -69,6 +69,47 @@ class ResourceDefinitionSerializer(serializers.Serializer):
     )
 
 
+class ConstraintResourceRefSerializer(serializers.Serializer):
+    idType = serializers.ChoiceField(
+        help_text="The type of the identifier.",
+        choices=["RES_MGMT", "GRANT"],
+        required=True
+    )
+    resourceId = serializers.CharField(
+        help_text="An actual resource-management-level identifier(idType=RES_MGMT), or an identifier that references a ResourceDefinition(idType=GRANT).",
+        required=True
+    )
+    vimConnectionId = serializers.CharField(
+        help_text="",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    resourceProviderId = serializers.CharField(
+        help_text="Identifier of the resource provider. It shall only be present when idType = RES_MGMT.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
+class PlacementConstraintSerializer(serializers.Serializer):
+    affinityOrAntiAffinity = serializers.ChoiceField(
+        help_text="The type of the constraint.",
+        choices=["AFFINITY", "ANTI_AFFINITY"],
+        required=True
+    )
+    scope = serializers.ChoiceField(
+        help_text="The scope of the placement constraint indicating the category of the place where the constraint applies.",
+        choices=["NFVI_POP", "ZONE", "ZONE_GROUP", "NFVI_NODE"],
+        required=True
+    )
+    resource = ConstraintResourceRefSerializer(
+        help_text="References to resources in the constraint rule.",
+        many=True
+    )
+
+
 class GrantRequestSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(
         help_text="Identifier of the VNF instance which this grant request is related to.",
@@ -121,6 +162,10 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     updateResources = ResourceDefinitionSerializer(
         help_text="Provides the definitions of resources to be modified by the LCM operation.",
+        many=True
+    )
+    placementConstraints = PlacementConstraintSerializer(
+        help_text="Placement constraints that the VNFM may send to the NFVO in order to influence the resource placement decision.",
         many=True
     )
 
