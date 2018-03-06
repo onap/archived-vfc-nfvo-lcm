@@ -23,7 +23,7 @@ from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.utils.scaleaspect import get_scale_vnf_data_package
+from lcm.pub.utils.scaleaspect import get_scale_vnf_data_info_list
 
 JOB_ERROR = 255
 SCALE_TYPE = ("SCALE_NS", "SCALE_VNF")
@@ -67,7 +67,7 @@ class NSManualScaleService(threading.Thread):
 
         # Get data if SCALE_NS
         self.scale_ns_data = ignore_case_get(self.request_data, 'scaleNsByStepsData')
-        self.scale_vnf_data = get_scale_vnf_data_package(self.scale_ns_data, self.ns_instance_id)
+        self.scale_vnf_data = get_scale_vnf_data_info_list(self.scale_ns_data, self.ns_instance_id)
         logger.debug('scale_vnf_data = %s' % self.scale_vnf_data)
         # Get data if SCALE_VNF
         if not self.scale_vnf_data:

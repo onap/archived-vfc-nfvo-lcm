@@ -27,13 +27,11 @@ SCALE_TYPE = ("SCALE_NS", "SCALE_VNF")
 
 scale_vnf_data_mapping = {
     "vnfInstanceId": "",
-    "scaleByStepData": [
-        {
-            "type": "",
-            "aspectId": "",
-            "numberOfSteps": ""
-        }
-    ]
+    "scaleByStepData": {
+        "type": "",
+        "aspectId": "",
+        "numberOfSteps": ""
+    }
 }
 
 
@@ -80,44 +78,6 @@ def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
     return None
 
 
-# Get the vnf scaling info according to the ns package id.
-def get_vnf_scale_info_package(scalingmap_json, nsd_id, aspect, step):
-    scale_options = ignorcase_get(scalingmap_json, "scale_options")
-    for i in range(scale_options.__len__()):
-        ns_scale_option = scale_options[i]
-        if (ignorcase_get(ns_scale_option, "nsd_id") == nsd_id) and (
-                ignorcase_get(ns_scale_option, "ns_scale_aspect") == aspect):
-            ns_scale_info_list = ignorcase_get(
-                ns_scale_option, "ns_scale_info")
-            for j in range(ns_scale_info_list.__len__()):
-                ns_scale_info = ns_scale_info_list[j]
-                if ns_scale_info["step"] == step:
-                    vnf_scale_info_list = ns_scale_info["vnf_scale_info"]
-
-                    return vnf_scale_info_list
-
-    return None
-
-
-# Gets the vnf instance id according to the vnfd_id and modify the list of
-# scaling vnf info accrodingly.
-def deal_vnf_scale_info(vnf_scale_info_list):
-    result = list()
-    for i in range(vnf_scale_info_list.__len__()):
-        vnf_scale_info = vnf_scale_info_list[i]
-        vnfd_id = vnf_scale_info["vnfd_id"]
-        vnf_instance_id_list = get_vnf_instance_id_list(vnfd_id)
-        copy_vnf_scale_info = copy.deepcopy(vnf_scale_info)
-        copy_vnf_scale_info.pop("vnfd_id")
-        index = 0
-        while index < vnf_instance_id_list.__len__():
-            copy_vnf_scale_info["vnfInstanceId"] = vnf_instance_id_list[index]
-            index += 1
-            result.append(copy_vnf_scale_info)
-
-    return result
-
-
 def get_vnf_instance_id_list(vnfd_id):
     kwargs = {}
     kwargs['package_id'] = vnfd_id
@@ -151,29 +111,11 @@ def check_scale_list(vnf_scale_list, ns_instanceId, aspect, step):
         return vnf_scale_list
 
 
-def set_scaleVnfData_type(vnf_scale_list, scale_type):
-    logger.debug(
-        "vnf_scale_list = %s, type = %s" %
-        (vnf_scale_list, scale_type))
-    scaleVnfDataList = []
-    if vnf_scale_list is not None:
-        for i in range(vnf_scale_list.__len__()):
-            scaleVnfData = scale_vnf_data_mapping
-            scaleVnfData["vnfInstanceId"] = get_vnfInstanceIdByName(
-                vnf_scale_list[i]["vnfInstanceId"])
-            scaleVnfData["scaleByStepData"][0]["type"] = scale_type
-            scaleVnfData["scaleByStepData"][0]["aspectId"] = vnf_scale_list[i]["vnf_scaleAspectId"]
-            scaleVnfData["scaleByStepData"][0]["numberOfSteps"] = vnf_scale_list[i]["numberOfSteps"]
-            scaleVnfDataList.append(scaleVnfData)
-    logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
-    return scaleVnfDataList
-
-
 def get_vnfInstanceIdByName(name):
     return name
 
 
-def get_vnf_data(filename, ns_instanceId, aspect, step, scale_type):
+def get_scale_vnf_data_list(filename, ns_instanceId, aspect, step, scale_type):
 
     vnf_scale_list = get_vnf_scale_info(filename, ns_instanceId, aspect, step)
     check_scale_list(vnf_scale_list, ns_instanceId, aspect, step)
@@ -183,24 +125,6 @@ def get_vnf_data(filename, ns_instanceId, aspect, step, scale_type):
 
     # return Response(data={'error': e.message},status=status.HTTP_204_NO_CONTENT)
     # return Response(data={'success': 'success'},status=status.HTTP_200_OK)
-
-
-# Get scaling data of vnf according to the package
-def get_vnf_data_package(
-        scalingmap_json,
-        ns_instanceId,
-        aspect,
-        step,
-        scale_type):
-    nsd_id = get_nsdId(ns_instanceId)
-    vnf_scale_list = get_vnf_scale_info_package(
-        scalingmap_json, nsd_id, aspect, step)
-    check_scale_list(vnf_scale_list, ns_instanceId, aspect, step)
-    vnf_scale_list = deal_vnf_scale_info(vnf_scale_list)
-    scaleVnfDataList = set_scaleVnfData_type(vnf_scale_list, scale_type)
-    logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
-
-    return scaleVnfDataList
 
 
 # Get the nsd id according to the ns instance id.
@@ -234,7 +158,7 @@ def get_scale_vnf_data(scaleNsData, ns_InstanceId):
     logger.debug("filename = %s" % filename)
     aspect, numberOfSteps, scale_type = get_and_check_params(
         scaleNsData, ns_InstanceId)
-    return get_vnf_data(
+    return get_scale_vnf_data_list(
         filename,
         ns_InstanceId,
         aspect,
@@ -242,16 +166,83 @@ def get_scale_vnf_data(scaleNsData, ns_InstanceId):
         scale_type)
 
 
-# Get scaling vnf data according to package by the scaling map json file.
-def get_scale_vnf_data_package(scaleNsData, ns_InstanceId):
+# Get scaling vnf data info list according to the ns instance id and request ScaleNsData.
+def get_scale_vnf_data_info_list(scaleNsData, ns_InstanceId):
+    # Gets the nsd id accordign to the ns instance id.
+    nsd_id = get_nsdId(ns_InstanceId)
 
+    # Gets the scalingmap json data from the package according to the ns instance id.
     scalingmap_json = catalog.get_scalingmap_json_package(ns_InstanceId)
-    logger.debug("scalingmap_json = %s" % scalingmap_json)
+
+    # Gets and checks the values of parameters.
     aspect, numberOfSteps, scale_type = get_and_check_params(
         scaleNsData, ns_InstanceId)
-    return get_vnf_data_package(
-        scalingmap_json,
-        ns_InstanceId,
-        aspect,
-        numberOfSteps,
-        scale_type)
+
+    # Firstly, gets the scaling vnf data info list from the scaling map json data.
+    scale_vnf_data_info_list_from_json = get_scale_vnf_data_from_json(scalingmap_json, nsd_id, aspect, numberOfSteps)
+    check_scale_list(scale_vnf_data_info_list_from_json, ns_InstanceId, aspect, numberOfSteps)
+
+    # Secondly, adds the property of vnfInstanceId to the list according to the vnfd id.
+    scale_vnf_data_info_list = set_scacle_vnf_instance_id(scale_vnf_data_info_list_from_json)
+    check_scale_list(scale_vnf_data_info_list, ns_InstanceId, aspect, numberOfSteps)
+
+    # Lastly, adds the property of type to the list acoording to the request ScaleNsData.
+    scale_vnf_data_info_list = set_scaleVnfData_type(scale_vnf_data_info_list, scale_type)
+    check_scale_list(scale_vnf_data_info_list, ns_InstanceId, aspect, numberOfSteps)
+
+    return scale_vnf_data_info_list
+
+
+# Get the vnf scaling info from the scaling_map.json according to the ns package id.
+def get_scale_vnf_data_from_json(scalingmap_json, nsd_id, aspect, step):
+    scale_options = ignorcase_get(scalingmap_json, "scale_options")
+    for i in range(scale_options.__len__()):
+        ns_scale_option = scale_options[i]
+        if (ignorcase_get(ns_scale_option, "nsd_id") == nsd_id) and (
+                ignorcase_get(ns_scale_option, "ns_scale_aspect") == aspect):
+            ns_scale_info_list = ignorcase_get(
+                ns_scale_option, "ns_scale_info")
+            for j in range(ns_scale_info_list.__len__()):
+                ns_scale_info = ns_scale_info_list[j]
+                if ns_scale_info["step"] == step:
+                    vnf_scale_info_list = ns_scale_info["vnf_scale_info"]
+
+                    return vnf_scale_info_list
+
+    return None
+
+
+# Gets the vnf instance id according to the vnfd_id and modify the list of scaling vnf info accrodingly.
+def set_scacle_vnf_instance_id(vnf_scale_info_list):
+    scale_vnf_data_info_list = []
+    for i in range(vnf_scale_info_list.__len__()):
+        vnf_scale_info = vnf_scale_info_list[i]
+        vnfd_id = vnf_scale_info["vnfd_id"]
+        vnf_instance_id_list = get_vnf_instance_id_list(vnfd_id)
+        copy_vnf_scale_info = copy.deepcopy(vnf_scale_info)
+        copy_vnf_scale_info.pop("vnfd_id")
+        index = 0
+        while index < vnf_instance_id_list.__len__():
+            copy_vnf_scale_info["vnfInstanceId"] = vnf_instance_id_list[index]
+            index += 1
+            scale_vnf_data_info_list.append(copy_vnf_scale_info)
+
+    return scale_vnf_data_info_list
+
+
+def set_scaleVnfData_type(vnf_scale_list, scale_type):
+    logger.debug(
+        "vnf_scale_list = %s, type = %s" %
+        (vnf_scale_list, scale_type))
+    scaleVnfDataList = []
+    if vnf_scale_list is not None:
+        for i in range(vnf_scale_list.__len__()):
+            scaleVnfData = scale_vnf_data_mapping
+            scaleVnfData["vnfInstanceId"] = get_vnfInstanceIdByName(
+                vnf_scale_list[i]["vnfInstanceId"])
+            scaleVnfData["scaleByStepData"]["type"] = scale_type
+            scaleVnfData["scaleByStepData"]["aspectId"] = vnf_scale_list[i]["vnf_scaleAspectId"]
+            scaleVnfData["scaleByStepData"]["numberOfSteps"] = vnf_scale_list[i]["numberOfSteps"]
+            scaleVnfDataList.append(scaleVnfData)
+    logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
+    return scaleVnfDataList
