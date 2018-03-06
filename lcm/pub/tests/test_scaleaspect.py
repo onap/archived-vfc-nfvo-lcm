@@ -1,5 +1,6 @@
 from django.test import TestCase
 from lcm.pub.utils.scaleaspect import get_json_data
+from lcm.pub.utils.scaleaspect import get_nsdId
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.utils.timeutil import now_time
@@ -99,3 +100,7 @@ class TestScaleAspect(TestCase):
     def tearDown(self):
         NSInstModel().clean()
         NfInstModel().clean()
+
+    def test_get_nsdId(self):
+        nsd_id = get_nsdId("1")
+        self.assertEqual("23", nsd_id)
