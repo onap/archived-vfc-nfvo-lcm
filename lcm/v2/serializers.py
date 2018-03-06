@@ -110,6 +110,18 @@ class PlacementConstraintSerializer(serializers.Serializer):
     )
 
 
+class VimConstraintSerializer(serializers.Serializer):
+    sameResourceGroup = serializers.BooleanField(
+        help_text="Set to true when the constraint applies not only to the same VIM connection, but also to the same infrastructure resource group.",
+        required=False,
+        allow_null=True
+    )
+    resource = ConstraintResourceRefSerializer(
+        help_text="References to resources in the constraint rule.",
+        many=True
+    )
+
+
 class GrantRequestSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(
         help_text="Identifier of the VNF instance which this grant request is related to.",
@@ -166,6 +178,10 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     placementConstraints = PlacementConstraintSerializer(
         help_text="Placement constraints that the VNFM may send to the NFVO in order to influence the resource placement decision.",
+        many=True
+    )
+    vimConstraints = VimConstraintSerializer(
+        help_text="Used by the VNFM to require that multiple resources are managed through the same VIM connection.",
         many=True
     )
 
