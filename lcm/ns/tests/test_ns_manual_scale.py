@@ -120,13 +120,11 @@ class TestNsManualScale(TestCase):
     def test_ns_manual_scale(self, mock_run):
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsData": [{
-                "scaleNsByStepsData": [{
+            "scaleNsByStepsData": {
                     "aspectId": "1",
                     "numberOfSteps": 1,
                     "scalingDirection": "0"
-                }]
-            }]
+            }
         }
         response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data=data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
