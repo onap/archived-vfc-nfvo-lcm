@@ -21,6 +21,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.v2.serializers import GrantRequestSerializer
 from lcm.v2.serializers import GrantSerializer
+from lcm.v2.grant_vnf import GrantVnf
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,9 @@ class VnfGrantView(APIView):
     @swagger_auto_schema(
         request_body=GrantRequestSerializer(),
         responses={
-            status.HTTP_201_CREATED: GrantSerializer(),
+            status.HTTP_201_CREATED: GrantSerializer(
+                help_text="The grant was created successfully (synchronous mode)."
+            ),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -39,8 +42,15 @@ class VnfGrantView(APIView):
             req_serializer = GrantRequestSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise Exception(req_serializer.errors)
+
+            grant_resp = GrantVnf(request.data).exec_grant()
+
+            resp_serializer = GrantSerializer(data=grant_resp)
+            if not resp_serializer.is_valid():
+                raise Exception(resp_serializer.errors)
+
+            return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("Exception in VnfGrant: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(data={}, status=status.HTTP_201_CREATED)
