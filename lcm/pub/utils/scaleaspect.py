@@ -222,7 +222,7 @@ def get_and_check_params(scaleNsByStepsData, ns_InstanceId):
     numberOfSteps = scaleNsByStepsData["numberOfSteps"]
     scale_type = scaleNsByStepsData["scalingDirection"]
 
-    return ns_InstanceId, aspect, numberOfSteps, scale_type
+    return aspect, numberOfSteps, scale_type
 
 
 def get_scale_vnf_data(scaleNsData, ns_InstanceId):
@@ -232,7 +232,7 @@ def get_scale_vnf_data(scaleNsData, ns_InstanceId):
                 os.path.abspath(__file__))))
     filename = curdir_path + "/ns/data/scalemapping.json"
     logger.debug("filename = %s" % filename)
-    ns_InstanceId, aspect, numberOfSteps, scale_type = get_and_check_params(
+    aspect, numberOfSteps, scale_type = get_and_check_params(
         scaleNsData, ns_InstanceId)
     return get_vnf_data(
         filename,
@@ -247,7 +247,7 @@ def get_scale_vnf_data_package(scaleNsData, ns_InstanceId):
 
     scalingmap_json = catalog.get_scalingmap_json_package(ns_InstanceId)
     logger.debug("scalingmap_json = %s" % scalingmap_json)
-    ns_InstanceId, aspect, numberOfSteps, scale_type = get_and_check_params(
+    aspect, numberOfSteps, scale_type = get_and_check_params(
         scaleNsData, ns_InstanceId)
     return get_vnf_data_package(
         scalingmap_json,
