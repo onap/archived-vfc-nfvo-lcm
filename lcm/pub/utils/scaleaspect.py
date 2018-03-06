@@ -229,7 +229,7 @@ def set_scacle_vnf_instance_id(vnf_scale_info_list):
 
     return scale_vnf_data_info_list
 
-
+# Sets the scaling type of vnf data info list.
 def set_scaleVnfData_type(vnf_scale_list, scale_type):
     logger.debug(
         "vnf_scale_list = %s, type = %s" %
