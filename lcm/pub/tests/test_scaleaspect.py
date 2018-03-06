@@ -3,6 +3,7 @@ from lcm.pub.utils.scaleaspect import get_scale_vnf_data_package
 from lcm.pub.utils.scaleaspect import get_vnf_scale_info_package
 from lcm.pub.utils.scaleaspect import get_vnf_data_package
 from lcm.pub.utils.scaleaspect import get_json_data
+from lcm.pub.utils.scaleaspect import get_nsdId
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.msapi import catalog
@@ -125,3 +126,7 @@ class TestScaleAspect(TestCase):
         scale_vnf_data = get_scale_vnf_data_package(self.scaleNsData, "1")
         self.assertIsNotNone(scale_vnf_data)
         self.assertEqual(2, scale_vnf_data.__len__())
+
+    def test_get_nsdId(self):
+        nsd_id = get_nsdId("1")
+        self.assertEqual("23", nsd_id)
