@@ -108,10 +108,15 @@ SCALING_JSON = {
 class TestNsManualScale(TestCase):
     def setUp(self):
         self.ns_inst_id = str(uuid.uuid4())
-        self.job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        self.job_id = JobUtil.create_job(
+            "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
 
         self.client = Client()
-        NSInstModel(id=self.ns_inst_id, name="abc", nspackage_id="7", nsd_id="111").save()
+        NSInstModel(
+            id=self.ns_inst_id,
+            name="abc",
+            nspackage_id="7",
+            nsd_id="111").save()
 
     def tearDown(self):
         NSInstModel.objects.filter().delete()
@@ -120,15 +125,15 @@ class TestNsManualScale(TestCase):
     def test_ns_manual_scale(self, mock_run):
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsData": [{
-                "scaleNsByStepsData": [{
-                    "aspectId": "1",
-                    "numberOfSteps": 1,
-                    "scalingDirection": "0"
-                }]
-            }]
+            "scaleNsByStepsData": {
+                "aspectId": "1",
+                "numberOfSteps": 1,
+                "scalingDirection": "0"
+            }
         }
-        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data=data)
+        response = self.client.post(
+            "/api/nslcm/v1/ns/%s/scale" %
+            self.ns_inst_id, data=data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
@@ -144,7 +149,10 @@ class TestNsManualScale(TestCase):
             }]
         }
         NSManualScaleService(self.ns_inst_id, data, self.job_id).run()
-        self.assertTrue(NSInstModel.objects.get(id=self.ns_inst_id).status, NS_INST_STATUS.ACTIVE)
+        self.assertTrue(
+            NSInstModel.objects.get(
+                id=self.ns_inst_id).status,
+            NS_INST_STATUS.ACTIVE)
 
     def test_swagger_ok(self):
         resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
@@ -153,8 +161,12 @@ class TestNsManualScale(TestCase):
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_empty_data(self, mock_start):
         mock_start.side_effect = NSLCMException("NS scale failed.")
-        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data={})
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response = self.client.post(
+            "/api/nslcm/v1/ns/%s/scale" %
+            self.ns_inst_id, data={})
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
 
     @mock.patch.object(NSManualScaleService, 'start')
@@ -171,5 +183,7 @@ class TestNsManualScale(TestCase):
             }]
         }
         response = self.client.post("/api/nslcm/v1/ns/11/scale", data=data)
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
