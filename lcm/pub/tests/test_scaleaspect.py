@@ -1,11 +1,14 @@
 from django.test import TestCase
+from lcm.pub.utils.scaleaspect import get_scale_vnf_data_package
 from lcm.pub.utils.scaleaspect import get_vnf_scale_info_package
 from lcm.pub.utils.scaleaspect import get_vnf_data_package
 from lcm.pub.utils.scaleaspect import get_json_data
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
+from lcm.pub.msapi import catalog
 from lcm.pub.utils.timeutil import now_time
 import os
+import mock
 
 
 class TestScaleAspect(TestCase):
@@ -19,6 +22,12 @@ class TestScaleAspect(TestCase):
         self.scaling_map_json = get_json_data(filename)
 
         self.initInstModel()
+
+        self.scaleNsData = {
+            "aspectId": "TIC_EDGE_IMS",
+            "numberOfSteps": "1",
+            "scalingDirection": "UP"
+        }
 
     def initInstModel(self):
         self.nsd_id = "23"
@@ -107,3 +116,12 @@ class TestScaleAspect(TestCase):
             self.scaling_map_json, "23", "TIC_EDGE_IMS", "1")
         self.assertIsNotNone(scale_vnf_info_list)
         self.assertEqual(2, scale_vnf_info_list.__len__())
+
+    @mock.patch.object(catalog, 'get_scalingmap_json_package')
+    def test_get_scale_vnf_data_package(
+            self, mock_get_scalingmap_json_package):
+        mock_get_scalingmap_json_package.return_value = self.scaling_map_json
+
+        scale_vnf_data = get_scale_vnf_data_package(self.scaleNsData, "1")
+        self.assertIsNotNone(scale_vnf_data)
+        self.assertEqual(2, scale_vnf_data.__len__())
