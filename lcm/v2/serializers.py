@@ -122,6 +122,24 @@ class VimConstraintSerializer(serializers.Serializer):
     )
 
 
+class LinkSerializer(serializers.Serializer):
+    href = serializers.CharField(
+        help_text="URI of the referenced resource.",
+        required=True
+    )
+
+
+class GrantRequestLinksSerializer(serializers.Serializer):
+    vnfLcmOpOcc = LinkSerializer(
+        help_text="Related VNF lifecycle management operation occurrence.",
+        required=True
+    )
+    vnfInstance = LinkSerializer(
+        help_text="Related VNF instance.",
+        required=True
+    )
+
+
 class GrantRequestSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(
         help_text="Identifier of the VNF instance which this grant request is related to.",
@@ -183,6 +201,16 @@ class GrantRequestSerializer(serializers.Serializer):
     vimConstraints = VimConstraintSerializer(
         help_text="Used by the VNFM to require that multiple resources are managed through the same VIM connection.",
         many=True
+    )
+    additionalParams = serializers.DictField(
+        help_text="Additional parameters passed by the VNFM.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+    _links = GrantRequestLinksSerializer(
+        help_text="Links to resources related to this request.",
+        required=True
     )
 
 
@@ -520,13 +548,6 @@ class ExtManagedVirtualLinkDataSerializer(serializers.Serializer):
     )
     resourceId = serializers.CharField(
         help_text="The identifier of the resource in the scope of the VIM or the resource provider.",
-        required=True
-    )
-
-
-class LinkSerializer(serializers.Serializer):
-    href = serializers.CharField(
-        help_text="URI of the referenced resource.",
         required=True
     )
 
