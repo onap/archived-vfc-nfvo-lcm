@@ -3,10 +3,10 @@
         {
             "nsd_id":"23",
             "ns_scale_aspect": "TIC_EDGE_IMS",
-            "ns_scale_info_list": [
+            "ns_scale_info": [
                 {
                     "step": "1",
-                    "vnf_scale_list":[
+                    "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_zte_cscf",
                             "vnf_scaleAspectId": "gpu",
@@ -21,7 +21,7 @@
                 },
                 {
                     "step": "2",
-                    "vnf_scale_list":[
+                    "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_zte_cscf",
                             "vnf_scaleAspectId": "mpu",
@@ -39,10 +39,10 @@
         {
             "nsd_id":"23",
             "ns_scale_aspect": "TIC_EDGE_HW",
-            "ns_scale_info_list": [
+            "ns_scale_info": [
                 {
                     "step": "4",
-                    "vnf_scale_list":[
+                    "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_hw_cscf",
                             "vnf_scaleAspectId": "gpu",
@@ -57,7 +57,7 @@
                 },
                 {
                     "step": "6",
-                    "vnf_scale_list":[
+                    "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_HW_cscf",
                             "vnf_scaleAspectId": "gpu",
@@ -75,10 +75,10 @@
         {
             "nsd_id":"235",
             "ns_scale_aspect": "TIC_EDGE_HW",
-            "ns_scale_info_list": [
+            "ns_scale_info": [
                 {
                     "step": "4",
-                    "vnf_scale_list":[
+                    "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_hw_cscf",
                             "vnf_scaleAspectId": "gpu",
@@ -93,7 +93,7 @@
                 },
                 {
                     "step": "6",
-                    "vnf_scale_list":[
+                    "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_HW_cscf",
                             "vnf_scaleAspectId": "gpu",

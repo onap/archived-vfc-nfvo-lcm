@@ -75,7 +75,7 @@ def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
             for j in range(ns_scale_info_list.__len__()):
                 ns_scale_info = ns_scale_info_list[j]
                 if ns_scale_info["step"] == step:
-                    return ns_scale_info["vnf_scale_list"]
+                    return ns_scale_info["vnf_scale_info"]
 
     return None
 
@@ -92,7 +92,7 @@ def get_vnf_scale_info_package(scalingmap_json, nsd_id, aspect, step):
             for j in range(ns_scale_info_list.__len__()):
                 ns_scale_info = ns_scale_info_list[j]
                 if ns_scale_info["step"] == step:
-                    vnf_scale_info_list = ns_scale_info["vnf_scale_list"]
+                    vnf_scale_info_list = ns_scale_info["vnf_scale_info"]
 
                     return vnf_scale_info_list
 
