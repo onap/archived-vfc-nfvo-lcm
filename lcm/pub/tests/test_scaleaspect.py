@@ -4,6 +4,7 @@ from lcm.pub.utils.scaleaspect import get_vnf_scale_info_package
 from lcm.pub.utils.scaleaspect import get_vnf_data_package
 from lcm.pub.utils.scaleaspect import get_json_data
 from lcm.pub.utils.scaleaspect import get_nsdId
+from lcm.pub.utils.scaleaspect import deal_vnf_scale_info
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.msapi import catalog
@@ -126,6 +127,29 @@ class TestScaleAspect(TestCase):
         scale_vnf_data = get_scale_vnf_data_package(self.scaleNsData, "1")
         self.assertIsNotNone(scale_vnf_data)
         self.assertEqual(2, scale_vnf_data.__len__())
+
+    def test_deal_vnf_scale_info(self):
+        vnf_scale_info_list = [
+            {
+                "vnfd_id": "nf_zte_cscf",
+                "vnf_scaleAspectId": "mpu",
+                "numberOfSteps": "1"
+            },
+            {
+                "vnfd_id": "nf_zte_hss",
+                "vnf_scaleAspectId": "mpu",
+                "numberOfSteps": "1"
+            }
+        ]
+        result = deal_vnf_scale_info(vnf_scale_info_list)
+        self.assertEqual(result[0]["numberOfSteps"], vnf_scale_info_list[0]["numberOfSteps"])
+        self.assertEqual(result[0]["vnf_scaleAspectId"], vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual(result[1]["numberOfSteps"], vnf_scale_info_list[0]["numberOfSteps"])
+        self.assertEqual(result[1]["vnf_scaleAspectId"], vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual("231", result[0]["vnfInstanceId"])
+        self.assertEqual("232", result[1]["vnfInstanceId"])
+        self.assertNotIn("vnfd_id", result[0])
+        self.assertNotIn("vnfd_id", result[1])
 
     def test_get_nsdId(self):
         nsd_id = get_nsdId("1")
