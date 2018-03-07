@@ -219,10 +219,10 @@ def set_scacle_vnf_instance_id(vnf_scale_info_list):
         vnf_scale_info = vnf_scale_info_list[i]
         vnfd_id = vnf_scale_info["vnfd_id"]
         vnf_instance_id_list = get_vnf_instance_id_list(vnfd_id)
-        copy_vnf_scale_info = copy.deepcopy(vnf_scale_info)
-        copy_vnf_scale_info.pop("vnfd_id")
         index = 0
         while index < vnf_instance_id_list.__len__():
+            copy_vnf_scale_info = copy.deepcopy(vnf_scale_info)
+            copy_vnf_scale_info.pop("vnfd_id")
             copy_vnf_scale_info["vnfInstanceId"] = vnf_instance_id_list[index]
             index += 1
             scale_vnf_data_info_list.append(copy_vnf_scale_info)

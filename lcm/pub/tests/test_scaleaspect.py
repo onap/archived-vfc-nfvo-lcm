@@ -223,6 +223,9 @@ class TestScaleAspect(TestCase):
         self.add_another_nf_instance()
         result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
         self.assertEqual(3, result.__len__())
+        self.assertEqual("231", result[0]["vnfInstanceId"])
+        self.assertEqual("232", result[1]["vnfInstanceId"])
+        self.assertEqual("233", result[2]["vnfInstanceId"])
 
     def test_get_nsdId(self):
         nsd_id = get_nsdId("1")
