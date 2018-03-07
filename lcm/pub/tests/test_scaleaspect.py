@@ -4,6 +4,7 @@ from lcm.pub.utils.scaleaspect import get_nsdId
 from lcm.pub.utils.scaleaspect import get_scale_vnf_data_from_json
 from lcm.pub.utils.scaleaspect import get_scale_vnf_data_info_list
 from lcm.pub.utils.scaleaspect import set_scacle_vnf_instance_id
+from lcm.pub.utils.scaleaspect import get_and_check_params
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.msapi import catalog
@@ -24,11 +25,27 @@ class TestScaleAspect(TestCase):
 
         self.initInstModel()
 
+        self.ns_scale_aspect = "TIC_EDGE_IMS"
+        self.ns_scale_steps = "1"
+        self.ns_scale_direction = "SCALE_IN"
         self.scaleNsData = {
-            "aspectId": "TIC_EDGE_IMS",
-            "numberOfSteps": "1",
-            "scalingDirection": "UP"
+            "aspectId": self.ns_scale_aspect,
+            "numberOfSteps": self.ns_scale_steps,
+            "scalingDirection": self.ns_scale_direction
         }
+
+        self.vnf_scale_info_list = [
+            {
+                "vnfd_id": "nf_zte_cscf",
+                "vnf_scaleAspectId": "mpu",
+                "numberOfSteps": "1"
+            },
+            {
+                "vnfd_id": "nf_zte_hss",
+                "vnf_scaleAspectId": "mpu",
+                "numberOfSteps": "1"
+            }
+        ]
 
     def initInstModel(self):
         self.nsd_id = "23"
@@ -102,9 +119,41 @@ class TestScaleAspect(TestCase):
                        '"description": "PGW VNFD description",'
                        '"isShared":true,"vnfExtendType":"driver"}}')
 
+    def add_another_nf_instance(self):
+        # Create a third vnf instance
+        nf_inst_id = "233"
+        package_id = "nf_zte_hss"
+        nf_uuid = "ab34-3g5j-de13-ab85-ij93"
+
+        NfInstModel.objects.create(
+            nfinstid=nf_inst_id,
+            nf_name=self.nf_name,
+            vnf_id=self.vnf_id,
+            vnfm_inst_id=self.vnfm_inst_id,
+            ns_inst_id=self.ns_inst_id,
+            max_cpu='14',
+            max_ram='12296',
+            max_hd='101',
+            max_shd="20",
+            max_net=10,
+            status='active',
+            mnfinstid=nf_uuid,
+            package_id=package_id,
+            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
+                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
+                       '"productType": "CN","vnfType": "PGW",'
+                       '"description": "PGW VNFD description",'
+                       '"isShared":true,"vnfExtendType":"driver"}}')
+
     def tearDown(self):
         NSInstModel().clean()
         NfInstModel().clean()
+
+    def test_get_and_check_params(self):
+        aspect, numberOfSteps, scale_type = get_and_check_params(self.scaleNsData, "1")
+        self.assertEqual(aspect, self.ns_scale_aspect)
+        self.assertEqual(numberOfSteps, self.ns_scale_steps)
+        self.assertEqual(scale_type, self.ns_scale_direction)
 
     def test_get_scale_vnf_data_from_json(self):
         vnf_data_package = get_scale_vnf_data_from_json(
@@ -122,9 +171,22 @@ class TestScaleAspect(TestCase):
         self.assertEqual(2, scale_vnf_data.__len__())
 
     def test_set_scacle_vnf_instance_id(self):
-        vnf_scale_info_list = [
+
+        result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
+        self.assertEqual(2, result.__len__())
+        self.assertEqual(result[0]["numberOfSteps"], self.vnf_scale_info_list[0]["numberOfSteps"])
+        self.assertEqual(result[0]["vnf_scaleAspectId"], self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual(result[1]["numberOfSteps"], self.vnf_scale_info_list[0]["numberOfSteps"])
+        self.assertEqual(result[1]["vnf_scaleAspectId"], self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual("231", result[0]["vnfInstanceId"])
+        self.assertEqual("232", result[1]["vnfInstanceId"])
+        self.assertNotIn("vnfd_id", result[0])
+        self.assertNotIn("vnfd_id", result[1])
+
+    def test_set_scacle_vnf_instance_id_2(self):
+        self.vnf_scale_info_list = [
             {
-                "vnfd_id": "nf_zte_cscf",
+                "vnfd_id": "error1",
                 "vnf_scaleAspectId": "mpu",
                 "numberOfSteps": "1"
             },
@@ -134,15 +196,33 @@ class TestScaleAspect(TestCase):
                 "numberOfSteps": "1"
             }
         ]
-        result = set_scacle_vnf_instance_id(vnf_scale_info_list)
-        self.assertEqual(result[0]["numberOfSteps"], vnf_scale_info_list[0]["numberOfSteps"])
-        self.assertEqual(result[0]["vnf_scaleAspectId"], vnf_scale_info_list[0]["vnf_scaleAspectId"])
-        self.assertEqual(result[1]["numberOfSteps"], vnf_scale_info_list[0]["numberOfSteps"])
-        self.assertEqual(result[1]["vnf_scaleAspectId"], vnf_scale_info_list[0]["vnf_scaleAspectId"])
-        self.assertEqual("231", result[0]["vnfInstanceId"])
-        self.assertEqual("232", result[1]["vnfInstanceId"])
+        result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
+        self.assertEqual(1, result.__len__())
+        self.assertEqual(result[0]["numberOfSteps"], self.vnf_scale_info_list[0]["numberOfSteps"])
+        self.assertEqual(result[0]["vnf_scaleAspectId"], self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual("232", result[0]["vnfInstanceId"])
         self.assertNotIn("vnfd_id", result[0])
-        self.assertNotIn("vnfd_id", result[1])
+
+    def test_set_scacle_vnf_instance_id_3(self):
+        self.vnf_scale_info_list = [
+            {
+                "vnfd_id": "error1",
+                "vnf_scaleAspectId": "mpu",
+                "numberOfSteps": "1"
+            },
+            {
+                "vnfd_id": "error2",
+                "vnf_scaleAspectId": "mpu",
+                "numberOfSteps": "1"
+            }
+        ]
+        result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
+        self.assertEqual(0, result.__len__())
+
+    def test_set_scacle_vnf_instance_id_4(self):
+        self.add_another_nf_instance()
+        result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
+        self.assertEqual(3, result.__len__())
 
     def test_get_nsdId(self):
         nsd_id = get_nsdId("1")
