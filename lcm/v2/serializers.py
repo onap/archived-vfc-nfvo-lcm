@@ -106,19 +106,20 @@ class PlacementConstraintSerializer(serializers.Serializer):
     )
     resource = ConstraintResourceRefSerializer(
         help_text="References to resources in the constraint rule.",
-        many=True
+        many=True,
+        required=False
     )
 
 
 class VimConstraintSerializer(serializers.Serializer):
     sameResourceGroup = serializers.BooleanField(
         help_text="Set to true when the constraint applies not only to the same VIM connection, but also to the same infrastructure resource group.",
-        required=False,
-        allow_null=True
+        required=False
     )
     resource = ConstraintResourceRefSerializer(
         help_text="References to resources in the constraint rule.",
-        many=True
+        many=True,
+        required=False
     )
 
 
@@ -180,27 +181,33 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     addResources = ResourceDefinitionSerializer(
         help_text="List of resource definitions in the VNFD for resources to be added by the LCM operation.",
-        many=True
+        many=True,
+        required=False
     )
     tempResources = ResourceDefinitionSerializer(
         help_text="List of resource definitions in the VNFD for resources to be temporarily instantiated during the runtime of the LCM operation.",
-        many=True
+        many=True,
+        required=False
     )
     removeResources = ResourceDefinitionSerializer(
         help_text="Provides the definitions of resources to be removed by the LCM operation.",
-        many=True
+        many=True,
+        required=False
     )
     updateResources = ResourceDefinitionSerializer(
         help_text="Provides the definitions of resources to be modified by the LCM operation.",
-        many=True
+        many=True,
+        required=False
     )
     placementConstraints = PlacementConstraintSerializer(
         help_text="Placement constraints that the VNFM may send to the NFVO in order to influence the resource placement decision.",
-        many=True
+        many=True,
+        required=False
     )
     vimConstraints = VimConstraintSerializer(
         help_text="Used by the VNFM to require that multiple resources are managed through the same VIM connection.",
-        many=True
+        many=True,
+        required=False
     )
     additionalParams = serializers.DictField(
         help_text="Additional parameters passed by the VNFM.",
@@ -210,7 +217,7 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     _links = GrantRequestLinksSerializer(
         help_text="Links to resources related to this request.",
-        required=True
+        required=False
     )
 
 
@@ -379,11 +386,13 @@ class VimSoftwareImageSerializer(serializers.Serializer):
 class VimAssetsSerializer(serializers.Serializer):
     computeResourceFlavours = VimComputeResourceFlavourSerializer(
         help_text="Mappings between virtual compute descriptors defined in the VNFD and compute resource flavours managed in the VIM.",
-        many=True
+        many=True,
+        required=False
     )
     softwareImages = VimSoftwareImageSerializer(
         help_text="Mappings between software images defined in the VNFD and software images managed in the VIM.",
-        many=True
+        many=True,
+        required=False
     )
 
 
@@ -436,7 +445,8 @@ class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     )
     ipAddresses = IpAddresseSerializer(
         help_text="List of IP addresses to assign to the CP instance.",
-        many=True
+        many=True,
+        required=False
     )
 
 
@@ -468,7 +478,8 @@ class VnfExtCpConfigSerializer(serializers.Serializer):
     )
     cpProtocolData = CpProtocolDataSerializer(
         help_text="Parameters for configuring the network protocols on the link port that connects the CP to a VL.",
-        many=True
+        many=True,
+        required=False
     )
 
 
@@ -479,7 +490,8 @@ class VnfExtCpDataSerializer(serializers.Serializer):
     )
     cpConfig = VnfExtCpConfigSerializer(
         help_text="List of instance data that need to be configured on the CP instances created from the respective CPD.",
-        many=True
+        many=True,
+        required=False
     )
 
 
@@ -517,11 +529,13 @@ class ExtVirtualLinkDataSerializer(serializers.Serializer):
     )
     extCps = VnfExtCpDataSerializer(
         help_text="External CPs of the VNF to be connected to this external VL.",
-        many=True
+        many=True,
+        required=False
     )
     extLinkPorts = ExtLinkPortDataSerializer(
         help_text="Externally provided link ports to be used to connect external connection points to this external VL.",
-        many=True
+        many=True,
+        required=False
     )
 
 
@@ -583,15 +597,18 @@ class GrantSerializer(serializers.Serializer):
     )
     vimConnections = VimConnectionInfoSerializer(
         help_text="Provides information regarding VIM connections that are approved to be used by the VNFM to allocate resources.",
-        many=True
+        many=True,
+        required=False
     )
     zones = ZoneInfoSerializer(
         help_text="Identifies resource zones where the resources are approved to be allocated by the VNFM.",
-        many=True
+        many=True,
+        required=False
     )
     zoneGroups = ZoneGroupInfoSerializer(
         help_text="Information about groups of resource zones.",
-        many=True
+        many=True,
+        required=False
     )
     computeReservationId = serializers.CharField(
         help_text="Information that identifies a reservation applicable to the compute resource requirements.",
@@ -613,19 +630,23 @@ class GrantSerializer(serializers.Serializer):
     )
     addResources = GrantInfoSerializer(
         help_text="List of resources that are approved to be added.",
-        many=True
+        many=True,
+        required=False
     )
     tempResources = GrantInfoSerializer(
         help_text="List of resources that are approved to be temporarily instantiated during the runtime of the lifecycle operation.",
-        many=True
+        many=True,
+        required=False
     )
     removeResources = GrantInfoSerializer(
         help_text="List of resources that are approved to be removed.",
-        many=True
+        many=True,
+        required=False
     )
     updateResources = GrantInfoSerializer(
         help_text="List of resources that are approved to be modified.",
-        many=True
+        many=True,
+        required=False
     )
     vimAssets = VimAssetsSerializer(
         help_text="Information about assets for the VNF that are managed by the NFVO in the VIM.",
@@ -634,13 +655,15 @@ class GrantSerializer(serializers.Serializer):
     )
     extVirtualLinks = ExtVirtualLinkDataSerializer(
         help_text="Information about external VLs to connect the VNF to.",
-        many=True
+        many=True,
+        required=False
     )
     extManagedVirtualLinks = ExtManagedVirtualLinkDataSerializer(
         help_text="Information about internal VLs that are managed by other entities than the VNFM.",
-        many=True
+        many=True,
+        required=False
     )
     _links = GrantLinksSerializer(
         help_text="Links to resources related to this resource.",
-        required=True
+        required=False
     )
