@@ -14,10 +14,11 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from lcm.v2.views import VnfGrantView
+from lcm.v2.views import VnfGrantView, VnfNotifyView
 
 urlpatterns = [
     url(r'^api/nslcm/v2/grants$', VnfGrantView.as_view()),
+    url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$', VnfNotifyView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

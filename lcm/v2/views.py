@@ -54,3 +54,13 @@ class VnfGrantView(APIView):
             logger.error(traceback.format_exc())
             logger.error("Exception in VnfGrant: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class VnfNotifyView(APIView):
+    def post(self, request):
+        logger.debug("VnfNotifyView post: %s" % request.data)
+        return Response(data={}, status=status.HTTP_204_NO_CONTENT)
+
+    def get(self, request):
+        logger.debug("VnfNotifyView get")
+        return Response(data={}, status=status.HTTP_204_NO_CONTENT)
