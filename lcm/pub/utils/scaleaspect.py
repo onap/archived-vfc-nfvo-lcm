@@ -238,7 +238,7 @@ def set_scaleVnfData_type(vnf_scale_list, scale_type):
     scaleVnfDataList = []
     if vnf_scale_list is not None:
         for i in range(vnf_scale_list.__len__()):
-            scaleVnfData = scale_vnf_data_mapping
+            scaleVnfData = copy.deepcopy(scale_vnf_data_mapping)
             scaleVnfData["vnfInstanceId"] = get_vnfInstanceIdByName(
                 vnf_scale_list[i]["vnfInstanceId"])
             scaleVnfData["scaleByStepData"]["type"] = scale_type

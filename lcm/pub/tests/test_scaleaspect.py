@@ -5,6 +5,7 @@ from lcm.pub.utils.scaleaspect import get_scale_vnf_data_from_json
 from lcm.pub.utils.scaleaspect import get_scale_vnf_data_info_list
 from lcm.pub.utils.scaleaspect import set_scacle_vnf_instance_id
 from lcm.pub.utils.scaleaspect import get_and_check_params
+from lcm.pub.utils.scaleaspect import set_scaleVnfData_type
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.msapi import catalog
@@ -16,23 +17,10 @@ import mock
 class TestScaleAspect(TestCase):
 
     def setUp(self):
-        curdir_path = os.path.dirname(
-            os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__))))
-        filename = curdir_path + "/ns/data/scalemapping.json"
-        self.scaling_map_json = get_json_data(filename)
-
+        self.init_scaling_map_json()
         self.initInstModel()
 
-        self.ns_scale_aspect = "TIC_EDGE_IMS"
-        self.ns_scale_steps = "1"
-        self.ns_scale_direction = "SCALE_IN"
-        self.scaleNsData = {
-            "aspectId": self.ns_scale_aspect,
-            "numberOfSteps": self.ns_scale_steps,
-            "scalingDirection": self.ns_scale_direction
-        }
+        self.init_scale_ns_data()
 
         self.vnf_scale_info_list = [
             {
@@ -42,10 +30,28 @@ class TestScaleAspect(TestCase):
             },
             {
                 "vnfd_id": "nf_zte_hss",
-                "vnf_scaleAspectId": "mpu",
-                "numberOfSteps": "1"
+                "vnf_scaleAspectId": "gsu",
+                "numberOfSteps": "2"
             }
         ]
+
+    def init_scale_ns_data(self):
+        self.ns_scale_aspect = "TIC_EDGE_IMS"
+        self.ns_scale_steps = "1"
+        self.ns_scale_direction = "SCALE_IN"
+        self.scaleNsData = {
+            "aspectId": self.ns_scale_aspect,
+            "numberOfSteps": self.ns_scale_steps,
+            "scalingDirection": self.ns_scale_direction
+        }
+
+    def init_scaling_map_json(self):
+        curdir_path = os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__))))
+        filename = curdir_path + "/ns/data/scalemapping.json"
+        self.scaling_map_json = get_json_data(filename)
 
     def initInstModel(self):
         self.nsd_id = "23"
@@ -176,8 +182,8 @@ class TestScaleAspect(TestCase):
         self.assertEqual(2, result.__len__())
         self.assertEqual(result[0]["numberOfSteps"], self.vnf_scale_info_list[0]["numberOfSteps"])
         self.assertEqual(result[0]["vnf_scaleAspectId"], self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
-        self.assertEqual(result[1]["numberOfSteps"], self.vnf_scale_info_list[0]["numberOfSteps"])
-        self.assertEqual(result[1]["vnf_scaleAspectId"], self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual(result[1]["numberOfSteps"], self.vnf_scale_info_list[1]["numberOfSteps"])
+        self.assertEqual(result[1]["vnf_scaleAspectId"], self.vnf_scale_info_list[1]["vnf_scaleAspectId"])
         self.assertEqual("231", result[0]["vnfInstanceId"])
         self.assertEqual("232", result[1]["vnfInstanceId"])
         self.assertNotIn("vnfd_id", result[0])
@@ -212,7 +218,7 @@ class TestScaleAspect(TestCase):
             },
             {
                 "vnfd_id": "error2",
-                "vnf_scaleAspectId": "mpu",
+                "vnf_scaleAspectId": "gsu",
                 "numberOfSteps": "1"
             }
         ]
@@ -226,6 +232,23 @@ class TestScaleAspect(TestCase):
         self.assertEqual("231", result[0]["vnfInstanceId"])
         self.assertEqual("232", result[1]["vnfInstanceId"])
         self.assertEqual("233", result[2]["vnfInstanceId"])
+
+    def test_set_scaleVnfData_type(self):
+        vnf_scale_list = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
+        result = set_scaleVnfData_type(vnf_scale_list, self.ns_scale_direction)
+        self.assertEqual(2, result.__len__())
+
+        self.assertNotIn("scaleByStepData", result)
+
+        self.assertEqual(self.ns_scale_direction, result[0]["scaleByStepData"]["type"])
+        self.assertEqual("mpu", result[0]["scaleByStepData"]["aspectId"])
+        self.assertNotIn("vnf_scaleAspectId", result[0]["scaleByStepData"])
+        self.assertEqual("1", result[0]["scaleByStepData"]["numberOfSteps"])
+
+        self.assertEqual(self.ns_scale_direction, result[1]["scaleByStepData"]["type"])
+        self.assertEqual("gsu", result[1]["scaleByStepData"]["aspectId"])
+        self.assertNotIn("vnf_scaleAspectId", result[1]["scaleByStepData"])
+        self.assertEqual("2", result[1]["scaleByStepData"]["numberOfSteps"])
 
     def test_get_nsdId(self):
         nsd_id = get_nsdId("1")
