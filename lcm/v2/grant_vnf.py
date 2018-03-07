@@ -29,18 +29,7 @@ class GrantVnf(object):
         grant_resp = {
             "id": str(uuid.uuid4()),
             "vnfInstanceId": self.data.get("vnfInstanceId"),
-            "vnfLcmOpOccId": self.data.get("vnfLcmOpOccId"),
-            "_links": {
-                "self": {
-                    "href": "/grants"
-                },
-                "vnfLcmOpOcc": {
-                    "href": self.data.get("_links").get("vnfLcmOpOcc")
-                },
-                "vnfInstance": {
-                    "href": self.data.get("_links").get("vnfInstance")
-                }
-            }
+            "vnfLcmOpOccId": self.data.get("vnfLcmOpOccId")
         }
         logger.debug("grant_resp=%s", grant_resp)
         return grant_resp
