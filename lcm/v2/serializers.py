@@ -670,6 +670,50 @@ class GrantSerializer(serializers.Serializer):
     )
 
 
+class AffectedVnfcSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of the Vnfc instance.",
+        required=True
+    )
+    vduId = serializers.CharField(
+        help_text="Identifier of the related VDU in the VNFD.",
+        required=True
+    )
+    changeType = serializers.ChoiceField(
+        help_text="Signals the type of change.",
+        choices=["ADDED", "REMOVED", "MODIFIED", "TEMPORARY"],
+        required=True
+    )
+    computeResource = ResourceHandleSerializer(
+        help_text="Reference to the VirtualCompute resource.",
+        required=True
+    )
+    metadata = serializers.DictField(
+        help_text="Metadata about this resource.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+    affectedVnfcCpIds = serializers.ListSerializer(
+        help_text="Identifiers of CP(s) of the VNFC instance that were affected by the change.",
+        child=serializers.CharField(help_text="Identifier In Vnf", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+    addedStorageResourceIds = serializers.ListSerializer(
+        help_text="References to VirtualStorage resources that have been added.",
+        child=serializers.CharField(help_text="Identifier In Vnf", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+    removedStorageResourceIds = serializers.ListSerializer(
+        help_text="References to VirtualStorage resources that have been removed.",
+        child=serializers.CharField(help_text="Identifier In Vnf", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+
+
 class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this notification.",
@@ -704,5 +748,13 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     operation = serializers.ChoiceField(
         help_text="The lifecycle management operation.",
         choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
+        required=True
+    )
+    isAutomaticInvocation = serializers.BooleanField(
+        help_text="Set to true if this VNF LCM operation occurrence has been triggered by an automated procedure inside the VNFM.",
+        required=True
+    )
+    vnfLcmOpOccId = serializers.CharField(
+        help_text="The identifier of the VNF lifecycle management operation occurrence associated to the notification.",
         required=True
     )
