@@ -104,7 +104,7 @@ def get_json_data(filename):
 
 
 def check_scale_list(vnf_scale_list, ns_instanceId, aspect, step):
-    if vnf_scale_list is None:
+    if vnf_scale_list is None or vnf_scale_list.__len__() == 0:
         logger.debug(
             "The scaling option[ns=%s, aspect=%s, step=%s] does not exist. Pls check the config file." %
             (ns_instanceId, aspect, step))

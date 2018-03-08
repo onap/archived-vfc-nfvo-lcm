@@ -59,6 +59,14 @@ class TestScaleAspect(TestCase):
             "scalingDirection": self.ns_scale_direction
         }
 
+        self.ns_scale_aspect2 = "TIC_EDGE_HW"
+        self.ns_scale_steps2 = "4"
+        self.scaleNsData2 = {
+            "aspectId": self.ns_scale_aspect2,
+            "numberOfSteps": self.ns_scale_steps2,
+            "scalingDirection": self.ns_scale_direction
+        }
+
     def init_scaling_map_json(self):
         curdir_path = os.path.dirname(
             os.path.dirname(
@@ -144,6 +152,57 @@ class TestScaleAspect(TestCase):
         nf_inst_id = "233"
         package_id = "nf_zte_hss"
         nf_uuid = "ab34-3g5j-de13-ab85-ij93"
+
+        NfInstModel.objects.create(
+            nfinstid=nf_inst_id,
+            nf_name=self.nf_name,
+            vnf_id=self.vnf_id,
+            vnfm_inst_id=self.vnfm_inst_id,
+            ns_inst_id=self.ns_inst_id,
+            max_cpu='14',
+            max_ram='12296',
+            max_hd='101',
+            max_shd="20",
+            max_net=10,
+            status='active',
+            mnfinstid=nf_uuid,
+            package_id=package_id,
+            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
+                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
+                       '"productType": "CN","vnfType": "PGW",'
+                       '"description": "PGW VNFD description",'
+                       '"isShared":true,"vnfExtendType":"driver"}}')
+
+    def add_new_vnf_instance(self):
+        # Create a third vnf instance
+        nf_inst_id = "241"
+        package_id = "nf_hw_cscf"
+        nf_uuid = "ab34-3g5j-de13-aa85-ij93"
+
+        NfInstModel.objects.create(
+            nfinstid=nf_inst_id,
+            nf_name=self.nf_name,
+            vnf_id=self.vnf_id,
+            vnfm_inst_id=self.vnfm_inst_id,
+            ns_inst_id=self.ns_inst_id,
+            max_cpu='14',
+            max_ram='12296',
+            max_hd='101',
+            max_shd="20",
+            max_net=10,
+            status='active',
+            mnfinstid=nf_uuid,
+            package_id=package_id,
+            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
+                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
+                       '"productType": "CN","vnfType": "PGW",'
+                       '"description": "PGW VNFD description",'
+                       '"isShared":true,"vnfExtendType":"driver"}}')
+
+        # Create a third vnf instance
+        nf_inst_id = "242"
+        package_id = "nf_hw_hss"
+        nf_uuid = "ab34-3g5j-de13-aa85-id93"
 
         NfInstModel.objects.create(
             nfinstid=nf_inst_id,
@@ -297,4 +356,35 @@ class TestScaleAspect(TestCase):
 
         scale_vnf_data = get_scale_vnf_data_info_list(self.scaleNsData, "1")
         self.assertIsNotNone(scale_vnf_data)
+        self.assertEqual(2, scale_vnf_data.__len__())
+
+    @mock.patch.object(catalog, 'get_scalingmap_json_package')
+    def test_get_scale_vnf_data_info_list_2(
+            self, mock_get_scalingmap_json_package):
+        mock_get_scalingmap_json_package.return_value = self.scaling_map_json
+
+        scale_vnf_data = None
+        is_exception_caught = False
+        try:
+            scale_vnf_data = get_scale_vnf_data_info_list(
+                self.scaleNsData2, "1")
+        except Exception:
+            is_exception_caught = True
+        self.assertTrue(is_exception_caught)
+        self.assertIsNone(scale_vnf_data)
+
+    @mock.patch.object(catalog, 'get_scalingmap_json_package')
+    def test_get_scale_vnf_data_info_list_3(
+            self, mock_get_scalingmap_json_package):
+        mock_get_scalingmap_json_package.return_value = self.scaling_map_json
+        self.add_new_vnf_instance()
+
+        scale_vnf_data = None
+        is_exception_caught = False
+        try:
+            scale_vnf_data = get_scale_vnf_data_info_list(
+                self.scaleNsData2, "1")
+        except Exception:
+            is_exception_caught = True
+        self.assertFalse(is_exception_caught)
         self.assertEqual(2, scale_vnf_data.__len__())
