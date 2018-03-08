@@ -85,8 +85,12 @@ def get_vnf_instance_id_list(vnfd_id):
 
     nf_model_list = NfInstModel.objects.filter(**kwargs)
     vnf_instance_id_list = list()
-    for i in range(nf_model_list.__len__()):
-        vnf_instance_id_list.append(nf_model_list[i].nfinstid)
+    nf_model_len = nf_model_list.__len__()
+    if nf_model_len == 0:
+        logger.error("No VNF instances found(vnfd_id=%s)" % vnfd_id)
+    else:
+        for i in range(nf_model_len):
+            vnf_instance_id_list.append(nf_model_list[i].nfinstid)
 
     return vnf_instance_id_list
 
@@ -202,6 +206,7 @@ def get_scale_vnf_data_from_json(scalingmap_json, nsd_id, aspect, step):
 
                     return vnf_scale_info_list
 
+    logger.error("get_scale_vnf_data_from_json method retuan null")
     return None
 
 
