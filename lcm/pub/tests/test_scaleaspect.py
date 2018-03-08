@@ -156,7 +156,8 @@ class TestScaleAspect(TestCase):
         NfInstModel().clean()
 
     def test_get_and_check_params(self):
-        aspect, numberOfSteps, scale_type = get_and_check_params(self.scaleNsData, "1")
+        aspect, numberOfSteps, scale_type = get_and_check_params(
+            self.scaleNsData, "1")
         self.assertEqual(aspect, self.ns_scale_aspect)
         self.assertEqual(numberOfSteps, self.ns_scale_steps)
         self.assertEqual(scale_type, self.ns_scale_direction)
@@ -167,30 +168,38 @@ class TestScaleAspect(TestCase):
         self.assertIsNotNone(vnf_data_package)
         self.assertEqual(2, vnf_data_package.__len__())
 
-    @mock.patch.object(catalog, 'get_scalingmap_json_package')
-    def test_get_scale_vnf_data_info_list(
-            self, mock_get_scalingmap_json_package):
-        mock_get_scalingmap_json_package.return_value = self.scaling_map_json
-
-        scale_vnf_data = get_scale_vnf_data_info_list(self.scaleNsData, "1")
-        self.assertIsNotNone(scale_vnf_data)
-        self.assertEqual(2, scale_vnf_data.__len__())
+    def test_get_scale_vnf_data_from_json_2(self):
+        vnf_data_package = get_scale_vnf_data_from_json(
+            self.scaling_map_json, "23", "TIC_EDGE_IMS", "2")
+        self.assertIsNotNone(vnf_data_package)
+        self.assertEqual(2, vnf_data_package.__len__())
+        self.assertEqual("nf_zte_cscf", vnf_data_package[0]["vnfd_id"])
+        self.assertEqual("2", vnf_data_package[0]["numberOfSteps"])
+        self.assertEqual("mpu", vnf_data_package[0]["vnf_scaleAspectId"])
+        self.assertEqual("nf_zte_hss", vnf_data_package[1]["vnfd_id"])
+        self.assertEqual("4", vnf_data_package[1]["numberOfSteps"])
+        self.assertEqual("mpu", vnf_data_package[1]["vnf_scaleAspectId"])
 
     def test_set_scacle_vnf_instance_id(self):
-
         result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
         self.assertEqual(2, result.__len__())
-        self.assertEqual(result[0]["numberOfSteps"], self.vnf_scale_info_list[0]["numberOfSteps"])
-        self.assertEqual(result[0]["vnf_scaleAspectId"], self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
-        self.assertEqual(result[1]["numberOfSteps"], self.vnf_scale_info_list[1]["numberOfSteps"])
-        self.assertEqual(result[1]["vnf_scaleAspectId"], self.vnf_scale_info_list[1]["vnf_scaleAspectId"])
+        self.assertEqual(result[0]["numberOfSteps"],
+                         self.vnf_scale_info_list[0]["numberOfSteps"])
+        self.assertEqual(
+            result[0]["vnf_scaleAspectId"],
+            self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual(result[1]["numberOfSteps"],
+                         self.vnf_scale_info_list[1]["numberOfSteps"])
+        self.assertEqual(
+            result[1]["vnf_scaleAspectId"],
+            self.vnf_scale_info_list[1]["vnf_scaleAspectId"])
         self.assertEqual("231", result[0]["vnfInstanceId"])
         self.assertEqual("232", result[1]["vnfInstanceId"])
         self.assertNotIn("vnfd_id", result[0])
         self.assertNotIn("vnfd_id", result[1])
 
     def test_set_scacle_vnf_instance_id_2(self):
-        self.vnf_scale_info_list = [
+        vnf_scale_info_list = [
             {
                 "vnfd_id": "error1",
                 "vnf_scaleAspectId": "mpu",
@@ -202,15 +211,19 @@ class TestScaleAspect(TestCase):
                 "numberOfSteps": "1"
             }
         ]
-        result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
+        result = set_scacle_vnf_instance_id(vnf_scale_info_list)
         self.assertEqual(1, result.__len__())
-        self.assertEqual(result[0]["numberOfSteps"], self.vnf_scale_info_list[0]["numberOfSteps"])
-        self.assertEqual(result[0]["vnf_scaleAspectId"], self.vnf_scale_info_list[0]["vnf_scaleAspectId"])
+        self.assertEqual(
+            result[0]["numberOfSteps"],
+            vnf_scale_info_list[0]["numberOfSteps"])
+        self.assertEqual(
+            result[0]["vnf_scaleAspectId"],
+            vnf_scale_info_list[0]["vnf_scaleAspectId"])
         self.assertEqual("232", result[0]["vnfInstanceId"])
         self.assertNotIn("vnfd_id", result[0])
 
     def test_set_scacle_vnf_instance_id_3(self):
-        self.vnf_scale_info_list = [
+        vnf_scale_info_list = [
             {
                 "vnfd_id": "error1",
                 "vnf_scaleAspectId": "mpu",
@@ -222,7 +235,7 @@ class TestScaleAspect(TestCase):
                 "numberOfSteps": "1"
             }
         ]
-        result = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
+        result = set_scacle_vnf_instance_id(vnf_scale_info_list)
         self.assertEqual(0, result.__len__())
 
     def test_set_scacle_vnf_instance_id_4(self):
@@ -240,12 +253,16 @@ class TestScaleAspect(TestCase):
 
         self.assertNotIn("scaleByStepData", result)
 
-        self.assertEqual(self.ns_scale_direction, result[0]["scaleByStepData"]["type"])
+        self.assertEqual(
+            self.ns_scale_direction,
+            result[0]["scaleByStepData"]["type"])
         self.assertEqual("mpu", result[0]["scaleByStepData"]["aspectId"])
         self.assertNotIn("vnf_scaleAspectId", result[0]["scaleByStepData"])
         self.assertEqual("1", result[0]["scaleByStepData"]["numberOfSteps"])
 
-        self.assertEqual(self.ns_scale_direction, result[1]["scaleByStepData"]["type"])
+        self.assertEqual(
+            self.ns_scale_direction,
+            result[1]["scaleByStepData"]["type"])
         self.assertEqual("gsu", result[1]["scaleByStepData"]["aspectId"])
         self.assertNotIn("vnf_scaleAspectId", result[1]["scaleByStepData"])
         self.assertEqual("2", result[1]["scaleByStepData"]["numberOfSteps"])
@@ -253,3 +270,12 @@ class TestScaleAspect(TestCase):
     def test_get_nsdId(self):
         nsd_id = get_nsdId("1")
         self.assertEqual("23", nsd_id)
+
+    @mock.patch.object(catalog, 'get_scalingmap_json_package')
+    def test_get_scale_vnf_data_info_list(
+            self, mock_get_scalingmap_json_package):
+        mock_get_scalingmap_json_package.return_value = self.scaling_map_json
+
+        scale_vnf_data = get_scale_vnf_data_info_list(self.scaleNsData, "1")
+        self.assertIsNotNone(scale_vnf_data)
+        self.assertEqual(2, scale_vnf_data.__len__())
