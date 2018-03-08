@@ -258,16 +258,13 @@ class TestScaleAspect(TestCase):
         vnf_scale_list = set_scacle_vnf_instance_id(self.vnf_scale_info_list)
         result = set_scaleVnfData_type(vnf_scale_list, self.ns_scale_direction)
         self.assertEqual(2, result.__len__())
-
         self.assertNotIn("scaleByStepData", result)
-
         self.assertEqual(
             self.ns_scale_direction,
             result[0]["scaleByStepData"]["type"])
         self.assertEqual("mpu", result[0]["scaleByStepData"]["aspectId"])
         self.assertNotIn("vnf_scaleAspectId", result[0]["scaleByStepData"])
         self.assertEqual("1", result[0]["scaleByStepData"]["numberOfSteps"])
-
         self.assertEqual(
             self.ns_scale_direction,
             result[1]["scaleByStepData"]["type"])
