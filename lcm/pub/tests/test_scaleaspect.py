@@ -167,6 +167,14 @@ class TestScaleAspect(TestCase):
             self.scaling_map_json, "23", "TIC_EDGE_IMS", "1")
         self.assertIsNotNone(vnf_data_package)
         self.assertEqual(2, vnf_data_package.__len__())
+        self.assertIsNotNone(vnf_data_package)
+        self.assertEqual(2, vnf_data_package.__len__())
+        self.assertEqual("nf_zte_cscf", vnf_data_package[0]["vnfd_id"])
+        self.assertEqual("1", vnf_data_package[0]["numberOfSteps"])
+        self.assertEqual("gsu", vnf_data_package[0]["vnf_scaleAspectId"])
+        self.assertEqual("nf_zte_hss", vnf_data_package[1]["vnfd_id"])
+        self.assertEqual("3", vnf_data_package[1]["numberOfSteps"])
+        self.assertEqual("gpu", vnf_data_package[1]["vnf_scaleAspectId"])
 
     def test_get_scale_vnf_data_from_json_2(self):
         vnf_data_package = get_scale_vnf_data_from_json(

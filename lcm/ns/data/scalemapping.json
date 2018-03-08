@@ -15,7 +15,7 @@
                         {
                             "vnfd_id":"nf_zte_hss",
                             "vnf_scaleAspectId": "gpu",
-                            "numberOfSteps": "1"
+                            "numberOfSteps": "3"
                         }
                     ]
                 },
