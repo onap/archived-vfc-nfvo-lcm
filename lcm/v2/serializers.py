@@ -587,6 +587,7 @@ class GrantSerializer(serializers.Serializer):
         required=True
     )
     vnfInstanceId = serializers.CharField(
+        help_text="Identifier of the related VNF instance.",
         required=True
     )
     vnfLcmOpOccId = serializers.CharField(
@@ -666,4 +667,42 @@ class GrantSerializer(serializers.Serializer):
     _links = GrantLinksSerializer(
         help_text="Links to resources related to this resource.",
         required=False
+    )
+
+
+class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of this notification.",
+        required=True
+    )
+    notificationType = serializers.CharField(
+        help_text="Discriminator for the different notification types.",
+        required=True
+    )
+    subscriptionId = serializers.CharField(
+        help_text="Identifier of the subscription that this notification relates to.",
+        required=True
+    )
+    timeStamp = serializers.CharField(
+        help_text="Date-time of the generation of the notification.",
+        required=True
+    )
+    notificationStatus = serializers.ChoiceField(
+        help_text="Indicates whether this notification reports about the start of a lifecycle operation or the result of a lifecycle operation.",
+        choices=["START", "RESULT"],
+        required=True
+    )
+    operationState = serializers.ChoiceField(
+        help_text="The state of the VNF LCM operation occurrence.",
+        choices=["STARTING", "PROCESSING", "COMPLETED", "FAILED_TEMP", "FAILED", "ROLLING_BACK", "ROLLED_BACK"],
+        required=True
+    )
+    vnfInstanceId = serializers.CharField(
+        help_text="The identifier of the VNF instance affected.",
+        required=True
+    )
+    operation = serializers.ChoiceField(
+        help_text="The lifecycle management operation.",
+        choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
+        required=True
     )
