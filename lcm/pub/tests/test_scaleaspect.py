@@ -54,17 +54,25 @@ class TestScaleAspect(TestCase):
         self.ns_scale_steps = "1"
         self.ns_scale_direction = "SCALE_IN"
         self.scaleNsData = {
-            "aspectId": self.ns_scale_aspect,
-            "numberOfSteps": self.ns_scale_steps,
-            "scalingDirection": self.ns_scale_direction
+            "scaleNsByStepsData": [
+                {
+                    "aspectId": self.ns_scale_aspect,
+                    "numberOfSteps": self.ns_scale_steps,
+                    "scalingDirection": self.ns_scale_direction
+                }
+            ]
         }
 
         self.ns_scale_aspect2 = "TIC_EDGE_HW"
         self.ns_scale_steps2 = "4"
         self.scaleNsData2 = {
-            "aspectId": self.ns_scale_aspect2,
-            "numberOfSteps": self.ns_scale_steps2,
-            "scalingDirection": self.ns_scale_direction
+            "scaleNsByStepsData": [
+                {
+                    "aspectId": self.ns_scale_aspect2,
+                    "numberOfSteps": self.ns_scale_steps2,
+                    "scalingDirection": self.ns_scale_direction
+                }
+            ]
         }
 
     def init_scaling_map_json(self):

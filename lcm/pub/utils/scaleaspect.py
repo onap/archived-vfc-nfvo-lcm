@@ -133,11 +133,13 @@ def get_nsdId(ns_instanceId):
     return None
 
 
-def get_and_check_params(scaleNsByStepsData, ns_InstanceId):
+def get_and_check_params(scaleNsData, ns_InstanceId):
+    if scaleNsData is None:
+        raise Exception("Error! scaleNsData in the request is Empty!")
 
+    scaleNsByStepsData = scaleNsData["scaleNsByStepsData"][0]
     if scaleNsByStepsData is None:
-        pass
-        # raise NSLCMException("Error! scaleNsByStepsData in the request is Empty!")
+        raise Exception("Error! scaleNsByStepsData in the request is Empty!")
 
     aspect = scaleNsByStepsData["aspectId"]
     numberOfSteps = scaleNsByStepsData["numberOfSteps"]

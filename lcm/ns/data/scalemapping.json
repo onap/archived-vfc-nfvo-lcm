@@ -45,7 +45,7 @@
                     "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_hw_cscf",
-                            "vnf_scaleAspectId": "gpu",
+                            "vnf_scaleAspectId": "gsu",
                             "numberOfSteps": "1"
                         },
                         {
