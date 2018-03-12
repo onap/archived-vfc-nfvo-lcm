@@ -121,6 +121,18 @@ class TestNsManualScale(TestCase):
     def tearDown(self):
         NSInstModel.objects.filter().delete()
 
+    def insert_new_ns(self):
+        ns_inst_id = str(uuid.uuid4())
+        job_id = JobUtil.create_job(
+            "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        package_id = "23"
+        NSInstModel(
+            id=ns_inst_id,
+            name="abc",
+            nspackage_id=package_id,
+            nsd_id=package_id).save()
+        return ns_inst_id, job_id
+
     @mock.patch.object(NSManualScaleService, 'run')
     def test_ns_manual_scale(self, mock_run):
         data = {
@@ -155,7 +167,7 @@ class TestNsManualScale(TestCase):
 
     def test_ns_manual_scale_error_nsd_id(self):
         data = {
-            "scaleType": "SCALE_ERR",
+            "scaleType": "SCALE_NS",
             "scaleNsData": [{
                 "scaleNsByStepsData": [{
                     "aspectId": "sss_zte",
@@ -166,6 +178,24 @@ class TestNsManualScale(TestCase):
         }
         NSManualScaleService(self.ns_inst_id, data, self.job_id).run()
         jobs = JobModel.objects.filter(jobid=self.job_id)
+        self.assertEqual(255, jobs[0].progress)
+
+    def test_ns_manual_scale_error_aspect(self):
+        data = {
+            "scaleType": "SCALE_NS",
+            "scaleNsData": [{
+                "scaleNsByStepsData": [{
+                    "aspectId": "sss_zte",
+                    "numberOfSteps": 1,
+                    "scalingDirection": "0"
+                }]
+            }]
+        }
+        ns_inst_id, job_id = self.insert_new_ns()
+        job_id = JobUtil.create_job(
+            "NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_inst_id)
+        NSManualScaleService(ns_inst_id, data, job_id).run()
+        jobs = JobModel.objects.filter(jobid=job_id)
         self.assertEqual(255, jobs[0].progress)
 
     @mock.patch.object(restcall, 'call_req')
