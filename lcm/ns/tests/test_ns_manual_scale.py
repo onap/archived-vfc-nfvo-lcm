@@ -13,18 +13,19 @@
 # limitations under the License.
 
 import uuid
-
+import os
 import mock
 from django.test import Client
 from django.test import TestCase
 from rest_framework import status
-
 from lcm.ns.const import NS_INST_STATUS
 from lcm.ns.ns_manual_scale import NSManualScaleService
-from lcm.pub.database.models import NSInstModel, JobModel
+from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
+from lcm.pub.msapi import catalog
+from lcm.pub.utils.scaleaspect import get_json_data
 
 
 SCALING_JSON = {
@@ -118,8 +119,19 @@ class TestNsManualScale(TestCase):
             nspackage_id=self.package_id,
             nsd_id="111").save()
 
+        self.init_scaling_map_json()
+
     def tearDown(self):
         NSInstModel.objects.filter().delete()
+        JobModel.objects.filter().delete()
+
+    def init_scaling_map_json(self):
+        curdir_path = os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__))))
+        filename = curdir_path + "/ns/data/scalemapping.json"
+        self.scaling_map_json = get_json_data(filename)
 
     def insert_new_ns(self):
         ns_inst_id = str(uuid.uuid4())
@@ -132,6 +144,35 @@ class TestNsManualScale(TestCase):
             nspackage_id=package_id,
             nsd_id=package_id).save()
         return ns_inst_id, job_id
+
+    def insert_new_nf(self):
+        # Create a third vnf instance
+        self.nf_name = "name_1"
+        self.vnf_id = "1"
+        self.vnfm_inst_id = "1"
+        nf_inst_id = "233"
+        package_id = "nf_zte_hss"
+        nf_uuid = "ab34-3g5j-de13-ab85-ij93"
+
+        NfInstModel.objects.create(
+            nfinstid=nf_inst_id,
+            nf_name=self.nf_name,
+            vnf_id=self.vnf_id,
+            vnfm_inst_id=self.vnfm_inst_id,
+            ns_inst_id=self.ns_inst_id,
+            max_cpu='14',
+            max_ram='12296',
+            max_hd='101',
+            max_shd="20",
+            max_net=10,
+            status='active',
+            mnfinstid=nf_uuid,
+            package_id=package_id,
+            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
+                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
+                       '"productType": "CN","vnfType": "PGW",'
+                       '"description": "PGW VNFD description",'
+                       '"isShared":true,"vnfExtendType":"driver"}}')
 
     @mock.patch.object(NSManualScaleService, 'run')
     def test_ns_manual_scale(self, mock_run):
@@ -197,6 +238,29 @@ class TestNsManualScale(TestCase):
         NSManualScaleService(ns_inst_id, data, job_id).run()
         jobs = JobModel.objects.filter(jobid=job_id)
         self.assertEqual(255, jobs[0].progress)
+
+    @mock.patch.object(catalog, 'get_scalingmap_json_package')
+    @mock.patch.object(NSManualScaleService, 'do_vnfs_scale')
+    def test_ns_manual_scale_success(self, mock_do_vnfs_scale, mock_get_scalingmap_json_package):
+        data = {
+            "scaleType": "SCALE_NS",
+            "scaleNsData": [{
+                "scaleNsByStepsData": [{
+                    "aspectId": "TIC_EDGE_IMS",
+                    "numberOfSteps": "1",
+                    "scalingDirection": "0"
+                }]
+            }]
+        }
+        mock_get_scalingmap_json_package.return_value = self.scaling_map_json
+        mock_do_vnfs_scale.return_value = JOB_MODEL_STATUS.FINISHED
+        ns_inst_id, job_id = self.insert_new_ns()
+        job_id = JobUtil.create_job(
+            "NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_inst_id)
+        self.insert_new_nf()
+        NSManualScaleService(ns_inst_id, data, job_id).run()
+        jobs = JobModel.objects.filter(jobid=job_id)
+        self.assertEqual(100, jobs[0].progress)
 
     @mock.patch.object(restcall, 'call_req')
     def test_ns_manual_scale_thread(self, mock_call):

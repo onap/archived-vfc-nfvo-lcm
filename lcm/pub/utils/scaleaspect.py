@@ -137,7 +137,7 @@ def get_and_check_params(scaleNsData, ns_InstanceId):
     if scaleNsData is None:
         raise Exception("Error! scaleNsData in the request is Empty!")
 
-    scaleNsByStepsData = scaleNsData["scaleNsByStepsData"][0]
+    scaleNsByStepsData = scaleNsData[0]["scaleNsByStepsData"][0]
     if scaleNsByStepsData is None:
         raise Exception("Error! scaleNsByStepsData in the request is Empty!")
 
