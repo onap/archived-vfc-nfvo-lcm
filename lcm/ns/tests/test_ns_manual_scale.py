@@ -153,6 +153,21 @@ class TestNsManualScale(TestCase):
         jobs = JobModel.objects.filter(jobid=self.job_id)
         self.assertEqual(255, jobs[0].progress)
 
+    def test_ns_manual_scale_error_nsd_id(self):
+        data = {
+            "scaleType": "SCALE_ERR",
+            "scaleNsData": [{
+                "scaleNsByStepsData": [{
+                    "aspectId": "sss_zte",
+                    "numberOfSteps": 1,
+                    "scalingDirection": "0"
+                }]
+            }]
+        }
+        NSManualScaleService(self.ns_inst_id, data, self.job_id).run()
+        jobs = JobModel.objects.filter(jobid=self.job_id)
+        self.assertEqual(255, jobs[0].progress)
+
     @mock.patch.object(restcall, 'call_req')
     def test_ns_manual_scale_thread(self, mock_call):
         data = {
