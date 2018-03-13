@@ -362,6 +362,69 @@ class TestScaleVnfViews(TestCase):
         nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
         self.assertIsNotNone(nsIns)
 
+    @mock.patch.object(NFManualScaleService, "send_nf_scaling_request")
+    def test_scale_vnf_success(self, mock_send_nf_scaling_request):
+        vnfd_info = {
+            "vnf_flavours": [{
+                "flavour_id": "flavour1",
+                "description": "",
+                "vdu_profiles": [
+                    {
+                        "vdu_id": "vdu1Id",
+                        "instances_minimum_number": 1,
+                        "instances_maximum_number": 4,
+                        "local_affinity_antiaffinity_rule": [
+                            {
+                                "affinity_antiaffinity": "affinity",
+                                "scope": "node",
+                            }
+                        ]
+                    }
+                ],
+                "scaling_aspects": [
+                    {
+                        "id": "demo_aspect",
+                        "name": "demo_aspect",
+                        "description": "demo_aspect",
+                        "associated_group": "elementGroup1",
+                        "max_scale_level": 5
+                    }
+                ]
+            }],
+            "element_groups": [{
+                "group_id": "elementGroup1",
+                "description": "",
+                "properties": {
+                    "name": "elementGroup1",
+                },
+                "members": ["gsu_vm", "pfu_vm"]
+            }]
+        }
+
+        req_data = {
+            "scaleVnfData": [
+                {
+                    "type": "SCALE_OUT",
+                    "aspectId": "demo_aspect1",
+                    "numberOfSteps": 1,
+                    "additionalParam": vnfd_info
+                },
+                {
+                    "type": "SCALE_OUT",
+                    "aspectId": "demo_aspect2",
+                    "numberOfSteps": 1,
+                    "additionalParam": vnfd_info
+                }
+            ]
+        }
+        scale_service = NFManualScaleService(self.nf_inst_id, req_data)
+        scale_service.run()
+        nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
+        self.assertIsNotNone(nsIns)
+
+        jobs = JobModel.objects.filter(jobid=scale_service.job_id)
+        self.assertIsNotNone(100, jobs[0].progress)
+
 
 class TestHealVnfViews(TestCase):
     def setUp(self):
