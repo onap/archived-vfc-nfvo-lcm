@@ -45,8 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'lcm.pub.database',
-    # 'lcm.samples',
-    # 'lcm.swagger',
     'drf_yasg'
 ]
 
