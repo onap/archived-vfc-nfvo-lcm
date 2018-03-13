@@ -216,7 +216,7 @@ class NSDetailView(APIView):
     @swagger_auto_schema(
         request_body=None,
         responses={
-            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_204_NO_CONTENT: 'successful',
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )

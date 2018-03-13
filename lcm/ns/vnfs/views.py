@@ -183,7 +183,7 @@ class LcmNotify(APIView):
     @swagger_auto_schema(
         request_body=NotifyLcmReqSerializer(),
         responses={
-            status.HTTP_201_CREATED: None,
+            status.HTTP_201_CREATED: 'successful',
             status.HTTP_409_CONFLICT: "Inner error"
         }
     )

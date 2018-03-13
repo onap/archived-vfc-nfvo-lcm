@@ -75,7 +75,7 @@ class PortPairGpView(APIView):
     @swagger_auto_schema(
         request_body=CreatePortPairGpSerializer(),
         responses={
-            status.HTTP_200_OK: None
+            status.HTTP_200_OK: 'successful'
         }
     )
     def post(self, request):
@@ -95,7 +95,7 @@ class FlowClaView(APIView):
     @swagger_auto_schema(
         request_body=CreateFlowClaSerializer(),
         responses={
-            status.HTTP_200_OK: None
+            status.HTTP_200_OK: 'successful'
         }
     )
     def post(self, request):
@@ -114,7 +114,7 @@ class PortChainView(APIView):
     @swagger_auto_schema(
         request_body=CreatePortChainSerializer(),
         responses={
-            status.HTTP_200_OK: None
+            status.HTTP_200_OK: 'successful'
         }
     )
     def post(self, request):
