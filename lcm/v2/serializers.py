@@ -714,6 +714,33 @@ class AffectedVnfcSerializer(serializers.Serializer):
     )
 
 
+class AffectedVirtualLinkSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of the virtual link instance.",
+        required=True
+    )
+    virtualLinkDescId = serializers.CharField(
+        help_text="Identifier of the related VLD in the VNFD.",
+        required=True
+    )
+    changeType = serializers.ChoiceField(
+        help_text="Signals the type of change.",
+        choices=["ADDED", "REMOVED", "MODIFIED", "TEMPORARY", "LINK_PORT_ADDED", "LINK_PORT_REMOVED"],
+        required=True
+    )
+    networkResource = ResourceHandleSerializer(
+        help_text="Reference to the VirtualNetwork resource.",
+        required=False,
+        allow_null=True
+    )
+    metadata = serializers.DictField(
+        help_text="Metadata about this resource.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+
+
 class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this notification.",
@@ -757,4 +784,14 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     vnfLcmOpOccId = serializers.CharField(
         help_text="The identifier of the VNF lifecycle management operation occurrence associated to the notification.",
         required=True
+    )
+    affectedVnfcs = AffectedVnfcSerializer(
+        help_text="Information about VNFC instances that were affected during the lifecycle operation.",
+        many = True,
+        required=False
+    )
+    affectedVirtualLinks = AffectedVirtualLinkSerializer(
+        help_text="Information about VL instances that were affected during the lifecycle operation.",
+        many = True,
+        required=False
     )
