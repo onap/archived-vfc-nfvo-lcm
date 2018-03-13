@@ -875,6 +875,35 @@ class ExtVirtualLinkInfoSerializer(serializers.Serializer):
     )
 
 
+class ProblemDetailsSerializer(serializers.Serializer):
+    type = serializers.CharField(
+        help_text="A URI reference according to IETF RFC 3986 [5] that identifies the problem type.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    title = serializers.CharField(
+        help_text="A short, human-readable summary of the problem type.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    status = serializers.IntegerField(
+        help_text="The HTTP status code for this occurrence of the problem.",
+        required=True
+    )
+    detail = serializers.CharField(
+        help_text="A human-readable explanation specific to this occurrence of the problem.",
+        required=True
+    )
+    instance = serializers.CharField(
+        help_text="A URI reference that identifies the specific occurrence of the problem.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this notification.",
@@ -943,4 +972,9 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
         help_text="Information about changed external connectivity.",
         many=True,
         required=False
+    )
+    error = ProblemDetailsSerializer(
+        help_text="Details of the latest error, if one has occurred during executing the LCM operation",
+        required=False,
+        allow_null=True
     )
