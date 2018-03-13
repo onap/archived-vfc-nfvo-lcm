@@ -768,6 +768,80 @@ class AffectedVirtualStorageSerializer(serializers.Serializer):
     )
 
 
+class VnfInfoModificationsSerializer(serializers.Serializer):
+    vnfInstanceName = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfInstanceName attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfInstanceDescription = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfInstanceDescription attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfConfigurableProperties = serializers.DictField(
+        help_text="If present, this attribute signals modifications of the vnfConfigurableProperties attribute in VnfInstance.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+    metadata = serializers.DictField(
+        help_text="If present, this attribute signals modifications of the metadata attribute in VnfInstance.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+    extensions = serializers.DictField(
+        help_text="If present, this attribute signals modifications of the extensions attribute in VnfInstance.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+    vimConnectionInfo = VimConnectionInfoSerializer(
+        help_text="If present, this attribute signals modifications of the vimConnectionInfo attribute in VnfInstance.",
+        many=True,
+        required=False
+    )
+    vnfPkgId = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfPkgId attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfdId = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfdId attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfProvider = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfProvider attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfProductName = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfProductName attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfSoftwareVersion = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfSoftwareVersion attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    vnfdVersion = serializers.CharField(
+        help_text="If present, this attribute signals modifications of the vnfdVersion attribute in VnfInstance.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this notification.",
@@ -826,4 +900,9 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
         help_text="Information about virtualised storage instances that were affected during the lifecycle operation.",
         many=True,
         required=False
+    )
+    changedInfo = VnfInfoModificationsSerializer(
+        help_text="Information about the changed VNF instance information, including changed VNF configurable properties.",
+        required=False,
+        allow_null=True
     )
