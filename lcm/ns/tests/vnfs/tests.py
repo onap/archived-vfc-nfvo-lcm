@@ -303,10 +303,7 @@ class TestScaleVnfViews(TestCase):
         NSInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
 
-    @mock.patch.object(restcall, "call_req")
-    def test_scale_vnf(self, mock_call_req):
-        job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
-
+    def test_scale_vnf(self):
         vnfd_info = {
             "vnf_flavours": [{
                 "flavour_id": "flavour1",
@@ -360,16 +357,6 @@ class TestScaleVnfViews(TestCase):
                 }
             ]
         }
-
-        mock_vals = {
-            "/api/ztevnfmdriver/v1/1/vnfs/111/terminate":
-                [0, json.JSONEncoder().encode({"jobId": job_id}), '200']
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
 
         NFManualScaleService(self.nf_inst_id, req_data).run()
         nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
