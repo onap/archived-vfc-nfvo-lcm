@@ -904,6 +904,22 @@ class ProblemDetailsSerializer(serializers.Serializer):
     )
 
 
+class LccnLinksSerializer(serializers.Serializer):
+    vnfInstance = LinkSerializer(
+        help_text="Link to the resource representing the VNF instance to which the notified change applies.",
+        required=True
+    )
+    subscription = LinkSerializer(
+        help_text="Link to the related subscription.",
+        required=True
+    )
+    vnfLcmOpOcc = LinkSerializer(
+        help_text="Link to the VNF lifecycle management operation occurrence that this notification is related to.",
+        required=False,
+        allow_null=True
+    )
+
+
 class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this notification.",
@@ -975,6 +991,11 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     )
     error = ProblemDetailsSerializer(
         help_text="Details of the latest error, if one has occurred during executing the LCM operation",
+        required=False,
+        allow_null=True
+    )
+    _links = LccnLinksSerializer(
+        help_text="Links to resources related to this notification.",
         required=False,
         allow_null=True
     )
