@@ -57,8 +57,9 @@ class VnfGrantView(APIView):
 
 
 class VnfNotifyView(APIView):
-    def post(self, request):
+    def post(self, request, vnfmId, vnfInstanceId):
         logger.debug("VnfNotifyView post: %s" % request.data)
+        logger.debug("vnfmId: %s vnfInstanceId: %s", vnfmId, vnfInstanceId)
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request):
