@@ -373,10 +373,7 @@ class TestScaleVnfViews(TestCase):
 
         NFManualScaleService(self.nf_inst_id, req_data).run()
         nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-        if nsIns:
-            self.failUnlessEqual(1, 1)
-        else:
-            self.failUnlessEqual(1, 0)
+        self.assertIsNotNone(nsIns)
 
 
 class TestHealVnfViews(TestCase):
