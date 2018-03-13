@@ -842,6 +842,68 @@ class VnfInfoModificationsSerializer(serializers.Serializer):
     )
 
 
+class ExtLinkPortInfoSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of this link port as provided by the entity that has created the link port.",
+        required=True
+    )
+    resourceHandle = ResourceHandleSerializer(
+        help_text="Reference to the virtualised resource realizing this link port.",
+        required=True
+    )
+    cpInstanceId = serializers.CharField(
+        help_text="Identifier of the external CP of the VNF connected to this link port.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
+class ExtVirtualLinkInfoSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of the external VL and the related external VL information instance.",
+        required=True
+    )
+    resourceHandle = ResourceHandleSerializer(
+        help_text="Reference to the resource realizing this VL.",
+        required=True
+    )
+    extLinkPorts = ExtLinkPortInfoSerializer(
+        help_text="Link ports of this VL.",
+        many=True,
+        required=False
+    )
+
+
+class ProblemDetailsSerializer(serializers.Serializer):
+    type = serializers.CharField(
+        help_text="A URI reference according to IETF RFC 3986 [5] that identifies the problem type.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    title = serializers.CharField(
+        help_text="A short, human-readable summary of the problem type.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+    status = serializers.IntegerField(
+        help_text="The HTTP status code for this occurrence of the problem.",
+        required=True
+    )
+    detail = serializers.CharField(
+        help_text="A human-readable explanation specific to this occurrence of the problem.",
+        required=True
+    )
+    instance = serializers.CharField(
+        help_text="A URI reference that identifies the specific occurrence of the problem.",
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
+
+
 class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this notification.",
@@ -903,6 +965,16 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     )
     changedInfo = VnfInfoModificationsSerializer(
         help_text="Information about the changed VNF instance information, including changed VNF configurable properties.",
+        required=False,
+        allow_null=True
+    )
+    changedExtConnectivity = ExtVirtualLinkInfoSerializer(
+        help_text="Information about changed external connectivity.",
+        many=True,
+        required=False
+    )
+    error = ProblemDetailsSerializer(
+        help_text="Details of the latest error, if one has occurred during executing the LCM operation",
         required=False,
         allow_null=True
     )
