@@ -741,6 +741,33 @@ class AffectedVirtualLinkSerializer(serializers.Serializer):
     )
 
 
+class AffectedVirtualStorageSerializer(serializers.Serializer):
+    id = serializers.CharField(
+        help_text="Identifier of the storage instance.",
+        required=True
+    )
+    virtualStorageDescId = serializers.CharField(
+        help_text="Identifier of the related VirtualStorage descriptor in the VNFD.",
+        required=True
+    )
+    changeType = serializers.ChoiceField(
+        help_text="Signals the type of change.",
+        choices=["ADDED", "REMOVED", "MODIFIED", "TEMPORARY"],
+        required=True
+    )
+    storageResource = ResourceHandleSerializer(
+        help_text="Reference to the VirtualStorage resource.",
+        required=False,
+        allow_null=True
+    )
+    metadata = serializers.DictField(
+        help_text="Metadata about this resource.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
+    )
+
+
 class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this notification.",
@@ -792,6 +819,11 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     )
     affectedVirtualLinks = AffectedVirtualLinkSerializer(
         help_text="Information about VL instances that were affected during the lifecycle operation.",
+        many=True,
+        required=False
+    )
+    affectedVirtualStorages = AffectedVirtualStorageSerializer(
+        help_text="Information about virtualised storage instances that were affected during the lifecycle operation.",
         many=True,
         required=False
     )
