@@ -21,6 +21,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.v2.serializers import GrantRequestSerializer
 from lcm.v2.serializers import GrantSerializer
+from lcm.v2.serializers import VnfLcmOperationOccurrenceNotificationSerializer
 from lcm.v2.grant_vnf import GrantVnf
 
 logger = logging.getLogger(__name__)
@@ -57,11 +58,27 @@ class VnfGrantView(APIView):
 
 
 class VnfNotifyView(APIView):
+    @swagger_auto_schema(
+        request_body=VnfLcmOperationOccurrenceNotificationSerializer(
+            help_text="A notification about lifecycle changes triggered by a VNF LCM operation occurrence."
+        ),
+        responses={
+            status.HTTP_204_NO_CONTENT: "The notification was delivered successfully.",
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request, vnfmId, vnfInstanceId):
         logger.debug("VnfNotifyView post: %s" % request.data)
         logger.debug("vnfmId: %s vnfInstanceId: %s", vnfmId, vnfInstanceId)
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
 
+    @swagger_auto_schema(
+        request_body=None,
+        responses={
+            status.HTTP_204_NO_CONTENT: "The notification endpoint was tested successfully.",
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def get(self, request):
         logger.debug("VnfNotifyView get")
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
