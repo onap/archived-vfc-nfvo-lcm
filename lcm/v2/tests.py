@@ -94,3 +94,7 @@ class VnfGrantViewTest(unittest.TestCase):
             "vnfLcmOpOccId": "2"
         }
         self.assertEqual(expect_resp_data, resp_data)
+
+    def test_get_notify_vnf_normal(self):
+        response = self.client.get("/api/nslcm/v2/ns/1/vnfs/1/Notify")
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)

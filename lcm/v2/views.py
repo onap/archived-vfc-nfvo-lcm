@@ -79,6 +79,7 @@ class VnfNotifyView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
-    def get(self, request):
+    def get(self, request, vnfmId, vnfInstanceId):
         logger.debug("VnfNotifyView get")
+        logger.debug("vnfmId: %s vnfInstanceId: %s", vnfmId, vnfInstanceId)
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
