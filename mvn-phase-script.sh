@@ -43,24 +43,30 @@ echo "MVN_PROJECT_GROUPID is             [$MVN_PROJECT_GROUPID]"
 echo "MVN_PROJECT_ARTIFACTID is          [$MVN_PROJECT_ARTIFACTID]"
 echo "MVN_PROJECT_VERSION is             [$MVN_PROJECT_VERSION]"
 
-run_tox_test() 
-{ 
+run_tox_test()
+{
   set -x
   CURDIR=$(pwd)
-  TOXINIS=$(find . -name "tox.ini")
-  for TOXINI in "${TOXINIS[@]}"; do
-    DIR=$(echo "$TOXINI" | rev | cut -f2- -d'/' | rev)
-    cd "${CURDIR}/${DIR}"
-    rm -rf ./venv-tox ./.tox
-    virtualenv ./venv-tox
-    source ./venv-tox/bin/activate
-    pip install --upgrade pip
-    pip install --upgrade tox argparse
-    pip freeze
-    tox
-    deactivate
-    rm -rf ./venv-tox ./.tox
-  done
+  if [[ ${CURDIR} =~ "-sonar" ]]
+  then
+    echo "====Sonar job, need execute tox."
+    TOXINIS=$(find . -name "tox.ini")
+    for TOXINI in "${TOXINIS[@]}"; do
+      DIR=$(echo "$TOXINI" | rev | cut -f2- -d'/' | rev)
+      cd "${CURDIR}/${DIR}"
+      rm -rf ./venv-tox ./.tox
+      virtualenv ./venv-tox
+      source ./venv-tox/bin/activate
+      pip install --upgrade pip
+      pip install --upgrade tox argparse
+      pip freeze
+      tox
+      deactivate
+      rm -rf ./venv-tox ./.tox
+    done
+  else
+    echo "====Not a sonar job, need not execute tox."
+  fi
 }
 
 
