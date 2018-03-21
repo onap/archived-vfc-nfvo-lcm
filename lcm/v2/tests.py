@@ -98,3 +98,120 @@ class VnfGrantViewTest(unittest.TestCase):
     def test_get_notify_vnf_normal(self):
         response = self.client.get("/api/nslcm/v2/ns/1/vnfs/1/Notify")
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)
+
+    def test_notify_vnf_normal(self):
+        data = {
+            "id": "string",
+            "notificationType": "string",
+            "subscriptionId": "string",
+            "timeStamp": "string",
+            "notificationStatus": "START",
+            "operationState": "STARTING",
+            "vnfInstanceId": "string",
+            "operation": "INSTANTIATE",
+            "isAutomaticInvocation": True,
+            "vnfLcmOpOccId": "string",
+            "affectedVnfcs": [{
+                "vnfcInstanceId": "string",
+                "vduId": "string",
+                "changeType": "added",
+                "vimId": "string",
+                "vmId": "string",
+                "vmName": "string"
+            }],
+            "affectedVirtualLinks": [{
+                "vlInstanceId": "string",
+                "vldId": "string",
+                "changeType": "added",
+                "networkResource": {
+                    "resourceType": "network",
+                    "resourceId": "string",
+                    "resourceName": "string"
+                }
+            }],
+            "affectedVirtualStorages": [{}],
+            "changedInfo": {
+                "vnfInstanceName": "string",
+                "vnfInstanceDescription": "string",
+                "vnfConfigurableProperties": {
+                    "additionalProp1": "string",
+                    "additionalProp2": "string",
+                    "additionalProp3": "string"
+                },
+                "metadata": {
+                    "additionalProp1": "string",
+                    "additionalProp2": "string",
+                    "additionalProp3": "string"
+                },
+                "extensions": {
+                    "additionalProp1": "string",
+                    "additionalProp2": "string",
+                    "additionalProp3": "string"
+                },
+                "vimConnectionInfo": [{
+                    "id": "string",
+                    "vimId": "string",
+                    "vimType": "string",
+                    "interfaceInfo": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "accessInfo": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "extra": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    }
+                }],
+                "vnfPkgId": "string",
+                "vnfdId": "string",
+                "vnfProvider": "string",
+                "vnfProductName": "string",
+                "vnfSoftwareVersion": "string",
+                "vnfdVersion": "string"
+            },
+            "changedExtConnectivity": [{
+                "id": "string",
+                "resourceHandle": {
+                    "vimConnectionId": "string",
+                    "resourceProviderId": "string",
+                    "resourceId": "string",
+                    "vimLevelResourceType": "string"
+                },
+                "extLinkPorts": [{
+                    "id": "string",
+                    "resourceHandle": {
+                        "vimConnectionId": "string",
+                        "resourceProviderId": "string",
+                        "resourceId": "string",
+                        "vimLevelResourceType": "string"
+                    },
+                    "cpInstanceId": "string"
+                }]
+            }],
+            "error": {
+                "type": "string",
+                "title": "string",
+                "status": 0,
+                "detail": "string",
+                "instance": "string"
+            },
+            "_links": {
+                "vnfInstance": {
+                    "href": "string"
+                },
+                "subscription": {
+                    "href": "string"
+                },
+                "vnfLcmOpOcc": {
+                    "href": "string"
+                }
+            }
+        }
+        response = self.client.post("/api/nslcm/v2/ns/1/vnfs/2/Notify", data=data, format='json')
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)

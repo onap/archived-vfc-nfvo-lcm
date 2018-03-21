@@ -73,7 +73,6 @@ class VnfNotifyView(APIView):
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
 
     @swagger_auto_schema(
-        request_body=None,
         responses={
             status.HTTP_204_NO_CONTENT: "The notification endpoint was tested successfully.",
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
