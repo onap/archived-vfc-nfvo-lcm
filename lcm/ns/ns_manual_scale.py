@@ -55,11 +55,11 @@ class NSManualScaleService(threading.Thread):
     def do_biz(self):
         self.update_job(1, desc='ns scale start')
         self.update_ns_status(NS_INST_STATUS.SCALING)
-        self.get_and_check_params()
+        self.check_and_set_params()
         self.do_vnfs_scale()
         self.update_job(100, desc='ns scale success')
 
-    def get_and_check_params(self):
+    def check_and_set_params(self):
         self.scale_type = ignore_case_get(self.request_data, 'scaleType')
         if not self.scale_type or self.scale_type != SCALE_TYPE[0]:
             logger.error(
