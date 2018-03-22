@@ -133,7 +133,7 @@ def get_nsdId(ns_instanceId):
     return None
 
 
-def get_and_check_params(scaleNsData, ns_InstanceId):
+def check_and_set_params(scaleNsData, ns_InstanceId):
     if scaleNsData is None:
         raise Exception("Error! scaleNsData in the request is Empty!")
 
@@ -155,7 +155,7 @@ def get_scale_vnf_data(scaleNsData, ns_InstanceId):
                 os.path.abspath(__file__))))
     filename = curdir_path + "/ns/data/scalemapping.json"
     logger.debug("filename = %s" % filename)
-    aspect, numberOfSteps, scale_type = get_and_check_params(
+    aspect, numberOfSteps, scale_type = check_and_set_params(
         scaleNsData, ns_InstanceId)
     return get_scale_vnf_data_list(
         filename,
@@ -174,7 +174,7 @@ def get_scale_vnf_data_info_list(scaleNsData, ns_InstanceId):
     scalingmap_json = catalog.get_scalingmap_json_package(ns_InstanceId)
 
     # Gets and checks the values of parameters.
-    aspect, numberOfSteps, scale_type = get_and_check_params(
+    aspect, numberOfSteps, scale_type = check_and_set_params(
         scaleNsData, ns_InstanceId)
 
     # Firstly, gets the scaling vnf data info list from the scaling map json data.

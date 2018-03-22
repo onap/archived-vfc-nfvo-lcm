@@ -18,7 +18,7 @@ from lcm.pub.utils.scaleaspect import get_nsdId
 from lcm.pub.utils.scaleaspect import get_scale_vnf_data_from_json
 from lcm.pub.utils.scaleaspect import get_scale_vnf_data_info_list
 from lcm.pub.utils.scaleaspect import set_scacle_vnf_instance_id
-from lcm.pub.utils.scaleaspect import get_and_check_params
+from lcm.pub.utils.scaleaspect import check_and_set_params
 from lcm.pub.utils.scaleaspect import set_scaleVnfData_type
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
@@ -237,7 +237,7 @@ class TestScaleAspect(TestCase):
         NfInstModel().clean()
 
     def test_get_and_check_params(self):
-        aspect, numberOfSteps, scale_type = get_and_check_params(
+        aspect, numberOfSteps, scale_type = check_and_set_params(
             self.scaleNsData, "1")
         self.assertEqual(aspect, self.ns_scale_aspect)
         self.assertEqual(numberOfSteps, self.ns_scale_steps)
