@@ -36,3 +36,6 @@ drf-yasg>=1.2.2
 # for the validation feature
 flex>=6.11.1
 swagger-spec-validator>=2.1.0
+
+# for onap logging
+onappylog>=1.0.6

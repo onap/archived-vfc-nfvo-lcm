@@ -19,7 +19,10 @@ import redisco
 
 from lcm.pub.config.config import REDIS_HOST, REDIS_PORT, REDIS_PASSWD
 from lcm.pub.config.config import DB_NAME, DB_IP, DB_USER, DB_PASSWD, DB_PORT
-from lcm.pub.config import config
+from lcm.pub.config import config as pub_config
+from logging import config as log_config
+from onaplogging import monkey
+monkey.patch_all()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -79,6 +82,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'lcm.middleware.LogContextMiddleware',
 ]
 
 ROOT_URLCONF = 'lcm.urls'
@@ -123,42 +127,46 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
 
-config.CATALOG_ROOT_PATH = os.path.join(STATICFILES_DIRS[0], "catalog")
-config.CATALOG_URL_PATH = "static/catalog"
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'standard': {
-            'format': '%(asctime)s:[%(name)s]:[%(filename)s]-[%(lineno)d] [%(levelname)s]:%(message)s',
-        },
-    },
-    'filters': {
-    },
-    'handlers': {
-        'lcm_handler': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/runtime_lcm.log'),
-            'formatter': 'standard',
-            'maxBytes': 1024 * 1024 * 50,
-            'backupCount': 5,
-        },
-    },
-
-    'loggers': {
-        'lcm': {
-            'handlers': ['lcm_handler'],
-            'level': 'DEBUG',
-            'propagate': False
-        },
-    }
-}
+pub_config.CATALOG_ROOT_PATH = os.path.join(STATICFILES_DIRS[0], "catalog")
+pub_config.CATALOG_URL_PATH = "static/catalog"
+#
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'standard': {
+#             'format': '%(asctime)s:[%(name)s]:[%(filename)s]-[%(lineno)d] [%(levelname)s]:%(message)s',
+#         },
+#     },
+#     'filters': {
+#     },
+#     'handlers': {
+#         'lcm_handler': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': os.path.join(BASE_DIR, 'logs/runtime_lcm.log'),
+#             'formatter': 'standard',
+#             'maxBytes': 1024 * 1024 * 50,
+#             'backupCount': 5,
+#         },
+#     },
+#
+#     'loggers': {
+#         'lcm': {
+#             'handlers': ['lcm_handler'],
+#             'level': 'DEBUG',
+#             'propagate': False
+#         },
+#     }
+# }
+LOGGING_CONFIG = None
+# yaml configuration of logging
+LOGGING_FILE = os.path.join(BASE_DIR, 'lcm/log.yml')
+log_config.yamlConfig(filepath=LOGGING_FILE, watchDog=True)
 
 if 'test' in sys.argv:
-    config.REG_TO_MSB_WHEN_START = False
-    config.DEPLOY_WORKFLOW_WHEN_START = False
+    pub_config.REG_TO_MSB_WHEN_START = False
+    pub_config.DEPLOY_WORKFLOW_WHEN_START = False
     DATABASES = {}
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
