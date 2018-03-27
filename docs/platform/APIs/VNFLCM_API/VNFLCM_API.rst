@@ -8,8 +8,9 @@
 **1 Scope**
 =============
 
-    The scope of the present document is to describe the GVNFM exposed
-    API specification over Or-Vnfm reference point and Ve-Vnfm-vnf reference point.
+The scope of the present document is to describe the GVNFM exposed API specification over Or-Vnfm reference point and Ve-Vnfm-vnf reference point.
+Some content has been updated, about the API Swagger definition, you can find here 'GVNFM_LCM_APIs<https://gerrit.onap.org/r/gitweb?p=vfc/gvnfm/vnflcm.git;a=blob;f=lcm/lcm/swagger/swagger.json;h=f098d282927d3535f5e9e6950f26b9171e04d30c;hb=HEAD>'.
+
 
 **2 Terms, Definitions and Abbreviations**
 ===========================================
@@ -1681,4 +1682,4 @@ Table 2-1 abbreviations
 
 .. |image0| image:: VNFM_API.png
    :width: 5.07047in
-   :height: 5.6320
+   :height: 5.6320in

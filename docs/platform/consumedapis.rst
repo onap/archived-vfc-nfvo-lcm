@@ -10,6 +10,7 @@ References to APIs offered by other components
  - DCAE: Use DCAE Ves collector API to report FCAPS data to DCAE
  - MSB:  Use MSB to register and find microservice
  - Modeling: Use nfvparser API to parse tosca template
+ - Multicloud: Use Multicloud API to CRUD virtual resource
 
 
 

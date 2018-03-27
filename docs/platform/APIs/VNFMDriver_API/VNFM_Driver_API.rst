@@ -8,6 +8,8 @@
 **1.  Scope**
 ==============
 The scope of the present document is to describe the VNFM driver integrated related API specification.
+Some content has been updated, about the API Swagger definition, you can find here 'VNFM driver development related API<https://gerrit.onap.org/r/gitweb?p=vfc/nfvo/lcm.git;a=blob;f=lcm/swagger/vfc.vnfdriver.swagger.json;h=fc35adbdc75df1307ca2c43a11bfb472da2a27c6;hb=HEAD>'
+
 
 **2.  Terms, Definitions and Abbreviations**
 =============================================
