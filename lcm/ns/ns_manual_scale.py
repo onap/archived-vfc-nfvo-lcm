@@ -36,9 +36,7 @@ class NSManualScaleService(threading.Thread):
         self.ns_instance_id = ns_instance_id
         self.request_data = request_data
         self.job_id = job_id
-        self.scale_type = ''
         self.scale_vnf_data = ''
-        self.scale_ns_data = ''
 
     def run(self):
         try:
@@ -60,24 +58,16 @@ class NSManualScaleService(threading.Thread):
         self.update_job(100, desc='ns scale success')
 
     def check_and_set_params(self):
-        self.scale_type = ignore_case_get(self.request_data, 'scaleType')
-        if not self.scale_type or self.scale_type != SCALE_TYPE[0]:
-            logger.error(
-                'scaleType parameter does not exist or value is incorrect. It must be SCALE_NS.')
-            raise NSLCMException(
-                'scaleType parameter does not exist or value incorrect. It must be SCALE_NS.')
+        scale_type = ignore_case_get(self.request_data, 'scaleType')
+        if scale_type != SCALE_TYPE[0]:
+            raise NSLCMException('scaleType should be SCALE_NS.')
 
-        # Get data if SCALE_NS
-        self.scale_ns_data = ignore_case_get(self.request_data, 'scaleNsData')
+        scale_ns_data = ignore_case_get(self.request_data, 'scaleNsData')
         self.scale_vnf_data = get_scale_vnf_data_info_list(
-            self.scale_ns_data, self.ns_instance_id)
+            scale_ns_data, self.ns_instance_id)
         logger.debug('scale_vnf_data = %s' % self.scale_vnf_data)
-        # Get data if SCALE_VNF
         if not self.scale_vnf_data:
-            logger.error(
-                'scaleVnfData parameter does not exist or value incorrect')
-            raise NSLCMException(
-                'scaleVnfData parameter does not exist or value incorrect')
+            raise NSLCMException('Failed to get scaleVnfData parameter')
 
     def do_vnfs_scale(self):
         for i in range(len(self.scale_vnf_data)):
@@ -95,18 +85,14 @@ class NSManualScaleService(threading.Thread):
                     desc='nf[%s] scale handle end' %
                     vnf_scale_params.get('vnfInstanceId'))
             else:
-                logger.error('nf scale failed')
-                raise NSLCMException('nf scale failed')
+                raise NSLCMException('VNF scale failed')
 
     def prepare_vnf_scale_params(self, vnf_data):
-        vnf_instance_id = ignore_case_get(vnf_data, 'vnfInstanceId')
-        scale_by_step_data = ignore_case_get(vnf_data, 'scaleByStepData')
-        result = {
-            "vnfInstanceId": vnf_instance_id,
-            "scaleVnfData": scale_by_step_data,
+        return {
+            "vnfInstanceId": ignore_case_get(vnf_data, 'vnfInstanceId'),
+            "scaleVnfData": ignore_case_get(vnf_data, 'scaleByStepData'),
             "nsInstanceId": self.ns_instance_id
         }
-        return result
 
     def do_vnf_scale(self, vnf_scale_params, progress_range):
         nf_inst_id = vnf_scale_params.get('vnfInstanceId')
@@ -129,10 +115,8 @@ class NSManualScaleService(threading.Thread):
             end_time = datetime.datetime.now()
             if job_result.progress == 100:
                 return JOB_MODEL_STATUS.FINISHED
-            elif job_result.progress > 100:
+            if job_result.progress > 100:
                 return JOB_MODEL_STATUS.ERROR
-            else:
-                continue
         return JOB_MODEL_STATUS.TIMEOUT
 
     def update_job(self, progress, desc=''):
