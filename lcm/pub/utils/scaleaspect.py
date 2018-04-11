@@ -20,6 +20,7 @@ from lcm.pub.database.models import NfInstModel
 from lcm.pub.database.models import NSInstModel
 from lcm.ns.vnfs.const import VNF_STATUS
 from lcm.pub.msapi import catalog
+from lcm.pub.utils.values import ignore_case_get
 
 
 logger = logging.getLogger(__name__)
@@ -35,40 +36,27 @@ scale_vnf_data_mapping = {
 }
 
 
-def ignorcase_get(args, key):
-    if not key:
-        return ""
-    if not args:
-        return ""
-    if key in args:
-        return args[key]
-    for old_key in args:
-        if old_key.upper() == key.upper():
-            return args[old_key]
-    return ""
-
-
 def mapping_conv(keyword_map, rest_return):
     resp_data = {}
     for param in keyword_map:
         if keyword_map[param]:
             if isinstance(keyword_map[param], dict):
                 resp_data[param] = mapping_conv(
-                    keyword_map[param], ignorcase_get(
+                    keyword_map[param], ignore_case_get(
                         rest_return, param))
             else:
-                resp_data[param] = ignorcase_get(rest_return, param)
+                resp_data[param] = ignore_case_get(rest_return, param)
     return resp_data
 
 
 def get_vnf_scale_info(filename, ns_instanceId, aspect, step):
     json_data = get_json_data(filename)
-    scale_options = ignorcase_get(json_data, "scale_options")
+    scale_options = ignore_case_get(json_data, "scale_options")
     for i in range(scale_options.__len__()):
         ns_scale_option = scale_options[i]
-        if (ignorcase_get(ns_scale_option, "ns_instanceId") == ns_instanceId) \
-                and (ignorcase_get(ns_scale_option, "ns_scale_aspect") == aspect):
-            ns_scale_info_list = ignorcase_get(
+        if (ignore_case_get(ns_scale_option, "ns_instanceId") == ns_instanceId) \
+                and (ignore_case_get(ns_scale_option, "ns_scale_aspect") == aspect):
+            ns_scale_info_list = ignore_case_get(
                 ns_scale_option, "ns_scale_info_list")
             for j in range(ns_scale_info_list.__len__()):
                 ns_scale_info = ns_scale_info_list[j]
@@ -194,12 +182,12 @@ def get_scale_vnf_data_info_list(scaleNsData, ns_InstanceId):
 
 # Get the vnf scaling info from the scaling_map.json according to the ns package id.
 def get_scale_vnf_data_from_json(scalingmap_json, nsd_id, aspect, step):
-    scale_options = ignorcase_get(scalingmap_json, "scale_options")
+    scale_options = ignore_case_get(scalingmap_json, "scale_options")
     for i in range(scale_options.__len__()):
         ns_scale_option = scale_options[i]
-        if (ignorcase_get(ns_scale_option, "nsd_id") == nsd_id) and (
-                ignorcase_get(ns_scale_option, "ns_scale_aspect") == aspect):
-            ns_scale_info_list = ignorcase_get(
+        if (ignore_case_get(ns_scale_option, "nsd_id") == nsd_id) and (
+                ignore_case_get(ns_scale_option, "ns_scale_aspect") == aspect):
+            ns_scale_info_list = ignore_case_get(
                 ns_scale_option, "ns_scale_info")
             for j in range(ns_scale_info_list.__len__()):
                 ns_scale_info = ns_scale_info_list[j]
