@@ -23,26 +23,26 @@ logger = logging.getLogger(__name__)
 
 def delete_port_chain(req_param):
     url = "/api/sdncdriver/v1/delchain"
-    str = "delete port chain"
-    delete_func(req_param, url, str)
+    desc = "delete port chain"
+    delete_func(req_param, url, desc)
 
 
 def delete_flow_classifier(req_param):
     url = "/api/sdncdriver/v1/delclassifier"
-    str = "delete flow classifier"
-    delete_func(req_param, url, str)
+    desc = "delete flow classifier"
+    delete_func(req_param, url, desc)
 
 
 def delete_port_pair_group(req_param):
     url = "/api/sdncdriver/v1/delportpairgroup"
-    str = "delete port pair"
-    delete_func(req_param, url, str)
+    desc = "delete port pair"
+    delete_func(req_param, url, desc)
 
 
 def delete_port_pair(req_param):
     url = "/api/sdncdriver/v1/delportpair"
-    str = "delete port pair"
-    delete_func(req_param, url, str)
+    desc = "delete port pair"
+    delete_func(req_param, url, desc)
 
 
 def delete_func(req_param, url, str):
@@ -54,32 +54,32 @@ def delete_func(req_param, url, str):
 
 def create_flow_classfier(data):
     url = "/api/ztesdncdriver/v1/createflowclassfier"
-    str = "create flow classfier"
-    return create(data, url, str)
+    desc = "create flow classfier"
+    return create(data, url, desc)
 
 
 def create_port_pair(data):
     url = "/api/ztesdncdriver/v1/createportpair"
-    str = "create port pair"
-    return create(data, url, str)
+    desc = "create port pair"
+    return create(data, url, desc)
 
 
 def create_port_pair_group(data):
     url = "/api/ztesdncdriver/v1/createportpairgroup"
-    str = "create port pair group"
-    return create(data, url, str)
+    desc = "create port pair group"
+    return create(data, url, desc)
 
 
 def create_port_chain(data):
     url = "/api/ztesdncdriver/v1/createportchain"
-    str = "create port chain"
-    return create(data, url, str)
+    desc = "create port chain"
+    return create(data, url, desc)
 
 
-def create(req_param, url, str):
+def create(req_param, url, desc):
     ret = req_by_msb(url, "POST", json.dumps(req_param))
     if ret[0] != 0:
-        logger.error("Failed to %s to sdncdriver. detail is %s.", str, ret[1])
-        raise NSLCMException('Failed to %s to sdncdriver.' % str)
+        logger.error("Failed to %s to sdncdriver. detail is %s.", desc, ret[1])
+        raise NSLCMException('Failed to %s to sdncdriver.' % desc)
     resp_body = json.loads(ret[1])
     return resp_body["id"]
