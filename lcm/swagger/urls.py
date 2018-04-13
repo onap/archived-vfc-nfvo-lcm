@@ -16,16 +16,15 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from lcm.swagger.views import SwaggerJsonView
-
 swagger_info = openapi.Info(
     title="vfc-nfvo-lcm API",
     default_version='v1',
     description="""
 
-The `swagger-ui` view can be found [here](/cached/swagger).
-The `ReDoc` view can be found [here](/cached/redoc).
-The swagger YAML document can be found [here](/cached/swagger.yaml)."""
+The `swagger-ui` view can be found [here](/api/nslcm/v1/swagger).
+The `ReDoc` view can be found [here](/api/nslcm/v1/redoc).
+The swagger YAML document can be found [here](/api/nslcm/v1/swagger.json).
+The swagger YAML document can be found [here](/api/nslcm/v1/swagger.yaml)."""
 )
 
 SchemaView = get_schema_view(
@@ -35,8 +34,8 @@ SchemaView = get_schema_view(
 )
 
 urlpatterns = [
-    url(r'^api/nslcm/v1/swagger.json$', SwaggerJsonView.as_view()),
-    url(r'^swagger(?P<format>.json|.yaml)$', SchemaView.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^swagger/$', SchemaView.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^redoc/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    # url(r'^api/nslcm/v1/swagger.json$', SwaggerJsonView.as_view()),
+    url(r'^api/nslcm/v1/swagger(?P<format>.json|.yaml)$', SchemaView.without_ui(cache_timeout=0), name='schema-json'),
+    url(r'^api/nslcm/v1/swagger$', SchemaView.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    url(r'^api/nslcm/v1/redoc$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
