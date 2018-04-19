@@ -72,6 +72,10 @@ SDC_BASE_URL = "http://10.0.14.1:80/api"
 SDC_USER = "SDC"
 SDC_PASSWD = "SDC"
 
+# [DMaaP]
+MR_IP = '127.0.0.1'
+MR_PORT = '3904'
+
 # [workflow]
 DEPLOY_WORKFLOW_WHEN_START = False
 # Support option: activiti/wso2/buildin
