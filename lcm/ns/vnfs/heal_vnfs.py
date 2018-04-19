@@ -24,6 +24,9 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_heal_request
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
+from lcm.pub.config.config import MR_IP
+from lcm.pub.config.config import MR_PORT
+from lcm.pub.utils import restcall
 
 JOB_ERROR = 255
 
@@ -75,25 +78,33 @@ class NFHealService(threading.Thread):
             logger.error('additionalParams parameter does not exist or value incorrect')
             raise NSLCMException('additionalParams parameter does not exist or value incorrect')
 
-        action = ignore_case_get(self.nf_additional_params, 'action')
-        if action == "restartvm":
-            action = "vmReset"
-            # action = "vmStart"
-
         actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
         vmid = ignore_case_get(actionvminfo, 'vmid')
-        vmname = ignore_case_get(actionvminfo, 'vmname')
-
-        vduid = self.get_vudId(vmid)
-
-        self.nf_heal_params = {
-            "action": action,
-            "affectedvm": {
-                "vmid": vmid,
-                "vduid": vduid,
-                "vmname": vmname,
-            }
-        }
+        retry_count = 10
+        while (retry_count > 0):
+            resp = restcall.call_req('http://%s:%s/events' % (MR_IP, MR_PORT),
+                                     '',
+                                     '',
+                                     restcall.rest_no_auth,
+                                     '/test/bins/1?timeout=15000',
+                                     'GET')
+            if resp[2] == '200' and resp[1] != '[]':
+                for message in eval(resp[1]):
+                    if 'powering-off' in message:
+                        action = "vmStart"
+                        vm_info = json.loads(message)
+                        if vmid == vm_info['instance_id']:
+                            vduid = self.get_vudId(vm_info['instance_id'])
+                            self.nf_heal_params = {
+                                "action": action,
+                                "affectedvm": {
+                                    "vmid": vm_info['instance_id'],
+                                    "vduid": vduid,
+                                    "vmname": vm_info['display_name']
+                                }
+                            }
+                            retry_count = -1
+            retry_count = retry_count - 1
 
     def send_nf_healing_request(self):
         req_param = json.JSONEncoder().encode(self.nf_heal_params)
