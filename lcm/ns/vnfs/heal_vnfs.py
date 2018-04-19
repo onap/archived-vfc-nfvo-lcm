@@ -16,6 +16,7 @@ import json
 import logging
 import threading
 import traceback
+import requests
 
 from lcm.ns.vnfs.const import VNF_STATUS
 from lcm.ns.vnfs.wait_job import wait_job_finish
@@ -24,6 +25,8 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_heal_request
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
+from lcm.pub.config.config import MR_IP
+from lcm.pub.config.config import MR_PORT
 
 JOB_ERROR = 255
 
@@ -75,25 +78,23 @@ class NFHealService(threading.Thread):
             logger.error('additionalParams parameter does not exist or value incorrect')
             raise NSLCMException('additionalParams parameter does not exist or value incorrect')
 
-        action = ignore_case_get(self.nf_additional_params, 'action')
-        if action == "restartvm":
-            # action = "vmReset"
-            action = "vmStart"
-
-        actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
-        vmid = ignore_case_get(actionvminfo, 'vmid')
-        vmname = ignore_case_get(actionvminfo, 'vmname')
-
-        vduid = self.get_vudId(vmid)
-
-        self.nf_heal_params = {
-            "action": action,
-            "affectedvm": {
-                "vmid": vmid,
-                "vduid": vduid,
-                "vmname": vmname,
-            }
-        }
+        while (1):
+            url = 'http://%s:%s/events/test/bins/1?timeout=10000' % (MR_IP, MR_PORT)
+            resp = requests.get(url)
+            if resp.status_code == 200 and resp.text != '[]':
+                for message in eval(resp.text):
+                    if 'powering-off' in message:
+                        action = "vmStart"
+                        vm_info = json.loads(message)
+                        vduid = self.get_vudId(vm_info['instance_id'])
+                        self.nf_heal_params = {
+                            "action": action,
+                            "affectedvm": {
+                                "vmid": vm_info['instance_id'],
+                                "vduid": vduid,
+                                "vmname": vm_info['display_name'],
+                            }
+                        }
 
     def send_nf_healing_request(self):
         req_param = json.JSONEncoder().encode(self.nf_heal_params)
