@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_d3cef382",
+        "filename": "lcm/ns/vnfs/heal_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-04-23T01:53:17Z",
+      "side": 1,
+      "message": "Need a break statement to exit the loop",
+      "range": {
+        "startLine": 81,
+        "startChar": 7,
+        "endLine": 97,
+        "endChar": 25
+      },
+      "revId": "7011a5c3a26cb189304d576e7b171393ef409ead",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
