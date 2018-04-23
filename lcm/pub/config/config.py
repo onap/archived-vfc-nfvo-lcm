@@ -62,13 +62,13 @@ CATALOG_ROOT_PATH = None
 CATALOG_URL_PATH = None
 
 # [aai config]
-AAI_BASE_URL = "http://127.0.0.1:80/aai/v11"
+AAI_BASE_URL = "https://10.0.1.1:8443/aai/v11"
 AAI_USER = "AAI"
 AAI_PASSWD = "AAI"
 REPORT_TO_AAI = True
 
 # [sdc config]
-SDC_BASE_URL = "http://127.0.0.1:80/api"
+SDC_BASE_URL = "https://10.0.3.1:8443/sdc/v1"
 SDC_USER = "SDC"
 SDC_PASSWD = "SDC"
 
