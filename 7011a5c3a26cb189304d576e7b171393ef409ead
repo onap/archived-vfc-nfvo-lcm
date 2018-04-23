@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "5a93c517_73a7dfbd",
+        "filename": "docker/instance_config.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-04-23T02:12:56Z",
+      "side": 1,
+      "message": "Needs to add MR_ADDR in the OOM to set it",
+      "range": {
+        "startLine": 6,
+        "startChar": 13,
+        "endLine": 6,
+        "endChar": 20
+      },
+      "revId": "7011a5c3a26cb189304d576e7b171393ef409ead",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_33add79b",
+        "filename": "lcm/ns/vnfs/heal_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-04-23T02:12:56Z",
+      "side": 1,
+      "message": "Is it a common method to invoke dmeep?  Suggest to add it in to the LCM/pub/msapi. If it is just a rest call, please consider \u0027\\vfc\\lcm\\lcm\\pub\\utils\\restcall.py\u0027",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 12
+      },
+      "revId": "7011a5c3a26cb189304d576e7b171393ef409ead",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_d3959340",
+        "filename": "lcm/ns/vnfs/heal_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-04-23T02:12:56Z",
+      "side": 1,
+      "message": "The vmid, vduid and vmname needs to be checked with the REST request from LCM NBI and the DMEEP message. If it is not same, the action should not invoked.",
+      "range": {
+        "startLine": 90,
+        "startChar": 46,
+        "endLine": 90,
+        "endChar": 47
+      },
+      "revId": "7011a5c3a26cb189304d576e7b171393ef409ead",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_d3cef382",
         "filename": "lcm/ns/vnfs/heal_vnfs.py",
         "patchSetId": 2
