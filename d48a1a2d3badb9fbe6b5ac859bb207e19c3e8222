@@ -22,6 +22,29 @@
       "revId": "d48a1a2d3badb9fbe6b5ac859bb207e19c3e8222",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_df6d9233",
+        "filename": "lcm/pub/config/config.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2018-04-24T01:11:49Z",
+      "side": 1,
+      "message": "We access AAI through MSB?I think this don\u0027t need to change.",
+      "range": {
+        "startLine": 71,
+        "startChar": 16,
+        "endLine": 71,
+        "endChar": 45
+      },
+      "revId": "d48a1a2d3badb9fbe6b5ac859bb207e19c3e8222",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
