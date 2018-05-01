@@ -36,6 +36,8 @@ RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/m
 
 RUN sed -i "s|bind-address.*|# bind-address = 127.0.0.1|" /etc/mysql/my.cnf
 
+VOLUME /var/lib/mysql
+
 WORKDIR /service/vfc/nfvo/lcm
 RUN pip install --pre -r requirements.txt
 
