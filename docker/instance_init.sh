@@ -5,7 +5,7 @@ function start_redis_server {
 }
 
 function start_mysql {
-    find /var/lib/mysql -type f -exec touch {} \; && service mysql start
+    service mysql start
     sleep 1
 }
 
