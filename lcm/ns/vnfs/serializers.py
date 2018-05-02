@@ -71,9 +71,8 @@ class AccessinfoSerializer(serializers.Serializer):
 
 
 class VimSerializer(serializers.Serializer):
-    vimid = serializers.CharField(help_text="ID of VIM", required=True)
-    accessinfo = AccessinfoSerializer(help_text="Access Info", required=True)
-
+    vimId = serializers.CharField(help_text="ID of VIM", required=True)
+    accessInfo = AccessinfoSerializer(help_text="Access Info", required=True)
 
 class GrantVnfRespSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=False, allow_null=True)

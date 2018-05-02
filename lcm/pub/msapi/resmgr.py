@@ -62,8 +62,8 @@ def grant_vnf(req_param):
                 vim_id = vim["vimId"]
             grant_rsp = {
                 "vim": {
-                    "vimid": vim_id,
-                    "accessinfo": {
+                    "vimId": vim_id,
+                    "accessInfo": {
                         "tenant": vim["tenant"]
                     }
                 }

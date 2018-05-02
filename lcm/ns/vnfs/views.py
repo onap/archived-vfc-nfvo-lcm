@@ -161,8 +161,8 @@ class NfGrant(APIView):
             """
             rsp = {
                 "vim": {
-                    "vimid": ignore_case_get(ignore_case_get(request.data, 'additionalparam'), 'vimid'),
-                    "accessinfo": {
+                    "vimId": ignore_case_get(ignore_case_get(request.data, 'additionalparam'), 'vimid'),
+                    "accessInfo": {
                         "tenant": "admin"
                     }
                 }
