@@ -2,7 +2,7 @@ version: 1
 disable_existing_loggers: False
 
 loggers:
-    nslcm:
+    lcm:
         handlers: [nslcmlocal_handler, nslcm_handler]
         level: "DEBUG"
         propagate: False
