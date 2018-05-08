@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_c627dd61",
+        "filename": "lcm/ns/vnfs/heal_vnfs.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 925
+      },
+      "writtenOn": "2018-05-08T04:08:42Z",
+      "side": 1,
+      "message": "The vmid in request from policy should be checked with the vduid got from dmaap, if it is the same, the heal action should be invoked",
+      "range": {
+        "startLine": 93,
+        "startChar": 23,
+        "endLine": 93,
+        "endChar": 70
+      },
+      "revId": "44c7a1b5d1d3e08c51dda7056995c8e38c78da25",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
