@@ -159,7 +159,16 @@ def get_scale_vnf_data_info_list(scaleNsData, ns_InstanceId):
     nsd_id = get_nsdId(ns_InstanceId)
 
     # Gets the scalingmap json data from the package according to the ns instance id.
-    scalingmap_json = catalog.get_scalingmap_json_package(ns_InstanceId)
+    # scalingmap_json = catalog.get_scalingmap_json_package(ns_InstanceId)
+    base_path = os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__)
+            )
+        )
+    )
+    scalingmap_filename = base_path + "/ns/data/scalemapping.json"
+    scalingmap_json = get_json_data(scalingmap_filename)
 
     # Gets and checks the values of parameters.
     aspect, numberOfSteps, scale_type = check_and_set_params(
