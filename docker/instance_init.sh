@@ -11,7 +11,10 @@ function start_mysql {
 
 function create_database {
     cd /service/vfc/nfvo/lcm/resources/bin
-    bash initDB.sh root $MYSQL_ROOT_PASSWORD 3306 127.0.0.1
+    if [ ! -f dbexist.txt ]; then
+        echo 1 > dbexist.txt
+        bash initDB.sh root $MYSQL_ROOT_PASSWORD 3306 127.0.0.1
+    fi
     cd /service
 }
 
