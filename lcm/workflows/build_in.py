@@ -211,11 +211,11 @@ class JobWaitThread(Thread):
             if "responseDescriptor" not in job_result:
                 logger.error("Job(%s) does not exist.", self.job_id)
                 continue
-            progress = job_result["responseDescriptor"]["progress"]
+            progress = int(job_result["responseDescriptor"]["progress"])
             new_response_id = job_result["responseDescriptor"]["responseId"]
             job_desc = job_result["responseDescriptor"]["statusDescription"]
             if new_response_id != response_id:
-                logger.debug("%s:%s:%s", progress, new_response_id, job_desc)
+                logger.debug("New progress detected progress=%s new_response_id=%s description=%s", progress, new_response_id, job_desc)
                 response_id = new_response_id
                 count = 0
             if progress == JOB_ERROR:
