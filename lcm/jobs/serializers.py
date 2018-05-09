@@ -25,7 +25,8 @@ class JobHistorySerializer(serializers.Serializer):
 
 class JobDescriptorSerializer(serializers.Serializer):
     status = serializers.CharField(help_text="Status of job", required=True)
-    progress = serializers.CharField(help_text="Progress of job", required=True)
+    # progress = serializers.CharField(help_text="Progress of job", required=True)
+    progress = serializers.IntegerField(help_text="Progress of job", required=True)
     statusDescription = serializers.CharField(help_text="Description of job", required=False, allow_null=True)
     errorCode = serializers.CharField(help_text="Error code of job", required=False, allow_null=True)
     responseId = serializers.CharField(help_text="Response index of job", required=True)

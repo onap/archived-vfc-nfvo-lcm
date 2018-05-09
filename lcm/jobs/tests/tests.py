@@ -32,6 +32,7 @@ class JobsViewTest(TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
         self.assertIn('jobId', response.data)
         self.assertIn('responseDescriptor', response.data)
+        self.assertEqual(20, response.data['responseDescriptor']['progress'])
 
     def test_non_exiting_job(self):
         job_id = 'test_new_job_id'
