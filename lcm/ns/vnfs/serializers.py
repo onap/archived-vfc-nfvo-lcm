@@ -161,7 +161,7 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     affectedVirtualStorage = AffectedVirtualStorage(help_text="Affected Virtual Storage(Not supported)", many=True)
 
 
-class ScaleVnfReqSerializer(serializers.Serializer):
+class ScaleVnfDataSerializer(serializers.Serializer):
     type = serializers.ChoiceField(
         help_text="Direction of the scaling",
         choices=["SCALE_IN", "SCALE_OUT"],
@@ -175,6 +175,10 @@ class ScaleVnfReqSerializer(serializers.Serializer):
         required=False,
         allow_null=True
     )
+
+
+class ScaleVnfReqSerializer(serializers.Serializer):
+    scaleVnfData = ScaleVnfDataSerializer(help_text="Scale data", many=False)
 
 
 class ScaleVnfRespSerializer(serializers.Serializer):
