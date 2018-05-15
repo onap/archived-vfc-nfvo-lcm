@@ -61,6 +61,8 @@ def split_vim_to_owner_region(vim_id):
 
 def convert_vim_info(vim_info_aai):
     vim_id = vim_info_aai["cloud-owner"] + "_" + vim_info_aai["cloud-region-id"]
+    vim_type_aai = vim_info_aai["cloud-type"]
+    vim_type = vim_type_aai if vim_type_aai else "openstack"
     esr_system_info = ignore_case_get(ignore_case_get(vim_info_aai, "esr-system-info-list"), "esr-system-info")
     # tenants = ignore_case_get(vim_info_aai, "tenants")
     default_tenant = ignore_case_get(esr_system_info[0], "default-tenant")
@@ -83,7 +85,7 @@ def convert_vim_info(vim_info_aai):
         "version": ignore_case_get(esr_system_info[0], "version"),
         "description": "vim",
         "domain": "",
-        "type": ignore_case_get(esr_system_info[0], "type"),
+        "type": vim_type,
         "createTime": "",
         "sslCacert": ignore_case_get(esr_system_info[0], "ssl-cacert"),
         "sslInsecure": str(ignore_case_get(esr_system_info[0], "ssl-insecure")),
