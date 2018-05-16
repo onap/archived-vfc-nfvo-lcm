@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Dénes Németh <denes.nemeth@nokia.com>
+Code-Review+2: Gao Weitao <victor.gao@huawei.com>
+Submitted-by: Gao Weitao <victor.gao@huawei.com>
+Submitted-at: Wed, 16 May 2018 01:00:56 +0000
+Reviewed-on: https://gerrit.onap.org/r/47589
+Project: vfc/nfvo/lcm
+Branch: refs/heads/master
