@@ -114,10 +114,10 @@ class NSInstView(APIView):
     )
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
-        req_serializer = InstantNsReqSerializer(data=request.data)
-        if not req_serializer.is_valid():
-            return Response({'error': req_serializer.errors},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # req_serializer = InstantNsReqSerializer(data=request.data)
+        # if not req_serializer.is_valid():
+        # return Response({'error': req_serializer.errors},
+        # status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         ack = InstantNSService(ns_instance_id, request.data).do_biz()
         resp_serializer = NsOperateJobSerializer(data=ack['data'])
         if not resp_serializer.is_valid():
