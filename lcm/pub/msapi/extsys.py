@@ -84,7 +84,7 @@ def convert_vim_info(vim_info_aai):
         "vendor": ignore_case_get(esr_system_info[0], "vendor"),
         "version": ignore_case_get(esr_system_info[0], "version"),
         "description": "vim",
-        "domain": "",
+        "domain": ignore_case_get(esr_system_info[0], "cloud-domain"),
         "type": vim_type,
         "createTime": "",
         "sslCacert": ignore_case_get(esr_system_info[0], "ssl-cacert"),
