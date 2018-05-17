@@ -67,7 +67,7 @@ class NFManualScaleService(threading.Thread):
                 self.vnf_instance_id)
         logger.debug('vnfd_model = %s, vnf_instance_id = %s' %
                      (nf_info[0].vnfd_model, self.vnf_instance_id))
-        nf_model = json.loads(nf_info[0].vnfd_model)
+        nf_model = nf_info[0].vnfd_model
         self.m_nf_inst_id = nf_info[0].mnfinstid
         self.vnfm_inst_id = nf_info[0].vnfm_inst_id
         scale_vnf_data = ignore_case_get(self.data, 'scaleVnfData')
