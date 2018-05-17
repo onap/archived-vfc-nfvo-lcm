@@ -15,6 +15,65 @@ VF-C Release Notes
 VF-C includes two main components, NFV-O and GVNFM, to implement life cycle management and FCAPS of VNF and NS. VF-C takes part in end to end service orchestration and close loop automation by working with SO, DCAE and Policy. 
 VF-C also provides standard southbound interface to VNFMs and can integrate with multi vendor VNFMs via drivers.
 
+Version: 1.1.0
+--------------
+
+:Release Date: 2018-5-24
+
+**New Features**
+
+- NS/VNF manual scaling supporting for VoLTE use case
+- VNF Integration, integration with VNF via GVNFM
+- S3P improvement
+ 
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm
+ - vfc-nfvo-catalog
+ - vfc-nfvo-resmgr
+ - vfc-nfvo-driver-emsdriver
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter
+ - vfc-nfvo-driver-gvnfm-jujudriver
+ - vfc-nfvo-driver-svnfm-ztedriver
+ - vfc-nfvo-driver-svnfm-huaweidriver
+ - vfc-nfvo-driver-svnfm-nokiadriver
+ - vfc-nfvo-driver-svnfm-nokiav2driver
+ - vfc-nfvo-driver-sfc-ztesfcdriver
+ - vfc-nfvo-multivimproxy
+GVNFM
+ - vfc-gvnfm-vnflcm
+ - vfc-gvnfm-vnfmgr
+ - vfc-gvnfm-vnfres
+Workflow
+ - workflow-engine-mgr-service
+ - activiti-extension
+
+**Bug Fixes**
+
+This is the initial release
+
+**Known Issues**
+
+ - VFC-896  vim-id in AAI is handled as a mandatory parameter
+ - VFC-890  The hard coded SDC user and password in catalog & LCM is not present in SDC
+ - VFC-891  The AAI credentials is hard coded in LCM	
+
+**Security Issues**
+
+https://wiki.onap.org/pages/viewpage.action?pageId=25437810
+
+**Upgrade Notes**
+
+
+**Deprecation Notes**
+
+
+**Other**
+
+===========
+
+
 Version: 1.0.0
 --------------
 
