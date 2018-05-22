@@ -48,9 +48,9 @@ class JobView(APIView):
         try:
             response_id = ignore_case_get(request.META, 'responseId')
             ret = GetJobInfoService(job_id, response_id).do_biz()
-            resp_serializer = JobQueryRespSerializer(data=ret)
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
+            # resp_serializer = JobQueryRespSerializer(data=ret)
+            # if not resp_serializer.is_valid():
+            # raise NSLCMException(resp_serializer.errors)
             # return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
             return Response(data=ret, status=status.HTTP_200_OK)
         except Exception as e:
