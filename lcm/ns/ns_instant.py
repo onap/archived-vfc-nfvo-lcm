@@ -93,6 +93,7 @@ class InstantNSService(object):
                 params_vnf.append({
                     "vnfProfileId": vnf["vnf_id"],
                     "additionalParam": {
+                        "properties" : json.JSONEncoder().encode(vnf['properties']),
                         "vimId": vimid,
                         "vnfmInstanceId": vnfm_info["vnfmId"],
                         "vnfmType": vnfm_type,
