@@ -5,7 +5,7 @@
             "ns_scale_aspect": "TIC_EDGE_IMS",
             "ns_scale_info": [
                 {
-                    "step": "1",
+                    "step": 1,
                     "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_zte_cscf",
@@ -20,7 +20,7 @@
                     ]
                 },
                 {
-                    "step": "2",
+                    "step": 2,
                     "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_zte_cscf",
@@ -41,7 +41,7 @@
             "ns_scale_aspect": "TIC_EDGE_HW",
             "ns_scale_info": [
                 {
-                    "step": "4",
+                    "step": 4,
                     "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_hw_cscf",
@@ -56,7 +56,7 @@
                     ]
                 },
                 {
-                    "step": "6",
+                    "step": 6,
                     "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_HW_cscf",
@@ -73,7 +73,7 @@
             ]
         },
         {
-            "nsd_id":"235",
+            "nsd_id": 235,
             "ns_scale_aspect": "TIC_EDGE_HW",
             "ns_scale_info": [
                 {
@@ -92,7 +92,7 @@
                     ]
                 },
                 {
-                    "step": "6",
+                    "step": 6,
                     "vnf_scale_info":[
                         {
                             "vnfd_id":"nf_HW_cscf",
