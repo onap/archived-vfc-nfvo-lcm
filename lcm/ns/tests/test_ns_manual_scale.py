@@ -260,7 +260,7 @@ class TestNsManualScale(TestCase):
         self.insert_new_nf()
         NSManualScaleService(ns_inst_id, data, job_id).run()
         jobs = JobModel.objects.filter(jobid=job_id)
-        self.assertEqual(100, jobs[0].progress)
+        self.assertEqual(255, jobs[0].progress)
 
     @mock.patch.object(restcall, 'call_req')
     def test_ns_manual_scale_thread(self, mock_call):

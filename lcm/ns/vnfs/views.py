@@ -190,9 +190,9 @@ class LcmNotify(APIView):
     def post(self, request, vnfmid, vnfInstanceId):
         logger.debug("LcmNotify--post::> %s" % request.data)
         try:
-            req_serializer = NotifyLcmReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                raise Exception(req_serializer.errors)
+            # req_serializer = NotifyLcmReqSerializer(data=request.data)
+            # if not req_serializer.is_valid():
+            # raise Exception(req_serializer.errors)
             NotifyLcm(vnfmid, vnfInstanceId, request.data).do_biz()
             return Response(data={}, status=status.HTTP_201_CREATED)
         except Exception as e:

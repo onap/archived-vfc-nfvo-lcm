@@ -21,7 +21,8 @@ from lcm.ns.vnfs.const import INST_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.database.models import VNFCInstModel, VLInstModel, NfInstModel, PortInstModel, CPInstModel, VmInstModel
-from lcm.pub.msapi.aai import create_network_aai, query_network_aai, delete_network_aai
+from lcm.pub.msapi.aai import create_network_aai, query_network_aai, delete_network_aai, query_vserver_aai, \
+    delete_vserver_aai
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.msapi.aai import create_vserver_aai
@@ -90,6 +91,8 @@ class NotifyLcm(object):
                 if REPORT_TO_AAI:
                     self.create_vserver_in_aai(vimId, vmId, vmName)
             elif changeType == 'removed':
+                if REPORT_TO_AAI:
+                    self.delete_vserver_in_aai(vimId, vmId, vmName)
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).delete()
             elif changeType == 'modified':
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).update(vduid=vduId,
@@ -97,7 +100,31 @@ class NotifyLcm(object):
                                                                                    vmid=vmId)
             else:
                 self.exception('affectedVnfc struct error: changeType not in {added,removed,modified}')
-        logger.debug("Success to create all vserver to aai.")
+        logger.debug("Success to update all vserver to aai.")
+
+    def delete_vserver_in_aai(self, vim_id, vserver_id, vserver_name):
+        logger.debug("delete_vserver_in_aai start![%s]", vserver_name)
+        try:
+            cloud_owner, cloud_region_id = split_vim_to_owner_region(vim_id)
+            # query vim_info from aai, get tenant
+            vim_info = get_vim_by_id(vim_id)
+            tenant_id = vim_info["tenantId"]
+
+            # query vserver instance in aai, get resource_version
+            vserver_info = query_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id)
+            resource_version = vserver_info["resource-version"]
+
+            # delete vserver instance from aai
+            resp_data, resp_status = delete_vserver_aai(cloud_owner, cloud_region_id,
+                                                        tenant_id, vserver_id, resource_version)
+            logger.debug(
+                "Success to delete vserver instance[%s] from aai, resp_status: [%s]." %
+                (vserver_id, resp_status))
+            logger.debug("delete_vserver_in_aai end!")
+        except NSLCMException as e:
+            logger.debug("Fail to delete vserver from aai, detail message: %s" % e.message)
+        except:
+            logger.error(traceback.format_exc())
 
     def update_Vl(self):
         for vl in self.affectedVl:
