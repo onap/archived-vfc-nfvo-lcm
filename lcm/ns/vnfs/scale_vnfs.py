@@ -57,6 +57,7 @@ class NFManualScaleService(threading.Thread):
         self.update_nf_status(VNF_STATUS.SCALING)
         self.get_and_check_params()
         self.send_nf_scaling_requests()
+        self.update_nf_status(VNF_STATUS.ACTIVE)
         self.update_job(100, desc='VNF scale success')
 
     def get_and_check_params(self):
