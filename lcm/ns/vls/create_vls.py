@@ -77,7 +77,7 @@ class CreateVls(object):
         self.vld_id = ignore_case_get(vl_info, "vl_id")
         self.description = ignore_case_get(vl_info, "description")
         self.vl_properties = ignore_case_get(vl_info, "properties")
-        self.vl_inst_name = ignore_case_get(self.vl_properties, "network_name")
+        self.vl_inst_name = ignore_case_get(self.vl_properties, "networkName")
         self.route_external = ignore_case_get(vl_info, "route_external")
         ns_info = NSInstModel.objects.filter(id=self.owner_id)
         self.ns_name = ns_info[0].name if ns_info else ""
@@ -92,23 +92,23 @@ class CreateVls(object):
         self.tenant = ignore_case_get(self.vl_properties["location_info"], "tenant")
         network_data = {
             "tenant": self.tenant,
-            "network_name": self.vl_properties.get("network_name", ""),
+            "network_name": self.vl_properties.get("networkName", ""),
             "shared": const.SHARED_NET,
-            "network_type": self.vl_properties.get("network_type", ""),
-            "segmentation_id": self.vl_properties.get("segmentation_id", ""),
-            "physical_network": self.vl_properties.get("physical_network", ""),
+            "network_type": self.vl_properties.get("networkType", ""),
+            "segmentation_id": self.vl_properties.get("segmentationId", ""),
+            "physical_network": self.vl_properties.get("physicalNetwork", ""),
             "mtu": self.vl_properties.get("mtu", const.DEFAULT_MTU),
-            "vlan_transparent": self.vl_properties.get("vlan_transparent", False),
+            "vlan_transparent": self.vl_properties.get("vlanTransparent", False),
             "subnet_list": [{
                 "subnet_name": self.vl_properties.get("name", ""),
                 "cidr": self.vl_properties.get("cidr", "192.168.0.0/24"),
                 "ip_version": self.vl_properties.get("ip_version", const.IPV4),
-                "enable_dhcp": self.vl_properties.get("dhcp_enabled", False),
-                "gateway_ip": self.vl_properties.get("gateway_ip", ""),
+                "enable_dhcp": self.vl_properties.get("dhcpEnabled", False),
+                "gateway_ip": self.vl_properties.get("gatewayIp", ""),
                 "dns_nameservers": self.vl_properties.get("dns_nameservers", ""),
                 "host_routes": self.vl_properties.get("host_routes", "")}]}
-        startip = self.vl_properties.get("start_ip", "")
-        endip = self.vl_properties.get("end_ip", "")
+        startip = self.vl_properties.get("startIp", "")
+        endip = self.vl_properties.get("endIp", "")
         if startip and endip:
             network_data["subnet_list"][0]["allocation_pools"] = [
                 {"start": startip, "end": endip}]
@@ -139,20 +139,20 @@ class CreateVls(object):
     def create_vl_to_resmgr(self):
         req_param = {
             "vlInstanceId": self.vl_inst_id,
-            "name": self.vl_properties.get("network_name", ""),
+            "name": self.vl_properties.get("networkName", ""),
             "backendId": str(self.related_network_id),
             "isPublic": "True",
             "dcName": "",
             "vimId": str(self.vim_id),
             "vimName": self.vim_name,
-            "physicialNet": self.vl_properties.get("physical_network", ""),
+            "physicialNet": self.vl_properties.get("physicalNetwork", ""),
             "nsId": self.owner_id,
             "nsName": self.ns_name,
             "description": self.description,
-            "networkType": self.vl_properties.get("network_type", ""),
-            "segmentation": str(self.vl_properties.get("segmentation_id", "")),
+            "networkType": self.vl_properties.get("networkType", ""),
+            "segmentation": str(self.vl_properties.get("segmentationId", "")),
             "mtu": str(self.vl_properties.get("mtu", "")),
-            "vlanTransparent": str(self.vl_properties.get("vlan_transparent", "")),
+            "vlanTransparent": str(self.vl_properties.get("vlanTransparent", "")),
             "routerExternal": self.route_external,
             "resourceProviderType": "",
             "resourceProviderId": "",
@@ -161,7 +161,7 @@ class CreateVls(object):
                 "cidr": self.vl_properties.get("cidr", "192.168.0.0/24"),
                 "ip_version": self.vl_properties.get("ip_version", const.IPV4),
                 "enable_dhcp": self.vl_properties.get("dhcp_enabled", False),
-                "gateway_ip": self.vl_properties.get("gateway_ip", ""),
+                "gateway_ip": self.vl_properties.get("gatewayIp", ""),
                 "dns_nameservers": self.vl_properties.get("dns_nameservers", ""),
                 "host_routes": self.vl_properties.get("host_routes", "")
             }]

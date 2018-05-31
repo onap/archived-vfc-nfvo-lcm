@@ -117,7 +117,7 @@ class GrantVnfs(object):
         return 0
 
 
-def parse_unit(self, val, base_unit):
+def parse_unit(val, base_unit):
     recognized_units = ["B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB"]
     units_rate = [1, 1000, 1024, 1000000, 1048576, 1000000000, 1073741824, 1000000000000, 1099511627776]
     unit_rate_map = {unit.upper(): rate for unit, rate in zip(recognized_units, units_rate)}
