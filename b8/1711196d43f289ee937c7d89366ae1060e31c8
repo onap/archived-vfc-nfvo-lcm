@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Dénes Németh <denes.nemeth@nokia.com>
+Code-Review+2: lu xin <luxin7@huawei.com>
+Submitted-by: lu xin <luxin7@huawei.com>
+Submitted-at: Thu, 31 May 2018 08:32:27 +0000
+Reviewed-on: https://gerrit.onap.org/r/49717
+Project: vfc/nfvo/lcm
+Branch: refs/heads/master
