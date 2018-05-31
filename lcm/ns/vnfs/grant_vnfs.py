@@ -99,7 +99,7 @@ class GrantVnfs(object):
                     "numVirtualCpu": int(vdu["virtual_compute"]["virtual_cpu"]["num_virtual_cpu"])
                 },
                 "virtualMemory": {
-                    "virtualMemSize": int(vdu["virtual_compute"]["virtual_memory"]["virtual_mem_size"])
+                    "virtualMemSize": parse_unit(vdu["virtual_compute"]["virtual_memory"]["virtual_mem_size"], "MB")
                 }
             },
             "virtualStorageDescriptor": {
@@ -113,5 +113,15 @@ class GrantVnfs(object):
     def get_storage_size(self, storage_id, vnfd):
         for storage in vnfd["local_storages"]:
             if storage_id == storage["local_storage_id"]:
-                return int(storage["properties"]["size"])
+                return return parse_unit(storage["properties"]["size"], "GB")
         return 0
+
+def parse_unit(self, val, base_unit):
+    recognized_units = ["B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB"]
+    units_rate = [1, 1000, 1024, 1000000, 1048576, 1000000000, 1073741824, 1000000000000, 1099511627776]
+    unit_rate_map = {unit.upper(): rate for unit, rate in zip(recognized_units, units_rate)}
+    num_unit = val.strip().split(" ")
+    if len(num_unit) !=2:
+        return  val.strip
+    num, unit = num_unit[0], num_unit[1]
+    return int(num) * unit_rate_map[unit.upper()]/ unit_rate_map[base_unit.upper()]
