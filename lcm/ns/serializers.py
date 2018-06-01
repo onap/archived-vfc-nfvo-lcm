@@ -81,13 +81,7 @@ class LocationConstraintSerializer(serializers.Serializer):
 
 class InstantNsReqSerializer(serializers.Serializer):
     locationConstraints = LocationConstraintSerializer(required=False, allow_null=True)
-    # additionalParamForNs = serializers.CharField(help_text="Additional param for NS", required=False, allow_null=True)
-    additionalParamForNs = serializers.DictField(
-        help_text="Additional param for NS",
-        child=serializers.CharField(help_text="Additional parameters", allow_blank=True),
-        required=False,
-        allow_null=True
-    )
+    additionalParamForNs = serializers.CharField(help_text="Additional param for NS", required=False, allow_null=True)
 
 
 class NsOperateJobSerializer(serializers.Serializer):
