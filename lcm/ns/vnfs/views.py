@@ -161,16 +161,16 @@ class NfGrant(APIView):
             """
             rsp = {
                 "vim": {
-                    "vimId": ignore_case_get(ignore_case_get(request.data, 'additionalparam'), 'vimid'),
-                    "accessInfo": {
+                    "vimid": ignore_case_get(ignore_case_get(request.data, 'additionalparam'), 'vimid'),
+                    "accessinfo": {
                         "tenant": "admin"
                     }
                 }
             }
             """
-            resp_serializer = GrantVnfRespSerializer(data=rsp)
-            if not resp_serializer.is_valid():
-                raise Exception(resp_serializer.errors)
+            # resp_serializer = GrantVnfRespSerializer(data=rsp)
+            # if not resp_serializer.is_valid():
+            # raise Exception(resp_serializer.errors)
 
             return Response(data=rsp, status=status.HTTP_201_CREATED)
         except Exception as e:

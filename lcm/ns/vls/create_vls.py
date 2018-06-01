@@ -40,6 +40,7 @@ class CreateVls(object):
         self.owner_type = OWNER_TYPE.NS
         self.vld_id = ""
         self.vl_properties = ""
+        self.vl_profile = ""
         self.vl_inst_name = ""
         self.related_network_id = ""
         self.related_subnetwork_id = ""
@@ -77,7 +78,8 @@ class CreateVls(object):
         self.vld_id = ignore_case_get(vl_info, "vl_id")
         self.description = ignore_case_get(vl_info, "description")
         self.vl_properties = ignore_case_get(vl_info, "properties")
-        self.vl_inst_name = ignore_case_get(self.vl_properties, "networkName")
+        self.vl_profile = ignore_case_get(self.vl_properties, "vl_profile")
+        self.vl_inst_name = ignore_case_get(self.vl_profile, "networkName")
         self.route_external = ignore_case_get(vl_info, "route_external")
         ns_info = NSInstModel.objects.filter(id=self.owner_id)
         self.ns_name = ns_info[0].name if ns_info else ""
@@ -92,23 +94,23 @@ class CreateVls(object):
         self.tenant = ignore_case_get(self.vl_properties["location_info"], "tenant")
         network_data = {
             "tenant": self.tenant,
-            "network_name": self.vl_properties.get("networkName", ""),
+            "network_name": self.vl_profile.get("networkName", ""),
             "shared": const.SHARED_NET,
-            "network_type": self.vl_properties.get("networkType", ""),
-            "segmentation_id": self.vl_properties.get("segmentationId", ""),
-            "physical_network": self.vl_properties.get("physicalNetwork", ""),
-            "mtu": self.vl_properties.get("mtu", const.DEFAULT_MTU),
-            "vlan_transparent": self.vl_properties.get("vlanTransparent", False),
+            "network_type": self.vl_profile.get("networkType", ""),
+            "segmentation_id": self.vl_profile.get("segmentationId", ""),
+            "physical_network": self.vl_profile.get("physicalNetwork", ""),
+            "mtu": self.vl_profile.get("mtu", const.DEFAULT_MTU),
+            "vlan_transparent": self.vl_profile.get("vlanTransparent", False),
             "subnet_list": [{
-                "subnet_name": self.vl_properties.get("name", ""),
-                "cidr": self.vl_properties.get("cidr", "192.168.0.0/24"),
-                "ip_version": self.vl_properties.get("ip_version", const.IPV4),
-                "enable_dhcp": self.vl_properties.get("dhcpEnabled", False),
-                "gateway_ip": self.vl_properties.get("gatewayIp", ""),
-                "dns_nameservers": self.vl_properties.get("dns_nameservers", ""),
-                "host_routes": self.vl_properties.get("host_routes", "")}]}
-        startip = self.vl_properties.get("startIp", "")
-        endip = self.vl_properties.get("endIp", "")
+                "subnet_name": self.vl_profile.get("initiationParameters").get("name", ""),
+                "cidr": self.vl_profile.get("cidr", "192.168.0.0/24"),
+                "ip_version": self.vl_profile.get("ip_version", const.IPV4),
+                "enable_dhcp": self.vl_profile.get("dhcpEnabled", False),
+                "gateway_ip": self.vl_profile.get("gatewayIp", ""),
+                "dns_nameservers": self.vl_profile.get("dns_nameservers", ""),
+                "host_routes": self.vl_profile.get("host_routes", "")}]}
+        startip = self.vl_profile.get("startIp", "")
+        endip = self.vl_profile.get("endIp", "")
         if startip and endip:
             network_data["subnet_list"][0]["allocation_pools"] = [
                 {"start": startip, "end": endip}]
@@ -139,31 +141,31 @@ class CreateVls(object):
     def create_vl_to_resmgr(self):
         req_param = {
             "vlInstanceId": self.vl_inst_id,
-            "name": self.vl_properties.get("networkName", ""),
+            "name": self.vl_profile.get("networkName", ""),
             "backendId": str(self.related_network_id),
             "isPublic": "True",
             "dcName": "",
             "vimId": str(self.vim_id),
             "vimName": self.vim_name,
-            "physicialNet": self.vl_properties.get("physicalNetwork", ""),
+            "physicialNet": self.vl_profile.get("physicalNetwork", ""),
             "nsId": self.owner_id,
             "nsName": self.ns_name,
             "description": self.description,
-            "networkType": self.vl_properties.get("networkType", ""),
-            "segmentation": str(self.vl_properties.get("segmentationId", "")),
-            "mtu": str(self.vl_properties.get("mtu", "")),
-            "vlanTransparent": str(self.vl_properties.get("vlanTransparent", "")),
+            "networkType": self.vl_profile.get("networkType", ""),
+            "segmentation": str(self.vl_profile.get("segmentationId", "")),
+            "mtu": str(self.vl_profile.get("mtu", "")),
+            "vlanTransparent": str(self.vl_profile.get("vlanTransparent", "")),
             "routerExternal": self.route_external,
             "resourceProviderType": "",
             "resourceProviderId": "",
             "subnet_list": [{
-                "subnet_name": self.vl_properties.get("name", ""),
-                "cidr": self.vl_properties.get("cidr", "192.168.0.0/24"),
-                "ip_version": self.vl_properties.get("ip_version", const.IPV4),
-                "enable_dhcp": self.vl_properties.get("dhcp_enabled", False),
-                "gateway_ip": self.vl_properties.get("gatewayIp", ""),
-                "dns_nameservers": self.vl_properties.get("dns_nameservers", ""),
-                "host_routes": self.vl_properties.get("host_routes", "")
+                "subnet_name": self.vl_profile.get("initiationParameters").get("name", ""),
+                "cidr": self.vl_profile.get("cidr", "192.168.0.0/24"),
+                "ip_version": self.vl_profile.get("ip_version", const.IPV4),
+                "enable_dhcp": self.vl_profile.get("dhcpEnabled", False),
+                "gateway_ip": self.vl_profile.get("gatewayIp", ""),
+                "dns_nameservers": self.vl_profile.get("dns_nameservers", ""),
+                "host_routes": self.vl_profile.get("host_routes", "")
             }]
         }
         resmgr.create_vl(req_param)
