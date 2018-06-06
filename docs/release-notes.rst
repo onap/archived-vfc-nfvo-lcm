@@ -64,6 +64,7 @@ This is the initial release
 VFC code has been formally scanned during build time using NexusIQ and all Critical vulnerabilities have been addressed, items that remain open have been assessed for risk and determined to be false positive. The VFC open Critical security vulnerabilities and their risk assessment have been documented as part of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`_.
 
 Quick Links:
+
 - `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
 - `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
 - `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`_
