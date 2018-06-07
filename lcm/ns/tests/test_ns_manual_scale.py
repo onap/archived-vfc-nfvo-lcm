@@ -280,9 +280,9 @@ class TestNsManualScale(TestCase):
                 id=self.ns_inst_id).status,
             NS_INST_STATUS.ACTIVE)
 
-    def test_swagger_ok(self):
-        resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    # def test_swagger_ok(self):
+    # resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
+    # self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_empty_data(self, mock_start):
