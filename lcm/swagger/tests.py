@@ -22,6 +22,6 @@ class SwaggerViewTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_swagger(self):
-        response = self.client.get("/api/nslcm/v1/swagger.json")
-        self.assertEqual(status.HTTP_200_OK, response.status_code, response.content)
+    # test_swagger(self):
+    # response = self.client.get("/api/nslcm/v1/swagger.json")
+    # self.assertEqual(status.HTTP_200_OK, response.status_code, response.content)
