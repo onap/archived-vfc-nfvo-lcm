@@ -108,6 +108,20 @@ committers:
       company: 'Nokia'
       id: 'yufei_zhou'
       timezone: 'Asia/Shanghai'
-
+    - name: 'Denes Nemeth'
+      email: 'denes.nemeth@nokia.com'
+      company: 'Nokia'
+      id: 'thelittlemouse'
+      timezone: 'Europe/Budapest'
+    - name: 'Haibin Huang'
+      email: 'haibin.huang@intel.com'
+      company: 'Intel'
+      id: 'haibin'
+      timezone: 'Asia/Shanghai'
 tsc:
     approval: 'https://lists.onap.org/pipermail/onap-tsc'
+    changes:
+        - type: 'Addition'
+          name: 'Denes Nemeth'
+          name: 'Haibin Huang'
+          link: 'https://lists.onap.org/g/ONAP-TSC/message/3269'
