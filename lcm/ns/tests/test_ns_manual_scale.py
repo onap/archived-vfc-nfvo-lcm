@@ -15,6 +15,7 @@
 import uuid
 import os
 import mock
+import random
 from django.test import Client
 from django.test import TestCase
 from rest_framework import status
@@ -26,6 +27,7 @@ from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
 from lcm.pub.msapi import catalog
 from lcm.pub.utils.scaleaspect import get_json_data
+from lcm.pub.utils import idutil
 
 
 SCALING_JSON = {
@@ -113,6 +115,8 @@ class TestNsManualScale(TestCase):
             "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
         self.package_id = "7"
         self.client = Client()
+        idutil.get_auto_id = mock.Mock()
+        idutil.get_auto_id.return_value = random.random()
         NSInstModel(
             id=self.ns_inst_id,
             name="abc",
