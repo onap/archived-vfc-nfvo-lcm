@@ -182,3 +182,8 @@ if 'test' in sys.argv:
         TEST_OUTPUT_VERBOSE = True
         TEST_OUTPUT_DESCRIPTIONS = True
         TEST_OUTPUT_DIR = 'test-reports'
+
+    import mock
+    from lcm.pub.utils import idutil
+    idutil.get_auto_id = mock.Mock()
+    idutil.get_auto_id.return_value = 1
