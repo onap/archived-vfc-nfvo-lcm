@@ -1,0 +1,10 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Jonathan Gathman <jonathan.gathman@att.com>
+Code-Review+2: Yan Yang <yangyanyj@chinamobile.com>
+Code-Review+2: Gao Weitao <victor.gao@huawei.com>
+Verified+1: Gao Weitao <victor.gao@huawei.com>
+Submitted-by: Gao Weitao <victor.gao@huawei.com>
+Submitted-at: Thu, 26 Jul 2018 10:46:52 +0000
+Reviewed-on: https://gerrit.onap.org/r/51127
+Project: vfc/nfvo/lcm
+Branch: refs/heads/beijing
