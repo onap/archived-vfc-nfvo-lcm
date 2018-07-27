@@ -14,7 +14,6 @@
 import json
 
 import mock
-import random
 from django.test import Client
 from django.test import TestCase
 from rest_framework import status
@@ -23,7 +22,7 @@ from lcm.packages.sdc_nf_package import SdcNfDistributeThread, SdcNfPkgDeleteThr
 from lcm.pub.database.models import JobStatusModel, JobModel
 from lcm.pub.database.models import NfPackageModel, NfInstModel
 from lcm.pub.msapi import sdc
-from lcm.pub.utils import restcall, toscaparser, idutil
+from lcm.pub.utils import restcall, toscaparser
 
 
 class TestNfPackage(TestCase):
@@ -32,8 +31,6 @@ class TestNfPackage(TestCase):
         NfPackageModel.objects.filter().delete()
         NfInstModel.objects.filter().delete()
         JobModel.objects.filter().delete()
-        idutil.get_auto_id = mock.Mock()
-        idutil.get_auto_id.return_value = random.random()
         JobStatusModel.objects.filter().delete()
         self.vnfd_data = {
             "volume_storages": [

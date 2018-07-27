@@ -15,7 +15,6 @@
 import json
 
 import mock
-import random
 from django.test import Client
 from django.test import TestCase
 from rest_framework import status
@@ -27,7 +26,6 @@ from lcm.pub.database.models import NfPackageModel, VnfPackageFileModel, NfInstM
 from lcm.pub.nfvi.vim.vimadaptor import VimAdaptor
 from lcm.pub.utils import fileutil
 from lcm.pub.utils import restcall
-from lcm.pub.utils import idutil
 
 
 class TestNfPackage(TestCase):
@@ -38,8 +36,6 @@ class TestNfPackage(TestCase):
         NfInstModel.objects.filter().delete()
         JobModel.objects.filter().delete()
         JobStatusModel.objects.filter().delete()
-        idutil.get_auto_id = mock.Mock()
-        idutil.get_auto_id.return_value = random.random()
         self.vnfd_raw_data = {
             "rawData": {
                 "instance": {
