@@ -121,7 +121,7 @@ class CreateVnfs(Thread):
                 self.vnfd_id = vnf_info['properties']['id']
                 if 'name' not in vnf_info['properties']:
                     # HW vnf instance name must start with alphabet
-                    self.vnf_inst_name = 'vnf' + self.vnfd_id + str(uuid.uuid4())
+					self.vnf_inst_name = 'vnf' + self.vnfd_id[:10] + str(uuid.uuid4())
                 else:
                     self.vnf_inst_name = vnf_info['properties']['name'] + str(uuid.uuid4())
                 self.vnf_inst_name = self.vnf_inst_name[:30]
