@@ -60,9 +60,9 @@ class NfView(APIView):
     def post(self, request):
         logger.debug("VnfCreateView--post::> %s" % request.data)
 
-        # req_serializer = InstVnfReqSerializer(data=request.data)
-        # if not req_serializer.is_valid():
-        # logger.error(req_serializer.errors)
+        req_serializer = InstVnfReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.error(req_serializer.errors)
 
         data = {'ns_instance_id': ignore_case_get(request.data, 'nsInstanceId'),
                 'additional_param_for_ns': ignore_case_get(request.data, 'additionalParamForVnf'),
@@ -190,9 +190,10 @@ class LcmNotify(APIView):
     def post(self, request, vnfmid, vnfInstanceId):
         logger.debug("LcmNotify--post::> %s" % request.data)
         try:
-            # req_serializer = NotifyLcmReqSerializer(data=request.data)
-            # if not req_serializer.is_valid():
-            # raise Exception(req_serializer.errors)
+            req_serializer = NotifyLcmReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
+
             NotifyLcm(vnfmid, vnfInstanceId, request.data).do_biz()
             return Response(data={}, status=status.HTTP_201_CREATED)
         except Exception as e:
