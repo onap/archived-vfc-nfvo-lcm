@@ -164,6 +164,8 @@ pub_config.SDC_BASE_URL = "http://%s:%s/api" % (pub_config.MSB_SERVICE_IP, pub_c
 LOGGING_CONFIG = None
 # yaml configuration of logging
 LOGGING_FILE = os.path.join(BASE_DIR, 'lcm/log.yml')
+if 'test' in sys.argv:
+    os.system('sed -i "s|/var/log/onap/vfc/nslcm|logs|" %s' % LOGGING_FILE)
 log_config.yamlConfig(filepath=LOGGING_FILE, watchDog=True)
 
 if 'test' in sys.argv:
