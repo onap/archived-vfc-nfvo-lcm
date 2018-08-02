@@ -50,13 +50,6 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>static</directory>
-            <outputDirectory>/static</outputDirectory>
-            <includes>
-                <include>**/*.txt</include>
-            </includes>
-        </fileSet>
-        <fileSet>
             <directory>resources</directory>
             <outputDirectory>/resources</outputDirectory>
             <includes>
