@@ -26,11 +26,10 @@ from lcm.pub.database.models import NSInstModel, VNFFGInstModel, WFPlanModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import activiti
 from lcm.pub.msapi import sdc_run_catalog
-from lcm.pub.msapi.catalog import get_process_id, query_rawdata_from_catalog
+from lcm.pub.msapi.catalog import get_process_id
 from lcm.pub.msapi.catalog import get_servicetemplate_id, get_servicetemplate
 from lcm.pub.msapi.extsys import select_vnfm
 from lcm.pub.msapi.wso2bpel import workflow_run
-from lcm.pub.utils import toscautil
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.workflows import build_in
@@ -71,13 +70,8 @@ class InstantNSService(object):
                 location_constraints = self.req_data['locationConstraints']
 
             JobUtil.add_job_status(job_id, 5, 'Start query nsd(%s)' % ns_inst.nspackage_id)
-            dst_plan = None
-            if WORKFLOW_OPTION == "wso2":
-                src_plan = query_rawdata_from_catalog(ns_inst.nspackage_id, input_parameters)
-                dst_plan = toscautil.convert_nsd_model(src_plan["rawData"])
-            else:
-                dst_plan = sdc_run_catalog.parse_nsd(ns_inst.nspackage_id, input_parameters)
-            logger.debug('tosca plan dest:%s' % dst_plan)
+            dst_plan = sdc_run_catalog.parse_nsd(ns_inst.nspackage_id, input_parameters)
+            logger.debug('tosca plan dest: %s' % dst_plan)
 
             NSInstModel.objects.filter(id=self.ns_inst_id).update(nsd_model=dst_plan)
 
