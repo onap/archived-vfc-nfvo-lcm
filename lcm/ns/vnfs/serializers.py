@@ -203,9 +203,9 @@ class VnfmInfoRespSerializer(serializers.Serializer):
     version = serializers.CharField(help_text="Version of VNFM", required=False, allow_null=True, allow_blank=True)
     description = serializers.CharField(help_text="Description of VNFM", required=False, allow_null=True, allow_blank=True)
     certificateUrl = serializers.CharField(help_text="Certificate PEM of VNFM", required=False, allow_null=True, allow_blank=True)
-    url = serializers.CharField(help_text="url of VNFM", required=True)
-    userName = serializers.CharField(help_text="User Name of VNFM", required=True)
-    password = serializers.CharField(help_text="Password of VNFM", required=True)
+    url = serializers.CharField(help_text="url of VNFM", required=False, allow_null=True, allow_blank=True)
+    userName = serializers.CharField(help_text="User Name of VNFM", required=False, allow_null=True, allow_blank=True)
+    password = serializers.CharField(help_text="Password of VNFM", required=False, allow_null=True, allow_blank=True)
     createTime = serializers.CharField(help_text="Create Time of VNFM", required=False, allow_null=True, allow_blank=True)
 
 
