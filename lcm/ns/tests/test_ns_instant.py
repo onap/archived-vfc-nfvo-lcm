@@ -28,37 +28,3 @@ class TestNsInstant(TestCase):
 
     def tearDown(self):
         pass
-
-    """
-    @mock.patch.object(restcall, 'call_req')
-    @mock.patch.object(toscautil, 'convert_nsd_model')
-    def test_ns_instant_ok(self, mock_convert_nsd_model, mock_call_req):
-        mock_convert_nsd_model.return_value = self.context
-        mock_vals = {
-            "/api/catalog/v1/csars/7/files?relativePath=abc.yaml":
-                [0, '{"downloadUri":"http://test.yaml", "localPath":"./test.yaml"}', '200'],
-            "/api/tosca/v1/indirect/plan":
-                [0, '{"description":"", "metadata":{}, "nodes":[]}', '200'],
-            "/api/catalog/v1/servicetemplates/2/operations":
-                [0, '[{"name":"LCM", "processId":"{http://www.open-o.org/tosca/nfv/2015/12}init-16"}]', '200'],
-            "/api/wso2bpel/v1/process/instance":
-                [0, '{"status": 1}', '200']}
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
-
-        data = {'iaUrl': "", 'vnfmId': "", 'context': "{\"e\":{\"f\":\"4\"}}", 'statusUrl': "",
-                'serviceTemplateId': "", 'roUrl': "", 'containerapiUrl': "", 'flavor': "",
-                'nsInstanceId': "123", 'instanceId': "234", 'resourceUrl': "", 'callbackId': "",
-                'additionalParamForVnf': "[{\"b\":1},{\"c\":{\"d\":\"2\"}}]",
-                'additionalParamForNs': "[{\"a\":3},{\"e\":{\"f\":\"4\"}}]", 'flavorParams': ""}
-        resp = self.client.post("/api/nslcm/v1/ns/123/instantiate", data, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-
-    def test_swagger_ok(self):
-        resp = self.client.get("/api/nslcm/v1/swagger.json", format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    """
