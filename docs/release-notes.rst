@@ -5,15 +5,11 @@
 VF-C Release Notes
 ==================
 
-.. note::
-..	* This Release Notes must be updated each time the team decides to Release new artifacts.
-..	* The scope of this Release Notes is for this particular component. In other words, each ONAP component has its Release Notes.
-..	* This Release Notes is cumulative, the most recently Released artifact is made visible in the top of this Release Notes.
-..	* Except the date and the version number, all the other sections are optional but there must be at least one section describing the purpose of this new release.
-..	* This note must be removed after content has been added.
-
-VF-C includes two main components, NFV-O and GVNFM, to implement life cycle management and FCAPS of VNF and NS. VF-C takes part in end to end service orchestration and close loop automation by working with SO, DCAE and Policy. 
-VF-C also provides standard southbound interface to VNFMs and can integrate with multi vendor VNFMs via drivers.
+VF-C includes two main components, NFV-O and GVNFM, to implement life cycle
+management and FCAPS of VNF and NS. VF-C takes part in end to end service
+orchestration and close loop automation by working with SO, DCAE and Policy.
+VF-C also provides standard southbound interface to VNFMs and can integrate
+with multi vendor VNFMs via drivers.
 
 Version: 1.1.0
 --------------
@@ -25,7 +21,7 @@ Version: 1.1.0
 - NS/VNF manual scaling supporting for VoLTE use case
 - VNF Integration, integration with VNF via GVNFM
 - S3P improvement
- 
+
 Released components:
 
 NFVO
@@ -61,7 +57,11 @@ This is the initial release
 
 **Security Notes**
 
-VFC code has been formally scanned during build time using NexusIQ and all Critical vulnerabilities have been addressed, items that remain open have been assessed for risk and determined to be false positive. The VFC open Critical security vulnerabilities and their risk assessment have been documented as part of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`_.
+VFC code has been formally scanned during build time using NexusIQ and all Critical
+vulnerabilities have been addressed, items that remain open have been assessed
+for risk and determined to be false positive. The VFC open Critical security
+vulnerabilities and their risk assessment have been documented as part
+of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`_.
 
 Quick Links:
 
@@ -90,7 +90,7 @@ Version: 1.0.0
 - VNF FCAPS, collecting FCAPS data from vendor EMS
 - VNFM Integration, integration with specific VNFMs of vendors to deploy commercial VNFs
 - VNF Integration, integration with VNF via GVNFM
- 
+
 Released components:
 
 NFVO
