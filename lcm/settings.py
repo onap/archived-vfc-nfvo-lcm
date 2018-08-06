@@ -14,6 +14,7 @@
 
 import os
 import sys
+import platform
 
 import redisco
 
@@ -132,45 +133,44 @@ pub_config.CATALOG_ROOT_PATH = os.path.join(STATICFILES_DIRS[0], "catalog")
 pub_config.CATALOG_URL_PATH = "static/catalog"
 pub_config.AAI_BASE_URL = "http://%s:%s/aai/v11" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
 pub_config.SDC_BASE_URL = "http://%s:%s/api" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
-#
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'formatters': {
-#         'standard': {
-#             'format': '%(asctime)s:[%(name)s]:[%(filename)s]-[%(lineno)d] [%(levelname)s]:%(message)s',
-#         },
-#     },
-#     'filters': {
-#     },
-#     'handlers': {
-#         'lcm_handler': {
-#             'level': 'DEBUG',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': os.path.join(BASE_DIR, 'logs/runtime_lcm.log'),
-#             'formatter': 'standard',
-#             'maxBytes': 1024 * 1024 * 50,
-#             'backupCount': 5,
-#         },
-#     },
-#
-#     'loggers': {
-#         'lcm': {
-#             'handlers': ['lcm_handler'],
-#             'level': 'DEBUG',
-#             'propagate': False
-#         },
-#     }
-# }
-LOGGING_CONFIG = None
-# yaml configuration of logging
-LOGGING_FILE = os.path.join(BASE_DIR, 'lcm/log.yml')
-if 'test' in sys.argv:
-    os.system('sed -i "s|/var/log/onap/vfc/nslcm|/tmp|" %s' % LOGGING_FILE)
-log_config.yamlConfig(filepath=LOGGING_FILE, watchDog=True)
+
+if platform.system() == 'Windows' or 'test' in sys.argv:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': True,
+        'formatters': {
+            'standard': {
+                'format': '%(asctime)s:[%(name)s]:[%(filename)s]-[%(lineno)d] [%(levelname)s]:%(message)s',
+            },
+        },
+        'filters': {
+        },
+        'handlers': {
+            'lcm_handler': {
+                'level': 'DEBUG',
+                'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/runtime_lcm.log'),
+            'formatter': 'standard',
+            'maxBytes': 1024 * 1024 * 50,
+            'backupCount': 5,
+        },
+        },
+
+        'loggers': {
+        'lcm': {
+            'handlers': ['lcm_handler'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        }
+    }
+else:
+    LOGGING_CONFIG = None
+    # yaml configuration of logging
+    LOGGING_FILE = os.path.join(BASE_DIR, 'lcm/log.yml')
+    log_config.yamlConfig(filepath=LOGGING_FILE, watchDog=True)
 
 if 'test' in sys.argv:
-    os.system('sed -i "s|/tmp|/var/log/onap/vfc/nslcm|" %s' % LOGGING_FILE)
     pub_config.REG_TO_MSB_WHEN_START = False
     pub_config.DEPLOY_WORKFLOW_WHEN_START = False
     DATABASES = {}
@@ -179,7 +179,6 @@ if 'test' in sys.argv:
         'NAME': ':memory:',
     }
     REST_FRAMEWORK = {}
-    import platform
 
     if platform.system() == 'Linux':
         TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
