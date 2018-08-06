@@ -6,8 +6,8 @@ ARG HTTPS_PROXY=${HTTPS_PROXY}
 ENV http_proxy $HTTP_PROXY
 ENV https_proxy $HTTPS_PROXY
 
-RUN sed -i "s|set compatible|set nocompatible|" /etc/vim/vimrc.tiny \ &
-    echo "set backspace=2" >> /etc/vim/vimrc.tiny
+RUN sed -i "s|set compatible|set nocompatible|" /etc/vim/vimrc.tiny
+RUN echo "set backspace=2" >> /etc/vim/vimrc.tiny
 
 RUN echo "mysql-server mysql-server/root_password password root" | debconf-set-selections
 RUN echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections
