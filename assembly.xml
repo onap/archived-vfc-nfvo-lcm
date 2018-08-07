@@ -50,14 +50,6 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>resources</directory>
-            <outputDirectory>/resources</outputDirectory>
-            <includes>
-                <include>**/*.sh</include>
-                <include>**/*.sql</include>
-            </includes>
-        </fileSet>
-        <fileSet>
             <directory>.</directory>
             <outputDirectory>/</outputDirectory>
             <includes>

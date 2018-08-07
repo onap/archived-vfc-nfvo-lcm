@@ -9,9 +9,6 @@ ENV https_proxy $HTTPS_PROXY
 RUN sed -i "s|set compatible|set nocompatible|" /etc/vim/vimrc.tiny
 RUN echo "set backspace=2" >> /etc/vim/vimrc.tiny
 
-RUN echo "mysql-server mysql-server/root_password password root" | debconf-set-selections
-RUN echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections
-
 RUN apt-get update && \
     apt-get install -y python-virtualenv && \
     apt-get install -y python-setuptools && \
@@ -19,8 +16,6 @@ RUN apt-get update && \
     apt-get install -y python-pip && \
     apt-get install -y gcc && \
     apt-get install -y libmysqlclient-dev && \
-    apt-get install -y redis-server && \
-    apt-get install -y mysql-server && \
     apt-get install -y mysql-client && \
     apt-get install -y wget && \
     apt-get install -y unzip && \
@@ -37,16 +32,10 @@ RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/m
     unzip vfc-nfvo-lcm.zip && \
     rm -rf vfc-nfvo-lcm.zip
 
-RUN sed -i "s|bind-address.*|# bind-address = 127.0.0.1|" /etc/mysql/my.cnf
-
-VOLUME /var/lib/mysql
-
 WORKDIR /service/vfc/nfvo/lcm
 RUN pip install --pre -r requirements.txt
 
 EXPOSE 8403
-EXPOSE 3306
-EXPOSE 6379
 
 WORKDIR /service
 ENTRYPOINT vfc/nfvo/lcm/docker/docker-entrypoint.sh

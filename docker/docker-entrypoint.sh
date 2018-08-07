@@ -5,21 +5,29 @@ if [ -z "$SERVICE_IP" ]; then
 fi
 echo "SERVICE_IP=$SERVICE_IP"
 
-if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
-    export MYSQL_ROOT_PASSWORD="root"
-fi
-echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD"
-
 if [ -z "$MSB_ADDR" ]; then
     echo "Missing required variable MSB_ADDR: Microservices Service Bus address <ip>:<port>"
     exit 1
 fi
 echo "MSB_ADDR=$MSB_ADDR"
 
+if [ -z "$MYSQL_ADDR" ]; then
+    echo "Missing required variable MYSQL_ADDR: <ip>:<port>"
+    exit 1
+fi
+echo "MYSQL_ADDR=$MYSQL_ADDR"
+
 # Wait for MSB initialization
 echo "Wait for MSB initialization"
 for i in {1..5}; do
     curl -sS -m 1 $MSB_ADDR > /dev/null && break
+    sleep $i
+done
+
+# Wait for DB initialization
+echo "Wait for DB initialization"
+for i in {1..5}; do
+    curl -sS -m 1 $MYSQL_ADDR > /dev/null && break
     sleep $i
 done
 
