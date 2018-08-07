@@ -8,11 +8,12 @@
 **1.  Scope**
 ==============
 The scope of the present document is to describe the VNFM driver integrated related API specification.
-Some content has been updated, about the API Swagger definition, you can find here 'VNFM driver development related API<https://gerrit.onap.org/r/gitweb?p=vfc/nfvo/lcm.git;a=blob;f=lcm/swagger/vfc.vnfdriver.swagger.json;h=fc35adbdc75df1307ca2c43a11bfb472da2a27c6;hb=HEAD>'
+Some content has been updated, about the API Swagger definition, you can find
+here 'VNFM driver development related API<https://gerrit.onap.org/r/gitweb?p=vfc/nfvo/lcm.git;a=blob;f=lcm/swagger/vfc.vnfdriver.swagger.json;h=fc35adbdc75df1307ca2c43a11bfb472da2a27c6;hb=HEAD>'
 
 
 **2.  Terms, Definitions and Abbreviations**
-=============================================
+============================================
 
 For the purposes of the present document, the following abbreviations apply:
 
@@ -30,7 +31,7 @@ Table 2-1 abbreviations
 
 
 **3.  Interfaces provided by VNFM Driver**
-===========================================
+==========================================
 
 Interfaces use RESTful API and the format is as follows:
 http(s)://[hostname][:port]/api/{vnfmtype}/v1/{vnfm_id}/[……]
@@ -152,49 +153,42 @@ juju
 | password     | M          | 1           | String   | Password of login user        |
 +--------------+------------+-------------+----------+-------------------------------+
 
-{
-  "vnfInstanceName":"vFW",
-  "vnfPackageId":"1",
-  "vnfDescriptorId":"1",
-  "vnfInstanceDescription":"vFW_1",
-  "extVirtualLinkLink":[ 
+.. code-block:: none
 
+   {
+     "vnfInstanceName":"vFW",
+     "vnfPackageId":"1",
+     "vnfDescriptorId":"1",
+     "vnfInstanceDescription":"vFW_1",
+     "extVirtualLinkLink":[
     {
       "vlInstanceId":"1",
       "resourceId":"1246" ,
       " cpdId":"11111",
       "vim":
       {
-
         "vimInfoId":"1",
-        "vimid":"1", 
+        "vimid":"1",
         "interfaceInfo":{
-
           "vimType":"openstack",
           "apiVersion":"v2",
           "protocolType":"http"
-
         }
         "accessInfo":{
-
           "tenant":"tenant_vCPE",
           "username":"vCPE",
           "password":"vCPE_321"
-
         }
         "interfaceEndpoint":"http://10.43.21.105:80/"
-
       }
-
     }
-
   ]
   "additionalParam":{
 
   ……
   }
 
-}
+   }
 
 
 **3.1.2  Response**
@@ -211,14 +205,15 @@ juju
 | vnfInstanceId     | M          | 1           | String    | VNF instance identifier.      |
 +-------------------+------------+-------------+-----------+-------------------------------+
 
-{
-  "jobId":"1",
-  "vnfInstanceId":"1"
+.. code-block:: json
 
-}
+   {
+     "jobId":"1",
+     "vnfInstanceId":"1"
+   }
 
 **3.2  Terminate VNF**
------------------------
+----------------------
 
 +---------------+------------------------------------------------------------------+
 | IF Definition |  Description                                                     |
@@ -285,12 +280,13 @@ juju
 |                 |            |             |           | termination.                     |
 +-----------------+------------+-------------+-----------+----------------------------------+
 
-{
-  "vnfInstanceId":"1",
-  "terminationType":"graceful",
-  "gracefulTerminationTimeout":"60"
+.. code-block:: json
 
-}
+   {
+     "vnfInstanceId":"1",
+     "terminationType":"graceful",
+     "gracefulTerminationTimeout":"60"
+   }
 
 **3.2.2  Response**
 
@@ -304,10 +300,11 @@ juju
 |              |            |             |           |  ceId]                         |
 +--------------+------------+-------------+-----------+--------------------------------+
 
-{
-  "jobId":"1"
+.. code-block:: json
 
-}
+   {
+     "jobId":"1"
+   }
 
 
 **3.3  Query VNF**
@@ -380,23 +377,22 @@ VNF filter: vnfInstanceId via url [R1]
 |                 |            |             |          | [instantiationState]            |
 +-----------------+------------+-------------+----------+---------------------------------+
 
-{
-  "vnfInfo":
-  {
+.. code-block:: json
 
-    "nfInstanceId":"1",
-    "vnfInstanceName":"vFW",
-    "vnfInstanceDescription":"vFW in Nanjing TIC Edge",
-    "vnfdId":"1",
-    "vnfPackageId":"1",
-    "version":"V1.1",
-    "vnfProvider":"ZTE",
-    "vnfType":"vFW",
-    "vnfStatus":"  ACTIVE",
-
-  }
-
-}
+   {
+     "vnfInfo":
+     {
+       "nfInstanceId":"1",
+       "vnfInstanceName":"vFW",
+       "vnfInstanceDescription":"vFW in Nanjing TIC Edge",
+       "vnfdId":"1",
+       "vnfPackageId":"1",
+       "version":"V1.1",
+       "vnfProvider":"ZTE",
+       "vnfType":"vFW",
+       "vnfStatus":"  ACTIVE",
+     }
+   }
 
 **3.4  Get operation status**
 -----------------------------
@@ -453,37 +449,32 @@ VNF filter: vnfInstanceId via url [R1]
 |                    |            |             |             | responseId                      |
 +--------------------+------------+-------------+-------------+---------------------------------+
 
-{
-  "jobId" : "1234566",
-  "responseDescriptor" : {
+.. code-block:: json
 
-    "progress" : "40",
-    "status" : "proccessing",
-    "statusDescription" : "OMC VMs are decommissioned in VIM",
-    "errorCode" : null,
-    "responseId" : "42",
-    "responseHistoryList" : [{
-
-      "progress" : "40",
-      "status" : "proccessing",
-      "statusDescription" : "OMC VMs are decommissioned in VIM",
-      "errorCode" : null,
-      "responseId" : "1"
-
-    }, {
-      "progress" : "41",
-      "status" : "proccessing",
-      "statusDescription" : "OMC VMs are decommissioned in VIM",
-      "errorCode" : null,
-      "responseId" : "2"
-
+   {
+     "jobId" : "1234566",
+     "responseDescriptor" : {
+       "progress" : "40",
+       "status" : "proccessing",
+       "statusDescription" : "OMC VMs are decommissioned in VIM",
+       "errorCode" : null,
+       "responseId" : "42",
+       "responseHistoryList" : [{
+         "progress" : "40",
+         "status" : "proccessing",
+         "statusDescription" : "OMC VMs are decommissioned in VIM",
+         "errorCode" : null,
+         "responseId" : "1"
+       }, {
+         "progress" : "41",
+         "status" : "proccessing",
+         "statusDescription" : "OMC VMs are decommissioned in VIM",
+         "errorCode" : null,
+         "responseId" : "2"
+       }
+     ]
     }
-
-  ]
-
- }
-
-}
+   }
 
 **3.5  Scale VNF**
 ------------------
@@ -537,18 +528,19 @@ VNF filter: vnfInstanceId via url [R1]
 |          aspect.                                                                                     |
 +------------------------------------------------------------------------------------------------------+
 
-{
-  "vnfInstanceId":"5",
-  "type":" SCALE_OUT",
-  "aspectId":"101",
-  "numberOfSteps":"1",
-  "additionalParam":{
+.. code-block:: none
 
-    ……
-
-  }
-
-}
+   {
+     "vnfInstanceId":"5",
+     "type":" SCALE_OUT",
+     "aspectId":"101",
+     "numberOfSteps":"1",
+     "additionalParam":{
+   
+       ……
+   
+     }
+   }
 
 **3.5.2  Response**
 
@@ -559,13 +551,14 @@ VNF filter: vnfInstanceId via url [R1]
 |                    |            |             |             | lifecycle operation occurrence. |
 +--------------------+------------+-------------+-------------+---------------------------------+
 
-{
-  "jobId":"1"
+.. code-block:: json
 
-}
+   {
+     "jobId":"1"
+   }
 
 **3.6  Heal VNF**
-------------------
+-----------------
 
 +---------------+------------------------------------------------------------------+
 | IF Definition |  Description                                                     |
@@ -606,18 +599,17 @@ VNF filter: vnfInstanceId via url [R1]
 |                    |            |             |             | machines.                       |
 +--------------------+------------+-------------+-------------+---------------------------------+
 
-{
-  "action": "vmReset",
-  "affectedvm": 
-  {
+.. code-block:: json
 
-    "vmid": "804cca71-9ae9-4511-8e30-d1387718caff",
-    "vduid": "vdu_100",
-    "vmname": "ZTE_SSS_111_PP_2_L"
-
-  }
-
-}
+   {
+     "action": "vmReset",
+     "affectedvm":
+     {
+       "vmid": "804cca71-9ae9-4511-8e30-d1387718caff",
+       "vduid": "vdu_100",
+       "vmname": "ZTE_SSS_111_PP_2_L"
+     }
+   }
 
 **3.6.2  Response**
 
@@ -628,18 +620,19 @@ VNF filter: vnfInstanceId via url [R1]
 |                    |            |             |             | healing operation occurrence.   |
 +--------------------+------------+-------------+-------------+---------------------------------+
 
-{
-  "jobId":"1"
+.. code-block:: json
 
-}
+   {
+     "jobId":"1"
+   }
 
 
 **4.  Interfaces provided by VFC to integrate with VNFM driver**
-===========================================
+================================================================
 
 
 **4.1  VNF Lifecycle Operation Granting Interface**
-------------------------
+---------------------------------------------------
 
 
 +---------------+------------------------------------------------------------------+
@@ -655,50 +648,54 @@ VNF filter: vnfInstanceId via url [R1]
 **4.1.1  Request**
 
 
-{
-  "vnfInstanceId": "string",
-  "vnfDescriptorId": "string",
-  "lifecycleOperation": "Terminal",
-  "jobId": "string",
-  "addResource": [
-    {
-      "type": "string",
-      "resourceDefinitionId": "string",
-      "vdu": "string"
-    }
-  ],
-  "removeResource": [
-    {
-      "type": "string",
-      "resourceDefinitionId": "string",
-      "vdu": "string"
-    }
-  ],
-  "additionalParam": {}
-}
+.. code-block:: json
+
+   {
+     "vnfInstanceId": "string",
+     "vnfDescriptorId": "string",
+     "lifecycleOperation": "Terminal",
+     "jobId": "string",
+     "addResource": [
+       {
+         "type": "string",
+         "resourceDefinitionId": "string",
+         "vdu": "string"
+       }
+     ],
+     "removeResource": [
+       {
+         "type": "string",
+         "resourceDefinitionId": "string",
+         "vdu": "string"
+       }
+     ],
+     "additionalParam": {}
+   }
 
 **4.1.2  Response**
 
-{
-  "vim": {
-    "vimInfoId": "string",
-    "vimId": "string",
-    "interfaceInfo": {
-      "vimType": "string",
-      "apiVersion": "string",
-      "protocolType": "string"
-    },
-    "accessInfo": {
-      "tenant": "string",
-      "username": "string",
-      "password": "string"
-    },
-    "interfaceEndpoint": "string"
-  }
-}
+.. code-block:: json
+
+   {
+     "vim": {
+       "vimInfoId": "string",
+       "vimId": "string",
+       "interfaceInfo": {
+         "vimType": "string",
+         "apiVersion": "string",
+         "protocolType": "string"
+       },
+       "accessInfo": {
+         "tenant": "string",
+         "username": "string",
+         "password": "string"
+       },
+       "interfaceEndpoint": "string"
+     }
+   }
 
 **4.2  VNF LCM Notification Interface**
-------------------------
+---------------------------------------
 
 +---------------+------------------------------------------------------------------+
 | IF Definition |  Description                                                     |
@@ -713,55 +710,57 @@ VNF filter: vnfInstanceId via url [R1]
 
 **4.2.1  Request**
 
-{
-  "status": "result",
-  "vnfInstanceId": "string",
-  "operation": "Terminal",
-  "jobId": "string",
-  "affectedVnfc": [
-    {
-      "vnfcInstanceId": "string",
-      "vduId": "string",
-      "changeType": "added",
-      "vimid": "string",
-      "vmid": "string",
-      "vmname": "string"
-    }
-  ],
-  "affectedCp": [
-    {
-      "virtualLinkInstanceId": "string",
-      "cpinstanceid": "string",
-      "cpdid": "string",
-      "ownerType": "string",
-      "ownerId": "string",
-      "changeType": "added",
-      "portResource": {
-        "vimid": "string",
-        "resourceid": "string",
-        "resourceName": "string",
-        "tenant": "string",
-        "ipAddress": "string",
-        "macAddress": "string",
-        "instId": "string"
-      }
-    }
-  ],
-  "affectedVl": [
-    {
-      "vlInstanceId": "string",
-      "vldid": "string",
-      "changeType": "added",
-      "networkResource": {
-        "resourceType": "network",
-        "resourceId": "string"
-      }
-    }
-  ],
-  "affectedVirtualStorage": [
-    {}
-  ]
-}
+.. code-block:: json
+
+   {
+     "status": "result",
+     "vnfInstanceId": "string",
+     "operation": "Terminal",
+     "jobId": "string",
+     "affectedVnfc": [
+       {
+         "vnfcInstanceId": "string",
+         "vduId": "string",
+         "changeType": "added",
+         "vimid": "string",
+         "vmid": "string",
+         "vmname": "string"
+       }
+     ],
+     "affectedCp": [
+       {
+         "virtualLinkInstanceId": "string",
+         "cpinstanceid": "string",
+         "cpdid": "string",
+         "ownerType": "string",
+         "ownerId": "string",
+         "changeType": "added",
+         "portResource": {
+           "vimid": "string",
+           "resourceid": "string",
+           "resourceName": "string",
+           "tenant": "string",
+           "ipAddress": "string",
+           "macAddress": "string",
+           "instId": "string"
+         }
+       }
+     ],
+     "affectedVl": [
+       {
+         "vlInstanceId": "string",
+         "vldid": "string",
+         "changeType": "added",
+         "networkResource": {
+           "resourceType": "network",
+           "resourceId": "string"
+         }
+       }
+     ],
+     "affectedVirtualStorage": [
+       {}
+     ]
+   }
 
 **4.2.2  Response**
 
@@ -769,7 +768,7 @@ N/A
 
 
 **4.3  Query VNFM Register Info Interface**
-------------------------
+-------------------------------------------
 
 +---------------+------------------------------------------------------------------+
 | IF Definition |  Description                                                     |
@@ -785,24 +784,27 @@ N/A
 N/A
 
 **4.3.2  Response**
-{
-  "vnfmId": "string",
-  "name": "string",
-  "type": "string",
-  "url": "string",
-  "userName": "string",
-  "password": "string",
-  "vimId": "string",
-  "vendor": "string",
-  "version": "string",
-  "description": "string",
-  "certificateUrl": "string",
-  "createTime": "string"
-}
+
+.. code-block:: json
+
+   {
+     "vnfmId": "string",
+     "name": "string",
+     "type": "string",
+     "url": "string",
+     "userName": "string",
+     "password": "string",
+     "vimId": "string",
+     "vendor": "string",
+     "version": "string",
+     "description": "string",
+     "certificateUrl": "string",
+     "createTime": "string"
+   }
 
 
 **4.4  Query VIM Register Info Interface**
-------------------------
+------------------------------------------
 
 +---------------+------------------------------------------------------------------+
 | IF Definition |  Description                                                     |
@@ -824,7 +826,7 @@ N/A
 +====================+============+=============+=============+=================================+
 | vimId              | M          | 1           | string      | The identifier of the VIM       |
 +--------------------+------------+-------------+-------------+---------------------------------+
-| name               | M          | 1           | string      | The name of the VIM             | 
+| name               | M          | 1           | string      | The name of the VIM             |
 +--------------------+------------+-------------+-------------+---------------------------------+
 | type               | M          | 1           | string      | The type of the VIM             |
 +--------------------+------------+-------------+-------------+---------------------------------+
@@ -850,19 +852,21 @@ N/A
 +--------------------+------------+-------------+-------------+---------------------------------+
 
 
-{
-  "vimId": "string",
-  "name": "string",
-  "type": "string",
-  "url": "string",
-  "userName": "string",
-  "password": "string",
-  "vendor": "string",
-  "version": "string",
-  "description": "string",
-  "createTime": "string",
-  "sslCacert": "string",
-  "sslInsecure": "string",
-  "status": "string"
-}
+.. code-block:: json
+
+   {
+     "vimId": "string",
+     "name": "string",
+     "type": "string",
+     "url": "string",
+     "userName": "string",
+     "password": "string",
+     "vendor": "string",
+     "version": "string",
+     "description": "string",
+     "createTime": "string",
+     "sslCacert": "string",
+     "sslInsecure": "string",
+     "status": "string"
+   }
 
