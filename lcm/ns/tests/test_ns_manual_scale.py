@@ -25,7 +25,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
 from lcm.pub.msapi import catalog
-from lcm.pub.utils.scaleaspect import get_json_data
+from lcm.ns.scaleaspect import get_json_data
 
 
 SCALING_JSON = {

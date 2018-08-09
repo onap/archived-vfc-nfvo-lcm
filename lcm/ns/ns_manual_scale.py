@@ -23,7 +23,7 @@ from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.utils.scaleaspect import get_scale_vnf_data_info_list
+from lcm.ns.scaleaspect import get_scale_vnf_data_info_list
 
 JOB_ERROR = 255
 SCALE_TYPE = ("SCALE_NS", "SCALE_VNF")
