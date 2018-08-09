@@ -78,30 +78,6 @@ class CreateNSService(object):
     def create_ns_in_aai(self):
         logger.debug("CreateNSService::create_ns_in_aai::report ns instance[%s] to aai." % self.ns_inst_id)
         try:
-            # global_customer_id = "global-customer-id-" + self.ns_inst_id
-            # data = {
-            #     "global-customer-id": "global-customer-id-" + self.ns_inst_id,
-            #     "subscriber-name": "subscriber-name-" + self.ns_inst_id,
-            #     "subscriber-type": "subscriber-type-" + self.ns_inst_id,
-            #     "service-subscriptions": {
-            #         "service-subscription": [
-            #             {
-            #                 "service-type": "Network",
-            #                 "service-instances": {
-            #                     "service-instance": [
-            #                         {
-            #                             "service-instance-id": self.ns_inst_id,
-            #                             "service-instance-name": self.ns_name,
-            #                             "service-type": "Network",
-            #                             "service-role": "service-role-" + self.ns_inst_id
-            #                         }
-            #                     ]
-            #                 }
-            #             }
-            #         ]
-            #     }
-            # }
-            # resp_data, resp_status = create_customer_aai(global_customer_id, data)
             data = {
                 "service-instance-id": self.ns_inst_id,
                 "service-instance-name": self.ns_name,

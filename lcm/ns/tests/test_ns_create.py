@@ -78,3 +78,15 @@ class TestNsInstantiate(TestCase):
         self.assertEqual(response.data["error"], "nsd not exists.")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_create_ns_when_nsdid_not_exist(self, mock_call_req):
+        mock_call_req.return_value = [1, "Failed to get nsd.", '500']
+        data = {
+            'csarId': '1',
+            'nsName': 'ns',
+            'description': 'description'
+        }
+        response = self.client.post("/api/nslcm/v1/ns", data=data)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)
