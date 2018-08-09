@@ -17,10 +17,6 @@ import os
 MSB_SERVICE_IP = '10.0.14.1'
 MSB_SERVICE_PORT = '80'
 
-# [IMAGE LOCAL PATH]
-ROOT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-IMAGE_ROOT_PATH = os.path.join(ROOT_PATH, "/VmNfvo/VnfProduct")
-
 # [REDIS]
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
@@ -53,13 +49,6 @@ REG_TO_MSB_REG_PARAM = {
         "ttl": 0
     }]
 }
-
-# delete image from vim option when delete csar
-IGNORE_DEL_IMG_WEHN_DEL_CSAR = True
-
-# catalog path(values is defined in settings.py)
-CATALOG_ROOT_PATH = None
-CATALOG_URL_PATH = None
 
 # [aai config]
 AAI_BASE_URL = "http://10.0.14.1:80/aai/v11"

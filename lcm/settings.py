@@ -123,14 +123,6 @@ TIME_ZONE = 'UTC'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
-]
-
-pub_config.CATALOG_ROOT_PATH = os.path.join(STATICFILES_DIRS[0], "catalog")
-pub_config.CATALOG_URL_PATH = "static/catalog"
 pub_config.AAI_BASE_URL = "http://%s:%s/aai/v11" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
 pub_config.SDC_BASE_URL = "http://%s:%s/api" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
 
