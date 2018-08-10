@@ -12,19 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# from rest_framework import status
+from rest_framework import status
 from django.test import TestCase
 from django.test import Client
+import mock
 
 from lcm.pub.database.models import NSInstModel
+from lcm.ns.ns_instant import InstantNSService
 
 
 class TestNsInstant(TestCase):
     def setUp(self):
         self.client = Client()
         NSInstModel.objects.filter().delete()
-        self.context = '{"vnfs": ["a", "b"], "sfcs": ["c"], "vls": ["d", "e", "f"]}'
-        NSInstModel(id="123", nspackage_id="7", nsd_id="2").save()
+        self.ns_inst_id = "2"
+        NSInstModel(id="2", nspackage_id="7", nsd_id="2").save()
 
     def tearDown(self):
         pass
+
+    @mock.patch.object(InstantNSService, 'do_biz')
+    def testNsInstantNormal(self, mock_do_biz):
+        mock_do_biz.return_value = dict(data={'jobId': "1"}, status=status.HTTP_200_OK)
+        data = {
+            "additionalParamForNs": {
+                "location": "1",
+                "sdnControllerId": "2"
+            }
+        }
+        resp = self.client.post("/api/nslcm/v1/ns/%s/instantiate" % self.ns_inst_id, data=data)
+        self.failUnlessEqual(status.HTTP_200_OK, resp.status_code)
+        self.assertEqual({'jobId': "1"}, resp.data)
