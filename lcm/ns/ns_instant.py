@@ -104,7 +104,7 @@ class InstantNSService(object):
             vnf_params_json = json.JSONEncoder().encode(params_vnf)
             plan_input = {
                 'jobId': job_id,
-                'nsInstanceId': self.req_data["nsInstanceId"],
+                'nsInstanceId': self.ns_inst_id,
                 'object_context': dst_plan,
                 'object_additionalParamForNs': params_json,
                 'object_additionalParamForVnf': vnf_params_json
@@ -191,7 +191,8 @@ class InstantNSService(object):
         BuildInWorkflowThread(plan_input).start()
         return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
 
-    def get_vnf_vim_id(self, vim_id, location_constraints, vnfdid):
+    @staticmethod
+    def get_vnf_vim_id(vim_id, location_constraints, vnfdid):
         for location in location_constraints:
             if "vnfProfileId" in location and vnfdid == location["vnfProfileId"]:
                 return location["locationConstraints"]["vimId"]
@@ -199,7 +200,8 @@ class InstantNSService(object):
             return vim_id
         raise NSLCMException("No Vim info is found for vnf(%s)." % vnfdid)
 
-    def set_vl_vim_id(self, vim_id, location_constraints, plan_dict):
+    @staticmethod
+    def set_vl_vim_id(vim_id, location_constraints, plan_dict):
         if "vls" not in plan_dict:
             logger.debug("No vl is found in nsd.")
             return
