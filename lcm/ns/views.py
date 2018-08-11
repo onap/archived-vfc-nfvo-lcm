@@ -114,6 +114,7 @@ class NSInstView(APIView):
     )
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
+        logger.debug("request.data=%s", request.data)
         req_serializer = InstantNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():
             return Response({'error': req_serializer.errors},
