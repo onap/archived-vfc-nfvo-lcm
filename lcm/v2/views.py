@@ -23,6 +23,7 @@ from lcm.v2.serializers import GrantRequestSerializer
 from lcm.v2.serializers import GrantSerializer
 from lcm.v2.serializers import VnfLcmOperationOccurrenceNotificationSerializer
 from lcm.v2.grant_vnf import GrantVnf
+from lcm.v2.handle_vnflcmooc_notification import HandleVnfLcmOocNotification
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +71,16 @@ class VnfNotifyView(APIView):
     def post(self, request, vnfmId, vnfInstanceId):
         logger.debug("VnfNotifyView post: %s" % request.data)
         logger.debug("vnfmId: %s vnfInstanceId: %s", vnfmId, vnfInstanceId)
-        return Response(data={}, status=status.HTTP_204_NO_CONTENT)
+        try:
+            vnfLcmOocNotificationSerializer = VnfLcmOperationOccurrenceNotificationSerializer(data=request.data)
+            if not vnfLcmOocNotificationSerializer.is_valid():
+                raise Exception(vnfLcmOocNotificationSerializer.errors)
+            HandleVnfLcmOocNotification(vnfmId, vnfInstanceId, vnfLcmOocNotificationSerializer.data)
+            return Response(data={}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error("Exception in VnfLcmOoc Notification: %s", e.message)
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         responses={
