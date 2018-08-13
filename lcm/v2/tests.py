@@ -112,12 +112,19 @@ class VnfGrantViewTest(unittest.TestCase):
             "isAutomaticInvocation": True,
             "vnfLcmOpOccId": "string",
             "affectedVnfcs": [{
-                "vnfcInstanceId": "string",
+                "id": "string",
                 "vduId": "string",
                 "changeType": "added",
-                "vimId": "string",
-                "vmId": "string",
-                "vmName": "string"
+                "computeResource": {
+                    "vimConnectionId": "string",
+                    "resourceProviderId": "string",
+                    "resouceId": "string",
+                    "vimLevelResourceType": "string"
+                },
+                "metadata": {},
+                "affectedVnfcCpIds": [],
+                "addedStorageResourceIds": [],
+                "removedStorageResourceIds": [],
             }],
             "affectedVirtualLinks": [{
                 "vlInstanceId": "string",
