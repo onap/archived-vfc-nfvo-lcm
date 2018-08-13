@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import uuid
 import logging
 import traceback
 
@@ -20,8 +21,8 @@ from rest_framework.response import Response
 from lcm.ns.vnfs.const import INST_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.database.models import VNFCInstModel, VLInstModel, NfInstModel, VmInstModel
-from lcm.pub.msapi.aai import query_vserver_aai, \
+from lcm.pub.database.models import VNFCInstModel, VLInstModel, NfInstModel, VmInstModel, PortInstModel, CPInstModel
+from lcm.pub.msapi.aai import create_network_aai, query_network_aai, delete_network_aai, query_vserver_aai, \
     delete_vserver_aai
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
@@ -48,10 +49,10 @@ class HandleVnfLcmOocNotification(object):
             self.vnf_instid = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
             self.update_Vnfc()
             self.update_Vl()
-            # self.update_Cp()
-            # self.update_Storage()
-            # if REPORT_TO_AAI:
-            #    self.update_network_in_aai()
+            self.update_Cp()
+            self.update_Storage()
+            if REPORT_TO_AAI:
+                self.update_network_in_aai()
             logger.debug("notify lcm end")
         except NSLCMException as e:
             self.exception(e.message)
@@ -126,6 +127,118 @@ class HandleVnfLcmOocNotification(object):
                             relatednetworkid=resourceId, vltype=0)
             else:
                 self.exception('affectedVl struct error: changeType not in {added,removed,modified}')
+
+    def update_Cp(self):
+        for cp in self.affectedCps:
+            virtualLinkInstanceId = ignore_case_get(cp, 'id')
+            ownertype = 0
+            ownerid = self.vnf_instid
+            for extLinkPorts in ignore_case_get(cp, 'extLinkPorts'):
+                cpInstanceId = ignore_case_get(extLinkPorts, 'cpInstanceId')
+                cpdId = ignore_case_get(extLinkPorts, 'id')
+                # changeType = ignore_case_get(cp, 'changeType')
+                relatedportId = ''
+
+                portResource = ignore_case_get(extLinkPorts, 'resourceHandle')
+                if portResource:
+                    vimId = ignore_case_get(portResource, 'vimConnectionId')
+                    resourceId = ignore_case_get(portResource, 'resourceId')
+                    resourceName = ignore_case_get(portResource, 'resourceId')  # replaced with resouceId temporarily
+                    # tenant = ignore_case_get(portResource, 'tenant')
+                    # ipAddress = ignore_case_get(portResource, 'ipAddress')
+                    # macAddress = ignore_case_get(portResource, 'macAddress')
+                    # instId = ignore_case_get(portResource, 'instId')
+                    portid = str(uuid.uuid4())
+
+                    PortInstModel(portid=portid, networkid='unknown', subnetworkid='unknown', vimid=vimId,
+                                  resourceid=resourceId, name=resourceName, instid="unknown", cpinstanceid=cpInstanceId,
+                                  bandwidth='unknown', operationalstate='active', ipaddress="unkown",
+                                  macaddress='unknown',
+                                  floatipaddress='unknown', serviceipaddress='unknown', typevirtualnic='unknown',
+                                  sfcencapsulation='gre', direction='unknown', tenant="unkown").save()
+                    relatedportId = portid
+
+                CPInstModel(cpinstanceid=cpInstanceId, cpdid=cpdId, ownertype=ownertype, ownerid=ownerid,
+                            vlinstanceid=virtualLinkInstanceId, relatedtype=2, relatedport=relatedportId,
+                            status='active').save()
+
+    def update_Storage(self):
+        pass
+
+    def update_network_in_aai(self):
+        logger.debug("update_network_in_aai::begin to report network to aai.")
+        try:
+            for vl in self.affectedVls:
+                vlInstanceId = ignore_case_get(vl, 'id')
+                # vldid = ignore_case_get(vl, 'vldid')
+                changeType = ignore_case_get(vl, 'changeType')
+                networkResource = ignore_case_get(vl, 'networkResource')
+                resourceType = ignore_case_get(networkResource, 'vimLevelResourceType')
+                # resourceId = ignore_case_get(networkResource, 'resourceId')
+
+                if resourceType != 'network':
+                    logger.error('affectedVl struct error: resourceType not euqal network')
+                    raise NSLCMException("affectedVl struct error: resourceType not euqal network")
+
+                ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
+
+                if changeType in ['added', 'modified']:
+                    self.create_network_and_subnet_in_aai(vlInstanceId, ownerId)
+                elif changeType == 'removed':
+                    self.delete_network_and_subnet_in_aai(vlInstanceId)
+                else:
+                    logger.error('affectedVl struct error: changeType not in {added,removed,modified}')
+        except NSLCMException as e:
+            logger.debug("Fail to create internal network to aai, detail message: %s" % e.message)
+        except:
+            logger.error(traceback.format_exc())
+
+    def create_network_and_subnet_in_aai(self, vlInstanceId, ownerId):
+        logger.debug("CreateVls::create_network_in_aai::report network[%s] to aai." % vlInstanceId)
+        try:
+            data = {
+                "network-id": vlInstanceId,
+                "network-name": vlInstanceId,
+                "is-bound-to-vpn": False,
+                "is-provider-network": True,
+                "is-shared-network": True,
+                "is-external-network": True,
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "generic-vnf",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "generic-vnf.vnf-id",
+                                    "relationship-value": ownerId
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+            resp_data, resp_status = create_network_aai(vlInstanceId, data)
+            logger.debug("Success to create network[%s] to aai: [%s].", vlInstanceId, resp_status)
+        except NSLCMException as e:
+            logger.debug("Fail to create network[%s] to aai, detail message: %s" % (vlInstanceId, e.message))
+        except:
+            logger.error(traceback.format_exc())
+
+    def delete_network_and_subnet_in_aai(self, vlInstanceId):
+        logger.debug("DeleteVls::delete_network_in_aai::delete network[%s] in aai." % vlInstanceId)
+        try:
+            # query network in aai, get resource_version
+            customer_info = query_network_aai(vlInstanceId)
+            resource_version = customer_info["resource-version"]
+
+            # delete network from aai
+            resp_data, resp_status = delete_network_aai(vlInstanceId, resource_version)
+            logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
+                         % (vlInstanceId, resp_status))
+        except NSLCMException as e:
+            logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (vlInstanceId, e.message))
+        except:
+            logger.error(traceback.format_exc())
 
     def create_vserver_in_aai(self, vim_id, vserver_id, vserver_name):
         logger.debug("NotifyLcm::create_vserver_in_aai::report vserver instance to aai.")
