@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import uuid
 import logging
 import traceback
 
@@ -20,7 +21,7 @@ from rest_framework.response import Response
 from lcm.ns.vnfs.const import INST_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.database.models import VNFCInstModel, VLInstModel, NfInstModel, VmInstModel
+from lcm.pub.database.models import VNFCInstModel, VLInstModel, NfInstModel, VmInstModel, PortInstModel, CPInstModel
 from lcm.pub.msapi.aai import query_vserver_aai, \
     delete_vserver_aai
 from lcm.pub.utils.values import ignore_case_get
@@ -126,6 +127,43 @@ class HandleVnfLcmOocNotification(object):
                             relatednetworkid=resourceId, vltype=0)
             else:
                 self.exception('affectedVl struct error: changeType not in {added,removed,modified}')
+
+    def update_Cp(self):
+        for cp in self.affectedCps:
+            virtualLinkInstanceId = ignore_case_get(cp, 'id')
+            ownertype = 0
+            ownerid = self.vnf_instid
+            for extLinkPorts in ignore_case_get(cp, 'extLinkPorts'):
+                cpInstanceId = ignore_case_get(extLinkPorts, 'cpInstanceId')
+                cpdId = ignore_case_get(extLinkPorts, 'id')
+                # changeType = ignore_case_get(cp, 'changeType')
+                relatedportId = ''
+
+                portResource = ignore_case_get(extLinkPorts, 'resourceHandle')
+                if portResource:
+                    vimId = ignore_case_get(portResource, 'vimConnectionId')
+                    resourceId = ignore_case_get(portResource, 'resourceId')
+                    resourceName = ignore_case_get(portResource, 'resourceId')  # replaced with resouceId temporarily
+                    # tenant = ignore_case_get(portResource, 'tenant')
+                    # ipAddress = ignore_case_get(portResource, 'ipAddress')
+                    # macAddress = ignore_case_get(portResource, 'macAddress')
+                    # instId = ignore_case_get(portResource, 'instId')
+                    portid = str(uuid.uuid4())
+
+                    PortInstModel(portid=portid, networkid='unknown', subnetworkid='unknown', vimid=vimId,
+                                  resourceid=resourceId, name=resourceName, instid="unknown", cpinstanceid=cpInstanceId,
+                                  bandwidth='unknown', operationalstate='active', ipaddress="unkown",
+                                  macaddress='unknown',
+                                  floatipaddress='unknown', serviceipaddress='unknown', typevirtualnic='unknown',
+                                  sfcencapsulation='gre', direction='unknown', tenant="unkown").save()
+                    relatedportId = portid
+
+                CPInstModel(cpinstanceid=cpInstanceId, cpdid=cpdId, ownertype=ownertype, ownerid=ownerid,
+                            vlinstanceid=virtualLinkInstanceId, relatedtype=2, relatedport=relatedportId,
+                            status='active').save()
+
+    def update_Storage(self):
+        pass
 
     def create_vserver_in_aai(self, vim_id, vserver_id, vserver_name):
         logger.debug("NotifyLcm::create_vserver_in_aai::report vserver instance to aai.")
