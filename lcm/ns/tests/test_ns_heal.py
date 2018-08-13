@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import mock
+import json
 
 from rest_framework import status
 from django.test import TestCase
@@ -35,19 +36,40 @@ class TestHealNsViews(TestCase):
 
         self.client = Client()
 
-        model = '{"metadata": {"vnfdId": "1","vnfdName": "PGW001","vnfProvider": "zte","vnfdVersion": "V00001",' \
-                '"vnfVersion": "V5.10.20","productType": "CN","vnfType": "PGW",' \
-                '"description": "PGW VNFD description","isShared":true,"vnfExtendType":"driver"}}'
+        model = json.dumps({
+            "metadata": {
+                "vnfdId": "1",
+                "vnfdName": "PGW001",
+                "vnfProvider": "zte",
+                "vnfdVersion": "V00001",
+                "vnfVersion": "V5.10.20",
+                "productType": "CN",
+                "vnfType": "PGW",
+                "description": "PGW VNFD description",
+                "isShared": True,
+                "vnfExtendType": "driver"
+            }
+        })
+        NSInstModel.objects.filter().delete()
+        NfInstModel.objects.filter().delete()
         NSInstModel(id=self.ns_inst_id, name="ns_name", status='null').save()
-        NfInstModel.objects.create(nfinstid=self.nf_inst_id, nf_name='name_1', vnf_id='1',
-                                   vnfm_inst_id='1', ns_inst_id=self.ns_inst_id,
-                                   max_cpu='14', max_ram='12296', max_hd='101', max_shd="20", max_net=10,
-                                   status='null', mnfinstid=self.nf_uuid, package_id='pkg1',
+        NfInstModel.objects.create(nfinstid=self.nf_inst_id,
+                                   nf_name='name_1',
+                                   vnf_id='1',
+                                   vnfm_inst_id='1',
+                                   ns_inst_id=self.ns_inst_id,
+                                   max_cpu='14',
+                                   max_ram='12296',
+                                   max_hd='101',
+                                   max_shd="20",
+                                   max_net=10,
+                                   status='null',
+                                   mnfinstid=self.nf_uuid,
+                                   package_id='pkg1',
                                    vnfd_model=model)
 
     def tearDown(self):
-        NSInstModel.objects.filter().delete()
-        NfInstModel.objects.filter().delete()
+        pass
 
     @mock.patch.object(NSHealService, 'run')
     def test_heal_vnf_url(self, mock_run):
