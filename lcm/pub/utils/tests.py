@@ -18,6 +18,10 @@ import enumutil
 import fileutil
 import urllib2
 
+from lcm.pub.database.models import JobStatusModel
+from lcm.pub.database.models import JobModel
+from lcm.pub.utils.jobutil import JobUtil
+
 
 class MockReq():
     def read(self):
@@ -53,3 +57,32 @@ class UtilsTest(unittest.TestCase):
         self.assertTrue(is_ok)
         self.assertTrue(f_name.endswith("abc/1.txt"))
         fileutil.delete_dirs("abc")
+
+    def test_query_job_status(self):
+        job_id = "1"
+        JobStatusModel.objects.filter().delete()
+        JobStatusModel(
+            indexid=1,
+            jobid=job_id,
+            status="success",
+            progress=10
+        ).save()
+        JobStatusModel(
+            indexid=2,
+            jobid=job_id,
+            status="success",
+            progress=50
+        ).save()
+        JobStatusModel(
+            indexid=3,
+            jobid=job_id,
+            status="success",
+            progress=100
+        ).save()
+        jobs = JobUtil.query_job_status(job_id)
+        self.assertEqual(1, len(jobs))
+        self.assertEqual(3, jobs[0].indexid)
+        jobs = JobUtil.query_job_status(job_id, 1)
+        self.assertEqual(2, len(jobs))
+        self.assertEqual(3, jobs[0].indexid)
+        self.assertEqual(2, jobs[1].indexid)
