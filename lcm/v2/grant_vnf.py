@@ -35,10 +35,10 @@ class GrantVnf(object):
         has_res_tpl = False
         grant_type = None
         vimConnections = []
-        if ignore_case_get(self.data, "addResource"):
-            grant_type = "addResource"
-        elif ignore_case_get(self.data, "removeResource"):
-            grant_type = "removeResource"
+        if ignore_case_get(self.data, "addResources"):
+            grant_type = "addResources"
+        elif ignore_case_get(self.data, "removeResources"):
+            grant_type = "removeResources"
         else:
             has_res_tpl = True
 

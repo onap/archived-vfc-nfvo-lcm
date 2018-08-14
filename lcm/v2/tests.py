@@ -15,14 +15,15 @@
 import unittest
 import json
 import mock
-from django.test import Client
+from rest_framework.test import APIClient
 from rest_framework import status
+from lcm.pub.database.models import NfInstModel
 from lcm.pub.utils import restcall
 
 
 class VnfGrantViewTest(unittest.TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = APIClient()
 
     def tearDown(self):
         pass
@@ -107,7 +108,6 @@ class VnfGrantViewTest(unittest.TestCase):
                 }
             ]
         }
-
         self.assertEqual(expect_resp_data, resp_data)
 
     def test_get_notify_vnf_normal(self):
@@ -129,11 +129,11 @@ class VnfGrantViewTest(unittest.TestCase):
             "affectedVnfcs": [{
                 "id": "string",
                 "vduId": "string",
-                "changeType": "added",
+                "changeType": "ADDED",
                 "computeResource": {
                     "vimConnectionId": "string",
                     "resourceProviderId": "string",
-                    "resouceId": "string",
+                    "resourceId": "string",
                     "vimLevelResourceType": "string"
                 },
                 "metadata": {},
@@ -142,16 +142,28 @@ class VnfGrantViewTest(unittest.TestCase):
                 "removedStorageResourceIds": [],
             }],
             "affectedVirtualLinks": [{
-                "vlInstanceId": "string",
-                "vldId": "string",
-                "changeType": "added",
+                "id": "string",
+                "virtualLinkDescId": "string",
+                "changeType": "ADDED",
                 "networkResource": {
-                    "resourceType": "network",
+                    "vimConnectionId": "string",
+                    "resourceProviderId": "string",
                     "resourceId": "string",
-                    "resourceName": "string"
+                    "vimLevelResourceType": "network",
                 }
             }],
-            "affectedVirtualStorages": [{}],
+            "affectedVirtualStorages": [{
+                "id": "string",
+                "virtualStorageDescId": "string",
+                "changeType": "ADDED",
+                "storageResource": {
+                    "vimConnectionId": "string",
+                    "resourceProviderId": "string",
+                    "resourceId": "string",
+                    "vimLevelResourceType": "network",
+                },
+                "metadata": {}
+            }],
             "changedInfo": {
                 "vnfInstanceName": "string",
                 "vnfInstanceDescription": "string",
@@ -235,5 +247,8 @@ class VnfGrantViewTest(unittest.TestCase):
                 }
             }
         }
+        NfInstModel.objects.create(nfinstid='22',
+                                   mnfinstid='2',
+                                   vnfm_inst_id='1')
         response = self.client.post("/api/nslcm/v2/ns/1/vnfs/2/Notify", data=data, format='json')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)

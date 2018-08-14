@@ -75,6 +75,7 @@ class VnfNotifyView(APIView):
             vnfLcmOocNotificationSerializer = VnfLcmOperationOccurrenceNotificationSerializer(data=request.data)
             if not vnfLcmOocNotificationSerializer.is_valid():
                 raise Exception(vnfLcmOocNotificationSerializer.errors)
+
             HandleVnfLcmOocNotification(vnfmId, vnfInstanceId, vnfLcmOocNotificationSerializer.data).do_biz()
             return Response(data={}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:

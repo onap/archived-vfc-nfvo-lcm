@@ -82,23 +82,23 @@ class HandleVnfLcmOocNotification(object):
             vmId = ignore_case_get(computeResource, 'resourceId')
             vmName = ignore_case_get(computeResource, 'resourceId')  # replaced with resouceId temporarily
 
-            if changeType == 'added':
+            if changeType == 'ADDED':
                 VNFCInstModel(vnfcinstanceid=vnfcInstanceId, vduid=vduId,
                               nfinstid=self.vnf_instid, vmid=vmId).save()
                 VmInstModel(vmid=vmId, vimid=vimId, resouceid=vmId, insttype=INST_TYPE.VNF,
                             instid=self.vnf_instid, vmname=vmName, hostid='1').save()
                 if REPORT_TO_AAI:
                     self.create_vserver_in_aai(vimId, vmId, vmName)
-            elif changeType == 'removed':
+            elif changeType == 'REMOVED':
                 if REPORT_TO_AAI:
                     self.delete_vserver_in_aai(vimId, vmId, vmName)
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).delete()
-            elif changeType == 'modified':
+            elif changeType == 'MODIFIED':
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).update(vduid=vduId,
                                                                                    nfinstid=self.vnf_instid,
                                                                                    vmid=vmId)
             else:
-                self.exception('affectedVnfc struct error: changeType not in {added,removed,modified}')
+                self.exception('affectedVnfc struct error: changeType not in {ADDED, REMOVED, MODIFIED, TEMPORARY}')
         logger.debug("Success to update all vserver to aai.")
 
     def update_Vl(self):
@@ -116,17 +116,17 @@ class HandleVnfLcmOocNotification(object):
 
             ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
 
-            if changeType == 'added':
+            if changeType == 'ADDED':
                 VLInstModel(vlinstanceid=vlInstanceId, vldid=vldid, vlinstancename=resourceName, ownertype=0,
                             ownerid=ownerId, relatednetworkid=resourceId, vltype=0).save()
-            elif changeType == 'removed':
+            elif changeType == 'REMOVED':
                 VLInstModel.objects.filter(vlinstanceid=vlInstanceId).delete()
-            elif changeType == 'modified':
+            elif changeType == 'MODIFIED':
                 VLInstModel.objects.filter(vlinstanceid=vlInstanceId)\
                     .update(vldid=vldid, vlinstancename=resourceName, ownertype=0, ownerid=ownerId,
                             relatednetworkid=resourceId, vltype=0)
             else:
-                self.exception('affectedVl struct error: changeType not in {added,removed,modified}')
+                self.exception('affectedVl struct error: changeType not in {ADDED, REMOVED, MODIFIED, TEMPORARY}')
 
     def update_Cp(self):
         for cp in self.affectedCps:
@@ -182,12 +182,12 @@ class HandleVnfLcmOocNotification(object):
 
                 ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
 
-                if changeType in ['added', 'modified']:
+                if changeType in ['ADDED', 'MODIFIED']:
                     self.create_network_and_subnet_in_aai(vlInstanceId, ownerId)
-                elif changeType == 'removed':
+                elif changeType == 'REMOVED':
                     self.delete_network_and_subnet_in_aai(vlInstanceId)
                 else:
-                    logger.error('affectedVl struct error: changeType not in {added,removed,modified}')
+                    logger.error('affectedVl struct error: changeType not in {ADDED, REMOVED, MODIFIED, TEMPORARY}')
         except NSLCMException as e:
             logger.debug("Fail to create internal network to aai, detail message: %s" % e.message)
         except:
