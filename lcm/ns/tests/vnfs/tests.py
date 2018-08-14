@@ -436,15 +436,33 @@ class TestHealVnfViews(TestCase):
         self.job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, self.nf_inst_id)
 
         NSInstModel(id=self.ns_inst_id, name="ns_name").save()
-        NfInstModel.objects.create(nfinstid=self.nf_inst_id, nf_name='name_1', vnf_id='1',
-                                   vnfm_inst_id='1', ns_inst_id='111,2-2-2',
-                                   max_cpu='14', max_ram='12296', max_hd='101', max_shd="20", max_net=10,
-                                   status='active', mnfinstid=self.nf_uuid, package_id='pkg1',
-                                   vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-                                              '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-                                              '"productType": "CN","vnfType": "PGW",'
-                                              '"description": "PGW VNFD description",'
-                                              '"isShared":true,"vnfExtendType":"driver"}}')
+        NfInstModel.objects.create(nfinstid=self.nf_inst_id,
+                                   nf_name='name_1',
+                                   vnf_id='1',
+                                   vnfm_inst_id='1',
+                                   ns_inst_id='111,2-2-2',
+                                   max_cpu='14',
+                                   max_ram='12296',
+                                   max_hd='101',
+                                   max_shd="20",
+                                   max_net=10,
+                                   status='active',
+                                   mnfinstid=self.nf_uuid,
+                                   package_id='pkg1',
+                                   vnfd_model=json.dumps({
+                                       "metadata": {
+                                           "vnfdId": "1",
+                                           "vnfdName": "PGW001",
+                                           "vnfProvider": "zte",
+                                           "vnfdVersion": "V00001",
+                                           "vnfVersion": "V5.10.20",
+                                           "productType": "CN",
+                                           "vnfType": "PGW",
+                                           "description": "PGW VNFD description",
+                                           "isShared": True,
+                                           "vnfExtendType": "driver"
+                                       }
+                                   }))
 
     def tearDown(self):
         NSInstModel.objects.all().delete()
@@ -461,18 +479,23 @@ class TestHealVnfViews(TestCase):
             "/api/resmgr/v1/vnf/1":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
             "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
-                [0, json.JSONEncoder().encode({"jobId": self.job_id,
-                                               "responsedescriptor": {"progress": "100",
-                                                                      "status": JOB_MODEL_STATUS.FINISHED,
-                                                                      "responseid": "3",
-                                                                      "statusdescription": "creating",
-                                                                      "errorcode": "0",
-                                                                      "responsehistorylist": [
-                                                                          {"progress": "0",
-                                                                           "status": JOB_MODEL_STATUS.PROCESSING,
-                                                                           "responseid": "2",
-                                                                           "statusdescription": "creating",
-                                                                           "errorcode": "0"}]}}), '200']}
+                [0, json.JSONEncoder().encode({
+                    "jobId": self.job_id,
+                    "responsedescriptor": {
+                        "progress": "100",
+                        "status": JOB_MODEL_STATUS.FINISHED,
+                        "responseid": "3",
+                        "statusdescription": "creating",
+                        "errorcode": "0",
+                        "responsehistorylist": [{
+                            "progress": "0",
+                            "status": JOB_MODEL_STATUS.PROCESSING,
+                            "responseid": "2",
+                            "statusdescription": "creating",
+                            "errorcode": "0"
+                        }]
+                    }
+                }), '200']}
 
         def side_effect(*args):
             return mock_vals[args[4]]
