@@ -13,7 +13,17 @@
 # limitations under the License.
 
 import unittest
+import mock
 import enumutil
+import fileutil
+import urllib2
+
+class MockReq():
+    def read(self):
+        return "1"
+
+    def close(self):
+        pass
 
 
 class UtilsTest(unittest.TestCase):
@@ -27,3 +37,18 @@ class UtilsTest(unittest.TestCase):
         MY_TYPE = enumutil.enum(SAMLL=0, LARGE=1)
         self.assertEqual(0, MY_TYPE.SAMLL)
         self.assertEqual(1, MY_TYPE.LARGE)
+
+    def test_create_and_delete_dir(self):
+        dirs = "abc/def/hij"
+        fileutil.make_dirs(dirs)
+        fileutil.make_dirs(dirs)
+        fileutil.delete_dirs(dirs)
+
+    @mock.patch.object(urllib2, 'urlopen')
+    def test_download_file_from_http(self, mock_urlopen):
+        mock_urlopen.return_value = MockReq()
+        fileutil.delete_dirs("abc")
+        is_ok, f_name = fileutil.download_file_from_http("1", "abc", "1.txt")
+        self.assertTrue(is_ok)
+        self.assertTrue(f_name.endswith("abc/1.txt"))
+        fileutil.delete_dirs("abc")
