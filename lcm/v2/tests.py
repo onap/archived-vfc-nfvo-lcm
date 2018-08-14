@@ -14,8 +14,10 @@
 
 import unittest
 import json
+import mock
 from django.test import Client
 from rest_framework import status
+from lcm.pub.utils import restcall
 
 
 class VnfGrantViewTest(unittest.TestCase):
@@ -25,7 +27,8 @@ class VnfGrantViewTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_grant_vnf_normal(self):
+    @mock.patch.object(restcall, 'call_req')
+    def test_grant_vnf_normal(self, mock_call_req):
         data = {
             "vnfInstanceId": "1",
             "vnfLcmOpOccId": "2",
@@ -40,7 +43,7 @@ class VnfGrantViewTest(unittest.TestCase):
                     "type": "COMPUTE",
                     "vduId": "2",
                     "resourceTemplateId": "3",
-                    "resource": {
+                    "resourceTemplate": {
                         "vimConnectionId": "4",
                         "resourceProviderId": "5",
                         "resourceId": "6",
@@ -85,14 +88,26 @@ class VnfGrantViewTest(unittest.TestCase):
                 }
             }
         }
+        vimConnections = {
+            "id": "1",
+            "vimId": "1",
+        }
+        mock_call_req.return_value = [0, json.JSONEncoder().encode(vimConnections), '200']
         response = self.client.post("/api/nslcm/v2/grants", data=data, format='json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code, response.content)
         resp_data = json.loads(response.content)
         expect_resp_data = {
             "id": resp_data.get("id"),
             "vnfInstanceId": "1",
-            "vnfLcmOpOccId": "2"
+            "vnfLcmOpOccId": "2",
+            "vimConnections": [
+                {
+                    "id": "1",
+                    "vimId": "1"
+                }
+            ]
         }
+
         self.assertEqual(expect_resp_data, resp_data)
 
     def test_get_notify_vnf_normal(self):
