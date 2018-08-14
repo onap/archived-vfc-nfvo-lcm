@@ -23,6 +23,7 @@ from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.ns.const import NS_INST_STATUS
 from lcm.pub.exceptions import NSLCMException
 from lcm.ns.ns_heal import NSHealService
+from lcm.ns.vnfs.heal_vnfs import NFHealService
 
 
 class TestHealNsViews(TestCase):
@@ -96,7 +97,7 @@ class TestHealNsViews(TestCase):
         response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
-    @mock.patch.object(NSHealService, 'start')
+    @mock.patch.object(NFHealService, 'start')
     @mock.patch.object(NSHealService, 'wait_job_finish')
     @mock.patch.object(NSHealService, 'update_job')
     def test_ns_manual_scale_thread(self, mock_start, mock_wait, mock_update):
