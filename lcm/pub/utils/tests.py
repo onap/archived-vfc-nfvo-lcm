@@ -17,6 +17,9 @@ import mock
 import enumutil
 import fileutil
 import urllib2
+import syscomm
+import timeutil
+import values
 
 from lcm.pub.database.models import JobStatusModel, JobModel
 from lcm.pub.utils.jobutil import JobUtil
@@ -201,3 +204,20 @@ class UtilsTest(unittest.TestCase):
         expect_progresses = ['/vnfinst/11', '/vnfinst/22', '/vnfinst/33']
         self.assertEqual(expect_progresses, progresses)
         JobModel.objects.filter().delete()
+
+    def test_fun_name(self):
+        self.assertEqual("test_fun_name", syscomm.fun_name())
+
+    def test_now_time(self):
+        self.assertIn(":", timeutil.now_time())
+        self.assertIn("-", timeutil.now_time())
+
+    def test_ignore_case_get(self):
+        data = {
+            "Abc": "def",
+            "HIG": "klm"
+        }
+        self.assertEqual("def", values.ignore_case_get(data, 'ABC'))
+        self.assertEqual("def", values.ignore_case_get(data, 'abc'))
+        self.assertEqual("klm", values.ignore_case_get(data, 'hig'))
+        self.assertEqual("bbb", values.ignore_case_get(data, 'aaa', 'bbb'))
