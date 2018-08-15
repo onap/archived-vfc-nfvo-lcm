@@ -157,3 +157,47 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(1, len(JobStatusModel.objects.filter(jobid=job_id)))
         JobStatusModel.objects.filter().delete()
         JobModel.objects.filter().delete()
+
+    def test_clear_job_status(self):
+        job_id = "1"
+        JobStatusModel.objects.filter().delete()
+        JobStatusModel(
+            indexid=1,
+            jobid=job_id,
+            status="success",
+            progress=10
+        ).save()
+        JobUtil.clear_job_status(job_id)
+        self.assertEqual(0, len(JobStatusModel.objects.filter(jobid=job_id)))
+
+    def test_get_unfinished_jobs(self):
+        JobModel.objects.filter().delete()
+        JobModel(
+            jobid="11",
+            jobtype="InstVnf",
+            jobaction="2",
+            resid="3",
+            status=0
+        ).save()
+        JobModel(
+            jobid="22",
+            jobtype="InstVnf",
+            jobaction="2",
+            resid="3",
+            status=0
+        ).save()
+        JobModel(
+            jobid="33",
+            jobtype="InstVnf",
+            jobaction="2",
+            resid="3",
+            status=0
+        ).save()
+        progresses = JobUtil.get_unfinished_jobs(
+            url_prefix="/vnfinst",
+            inst_id="3",
+            inst_type="InstVnf"
+        )
+        expect_progresses = ['/vnfinst/11', '/vnfinst/22', '/vnfinst/33']
+        self.assertEqual(expect_progresses, progresses)
+        JobModel.objects.filter().delete()
