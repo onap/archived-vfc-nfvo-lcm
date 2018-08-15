@@ -18,7 +18,7 @@ import enumutil
 import fileutil
 import urllib2
 
-from lcm.pub.database.models import JobStatusModel
+from lcm.pub.database.models import JobStatusModel, JobModel
 from lcm.pub.utils.jobutil import JobUtil
 
 
@@ -85,3 +85,17 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(2, len(jobs))
         self.assertEqual(3, jobs[0].indexid)
         self.assertEqual(2, jobs[1].indexid)
+        JobStatusModel.objects.filter().delete()
+
+    def test_is_job_exists(self):
+        job_id = "1"
+        JobModel.objects.filter().delete()
+        JobModel(
+            jobid=job_id,
+            jobtype="1",
+            jobaction="2",
+            resid="3",
+            status="init"
+        ).save()
+        self.assertTrue(JobUtil.is_job_exists())
+        JobModel.objects.filter().delete()
