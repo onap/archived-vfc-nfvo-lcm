@@ -99,3 +99,29 @@ class UtilsTest(unittest.TestCase):
         ).save()
         self.assertTrue(JobUtil.is_job_exists(job_id))
         JobModel.objects.filter().delete()
+
+    def test_create_job(self):
+        job_id = "5"
+        JobModel.objects.filter().delete()
+        JobUtil.create_job(
+            inst_type="1",
+            jobaction="2",
+            inst_id="3",
+            user="4",
+            job_id=5,
+            res_name="6")
+        self.assertEqual(1, len(JobModel.objects.filter(jobid=job_id)))
+        JobModel.objects.filter().delete()
+
+    def test_clear_job(self):
+        job_id = "1"
+        JobModel.objects.filter().delete()
+        JobModel(
+            jobid=job_id,
+            jobtype="1",
+            jobaction="2",
+            resid="3",
+            status=0
+        ).save()
+        JobUtil.clear_job(job_id)
+        self.assertEqual(0, len(JobModel.objects.filter(jobid=job_id)))
