@@ -27,6 +27,7 @@ from lcm.ns.vnfs.get_vnfs import GetVnf
 from lcm.ns.vnfs.scale_vnfs import NFManualScaleService
 from lcm.ns.vnfs.terminate_nfs import TerminateVnfs
 from lcm.ns.vnfs.grant_vnfs import GrantVnfs
+from lcm.ns.vnfs.place_vnfs import PlaceVnfs
 from lcm.ns.vnfs.notify_lcm import NotifyLcm
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id
@@ -46,6 +47,7 @@ from lcm.ns.vnfs.serializers import VerifyVnfReqSerializer
 from lcm.ns.vnfs.serializers import VerifyVnfRespSerializer
 from lcm.ns.vnfs.serializers import VnfmInfoRespSerializer
 from lcm.ns.vnfs.serializers import VimInfoRespSerializer
+from lcm.ns.vnfs.serializers import PlaceVnfReqSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -173,6 +175,28 @@ class NfGrant(APIView):
             # raise Exception(resp_serializer.errors)
 
             return Response(data=rsp, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(e.message)
+            logger.error(traceback.format_exc())
+            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
+
+
+class NfPlacement(APIView):
+    @swagger_auto_schema(
+        request_body=PlaceVnfReqSerializer(),
+        response={
+            status.HTTP_201_CREATED: PlaceVnfReqSerializer(),
+            status.HTTP_404_NOT_FOUND: "Placement not found"
+        }
+    )
+    def post(self, request):
+        logger.debug("NfPlacement--post::> %s" % request.data)
+        try:
+            req_serializer = PlaceVnfReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise Exception(req_serializer.errors)
+            PlaceVnfs(request.data).extract()
+            return Response(data={}, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(e.message)
             logger.error(traceback.format_exc())
