@@ -49,12 +49,12 @@ class GrantVnf(object):
 
         if not has_res_tpl:
             m_vnf_inst_id = ignore_case_get(self.data, "vnfInstanceId")
-            additional_param = ignore_case_get(self.data, "additionalparam")
+            additional_param = ignore_case_get(self.data, "additionalparams")
             vnfm_inst_id = ignore_case_get(additional_param, "vnfmid")
             vim_id = ignore_case_get(additional_param, "vimid")
 
             vnfinsts = NfInstModel.objects.filter(
-                mnfinstid=m_vnf_inst_id, vnfm_inst_id=vnfm_inst_id)
+                nfinstid=m_vnf_inst_id, vnfm_inst_id=vnfm_inst_id)
             if not vnfinsts:
                 raise NSLCMException("Vnfinst(%s) is not found in vnfm(%s)" % (
                     m_vnf_inst_id, vnfm_inst_id))
@@ -67,7 +67,8 @@ class GrantVnf(object):
             req_param = {
                 "vnfInstanceId": m_vnf_inst_id,
                 "vimId": vim_id,
-                "additionalParam": additional_param,
+                "vnfLcmOpOccId": ignore_case_get(self.data, "vnfLcmOpOccId"),
+                "additionalParams": additional_param,
                 grant_type: []
             }
             for res in ignore_case_get(self.data, grant_type):

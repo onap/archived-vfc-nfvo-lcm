@@ -167,6 +167,98 @@ class VnfGrantViewTest(unittest.TestCase):
         response = self.client.post("/api/nslcm/v2/grants", data=data, format='json')
         self.failUnlessEqual(status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
 
+    @mock.patch.object(restcall, 'call_req')
+    def test_grant_vnf(self, mock_call_req):
+        data = {
+            "vnfInstanceId": "1",
+            "vnfLcmOpOccId": "2",
+            "vnfdId": "3",
+            "flavourId": "4",
+            "operation": "INSTANTIATE",
+            "isAutomaticInvocation": True,
+            "instantiationLevelId": "5",
+            "addResources": [
+                {
+                    "id": "1",
+                    "type": "COMPUTE",
+                    "vduId": "2",
+                    "resourceTemplateId": "3",
+                }
+            ],
+            "additionalParams": {"vnfmid": "3"},
+            "_links": {
+                "vnfLcmOpOcc": {
+                    "href": "1"
+                },
+                "vnfInstance": {
+                    "href": "2"
+                }
+            }
+        }
+        vnfdModel = {
+            "volume_storages": [],
+            "vdus": [],
+            "image_files": [],
+            "routers": [],
+            "local_storages": [],
+            "vnf_exposed": {
+                "external_cps": [],
+                "forward_cps": []
+            },
+            "vls": [],
+            "cps": [],
+            "metadata": {
+                "designer": "sdno",
+                "name": "underlayervpn",
+                "csarVersion": "1.0",
+                "csarType": "SSAR",
+                "csarProvider": "huawei",
+                "version": "1.0",
+                "type": "SSAR",
+                "id": "ns_underlayervpn_1_0"
+            }
+        }
+
+        vnfpackage_info = {
+            "imageInfo": [],
+            "csarId": "vOpenNAT",
+            "packageInfo": {
+                "csarName": "vOpenNAT.csar",
+                "vnfdModel": json.dumps(vnfdModel),
+                "vnfdProvider": "Intel",
+                "vnfdId": "openNAT_1.0",
+                "downloadUrl": "http://10.96.33.39:8806/static/catalog/vOpenNAT/vOpenNAT.csar",
+                "vnfVersion": "v1.0",
+                "vnfdVersion": "v1.0",
+                "vnfPackageId": "vOpenNAT"
+            }
+        }
+        vimConnections = {
+            "id": "1",
+            "vimId": "1",
+        }
+        NfInstModel.objects.create(nfinstid='1',
+                                   package_id="2",
+                                   vnfm_inst_id='3')
+        get_vnfpackage = [0, json.JSONEncoder().encode(vnfpackage_info), '200']
+        get_vimConnections = [0, json.JSONEncoder().encode(vimConnections), '200']
+        mock_call_req.side_effect = [get_vnfpackage, get_vimConnections]
+        response = self.client.post("/api/nslcm/v2/grants", data=data, format='json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code, response.content)
+        resp_data = json.loads(response.content)
+        expect_resp_data = {
+            "id": resp_data.get("id"),
+            "vnfInstanceId": "1",
+            "vnfLcmOpOccId": "2",
+            "vimConnections": [
+                {
+                    "id": "1",
+                    "vimId": "1"
+                }
+            ]
+        }
+        self.assertEqual(expect_resp_data, resp_data)
+
     def test_get_notify_vnf_normal(self):
         response = self.client.get("/api/nslcm/v2/ns/1/vnfs/1/Notify")
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)
