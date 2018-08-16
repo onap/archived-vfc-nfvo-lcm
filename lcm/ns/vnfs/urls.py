@@ -14,7 +14,7 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from lcm.ns.vnfs.views import NfView, NfDetailView, NfGrant
+from lcm.ns.vnfs.views import NfView, NfDetailView, NfGrant, NfPlacement
 from lcm.ns.vnfs.views import LcmNotify, NfScaleView, NfVerifyView
 from lcm.ns.vnfs.views import NfVnfmInfoView, NfVimInfoView
 
@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns/vnfs$', NfView.as_view()),
     url(r'^api/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)$', NfDetailView.as_view()),
     url(r'^api/nslcm/v1/ns/grantvnf$', NfGrant.as_view()),
+    url(r'^api/nslcm/v1/ns/placevnf$', NfPlacement.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<vnfmid>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$', LcmNotify.as_view()),
     url(r'^api/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)/scaling$', NfScaleView.as_view()),
     url(r'^api/nslcm/v1/vnfonboarding$', NfVerifyView.as_view()),
