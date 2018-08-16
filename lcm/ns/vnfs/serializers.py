@@ -226,3 +226,86 @@ class VimInfoRespSerializer(serializers.Serializer):
     sslCacert = serializers.CharField(help_text="SSL Cacert of VIM", required=False, allow_null=True, allow_blank=True)
     sslInsecure = serializers.CharField(help_text="SSL Insecure of VIM", required=False, allow_null=True, allow_blank=True)
     status = serializers.CharField(help_text="Status of VIM", required=False, allow_null=True, allow_blank=True)
+
+
+class CandidateSerializer(serializers.Serializer):
+    identifierType = serializers.ChoiceField(
+        help_text="The type of a candidate",
+        choices=["serviceInstanceId", "vnfName", "cloudRegionId", "vimId"],
+        required=True
+    )
+    identifiers = serializers.ListField(
+        help_text="A list of identifiers",
+        child=serializers.CharField(help_text="One identifier", required=True),
+        required=True
+    )
+    cloudOwner = serializers.CharField(
+        help_text="The name of a cloud owner. Only required if identifier Type is cloudRegionId", required=False)
+
+
+class LicenseSolutionSerializer(serializers.Serializer):
+    resourceModuleName = serializers.CharField(help_text="Name of Resource as defined in the Service Model",
+                                               required=True)
+    serviceResourceId = serializers.CharField(help_text="Resource Id defined in the Service Model", required=True)
+    entitlementPoolUUID = serializers.ListField(
+        help_text="A list of entitlementPoolUUIDs",
+        child=serializers.CharField(help_text="entitlementPoolUUID", required=True),
+        required=True
+    )
+    licenseKeyGroupUUID = serializers.ListField(
+        help_text="A list of licenseKeyGroupUUID",
+        child=serializers.CharField(help_text="licenseKeyGroupUUID", required=True),
+        required=True
+    )
+    entitlementPoolInvariantUUID = serializers.ListField(
+        help_text="A list of entitlementPoolInvariantUUIDs",
+        child=serializers.CharField(help_text="entitlementPoolInvariantUUID", required=True),
+        required=True
+    )
+    licenseKeyGroupInvariantUUID = serializers.ListField(
+        help_text="A list of licenseKeyGroupInvariantUUID",
+        child=serializers.CharField(help_text="licenseKeyGroupInvariantUUID", required=True),
+        required=True
+    )
+
+
+class AssignmentInfoSerializer(serializers.Serializer):
+    key = serializers.CharField(help_text="Any attribute Key needed", required=True)
+    value = serializers.CharField(help_text="Attribute value for that key", required=True)
+
+
+class PlacementSolutionSerializer(serializers.Serializer):
+    resourceModuleName = serializers.CharField(help_text="Name of Resource as defined in the Service Model",
+                                               required=True)
+    serviceResourceId = serializers.CharField(help_text="Resource Id defined in the Service Model", required=True)
+    solution = CandidateSerializer(help_text="The Placement Solution", required=True)
+    assignmentInfo = AssignmentInfoSerializer(help_text="Additonal information related to a candidate",
+                                                   required=False, many=True)
+
+
+class ComprehensiveSolutionSerializer(serializers.Serializer):
+    child = serializers.ListField(
+        help_text="A list of placement solutions",
+        child=PlacementSolutionSerializer(help_text="A list of placement solutions"),
+        allow_empty=True,
+        required=True)
+
+
+class SolutionSerializer(serializers.Serializer):
+    placementSolutions = ComprehensiveSolutionSerializer(help_text="A list of Placement Solutions",
+                                                         required=True, many=True)
+    licenseSolutions = LicenseSolutionSerializer(help_text="A list of License Solutions",
+                                                 required=True, many=True)
+
+
+class PlaceVnfReqSerializer(serializers.Serializer):
+    requestId = serializers.UUIDField(help_text="ID of Homing Request", required=True)
+    transactionId = serializers.UUIDField(help_text="ID of Homing Transaction", required=True, allow_null=False)
+    statusMessage = serializers.CharField(help_text="Status Message of Request", required=False, allow_null=True)
+    requestStatus = serializers.ChoiceField(
+        help_text="The Status of a Request",
+        choices=["completed", "failed", "pending"],
+        required=True,
+        allow_null=False
+    )
+    solutions = SolutionSerializer(help_text="Request Solutions", required=True, allow_null=False)
