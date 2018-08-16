@@ -110,6 +110,63 @@ class VnfGrantViewTest(unittest.TestCase):
         }
         self.assertEqual(expect_resp_data, resp_data)
 
+    def test_grant_vnf_when_vnfinst_not_exist(self):
+        data = {
+            "vnfInstanceId": "1",
+            "vnfLcmOpOccId": "2",
+            "vnfdId": "3",
+            "flavourId": "4",
+            "operation": "INSTANTIATE",
+            "isAutomaticInvocation": True,
+            "instantiationLevelId": "5",
+            "addResources": [
+                {
+                    "id": "1",
+                    "type": "COMPUTE",
+                    "vduId": "2",
+                    "resourceTemplateId": "3",
+                }
+            ],
+            "placementConstraints": [
+                {
+                    "affinityOrAntiAffinity": "AFFINITY",
+                    "scope": "NFVI_POP",
+                    "resource": [
+                        {
+                            "idType": "RES_MGMT",
+                            "resourceId": "1",
+                            "vimConnectionId": "2",
+                            "resourceProviderId": "3"
+                        }
+                    ]
+                }
+            ],
+            "vimConstraints": [
+                {
+                    "sameResourceGroup": True,
+                    "resource": [
+                        {
+                            "idType": "RES_MGMT",
+                            "resourceId": "1",
+                            "vimConnectionId": "2",
+                            "resourceProviderId": "3"
+                        }
+                    ]
+                }
+            ],
+            "additionalParams": {},
+            "_links": {
+                "vnfLcmOpOcc": {
+                    "href": "1"
+                },
+                "vnfInstance": {
+                    "href": "2"
+                }
+            }
+        }
+        response = self.client.post("/api/nslcm/v2/grants", data=data, format='json')
+        self.failUnlessEqual(status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
+
     def test_get_notify_vnf_normal(self):
         response = self.client.get("/api/nslcm/v2/ns/1/vnfs/1/Notify")
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)
