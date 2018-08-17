@@ -119,7 +119,7 @@ class VnfGrantViewTest(unittest.TestCase):
             "operation": "INSTANTIATE",
             "isAutomaticInvocation": True,
             "instantiationLevelId": "5",
-            "addResources": [
+            "removeResources": [
                 {
                     "id": "1",
                     "type": "COMPUTE",
@@ -183,6 +183,7 @@ class VnfGrantViewTest(unittest.TestCase):
                     "type": "COMPUTE",
                     "vduId": "2",
                     "resourceTemplateId": "3",
+                    "vdu": "1"
                 }
             ],
             "additionalParams": {"vnfmid": "3"},
@@ -197,10 +198,24 @@ class VnfGrantViewTest(unittest.TestCase):
         }
         vnfdModel = {
             "volume_storages": [],
-            "vdus": [],
+            "vdus": [{
+                "vdu_id": "1",
+                "properties": {
+                    "name": "1"
+                },
+                "local_storages": "2",
+                "virtual_compute": {
+                    "virtual_cpu": {
+                        "num_virtual_cpu": "111"
+                    },
+                    "virtual_memory": {
+                        "virtual_mem_size": "3 B"
+                    }
+                },
+            }],
             "image_files": [],
             "routers": [],
-            "local_storages": [],
+            "local_storages": [{"local_storage_id": "1"}],
             "vnf_exposed": {
                 "external_cps": [],
                 "forward_cps": []
