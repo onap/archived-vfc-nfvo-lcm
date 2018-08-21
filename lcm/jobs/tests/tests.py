@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from django.test import TestCase, Client
+from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 
 from lcm.pub.database.models import JobModel, JobStatusModel
@@ -20,10 +21,13 @@ from lcm.pub.database.models import JobModel, JobStatusModel
 class JobsViewTest(TestCase):
     def setUp(self):
         self.job_id = 'test_job_id'
-        self.client = Client()
+        self.client = APIClient()
+        JobModel.objects.all().delete()
+        JobStatusModel.objects.all().delete()
 
     def tearDown(self):
         JobModel.objects.all().delete()
+        JobStatusModel.objects.all().delete()
 
     def test_job(self):
         JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
@@ -42,3 +46,16 @@ class JobsViewTest(TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertIn('jobId', response.data)
         self.assertNotIn('responseDescriptor', response.data)
+
+    def test_query_job_with_response_id(self):
+        JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
+        JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst', errcode="0").save()
+        JobStatusModel(indexid=2, jobid=self.job_id, status='inst', progress=50, descp='inst', errcode="0").save()
+        JobStatusModel(indexid=3, jobid=self.job_id, status='inst', progress=80, descp='inst', errcode="0").save()
+        JobStatusModel(indexid=4, jobid=self.job_id, status='inst', progress=100, descp='inst', errcode="0").save()
+        response = self.client.get("/api/nslcm/v1/jobs/%s?responseId=2" % self.job_id)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.job_id, response.data.get('jobId'))
+        self.assertIn('responseDescriptor', response.data)
+        self.assertEqual(100, response.data['responseDescriptor']['progress'])
+        self.assertEqual(1, len(response.data['responseDescriptor']['responseHistoryList']))

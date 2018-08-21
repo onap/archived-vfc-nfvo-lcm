@@ -22,7 +22,6 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.jobs.job_get import GetJobInfoService
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.utils.values import ignore_case_get
 from lcm.jobs.serializers import JobUpdReqSerializer, JobUpdRespSerializer
 from lcm.jobs.serializers import JobQueryRespSerializer
 from lcm.pub.exceptions import NSLCMException
@@ -46,7 +45,7 @@ class JobView(APIView):
     )
     def get(self, request, job_id):
         try:
-            response_id = ignore_case_get(request.META, 'responseId')
+            response_id = int(request.GET.get('responseId', 0))
             ret = GetJobInfoService(job_id, response_id).do_biz()
             # resp_serializer = JobQueryRespSerializer(data=ret)
             # if not resp_serializer.is_valid():
