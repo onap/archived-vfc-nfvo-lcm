@@ -46,7 +46,7 @@ class JobView(APIView):
     )
     def get(self, request, job_id):
         try:
-            response_id = ignore_case_get(request.META, 'responseId')
+            response_id = int(request.GET.get('responseId', 0))
             ret = GetJobInfoService(job_id, response_id).do_biz()
             # resp_serializer = JobQueryRespSerializer(data=ret)
             # if not resp_serializer.is_valid():
