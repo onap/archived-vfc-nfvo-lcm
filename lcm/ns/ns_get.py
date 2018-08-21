@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 
 class GetNSInfoService(object):
-    def __init__(self, nsfilter=None):
-        self.ns_filter = nsfilter
+    def __init__(self, ns_filter=None):
+        self.ns_filter = ns_filter
 
     def get_ns_info(self):
         ns_insts = None

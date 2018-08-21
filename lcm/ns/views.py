@@ -55,12 +55,7 @@ class CreateNSView(APIView):
     def get(self, request):
         try:
             logger.debug("CreateNSView::get")
-            filter = None
-            csarId = ignore_case_get(request.META, 'csarId')
-            if csarId:
-                filter = {"csarId": csarId}
-
-            ret = GetNSInfoService(filter).get_ns_info()
+            ret = GetNSInfoService().get_ns_info()
             logger.debug("CreateNSView::get::ret=%s", ret)
             resp_serializer = QueryNsRespSerializer(data=ret, many=True)
             if not resp_serializer.is_valid():
