@@ -18,10 +18,10 @@ import mock
 from django.test import TestCase, Client
 from rest_framework import status
 
+from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.database.models import NfInstModel, NSInstModel
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS
-from lcm.ns.ns_terminate import TerminateNsService
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
 
@@ -66,11 +66,11 @@ class TestTerminateNsViews(TestCase):
         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
 
         mock_vals = {
-            "/api/nslcm/v1/ns/vls/1":
+            "/api/nslcm/v1/ns/ns_vls/1":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/api/nslcm/v1/ns/sfcs/1":
+            "/api/nslcm/v1/ns/ns_sfcs/1":
                 [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/api/nslcm/v1/ns/vnfs/1":
+            "/api/nslcm/v1/ns/ns_vnfs/1":
                 [0, json.JSONEncoder().encode({}), '200'],
             "/api/ztevnfmdriver/v1/jobs/" + self.job_id + "&responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,

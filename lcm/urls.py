@@ -20,14 +20,13 @@ from lcm.pub.config.config import REG_TO_MSB_WHEN_START, REG_TO_MSB_REG_URL, REG
 
 urlpatterns = [
     url(r'^', include('lcm.samples.urls')),
-    url(r'^', include('lcm.ns.vnfs.urls')),
-    url(r'^', include('lcm.ns.vls.urls')),
-    url(r'^', include('lcm.ns.sfcs.urls')),
+    url(r'^', include('lcm.ns_vnfs.urls')),
+    url(r'^', include('lcm.ns_vls.urls')),
+    url(r'^', include('lcm.ns_sfcs.urls')),
     url(r'^', include('lcm.ns.urls')),
     url(r'^', include('lcm.jobs.urls')),
     url(r'^', include('lcm.workflows.urls')),
     url(r'^', include('lcm.swagger.urls')),
-    url(r'^', include('lcm.v2.urls')),
 ]
 
 # regist to MSB when startup
