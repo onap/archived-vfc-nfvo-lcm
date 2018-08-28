@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import mock
 import json
 
-from rest_framework import status
-from django.test import TestCase
+import mock
 from django.test import Client
-from lcm.pub.database.models import NSInstModel, NfInstModel
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from django.test import TestCase
+from rest_framework import status
+
+from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.const import NS_INST_STATUS
+from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.ns.ns_heal import NSHealService
-from lcm.ns.vnfs.heal_vnfs import NFHealService
+from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 
 
 class TestHealNsViews(TestCase):

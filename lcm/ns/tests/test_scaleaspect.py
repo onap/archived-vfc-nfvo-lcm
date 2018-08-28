@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.test import TestCase
-from lcm.ns.scaleaspect import get_json_data
-from lcm.pub.database.models import NfInstModel
-from lcm.pub.database.models import NSInstModel
-from lcm.pub.utils.timeutil import now_time
 import os
+
+from django.test import TestCase
+
+from lcm.ns.biz.scaleaspect import get_json_data
+from lcm.pub.database.models import NSInstModel
+from lcm.pub.database.models import NfInstModel
+from lcm.pub.utils.timeutil import now_time
 
 
 class TestScaleAspect(TestCase):

@@ -12,21 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import uuid
 import os
+import uuid
+
 import mock
 from django.test import Client
 from django.test import TestCase
+from lcm.ns.biz.scaleaspect import get_json_data
 from rest_framework import status
+
+from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.const import NS_INST_STATUS
-from lcm.ns.ns_manual_scale import NSManualScaleService
 from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi import catalog
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
-from lcm.pub.msapi import catalog
-from lcm.ns.scaleaspect import get_json_data
-
 
 SCALING_JSON = {
     "scale_options": [

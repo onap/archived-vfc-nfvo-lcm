@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rest_framework import status
-from django.test import TestCase
-from rest_framework.test import APIClient
-import mock
 import json
 
+import mock
+from django.test import TestCase
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from lcm.ns.biz.ns_instant import BuildInWorkflowThread
+from lcm.ns.biz.ns_instant import InstantNSService
 from lcm.pub.database.models import NSInstModel
-from lcm.ns.ns_instant import InstantNSService
-from lcm.ns.ns_instant import BuildInWorkflowThread
 from lcm.pub.utils import restcall
 
 
@@ -42,7 +43,7 @@ class TestNsInstant(TestCase):
         }
         self.nsd_model = json.dumps({
             "model": json.dumps({
-                "vnfs": [{
+                "ns_vnfs": [{
                     "vnf_id": "vnf1",
                     "properties": {
                         "id": "vnfd1",
@@ -52,14 +53,14 @@ class TestNsInstant(TestCase):
                         "vl_id": "5"
                     }]
                 }],
-                "vls": [{
+                "ns_vls": [{
                     "vl_id": "5",
                     "properties": {}
                 }]
             })
         })
         self.updated_nsd_model = {
-            "vnfs": [{
+            "ns_vnfs": [{
                 "dependencies": [{
                     "vl_id": "5"
                 }],
@@ -69,7 +70,7 @@ class TestNsInstant(TestCase):
                     "id": "vnfd1"
                 }
             }],
-            "vls": [{
+            "ns_vls": [{
                 "vl_id": "5",
                 "properties": {
                     "location_info": {

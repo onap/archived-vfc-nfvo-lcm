@@ -19,7 +19,7 @@ from django.test import TestCase, Client
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from lcm.ns.ns_create import CreateNSService
+from lcm.ns.biz.ns_create import CreateNSService
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall

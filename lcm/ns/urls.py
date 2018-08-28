@@ -14,10 +14,12 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from lcm.ns.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView, NSInstPostDealView, \
+from lcm.ns.views.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView, NSInstPostDealView, \
     NSManualScaleView, NSHealView
 
 urlpatterns = [
+    # API will be deprecated in the future release
+
     url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$', NSInstView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNSView.as_view()),
@@ -25,6 +27,9 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$', NSInstPostDealView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$', NSManualScaleView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', NSHealView.as_view())
+
+    # SOL005 URL API definition TODO
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
