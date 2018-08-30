@@ -15,7 +15,7 @@ handlers:
         level: "DEBUG"
         class:
             "logging.handlers.RotatingFileHandler"
-        filename: "logs/runtime_nslcm.log"
+        filename: "logs/runtime_lcm.log"
         formatter:
             "standard"
         maxBytes: 52428800
