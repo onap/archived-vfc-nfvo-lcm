@@ -23,7 +23,7 @@ swagger_info = openapi.Info(
 
 The `swagger-ui` view can be found [here](/api/nslcm/v1/swagger).
 The `ReDoc` view can be found [here](/api/nslcm/v1/redoc).
-The swagger YAML document can be found [here](/api/nslcm/v1/swagger.json).
+The swagger JSON document can be found [here](/api/nslcm/v1/swagger.json).
 The swagger YAML document can be found [here](/api/nslcm/v1/swagger.yaml)."""
 )
 
