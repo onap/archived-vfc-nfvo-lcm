@@ -30,7 +30,7 @@ def call_from_ns_cancel_resource(res_type, instid):
     else:
         # vnf
         method = "POST"
-        uri = '/api/nslcm/v1/ns/vnfs/%s' % instid
+        uri = '/api/nslcm/v1/ns/terminatevnf/%s' % instid
     req_param = {}
     ret = req_by_msb(uri, method, json.dumps(req_param))
     logger.info("[NS terminate] call vnfm [%s] result:%s" % (res_type, ret))

@@ -199,8 +199,8 @@ class TestTerminateVnfViews(TestCase):
             "terminationType": "forceful",
             "gracefulTerminationTimeout": "600"}
 
-        response = self.client.post("/api/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id, data=req_data)
-        self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
+        response = self.client.post("/api/nslcm/v1/ns/terminatevnf/%s" % self.nf_inst_id, data=req_data)
+        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
     def test_terminate_vnf(self, mock_call_req):

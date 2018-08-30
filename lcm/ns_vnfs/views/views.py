@@ -108,23 +108,25 @@ class NfDetailView(APIView):
 
         return Response(status=status.HTTP_200_OK, data=rsp)
 
+
+class NfTerminate(APIView):
     @swagger_auto_schema(
         request_body=TerminateVnfReqSerializer(),
         responses={
-            status.HTTP_200_OK: TerminateVnfRespSerializer(),
+            status.HTTP_202_ACCEPTED: TerminateVnfRespSerializer(),
             status.HTTP_409_CONFLICT: "Inner error"
         }
     )
-    def post(self, request_paras, vnfinstid):
-        logger.debug("VnfTerminateView--post::> %s, %s", vnfinstid, request_paras.data)
+    def post(self, request, vnfinstid):
+        logger.debug("NfTerminate--post::> %s, %s", vnfinstid, request.data)
 
-        req_serializer = TerminateVnfReqSerializer(data=request_paras.data)
+        req_serializer = TerminateVnfReqSerializer(data=request.data)
         if not req_serializer.is_valid():
             logger.error(req_serializer.errors)
 
         vnf_inst_id = vnfinstid
-        terminationType = ignore_case_get(request_paras.data, 'terminationType')
-        gracefulTerminationTimeout = ignore_case_get(request_paras.data, 'gracefulTerminationTimeout')
+        terminationType = ignore_case_get(request.data, 'terminationType')
+        gracefulTerminationTimeout = ignore_case_get(request.data, 'gracefulTerminationTimeout')
         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, vnf_inst_id)
         data = {'terminationType': terminationType, 'gracefulTerminationTimeout': gracefulTerminationTimeout}
         logger.debug("data=%s", data)
@@ -139,7 +141,7 @@ class NfDetailView(APIView):
         if not resp_serializer.is_valid():
             logger.error(resp_serializer.errors)
 
-        return Response(data=rsp, status=status.HTTP_201_CREATED)
+        return Response(data=rsp, status=status.HTTP_202_ACCEPTED)
 
 
 class NfGrant(APIView):
