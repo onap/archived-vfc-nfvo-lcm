@@ -123,7 +123,7 @@ class HealNsDataSerializer(serializers.Serializer):
 
 class HealNsReqSerializer(serializers.Serializer):
     healVnfData = HealVnfDataSerializer(help_text="Data of heal VNF", required=False, allow_null=True)
-    healNsData = HealNsDataSerializer(help_text="Data of heal NS", required=False,allow_null=True)
+    healNsData = HealNsDataSerializer(help_text="Data of heal NS", required=False, allow_null=True)
     
 
 class InstNsPostDealReqSerializer(serializers.Serializer):
