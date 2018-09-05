@@ -12,22 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import uuid
 import logging
 import traceback
+import uuid
 
 from rest_framework import status
 from rest_framework.response import Response
-from lcm.ns.vnfs.const import INST_TYPE
-from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.exceptions import NSLCMException
-from lcm.pub.database.models import VNFCInstModel, VLInstModel, NfInstModel, VmInstModel, PortInstModel, CPInstModel
-from lcm.pub.msapi.aai import create_network_aai, query_network_aai, delete_network_aai, query_vserver_aai, \
-    delete_vserver_aai
-from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
-from lcm.pub.msapi.aai import create_vserver_aai
 
+from lcm.ns_vnfs.const import INST_TYPE
+from lcm.pub.config.config import REPORT_TO_AAI
+from lcm.pub.database.models import (CPInstModel, NfInstModel, PortInstModel,
+                                     VLInstModel, VmInstModel, VNFCInstModel)
+from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi.aai import (create_network_aai, create_vserver_aai,
+                               delete_network_aai, delete_vserver_aai,
+                               query_network_aai, query_vserver_aai)
+from lcm.pub.msapi.extsys import get_vim_by_id, split_vim_to_owner_region
+from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
 
