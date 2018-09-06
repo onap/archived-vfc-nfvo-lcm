@@ -114,8 +114,16 @@ class HealVnfDataSerializer(serializers.Serializer):
     additionalParams = HealNsAdditionalParamsSerializer(help_text="Additional params of NS heal", required=False, allow_null=True)
 
 
+class HealNsDataSerializer(serializers.Serializer):
+    degreeHealing = serializers.CharField(help_text="degree of healing", required=True)
+    actionsHealing = serializers.CharField(help_text="action of NS healing", required=True)
+    healScript = serializers.CharField(help_text="script of NS heal", required=False, allow_null=True)
+    additionalParamsforNs = serializers.CharField(help_text="Addition params of NS heal", required=False, allow_null=True)
+
+
 class HealNsReqSerializer(serializers.Serializer):
     healVnfData = HealVnfDataSerializer(help_text="Data of heal VNF", required=False, allow_null=True)
+    healNsData = HealNsDataSerializer(help_text="Data of heal NS", required=False, allow_null=True)
 
 
 class InstNsPostDealReqSerializer(serializers.Serializer):
