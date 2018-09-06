@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_1b6c7f34",
+        "filename": "lcm/ns/serializers/ns_serializers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-06T05:44:46Z",
+      "side": 1,
+      "message": "This is a enum, which uses ChoiceField.\n like this:\nvnfState \u003d serializers.ChoiceField(\n        help_text\u003d\"vnfState\",\n        choices\u003d[\"STARTED\", \"STOPPED\", \"NOT_INSTANTIATED\", \"INSTANTIATED\", \"FAILED\"],\n        required\u003dTrue,\n        allow_null\u003dTrue)",
+      "range": {
+        "startLine": 118,
+        "startChar": 32,
+        "endLine": 118,
+        "endChar": 41
+      },
+      "revId": "1b2df58796ad9cd4e757c932b83f86c0f69f9fff",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
