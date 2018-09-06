@@ -36,6 +36,7 @@ class NSHealService(threading.Thread):
         self.job_id = job_id
 
         self.heal_vnf_data = ''
+        self.heal_ns_data = ''
 
     def run(self):
         try:
@@ -59,10 +60,17 @@ class NSHealService(threading.Thread):
         if not ns_info:
             logger.error('NS [id=%s] does not exist' % self.ns_instance_id)
             raise NSLCMException('NS [id=%s] does not exist' % self.ns_instance_id)
+        self.heal_ns_data = ignore_case_get(self.request_data, 'healNsData')
         self.heal_vnf_data = ignore_case_get(self.request_data, 'healVnfData')
-        if not self.heal_vnf_data:
-            logger.error('healVnfData parameter does not exist or value is incorrect.')
-            raise NSLCMException('healVnfData parameter does not exist or value incorrect.')
+        if self.heal_ns_data and self.heal_vnf_data:
+            logger.error('healNsData and healVnfData can not exist together')
+            raise NSLCMException('healNsData and healVnfData can not exist together')
+        if not self.heal_ns_data and not self.heal_vnf_data:
+            logger.error('healNsData and healVnfData parameters does not exist or value is incorrect.')
+            raise NSLCMException('healNsData and healVnfData parameters does not exist or value is incorrect.')
+        if self.heal_ns_data:
+            logger.info('The request of healNsData is being updated')
+            raise NSLCMException('The request of healNsData is being updated')
 
     def do_vnfs_heal(self):
         vnf_heal_params = self.prepare_vnf_heal_params(self.heal_vnf_data)
