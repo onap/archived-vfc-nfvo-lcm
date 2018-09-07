@@ -320,7 +320,6 @@ class OOFDataModel(models.Model):
     class Meta:
         db_table = 'NFVO_OOF_DATA'
 
-    id = models.CharField(db_column='ID', max_length=255, primary_key=True)
     request_id = models.CharField(db_column='REQUESTID', max_length=255)
     transaction_id = models.CharField(db_column='TRANSACTIONID', max_length=255)
     request_status = models.CharField(db_column='REQUESTSTATUS', max_length=50)
@@ -329,6 +328,4 @@ class OOFDataModel(models.Model):
     vim_id = models.CharField(db_column='VIMID', max_length=255, null=True, blank=True)
     cloud_owner = models.CharField(db_column='CLOUDOWNER', max_length=100, null=True, blank=True)
     cloud_region_id = models.CharField(db_column='CLOUDREGIONID', max_length=255, null=True, blank=True)
-    vdu_name = models.CharField(db_column='VDUNAME', max_length=100, null=True, blank=True)
-    flavor_name = models.CharField(db_column='FLAVORNAME', max_length=100, null=True, blank=True)
-    directive = models.TextField(db_column='DIRECTIVE', max_length=65535, null=True, blank=True)
+    vdu_info = models.TextField(db_column='VDUINFO', max_length=65535, null=True, blank=True)
