@@ -126,6 +126,47 @@ class HealNsReqSerializer(serializers.Serializer):
     healNsData = HealNsDataSerializer(help_text="Data of heal NS", required=False, allow_null=True)
 
 
+class OperateVnfSerializer(serializers.Serializer):
+    nsInstanceId = serializers.CharField(help_text="ID of NS Instance", required=True)
+    changeStateTo = serializers.ChoiceField(help_text="Change state of start or stop", choices=["STARTED", "STOPPED"],
+                                            required=True)
+    stopType = serializers.ChoiceField(help_text="Stop of VNF after accepting the request",
+                                       choices=["FORCEFUL", "GRACEFUL"], required=False, allow_null=True)
+    gracefulStopTimeout = serializers.CharField(help_text="Timeout of NS", required=False, allow_null=True)
+
+
+class UpdateNsReqSerializer(serializers.Serializer):
+    updateType = serializers.ChoiceField(help_text="Type of NS Update",
+                                         choices=["ADD_VNF", "REMOVE_VNF", "INSTANTIATE_VNF", "CHANGE_VNF_DF",
+                                                  "OPERATE_VNF", "MODIFY_VNF_INFORMATION",
+                                                  "CHANGE_EXTERNAL_VNF_CONNECTIVITY", "REMOVE_SAP", "ADD_NESTED_NS",
+                                                  "REMOVE_NESTED_NS", "ASSOC_NEW_NSD_VERSION", "MOVE_VNF", "ADD_VNFFG",
+                                                  "REMOVE_VNFFG", "UPDATE_VNFFG", "CHANGE_NS_DF", "ADD_PNF",
+                                                  "MODIFY_PNF", "REMOVE_PNF"], required=True)
+    addVnfInstance = serializers.CharField(help_text="Add vnf instance", required=False, allow_null=True)
+    removeVnfInstanceId = serializers.CharField(help_text="Remove id of vnf instance", required=False, allow_null=True)
+    instantiateVnfData = serializers.CharField(help_text="Instantiate data of vnf", required=False, allow_null=True)
+    changeVnfFlavourData = serializers.CharField(help_text="Change data of vnf flavour", required=False, allow_null=True)
+    operateVnfData = OperateVnfSerializer(help_text="Data of operate Vnf", many=True)
+    modifyVnfInfoData = serializers.CharField(help_text="Data of modify vnf", required=False, allow_null=True)
+    changeExtVnfConnectivityData = serializers.CharField(help_text="Data of ext changed  in vnf connectivity",
+                                                         required=False, allow_null=True)
+    addSap = serializers.CharField(help_text="Add Sap", required=False, allow_null=True)
+    removeSapId = serializers.CharField(help_text="Id of sap removed", required=False, allow_null=True)
+    addNestedNsId = serializers.CharField(help_text="Id of ns add nested", required=False, allow_null=True)
+    removeNestedNsId = serializers.CharField(help_text="Id of ns remove nested", required=False, allow_null=True)
+    assocNewNsdVersionData = serializers.CharField(help_text="Data of assoc new nsd version", required=False, allow_null=True)
+    moveVnfInstanceData = serializers.CharField(help_text="Data of move vnf instance", required=False, allow_null=True)
+    addVnffg = serializers.CharField(help_text="Add vnf fg", required=False, allow_null=True)
+    removeVnffgId = serializers.CharField(help_text="Id of remove vnf fg", required=False, allow_null=True)
+    updateVnffg = serializers.CharField(help_text="Update vnf fg", required=False, allow_null=True)
+    changeNsFlavourData = serializers.CharField(help_text="Data of change ns flavour", required=False, allow_null=True)
+    addPnfData = serializers.CharField(help_text="Data of add pnf", required=False, allow_null=True)
+    modifyPnfData = serializers.CharField(help_text="Data of modify pnf", required=False, allow_null=True)
+    removePnfId = serializers.CharField(help_text="Id of remove pnf", required=False, allow_null=True)
+    updateTime = serializers.CharField(help_text="Update time", required=False, allow_null=True)
+
+
 class InstNsPostDealReqSerializer(serializers.Serializer):
     status = serializers.CharField(help_text="Status of NS Inst", required=True)
 
