@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_299c905c",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2018-09-07T06:57:30Z",
+      "side": 1,
+      "message": "I think we should use error instead of debug.",
+      "range": {
+        "startLine": 42,
+        "startChar": 19,
+        "endLine": 42,
+        "endChar": 24
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_e9a1b894",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2018-09-07T06:57:30Z",
+      "side": 1,
+      "message": "I think this line is not necessary. please delete it.",
+      "range": {
+        "startLine": 45,
+        "startChar": 12,
+        "endLine": 45,
+        "endChar": 42
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_49b8ecc7",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2018-09-07T06:57:30Z",
+      "side": 1,
+      "message": "I think this is an error instead of a debug.",
+      "range": {
+        "startLine": 46,
+        "startChar": 23,
+        "endLine": 46,
+        "endChar": 28
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
