@@ -68,6 +68,121 @@
       "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_4906ac87",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-07T07:30:19Z",
+      "side": 1,
+      "message": "Complexity of this function is too high.",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 22
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_a91ae0c3",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-07T07:30:19Z",
+      "side": 1,
+      "message": "This define should move to for loop",
+      "range": {
+        "startLine": 101,
+        "startChar": 8,
+        "endLine": 101,
+        "endChar": 29
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_e93d382c",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-07T07:30:19Z",
+      "side": 1,
+      "message": "Need be changed to:\nother_directives \u003d json.dumps(other_directives)",
+      "range": {
+        "startLine": 111,
+        "startChar": 16,
+        "endLine": 111,
+        "endChar": 44
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_090af478",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-07T07:30:19Z",
+      "side": 1,
+      "message": "Need be changed to:\nvduinfo \u003d json.dumps(vduinfo)",
+      "range": {
+        "startLine": 115,
+        "startChar": 12,
+        "endLine": 115,
+        "endChar": 31
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_c9271c11",
+        "filename": "lcm/ns_vnfs/biz/place_vnfs.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-07T07:30:19Z",
+      "side": 1,
+      "message": "Need be changed to logger.warn",
+      "range": {
+        "startLine": 118,
+        "startChar": 12,
+        "endLine": 118,
+        "endChar": 24
+      },
+      "revId": "b5ed174d1b71e32d51cb486adb1194e3f67ef0e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
