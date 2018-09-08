@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_55339b13",
+        "filename": "lcm/ns/serializers/ns_serializers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-08T09:18:54Z",
+      "side": 1,
+      "message": "The Data type is wrong, not char type, please see the SOL005 document6.5.2.12.\nMany data types are wrong, please take carefully",
+      "range": {
+        "startLine": 146,
+        "startChar": 33,
+        "endLine": 146,
+        "endChar": 42
+      },
+      "revId": "06f755e26430badd528591f6bafa82aec2530077",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
