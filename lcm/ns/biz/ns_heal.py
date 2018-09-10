@@ -18,7 +18,7 @@ import time
 import traceback
 
 from lcm.ns.const import NS_INST_STATUS
-from lcm.pub.database.models import JobModel, NSInstModel
+from lcm.pub.database.models import JobModel, NSInstModel, NfInstModel, VNFCInstModel, VmInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
@@ -68,39 +68,81 @@ class NSHealService(threading.Thread):
         if not self.heal_ns_data and not self.heal_vnf_data:
             logger.error('healNsData and healVnfData parameters does not exist or value is incorrect.')
             raise NSLCMException('healNsData and healVnfData parameters does not exist or value is incorrect.')
-        if self.heal_ns_data:
-            logger.info('The request of healNsData is being updated')
-            raise NSLCMException('The request of healNsData is being updated')
+            # if self.heal_ns_data:
+            #     logger.info('The request of healNsData is being updated')
+            #     raise NSLCMException('The request of healNsData is being updated')
 
     def do_vnfs_heal(self):
-        vnf_heal_params = self.prepare_vnf_heal_params(self.heal_vnf_data)
+        if self.heal_vnf_data:
+            heal_params = self.prepare_vnf_heal_params(self.heal_vnf_data)
+        else:
+            heal_params = self.prepare_vnf_heal_params(self.heal_ns_data)
         # count = len(self.heal_vnf_data)
-        # Only one VNF is supported to heal.
-        status = self.do_vnf_heal(vnf_heal_params, 15)
+        # Only one VNF is supported to heal.    
+        status = self.do_vnf_heal(heal_params, 15)
         if status is JOB_MODEL_STATUS.FINISHED:
-            logger.info('nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
+            logger.info('nf[%s] heal handle end' % heal_params.get('vnfInstanceId'))
             self.update_job(90,
-                            desc='nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
+                            desc='nf[%s] heal handle end' % heal_params.get('vnfInstanceId'))
         else:
             logger.error('nf heal failed')
             raise NSLCMException('nf heal failed')
 
-    def do_vnf_heal(self, vnf_heal_params, progress):
-        vnf_instance_id = vnf_heal_params.get('vnfInstanceId')
-        nf_service = NFHealService(vnf_instance_id, vnf_heal_params)
+    def do_vnf_heal(self, heal_params, progress):
+        instance_id = heal_params.get('vnfInstanceId')
+        nf_service = NFHealService(instance_id, heal_params)
         nf_service.start()
-        self.update_job(progress, desc='nf[%s] heal handle start' % vnf_instance_id)
+        self.update_job(progress, desc='nf[%s] heal handle start' % instance_id)
         status = self.wait_job_finish(nf_service.job_id)
         return status
 
     def prepare_vnf_heal_params(self, vnf_data):
-        vnf_instance_id = ignore_case_get(vnf_data, 'vnfInstanceId')
-        cause = ignore_case_get(vnf_data, "cause")
-        additional_params = ignore_case_get(vnf_data, "additionalParams")
+        # add
+        degree_healing = ignore_case_get(vnf_data, 'degreeHealing')
+        if degree_healing:
+            instance_id = self.ns_instance_id
+            cause = ''
+            action = ignore_case_get(vnf_data, 'actionsHealing')
+            if degree_healing == "HEAL_RESTORE":
+                ns_inst_info = NfInstModel.objects.filter(ns_inst_id=self.ns_instance_id)
+                if not ns_inst_info.exists():
+                    raise NSLCMException('NSInst(%s) does not exist' % self.ns_instance_id)
+
+                vnfc_insts = VNFCInstModel.objects.filter(nfinstid=ns_inst_info[0].nfinstid)
+                if not vnfc_insts.exists():
+                    raise NSLCMException('vnfcinsts(%s) does not exist' % ns_inst_info[0].nfinstid)
+                vm_id = vnfc_insts[0].vmid
+                vdu_id = vnfc_insts[0].vduid
+
+                vm_inst_infos = VmInstModel.objects.filter(vmid=vm_id)
+                if not vm_inst_infos.exists():
+                    raise NSLCMException('vminstinfos(%s) does not exist' % vm_id)
+                vm_name = vm_inst_infos[0].vmname
+            else:
+                logger.error('The degree of healing dose not exist or value is incorrect.')
+                raise NSLCMException('The degree of healing dose not exist or value is incorrect.')
+
+        else:
+            instance_id = ignore_case_get(vnf_data, 'vnfInstanceId')
+            cause = ignore_case_get(vnf_data, 'cause')
+            additional_params = ignore_case_get(vnf_data, 'additionalParams')
+            action = ignore_case_get(additional_params, 'action')
+            action_vm_info = ignore_case_get(additional_params, 'actionvminfo')
+            vm_id = ignore_case_get(action_vm_info, 'vmid')
+            vdu_id = ignore_case_get(action_vm_info, 'vduid')
+            vm_name = ignore_case_get(action_vm_info, 'vmname')
+
         result = {
-            "vnfInstanceId": vnf_instance_id,
+            "vnfInstanceId": instance_id,
             "cause": cause,
-            "additionalParams": additional_params
+            "additionalParams": {
+                "action": action,
+                "actionvminfo": {
+                    "vmid": vm_id,
+                    "vduid": vdu_id,
+                    "vmname": vm_name
+                }
+            }
         }
         return result
 
