@@ -148,13 +148,13 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     vnfLcmOpOccId = serializers.CharField(
         help_text="The identifier of the VNF lifecycle management operation occurrence associated to the GrantRequest.",
-        required=False,
+        required=False,  # TODO required
         allow_null=True,
         allow_blank=True
     )
     vnfdId = serializers.CharField(
         help_text="Identifier of the VNFD that defines the VNF for which the LCM operation is to be granted.",
-        required=False,
+        required=False,  # TODO required
         allow_null=True,
         allow_blank=True
     )
@@ -166,7 +166,7 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     operation = serializers.ChoiceField(
         help_text="The lifecycle management operation for which granting is requested.",
-        choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
+        choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
         required=True
     )
     isAutomaticInvocation = serializers.BooleanField(
@@ -217,7 +217,7 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     _links = GrantRequestLinksSerializer(
         help_text="Links to resources related to this request.",
-        required=False
+        required=False  # TODO required
     )
 
 
@@ -592,7 +592,7 @@ class GrantSerializer(serializers.Serializer):
     )
     vnfLcmOpOccId = serializers.CharField(
         help_text="Identifier of the related VNF lifecycle management operation occurrence.",
-        required=False,
+        required=False,  # TODO required
         allow_null=True,
         allow_blank=True
     )
@@ -663,6 +663,13 @@ class GrantSerializer(serializers.Serializer):
         help_text="Information about internal VLs that are managed by other entities than the VNFM.",
         many=True,
         required=False
+    )
+    additionalParams = serializers.DictField(
+        help_text="Additional parameters passed by the NFVO, \
+        specific to the VNF and the LCM operation.",
+        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        required=False,
+        allow_null=True
     )
     _links = GrantLinksSerializer(
         help_text="Links to resources related to this resource.",

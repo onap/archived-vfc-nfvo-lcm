@@ -33,7 +33,7 @@ urlpatterns = [
 
     # move form v2
     url(r'^api/nslcm/v2/grants$', VnfGrantView.as_view()),
-    url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$',
+    url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/ns_vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$',
         VnfNotifyView.as_view()),
 ]
 

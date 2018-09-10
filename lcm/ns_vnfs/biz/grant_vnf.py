@@ -15,7 +15,7 @@
 import json
 import logging
 import uuid
-from lcm.pub.database.models import NfInstModel
+from lcm.pub.database.models import NfInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.utils.values import ignore_case_get
@@ -85,12 +85,25 @@ class GrantVnf(object):
                 req_param[grant_type].append(grant_res)
             self.data = req_param
         vimConnections.append(resmgr.grant_vnf(self.data))
+
         grant_resp = {
             "id": str(uuid.uuid4()),
             "vnfInstanceId": ignore_case_get(self.data, 'vnfInstanceId'),
             "vnfLcmOpOccId": ignore_case_get(self.data, "vnfLcmOpOccId"),
             "vimConnections": vimConnections
         }
+
+        offs = OOFDataModel.objects.filter(service_resource_id=ignore_case_get(self.data, "vnfInstanceId"))
+        if offs.exists():
+            for off in offs:
+                grant_resp['vimAssets']['computeResourceFlavours'].append({
+                    'vimConnectionId': off.vim_id,
+                    'resourceProviderId': off.vdu_name,
+                    'vnfdVirtualComputeDescId': None,  # TODO: required
+                    'vimFlavourId': off.flavor_name
+                })
+                grant_resp['additionalparams'][off.vim_id] = off.directive
+
         logger.debug("grant_resp=%s", grant_resp)
         return grant_resp
 
