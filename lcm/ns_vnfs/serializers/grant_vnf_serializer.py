@@ -932,8 +932,13 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
         help_text="Identifier of this notification.",
         required=True
     )
-    notificationType = serializers.CharField(
+    notificationType = serializers.ChoiceField(
         help_text="Discriminator for the different notification types.",
+        choices=[
+            'VnfLcmOperationOccurrenceNotification',
+            'VnfIdentifierCreationNotification',
+            'VnfIdentifierDeletionNotification'
+        ],
         required=True
     )
     subscriptionId = serializers.CharField(
@@ -1017,12 +1022,14 @@ class VnfIdentifierCreationNotificationSerializer(serializers.Serializer):
         allow_null=False,
         allow_blank=False
     )
-    notificationType = serializers.CharField(
-        help_text="Discriminator for the different notification types. \
-        Shall be set to VnfIdentifierCreationNotification for this notification type.",
-        required=True,
-        allow_null=False,
-        allow_blank=False
+    notificationType = serializers.ChoiceField(
+        help_text="Discriminator for the different notification types.",
+        choices=[
+            'VnfLcmOperationOccurrenceNotification',
+            'VnfIdentifierCreationNotification',
+            'VnfIdentifierDeletionNotification'
+        ],
+        required=True
     )
     subscriptionId = serializers.CharField(
         help_text="Identifier of the subscription that this notification relates to.",
@@ -1058,12 +1065,14 @@ class VnfIdentifierDeletionNotificationSerializer(serializers.Serializer):
         allow_null=False,
         allow_blank=False
     )
-    notificationType = serializers.CharField(
-        help_text="Discriminator for the different notification types. \
-        Shall be set to VnfIdentifierDeletionNotification for this notification type.",
-        required=True,
-        allow_null=False,
-        allow_blank=False
+    notificationType = serializers.ChoiceField(
+        help_text="Discriminator for the different notification types.",
+        choices=[
+            'VnfLcmOperationOccurrenceNotification',
+            'VnfIdentifierCreationNotification',
+            'VnfIdentifierDeletionNotification'
+        ],
+        required=True
     )
     subscriptionId = serializers.CharField(
         help_text="Identifier of the subscription that this notification relates to.",

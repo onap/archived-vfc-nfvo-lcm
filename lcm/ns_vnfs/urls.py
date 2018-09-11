@@ -17,7 +17,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from lcm.ns_vnfs.views.views import LcmNotify, NfScaleView, NfVerifyView
 from lcm.ns_vnfs.views.views import NfView, NfDetailView, NfGrant, NfPlacement, NfTerminate
 from lcm.ns_vnfs.views.views import NfVnfmInfoView, NfVimInfoView
-from lcm.ns_vnfs.views.grant_vnf_views import VnfGrantView, VnfNotifyView
+from lcm.ns_vnfs.views.vnf_views import VnfGrantView, VnfNotifyView
 
 urlpatterns = [
     url(r'^api/nslcm/v1/ns/vnfs$', NfView.as_view()),

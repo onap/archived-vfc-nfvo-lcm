@@ -281,7 +281,7 @@ class VnfGrantViewTest(unittest.TestCase):
     def test_notify_vnf_normal(self):
         data = {
             "id": "string",
-            "notificationType": "string",
+            "notificationType": "VnfLcmOperationOccurrenceNotification",
             "subscriptionId": "string",
             "timeStamp": "string",
             "notificationStatus": "START",
