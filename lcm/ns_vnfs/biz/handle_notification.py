@@ -38,7 +38,7 @@ class HandleVnfLcmOocNotification(object):
         logger.debug("[Notify LCM] vnfmid=%s, vnfInstanceId=%s, data=%s" % (vnfmid, vnfInstanceId, data))
         self.vnfmid = vnfmid
         self.m_vnfInstanceId = vnfInstanceId
-        self.vnf_instid = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
+        self.vnf_instid = get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
         self.operation = ignore_case_get(data, 'operation')
         self.affectedVnfcs = ignore_case_get(data, 'affectedVnfcs')
         self.affectedVls = ignore_case_get(data, 'affectedVls')
@@ -55,22 +55,10 @@ class HandleVnfLcmOocNotification(object):
                 self.update_network_in_aai()
             logger.debug("notify lcm end")
         except NSLCMException as e:
-            self.exception(e.message)
+            exception(e.message)
         except Exception:
             logger.error(traceback.format_exc())
-            self.exception('unexpected exception')
-
-    def get_vnfinstid(self, mnfinstid, vnfm_inst_id):
-        logger.debug("vnfinstid in vnfm is:%s,vnfmid is:%s", mnfinstid, vnfm_inst_id)
-        logger.debug("mnfinstid=%s, vnfm_inst_id=%s", mnfinstid, vnfm_inst_id)
-        nfinst = NfInstModel.objects.filter(mnfinstid=mnfinstid, vnfm_inst_id=vnfm_inst_id).first()
-        if nfinst:
-            return nfinst.nfinstid
-        raise NSLCMException("vnfinstid not exist")
-
-    def exception(self, error_msg):
-        logger.error('Notify Lcm failed, detail message: %s' % error_msg)
-        return Response(data={'error': '%s' % error_msg}, status=status.HTTP_409_CONFLICT)
+            exception('unexpected exception')
 
     def update_Vnfc(self):
         for vnfc in self.affectedVnfcs:
@@ -98,7 +86,7 @@ class HandleVnfLcmOocNotification(object):
                                                                                    nfinstid=self.vnf_instid,
                                                                                    vmid=vmId)
             else:
-                self.exception('affectedVnfc struct error: changeType not in {ADDED, REMOVED, MODIFIED, TEMPORARY}')
+                exception('affectedVnfc struct error: changeType not in {ADDED, REMOVED, MODIFIED, TEMPORARY}')
         logger.debug("Success to update all vserver to aai.")
 
     def update_Vl(self):
@@ -112,9 +100,9 @@ class HandleVnfLcmOocNotification(object):
             resourceName = ignore_case_get(networkResource, 'resourceId')  # replaced with resouceId temporarily
 
             if resourceType != 'network':
-                self.exception('affectedVl struct error: resourceType not euqal network')
+                exception('affectedVl struct error: resourceType not euqal network')
 
-            ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
+            ownerId = self.vnf_instid
 
             if changeType == 'ADDED':
                 VLInstModel(vlinstanceid=vlInstanceId, vldid=vldid, vlinstancename=resourceName, ownertype=0,
@@ -126,7 +114,7 @@ class HandleVnfLcmOocNotification(object):
                     .update(vldid=vldid, vlinstancename=resourceName, ownertype=0, ownerid=ownerId,
                             relatednetworkid=resourceId, vltype=0)
             else:
-                self.exception('affectedVl struct error: changeType not in {ADDED, REMOVED, MODIFIED, TEMPORARY}')
+                exception('affectedVl struct error: changeType not in {ADDED, REMOVED, MODIFIED, TEMPORARY}')
 
     def update_Cp(self):
         for cp in self.affectedCps:
@@ -325,7 +313,7 @@ class HandleVnfIdentifierCreationNotification(object):
             logger.debug("Notify VNF identifier creation end.")
         except Exception:
             logger.error(traceback.format_exc())
-            self.exception('unexpected exception')
+            exception('unexpected exception')
 
 
 class HandleVnfIdentifierDeletionNotification(object):
@@ -333,7 +321,7 @@ class HandleVnfIdentifierDeletionNotification(object):
         logger.debug("[Notify VNF Identifier Deletion] vnfmId=%s, vnfInstanceId=%s, data=%s" % (vnfmId, vnfInstanceId, data))
         self.vnfm_id = vnfmId
         self.m_vnf_instance_id = vnfInstanceId
-        self.vnf_instance_id = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
+        self.vnf_instance_id = get_vnfinstid(self.m_vnf_instance_id, self.vnfm_id)
         self.time_stamp = ignore_case_get(data, 'timeStamp')
         # TODO: self.subscription_id = ignore_case_get(data, 'subscriptionId')
         # TODO: self._links = ignore_case_get(data, '_links')
@@ -347,4 +335,18 @@ class HandleVnfIdentifierDeletionNotification(object):
             logger.debug("Notify VNF identifier deletion end.")
         except Exception:
             logger.error(traceback.format_exc())
-            self.exception('unexpected exception')
+            exception('unexpected exception')
+
+
+def get_vnfinstid(mnfinstid, vnfm_inst_id):
+    logger.debug("vnfinstid in vnfm is:%s,vnfmid is:%s", mnfinstid, vnfm_inst_id)
+    logger.debug("mnfinstid=%s, vnfm_inst_id=%s", mnfinstid, vnfm_inst_id)
+    nfinst = NfInstModel.objects.filter(mnfinstid=mnfinstid, vnfm_inst_id=vnfm_inst_id).first()
+    if nfinst:
+        return nfinst.nfinstid
+    raise NSLCMException("vnfinstid not exist")
+
+
+def exception(error_msg):
+    logger.error('Notify Lcm failed, detail message: %s' % error_msg)
+    return Response(data={'error': '%s' % error_msg}, status=status.HTTP_409_CONFLICT)

@@ -1038,8 +1038,7 @@ class VnfIdentifierCreationNotificationSerializer(serializers.Serializer):
         allow_blank=True
     )
     timeStamp = serializers.DateField(
-        help_text="Discriminator for the different notification types. \
-        Shall be set to VnfIdentifierCreationNotification for this notification type.",
+        help_text="Date-time of the generation of the notification.",
         required=True,
         allow_null=False,
     )
@@ -1081,8 +1080,7 @@ class VnfIdentifierDeletionNotificationSerializer(serializers.Serializer):
         allow_blank=True
     )
     timeStamp = serializers.DateField(
-        help_text="Discriminator for the different notification types. \
-        Shall be set to VnfIdentifierDeletionionNotification for this notification type.",
+        help_text="Date-time of the generation of the notification.",
         required=True,
         allow_null=False,
     )
