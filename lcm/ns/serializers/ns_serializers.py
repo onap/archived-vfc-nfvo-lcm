@@ -100,6 +100,7 @@ class TerminateNsReqSerializer(serializers.Serializer):
 
 class ActionVmSerializer(serializers.Serializer):
     vmid = serializers.CharField(help_text="ID of VM", required=False, allow_null=True)
+    vduid = serializers.CharField(help_text="ID of vdu", required=False, allow_null=True)
     vmname = serializers.CharField(help_text="Name of VM", required=False, allow_null=True)
 
 
@@ -116,7 +117,10 @@ class HealVnfDataSerializer(serializers.Serializer):
 
 class HealNsDataSerializer(serializers.Serializer):
     degreeHealing = serializers.ChoiceField(help_text="degree of healing", choices=["HEAL_RESTORE", "HEAL_QOS", "HEAL_RESET", "PARTIAL_HEALING"], required=True)
-    actionsHealing = serializers.CharField(help_text="action of NS healing", required=True)
+    actionsHealing = serializers.ListField(
+        help_text="A list of actions",
+        child=serializers.CharField(help_text="One action", required=True),
+        required=False)
     healScript = serializers.CharField(help_text="script of NS heal", required=False, allow_null=True)
     additionalParamsforNs = serializers.CharField(help_text="Addition params of NS heal", required=False, allow_null=True)
 
