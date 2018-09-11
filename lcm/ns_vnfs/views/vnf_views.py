@@ -20,10 +20,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.ns_vnfs.biz.grant_vnf import GrantVnf
-from lcm.ns_vnfs.biz.handle_vnflcmooc_notification import HandleVnfLcmOocNotification
+from lcm.ns_vnfs.biz.handle_notification import HandleVnfLcmOocNotification, HandleVnfIdentifierCreationNotification, HandleVnfIdentifierDeletionNotification
 from lcm.ns_vnfs.serializers.grant_vnf_serializer import GrantRequestSerializer
 from lcm.ns_vnfs.serializers.grant_vnf_serializer import GrantSerializer
-from lcm.ns_vnfs.serializers.grant_vnf_serializer import VnfLcmOperationOccurrenceNotificationSerializer
+from lcm.ns_vnfs.serializers.grant_vnf_serializer import VnfLcmOperationOccurrenceNotificationSerializer, VnfIdentifierCreationNotificationSerializer, VnfIdentifierDeletionNotificationSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -41,9 +41,9 @@ class VnfGrantView(APIView):
     def post(self, request):
         logger.debug("VnfGrantView Post: %s" % request.data)
         try:
-            req_serializer = GrantRequestSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                raise Exception(req_serializer.errors)
+            grant_request = GrantRequestSerializer(data=request.data)
+            if not grant_request.is_valid():
+                raise Exception(grant_request.errors)
 
             grant_resp = GrantVnf(request.data).exec_grant()
 
@@ -71,12 +71,25 @@ class VnfNotifyView(APIView):
     def post(self, request, vnfmId, vnfInstanceId):
         logger.debug("VnfNotifyView post: %s" % request.data)
         logger.debug("vnfmId: %s vnfInstanceId: %s", vnfmId, vnfInstanceId)
+        notification_type = request.data['notificationType']
         try:
-            vnfLcmOocNotificationSerializer = VnfLcmOperationOccurrenceNotificationSerializer(data=request.data)
-            if not vnfLcmOocNotificationSerializer.is_valid():
-                raise Exception(vnfLcmOocNotificationSerializer.errors)
-
-            HandleVnfLcmOocNotification(vnfmId, vnfInstanceId, vnfLcmOocNotificationSerializer.data).do_biz()
+            if notification_type == 'VnfLcmOperationOccurrenceNotification':
+                notification = VnfLcmOperationOccurrenceNotificationSerializer(data=request.data)
+                if not notification.is_valid():
+                    raise Exception(notification.errors)
+                HandleVnfLcmOocNotification(vnfmId, vnfInstanceId, notification.data).do_biz()
+            elif notification_type == 'VnfIdentifierCreationNotification':
+                notification = VnfIdentifierCreationNotificationSerializer(data=request.data)
+                if not notification.is_valid():
+                    raise Exception(notification.errors)
+                HandleVnfIdentifierCreationNotification(vnfmId, vnfInstanceId, notification.data).do_biz()
+            elif notification_type == 'VnfIdentifierDeletionNotification':
+                notification = VnfIdentifierDeletionNotificationSerializer(data=request.data)
+                if not notification.is_valid():
+                    raise Exception(notification.errors)
+                HandleVnfIdentifierDeletionNotification(vnfmId, vnfInstanceId, notification.data).do_biz()
+            else:
+                raise Exception('Unexpected noitifcation type value.')
             return Response(data={}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             logger.error(traceback.format_exc())

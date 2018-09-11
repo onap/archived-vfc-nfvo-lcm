@@ -36,9 +36,9 @@ logger = logging.getLogger(__name__)
 class HandleVnfLcmOocNotification(object):
     def __init__(self, vnfmid, vnfInstanceId, data):
         logger.debug("[Notify LCM] vnfmid=%s, vnfInstanceId=%s, data=%s" % (vnfmid, vnfInstanceId, data))
-        self.vnf_instid = ''
         self.vnfmid = vnfmid
         self.m_vnfInstanceId = vnfInstanceId
+        self.vnf_instid = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
         self.operation = ignore_case_get(data, 'operation')
         self.affectedVnfcs = ignore_case_get(data, 'affectedVnfcs')
         self.affectedVls = ignore_case_get(data, 'affectedVls')
@@ -47,7 +47,6 @@ class HandleVnfLcmOocNotification(object):
 
     def do_biz(self):
         try:
-            self.vnf_instid = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
             self.update_Vnfc()
             self.update_Vl()
             self.update_Cp()
@@ -181,7 +180,7 @@ class HandleVnfLcmOocNotification(object):
                     logger.error('affectedVl struct error: resourceType not euqal network')
                     raise NSLCMException("affectedVl struct error: resourceType not euqal network")
 
-                ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
+                ownerId = self.vnf_instid
 
                 if changeType in ['ADDED', 'MODIFIED']:
                     self.create_network_and_subnet_in_aai(vlInstanceId, ownerId)
@@ -304,3 +303,48 @@ class HandleVnfLcmOocNotification(object):
             logger.debug("Fail to delete vserver from aai, detail message: %s" % e.message)
         except:
             logger.error(traceback.format_exc())
+
+
+class HandleVnfIdentifierCreationNotification(object):
+    def __init__(self, vnfmId, vnfInstanceId, data):
+        logger.debug("[Notify VNF Identifier Creation] vnfmId=%s, vnfInstanceId=%s, data=%s" % (vnfmId, vnfInstanceId, data))
+        self.vnfm_id = vnfmId
+        self.m_vnf_instance_id = vnfInstanceId
+        self.time_stamp = ignore_case_get(data, 'timeStamp')
+        # TODO: self.subscription_id = ignore_case_get(data, 'subscriptionId')
+        # TODO: self._links = ignore_case_get(data, '_links')
+
+    def do_biz(self):
+        try:
+            NfInstModel(
+                nfinstid=str(uuid.uuid4()),
+                mnfinstid=self.m_vnf_instance_id,
+                vnfm_inst_id=self.vnfm_id,
+                create_time=self.time_stamp
+            ).save()
+            logger.debug("Notify VNF identifier creation end.")
+        except Exception:
+            logger.error(traceback.format_exc())
+            self.exception('unexpected exception')
+
+
+class HandleVnfIdentifierDeletionNotification(object):
+    def __init__(self, vnfmId, vnfInstanceId, data):
+        logger.debug("[Notify VNF Identifier Deletion] vnfmId=%s, vnfInstanceId=%s, data=%s" % (vnfmId, vnfInstanceId, data))
+        self.vnfm_id = vnfmId
+        self.m_vnf_instance_id = vnfInstanceId
+        self.vnf_instance_id = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
+        self.time_stamp = ignore_case_get(data, 'timeStamp')
+        # TODO: self.subscription_id = ignore_case_get(data, 'subscriptionId')
+        # TODO: self._links = ignore_case_get(data, '_links')
+
+    def do_biz(self):
+        try:
+            nf_insts = NfInstModel.objects.filter(
+                mnfinstid=self.m_vnf_instance_id, vnfm_inst_id=self.vnfm_id)
+            if nf_insts.exists():
+                nf_insts.delete()
+            logger.debug("Notify VNF identifier deletion end.")
+        except Exception:
+            logger.error(traceback.format_exc())
+            self.exception('unexpected exception')
