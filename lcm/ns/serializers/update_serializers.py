@@ -20,10 +20,11 @@ class IpOverEthernetAddressDataSerializer(serializers.Serializer):
 
 
 class CpProtocolDataSerializer(serializers.Serializer):
-    layerProtocol = serializers.ChoiceField(help_text="layer proto col",
+    layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s).",
                                             choices=["IP_OVER_ETHERNET"], required=True)
-    ipOverEthernet = IpOverEthernetAddressDataSerializer(help_text="Data of ip over ethernet address", required=False,
-                                                         allow_null=True)
+    ipOverEthernet = IpOverEthernetAddressDataSerializer(
+        help_text="Network address data for IP over Ethernet to assign to the extCP instance.",
+        required=False, allow_null=True)
 
 
 class VnfExtCpConfigSerializer(serializers.Serializer):
@@ -77,7 +78,8 @@ class ChangeVnfFlavourDataSerizlizer(serializers.Serializer):
 
 
 class OperationalStatesSerializer(serializers.Serializer):
-    OperationalStates = serializers.ChoiceField(help_text="State of operation", choices=["STARTED", "STOPPED"])
+    OperationalStates = serializers.ChoiceField(help_text="State of operation",
+                                                choices=["STARTED", "STOPPED"])
 
 
 class StopTypeSerializer(serializers.Serializer):
@@ -168,7 +170,7 @@ class NfpDataSerializer(serializers.Serializer):
     nfpName = serializers.CharField(help_text="Name of nfp", required=False, allow_null=True)
     description = serializers.CharField(help_text="Description of nfp", required=False, allow_null=True)
     nsCpHandle = serializers.ListField(help_text="Handle of nscp", child=(
-        NsCpHandleSerializer(help_text="Handle of nscp")), required=False, allow_null=True)
+        NsCpHandleSerializer(help_text="Handle of nscp", required=True)), required=False, allow_null=True)
     nfpRule = NfpRuleSerializer(help_text="Rule of nfp", required=False, allow_null=True)
 
 
@@ -177,6 +179,59 @@ class UpdateVnffgDataSerializer(serializers.Serializer):
     nfp = serializers.ListField(help_text="nfp", child=(NfpDataSerializer(help_text="Data of nfp", required=True)),
                                 required=False, allow_null=True)
     nfpInfoId = serializers.ListField(help_text="ID of nfp info", required=False, allow_null=True)
+
+
+class ChangeNsFlavourDataSerializer(serializers.Serializer):
+    newNsFlavourId = serializers.CharField(
+        help_text="Identifier of the new NS DF to apply to this NS instance.", required=True)
+    instantiationLevelId = serializers.CharField(
+        help_text="Identifier of the instantiation level of the deployment flavour to be instantiated.",
+        required=False, allow_null=True)
+
+
+class IdentifierInPnfSerializer(serializers.Serializer):
+    IdentifierInPnf = serializers.Serializer(help_text="An Identifier that is unique within respect to a PNF.")
+
+
+class IdentifierInNsdSerializer(serializers.Serializer):
+    IdentifierInNsd = serializers.Serializer(help_text="An identifier that is unique within a NS descriptor")
+
+
+class PnfExtCpDataSerializer(serializers.Serializer):
+    cpInstanceI16 = IdentifierInPnfSerializer(help_text="Identifier of the CP. Shall be present for existing CP.",
+                                              required=False, allow_null=True)
+    cpdId = IdentifierInNsdSerializer(help_text="Identifier of the Connection Point Descriptor (CPD) for this CP",
+                                      required=False, allow_null=True)
+    cpProtocolData = serializers.ListField(help_text="Address assigned for this CP.",
+                                           child=(CpProtocolDataSerializer(
+                                               help_text="This type represents network protocol data.", required=True)),
+                                           required=False, allow_null=True)
+
+
+class AddPnfDataSerializer(serializers.Serializer):
+    pnfId = serializers.CharField(help_text="Identifier of the PNF.", required=True)
+    pnfName = serializers.CharField(help_text="Name of the PNF.", required=True)
+    pnfdId = serializers.CharField(help_text="Identifier of the PNFD on which the PNF is based.", required=True)
+    pnfProfileId = serializers.CharField(
+        help_text="Identifier of related PnfProfile in the NSD on which the PNF is based.", required=True)
+    cpData = serializers.ListField(help_text="Address assigned for the PNF external CP(s). ",
+                                   child=(PnfExtCpDataSerializer(
+                                       help_text="Serializer data of pnf ext cp", required=True)),
+                                   required=False, allow_null=True)
+
+
+class ModifyPnfDataSerializer(serializers.Serializer):
+    pnfId = serializers.CharField(help_text="Identifier of the PNF.", required=True)
+    pnfName = serializers.CharField(help_text="Name of the PNF", required=False, allow_null=True)
+    cpData = serializers.ListField(
+        help_text="Address assigned for the PNF external CP(s).",
+        child=(PnfExtCpDataSerializer(
+            help_text="This type represents the configuration data on the external CP of the PNF.")),
+        required=False, allow_null=True)
+
+
+class DateTimeSerializer(serializers.Serializer):
+    DateTime = serializers.Serializer(help_text="Date-time stamp.")
 
 
 class UpdateNsReqSerializer(serializers.Serializer):
@@ -231,3 +286,17 @@ class UpdateNsReqSerializer(serializers.Serializer):
                                         child=(UpdateVnffgDataSerializer(
                                             help_text="Data of update vnf fg", required=True)),
                                         required=False, allow_null=True)
+    changeNsFlavourData = ChangeNsFlavourDataSerializer(
+        help_text="Specifies the new DF to be applied to the NS instance", required=False, allow_null=True)
+    addPnfData = serializers.ListField(help_text="Specifies the PNF to be added into the NS instance.",
+                                       child=(AddPnfDataSerializer(help_text="Serializer data of add pnf", required=True)),
+                                       required=False, allow_null=True)
+    modifyPnfData = serializers.ListField(help_text="Specifies the PNF to be modified in the NS instance.",
+                                          child=(ModifyPnfDataSerializer(
+                                              help_text="This type specifies an PNF to be modified in the NS instance.",
+                                              required=True)),
+                                          required=False, allow_null=True)
+    removePnfId = serializers.ListField(help_text="Identifier of the PNF to be deleted from the NS instance.",
+                                        required=False, allow_null=True)
+    updateTime = DateTimeSerializer(help_text="Timestamp indicating the update time of the NS",
+                                    required=False, allow_null=True)
