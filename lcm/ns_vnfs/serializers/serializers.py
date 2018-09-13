@@ -271,7 +271,7 @@ class LicenseSolutionSerializer(serializers.Serializer):
 
 class AssignmentInfoSerializer(serializers.Serializer):
     key = serializers.CharField(help_text="Any attribute Key needed", required=True)
-    value = serializers.CharField(help_text="Attribute value for that key", required=True)
+    value = serializers.JSONField(help_text="Attribute value for that key", required=True)
 
 
 class PlacementSolutionSerializer(serializers.Serializer):
@@ -283,24 +283,24 @@ class PlacementSolutionSerializer(serializers.Serializer):
                                               required=False, many=True)
 
 
-class ComprehensiveSolutionSerializer(serializers.Serializer):
-    child = serializers.ListField(
-        help_text="A list of placement solutions",
-        child=PlacementSolutionSerializer(help_text="A list of placement solutions"),
-        allow_empty=True,
-        required=True)
+class ComprehensiveSolutionSerializer(serializers.ListSerializer):
+    child = PlacementSolutionSerializer(help_text="A list of placement solutions",
+                                        allow_null=True,
+                                        required=True)
 
 
 class SolutionSerializer(serializers.Serializer):
     placementSolutions = ComprehensiveSolutionSerializer(help_text="A list of Placement Solutions",
-                                                         required=True, many=True)
+                                                         required=True,
+                                                         allow_empty=True,
+                                                         many=True)
     licenseSolutions = LicenseSolutionSerializer(help_text="A list of License Solutions",
                                                  required=True, many=True)
 
 
 class PlaceVnfReqSerializer(serializers.Serializer):
-    requestId = serializers.UUIDField(help_text="ID of Homing Request", required=True)
-    transactionId = serializers.UUIDField(help_text="ID of Homing Transaction", required=True, allow_null=False)
+    requestId = serializers.CharField(help_text="ID of Homing Request", required=True)
+    transactionId = serializers.CharField(help_text="ID of Homing Transaction", required=True, allow_null=False)
     statusMessage = serializers.CharField(help_text="Status Message of Request", required=False, allow_null=True)
     requestStatus = serializers.ChoiceField(
         help_text="The Status of a Request",
