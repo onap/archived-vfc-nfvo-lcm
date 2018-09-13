@@ -75,7 +75,6 @@ class TestHealNsViews(TestCase):
 
     @mock.patch.object(NSHealService, 'run')
     def test_heal_vnf_url(self, mock_run):
-
         data = {
             "healVnfData": {
                 "vnfInstanceId": self.nf_inst_id,
@@ -84,35 +83,6 @@ class TestHealNsViews(TestCase):
                     "action": "restartvm",
                     "actionvminfo": {
                         "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
-        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
-        self.assertIsNotNone(response.data)
-        self.assertIn("jobId", response.data)
-        self.assertNotIn("error", response.data)
-
-        response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
-
-    # add healNsData
-    @mock.patch.object(NSHealService, 'run')
-    def test_heal_ns_url(self, mock_run):
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
                         "vmname": "xgw-smp11"
                     }
                 }
@@ -141,31 +111,6 @@ class TestHealNsViews(TestCase):
                     "action": "restartvm",
                     "actionvminfo": {
                         "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
-        NSHealService(self.ns_inst_id, data, self.job_id).run()
-        self.assertEqual(NSInstModel.objects.get(id=self.ns_inst_id).status, NS_INST_STATUS.HEALING)
-
-    # add healNsData
-    @mock.patch.object(NFHealService, 'start')
-    @mock.patch.object(NSHealService, 'wait_job_finish')
-    @mock.patch.object(NSHealService, 'update_job')
-    def test_healNsData_ns_manual_scale_thread(self, mock_start, mock_wait, mock_update):
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
                         "vmname": "xgw-smp11"
                     }
                 }
@@ -189,33 +134,6 @@ class TestHealNsViews(TestCase):
                     "action": "restartvm",
                     "actionvminfo": {
                         "vmid": "33",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=data)
-        self.assertEqual(response.data["error"], "NS Not Found")
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-        self.assertIn("error", response.data)
-
-    # add healNsData
-    @mock.patch.object(NSHealService, "start")
-    def test_healNsData_ns_heal_non_existing_ns(self, mock_start):
-        mock_start.side_effect = NSLCMException("NS Not Found")
-
-        ns_inst_id = "2"
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
                         "vmname": "xgw-smp11"
                     }
                 }
