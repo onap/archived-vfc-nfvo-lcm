@@ -36,6 +36,7 @@ class NSInstModel(models.Model):
     name = models.CharField(db_column='NAME', max_length=200)
     nspackage_id = models.CharField(db_column='NSPACKAGEID', max_length=200, null=True, blank=True)
     nsd_id = models.CharField(db_column='NSDID', max_length=200)
+    nsd_invariant_id = models.CharField(db_column='NSDINVARIANTID', max_length=200)
     description = models.CharField(db_column='DESCRIPTION', max_length=255, null=True, blank=True)
     sdncontroller_id = models.CharField(db_column='SDNCONTROLLERID', max_length=200, null=True, blank=True)
     flavour_id = models.CharField(db_column='FLAVOURID', max_length=200, null=True, blank=True)

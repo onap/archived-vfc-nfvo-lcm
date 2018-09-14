@@ -54,6 +54,7 @@ class CreateNSService(object):
         packageInfo = ns_package_info["packageInfo"]
         self.ns_package_id = ignore_case_get(packageInfo, "nsPackageId")
         self.nsd_id = ignore_case_get(packageInfo, "nsdId")
+        self.nsd_invariant_id = ignore_case_get(packageInfo, "nsdInvariantId")
         logger.debug("CreateNSService::check_nsd_valid::ns_package_id=%s,nsd_id=%s", self.ns_package_id, self.nsd_id)
 
     def check_ns_inst_name_exist(self):
@@ -69,6 +70,7 @@ class CreateNSService(object):
                     name=self.ns_name,
                     nspackage_id=self.ns_package_id,
                     nsd_id=self.nsd_id,
+                    nsd_invariant_id=self.nsd_invariant_id,
                     description=self.description,
                     status='empty',
                     lastuptime=now_time(),

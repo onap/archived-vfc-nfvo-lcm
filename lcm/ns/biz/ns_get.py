@@ -40,6 +40,7 @@ class GetNSInfoService(object):
             'nsName': ns_inst.name,
             'description': ns_inst.description,
             'nsdId': ns_inst.nsd_id,
+            'nsdInvariantId': ns_inst.nsd_invariant_id,
             'vnfInfoId': self.get_vnf_infos(ns_inst.id),
             'vlInfo': self.get_vl_infos(ns_inst.id),
             'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
