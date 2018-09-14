@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_fd7f0dde",
+        "filename": "lcm/ns_vnfs/biz/create_vnfs.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2018-09-14T06:08:02Z",
+      "side": 1,
+      "message": "We should put URL and port to config.py",
+      "range": {
+        "startLine": 272,
+        "startChar": 20,
+        "endLine": 272,
+        "endChar": 54
+      },
+      "revId": "c17c3eedba4b1e6a14e5d80b08f68019ea3d6612",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
