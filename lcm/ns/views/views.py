@@ -19,6 +19,7 @@ from drf_yasg.utils import swagger_auto_schema
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.ns.biz.ns_get import GetNSInfoService
 from lcm.ns.biz.ns_heal import NSHealService
+from lcm.ns.biz.ns_update import NSUpdateService
 from lcm.ns.biz.ns_instant import InstantNSService
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.biz.ns_terminate import TerminateNsService
@@ -36,6 +37,7 @@ from lcm.ns.serializers.ns_serializers import NsOperateJobSerializer
 from lcm.ns.serializers.ns_serializers import QueryNsRespSerializer
 from lcm.ns.serializers.ns_serializers import TerminateNsReqSerializer
 from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
+from lcm.ns.serializers.update_serializers import UpdateNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.restcall import req_by_msb
@@ -180,6 +182,36 @@ class NSHealView(APIView):
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             logger.error("Exception in HealNSView: %s", e.message)
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class NSUpdateView(APIView):
+    @swagger_auto_schema(
+        request_body=UpdateNsReqSerializer(),
+        responses={
+            status.HTTP_202_ACCEPTED: NsOperateJobSerializer(),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
+    def post(self, request, ns_instance_id):
+        try:
+            logger.debug("Enter UpdateNSView::post %s", request.data)
+            logger.debug("Enter UpdateNSView:: %s", ns_instance_id)
+            req_serializer = UpdateNsReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                raise NSLCMException(req_serializer.errors)
+
+            job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
+            NSUpdateService(ns_instance_id, request.data, job_id).start()
+
+            resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
+            if not resp_serializer.is_valid():
+                raise NSLCMException(resp_serializer.errors)
+
+            logger.debug("Leave UpdateNSView::post ret=%s", resp_serializer.data)
+            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+        except Exception as e:
+            logger.error("Exception in UpdateNSView: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
