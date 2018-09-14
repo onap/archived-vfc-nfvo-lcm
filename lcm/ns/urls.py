@@ -15,7 +15,7 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns.views.views import CreateNSView, NSInstView, TerminateNSView, NSDetailView, NSInstPostDealView, \
-    NSManualScaleView, NSHealView
+    NSManualScaleView, NSHealView, NSUpdateView
 
 urlpatterns = [
     # API will be deprecated in the future release
@@ -29,6 +29,8 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', NSHealView.as_view())
 
     # SOL005 URL API definition TODO
+
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update$',NSUpdateView.as_view())
 
 ]
 
