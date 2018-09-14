@@ -19,7 +19,7 @@ from threading import Thread
 
 from lcm.ns.const import OWNER_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.database.models import NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel
+from lcm.pub.database.models import NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_vnf_aai
 from lcm.pub.msapi.extsys import get_vnfm_by_id
@@ -30,8 +30,11 @@ from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil, JOB_TYPE
 from lcm.pub.utils.share_lock import do_biz_with_share_lock
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
+from lcm.pub.utils import restcall
 from lcm.ns_vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
+from lcm.pub.config.config import REG_TO_MSB_REG_PARAM
+
 
 logger = logging.getLogger(__name__)
 
@@ -207,6 +210,81 @@ class CreateVnfs(Thread):
             vnfd_model=self.vnfd_model,
             input_params=json.JSONEncoder().encode(self.inputs),
             lastuptime=now_time())
+
+    def build_homing_request(self):
+        id = str(uuid.uuid4())
+        callback_uri = " {vfcBaseUrl}/api/nslcm/v1/ns/placevnf"
+        IP = REG_TO_MSB_REG_PARAM["nodes"][0]["ip"]
+        PORT = REG_TO_MSB_REG_PARAM["nodes"][0]["port"]
+        vfcBaseUrl = IP + ':' + PORT
+        callback_uri = callback_uri.format(vfcBaseUrl=vfcBaseUrl)
+        modelInvariantId = "no-resourceModelInvariantId"
+        modelVersionId = "no-resourceModelVersionId"
+        nsInfo = NSInstModel.objects.filter(id=self.ns_inst_id)
+        placementDemand = {
+            "resourceModuleName": self.vnf_inst_name,
+            "serviceResourceId": self.vnfm_nf_inst_id,
+            "resourceModelInfo":
+                {
+                "modelInvariantId": modelInvariantId,
+                "modelVersionId": modelVersionId
+                }
+            }
+        req_body = {
+            "requestInfo": {
+                "transactionId": id,
+                "requestId": id,
+                "callbackUrl": callback_uri,
+                "sourceId": "vfc",
+                "requestType": "create",
+                "numSolutions": 1,
+                "optimizers": ["placement"],
+                "timeout": 600
+            },
+            "placementInfo": {
+                "placementDemands": []
+            },
+            "serviceInfo": {
+                "serviceInstanceId": self.ns_inst_id,
+                "serviceName": self.ns_inst_name,
+                "modelInfo": {
+                    "modelInvariantId": nsInfo[0].nsd_invariant_id,
+                    "modelVersionId": nsInfo[0].nsd_id
+                }
+            }
+        }
+        req_body["placementInfo"]["placementDemands"].append(placementDemand)
+        # Stored the init request info inside DB
+        OOFDataModel.objects.create(
+            request_id=id,
+            transaction_id=id,
+            request_status="init",
+            request_module_name=self.vnfm_nf_inst_id,
+            service_resource_id=self.vnf_inst_name,
+            vim_id="",
+            cloud_owner="",
+            cloud_region_id="",
+            vdu_info="",
+        )
+        return req_body
+
+    def send_homing_request_to_OOF(self):
+        req_body = self.build_homing_request()
+        base_url = "http://oof.api.simpledemo.onap.org:8698"
+        resources = "/api/oof/v1/placement"
+        resp = restcall.call_req(base_url=base_url, user="vfc_test", passwd="vfc_testpwd",
+                                 auth_type=restcall.rest_oneway_auth, resource=resources,
+                                 method="POST", content=req_body, additional_headers="")
+        resp_body = resp[-2]
+        resp_status = resp[-1]
+        if resp_body:
+            logger.debug("Got OOF sync response")
+        else:
+            logger.warn("Missing OOF sync response")
+        logger.debug(("OOF sync response code is %s") % resp_status)
+        if (resp_status != 202):
+            raise Exception("Received a Bad Sync from OOF with response code %s" % resp_status)
+        logger.info("Completed Homing request to OOF")
 
     def send_get_vnfm_request_to_extsys(self):
         resp_body = get_vnfm_by_id(self.vnfm_inst_id)
