@@ -139,6 +139,59 @@ class TestCreateVnfViews(TestCase):
         CreateVnfs(data, nf_inst_id, job_id).run()
         self.assertTrue(NfInstModel.objects.get(nfinstid=nf_inst_id).status, VNF_STATUS.ACTIVE)
 
+    @mock.patch.object(restcall, 'call_req')
+    @mock.patch.object(CreateVnfs, 'build_homing_request')
+    def test_send_homing_request(self, mock_build_req, mock_call_req):
+        nf_inst_id, job_id = create_vnfs.prepare_create_params()
+        OOFDataModel.objects.all().delete()
+        resp = {
+            "requestId": "1234",
+            "transactionId": "1234",
+            "requestStatus": "accepted"
+        }
+        mock_build_req.return_value = {
+            "requestInfo": {
+                "transactionId": "1234",
+                "requestId": "1234",
+                "callbackUrl": "xx",
+                "sourceId": "vfc",
+                "requestType": "create",
+                "numSolutions": 1,
+                "optimizers": ["placement"],
+                "timeout": 600
+            },
+            "placementInfo": {
+                "placementDemands": [
+                    {
+                        "resourceModuleName": "vG",
+                        "serviceResourceId": "1234",
+                        "resourceModelInfo": {
+                            "modelInvariantId": "1234",
+                            "modelVersionId": "1234"
+                        }
+                    }
+                ]
+            },
+            "serviceInfo": {
+                "serviceInstanceId": "1234",
+                "serviceName": "1234",
+                "modelInfo": {
+                    "modelInvariantId": "5678",
+                    "modelVersionId": "7890"
+                }
+            }
+        }
+        mock_call_req.return_value = [0, json.JSONEncoder().encode(resp), '202']
+        data = {
+            'ns_instance_id': ignore_case_get(self.data, 'nsInstanceId'),
+            'additional_param_for_ns': ignore_case_get(self.data, 'additionalParamForNs'),
+            'additional_param_for_vnf': ignore_case_get(self.data, 'additionalParamForVnf'),
+            'vnf_index': ignore_case_get(self.data, 'vnfIndex')
+        }
+        CreateVnfs(data, nf_inst_id, job_id).send_homing_request_to_OOF()
+        ret = OOFDataModel.objects.filter(request_id="1234", transaction_id="1234")
+        self.assertIsNotNone(ret)
+
 
 class TestTerminateVnfViews(TestCase):
     def setUp(self):
