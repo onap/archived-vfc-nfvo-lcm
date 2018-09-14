@@ -30,7 +30,7 @@ class PlaceVnfs(object):
             logger.error("Error occurred in Homing: OOF Async Callback Response is empty")
             return False
         if self.data.get('requestStatus') == "completed":
-            if self.data.get("solutions").get("placementSolutions"):
+            if self.data.get("solutions").get("placementSolutions") is not None:
                 self.placements = self.data.get("solutions").get("placementSolutions")
                 logger.debug("Got placement solutions in OOF Async Callback response")
                 return True
@@ -39,10 +39,14 @@ class PlaceVnfs(object):
                              "does not contain placement solution")
                 return False
         else:
-            logger.error(
-                "Error occurred in Homing: Request has not been completed, the request status is %s, "
-                "the status message is %s" % self.data.get('requestStatus'),
-                self.data.get("statusMessage"))
+            if self.data.get("statusMessage"):
+                logger.error(
+                    "Error occurred in Homing: Request has not been completed, the request status is %s, "
+                    "the status message is %s" % (self.data.get('requestStatus'), self.data.get("statusMessage")))
+            else:
+                logger.error(
+                    "Error occurred in Homing: Request has not been completed, the request status is %s, "
+                    % self.data.get('requestStatus'))
             return False
 
     def extract(self):
@@ -53,9 +57,14 @@ class PlaceVnfs(object):
             self.update_response_to_db(self.data.get("requestId"), self.data.get("transactionId"),
                                        self.data.get("requestStatus"), "none", "none", "none", "none")
             return
+        if self.placements == [] or self.placements == [[]]:
+            logger.debug("No solution found for request %s " % self.data.get("requestId"))
+            self.update_response_to_db(self.data.get("requestId"), self.data.get("transactionId"),
+                                       self.data.get("requestStatus"), "no-solution", "no-solution",
+                                       "no-solution", "no-solution")
+            return
         for item in self.placements:
-            if not item:
-                logger.debug("No solution found for request %s " % self.data.get("requestId"))
+            if not isinstance(item, list):
                 self.update_response_to_db(self.data.get("requestId"), self.data.get("transactionId"),
                                            self.data.get("requestStatus"), "no-solution", "no-solution",
                                            "no-solution", "no-solution")
@@ -94,8 +103,7 @@ class PlaceVnfs(object):
                                                    transactionId=self.data.get("transactionId"),
                                                    requestStatus=self.data.get("requestStatus"),
                                                    vimId=vim_info['vimId'],
-                                                   cloudOwner=placement.get("solution").get(
-                                                       "cloudOwner"),
+                                                   cloudOwner=placement.get("solution").get("cloudOwner"),
                                                    cloudRegionId=vim_info['locationId'],
                                                    vduInfo=vduinfo
                                                    )
@@ -106,7 +114,7 @@ class PlaceVnfs(object):
 
     def get_info_from_directives(self, directives):
         vduinfo = []
-        for directive in directives:
+        for directive in directives.get("directives"):
             if directive.get("type") == "tocsa.nodes.nfv.Vdu.Compute":
                 vdu = {"vduName": directive.get("id")}
                 other_directives = []
@@ -137,5 +145,5 @@ class PlaceVnfs(object):
             vim_id=vimId,
             cloud_owner=cloudOwner,
             cloud_region_id=cloudRegionId,
-            vduinfo=vduInfo
+            vdu_info=vduInfo
         )

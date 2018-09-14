@@ -18,7 +18,7 @@ import mock
 from django.test import TestCase, Client
 from rest_framework import status
 
-from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel
+from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS
@@ -31,6 +31,7 @@ from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
 from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
 from lcm.ns_vnfs.const import VNF_STATUS, INST_TYPE
 from lcm.ns_vnfs.biz import create_vnfs
+from lcm.ns_vnfs.biz.place_vnfs import PlaceVnfs
 
 
 class TestGetVnfViews(TestCase):
@@ -628,6 +629,218 @@ class TestGetVimInfoViews(TestCase):
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
         context = json.loads(response.content)
         self.assertEqual(expect_data["url"], context["url"])
+
+
+class TestPlaceVnfViews(TestCase):
+    def setUp(self):
+        self.vnf_inst_id = "1234"
+        self.vnf_inst_name = "vG"
+        self.client = Client()
+        OOFDataModel.objects.all().delete()
+        OOFDataModel.objects.create(
+            request_id="1234",
+            transaction_id="1234",
+            request_status="init",
+            request_module_name=self.vnf_inst_name,
+            service_resource_id=self.vnf_inst_id,
+            vim_id="",
+            cloud_owner="",
+            cloud_region_id="",
+            vdu_info="",
+        )
+
+    def tearDown(self):
+        OOFDataModel.objects.all().delete()
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_place_vnf(self, mock_call_req):
+        vdu_info_json = [{
+            "vduName": "vG_0",
+            "flavorName": "HPA.flavor.1",
+            "directive": []
+        }]
+        PlaceVnfs(vnf_place_request).extract()
+        db_info = OOFDataModel.objects.filter(request_id=vnf_place_request.get("requestId"), transaction_id=vnf_place_request.get("transactionId"))
+        self.assertEqual(db_info[0].request_status, "completed")
+        self.assertEqual(db_info[0].vim_id, "CloudOwner1_DLLSTX1A")
+        self.assertEqual(db_info[0].cloud_owner, "CloudOwner1")
+        self.assertEqual(db_info[0].cloud_region_id, "DLLSTX1A")
+        self.assertEqual(db_info[0].vdu_info, json.dumps(vdu_info_json))
+
+    def test_place_vnf_with_invalid_response(self):
+        resp = {
+            "requestId": "1234",
+            "transactionId": "1234",
+            "statusMessage": "xx",
+            "requestStatus": "pending",
+            "solutions": {
+                "placementSolutions": [
+                    [
+                        {
+                            "resourceModuleName": self.vnf_inst_name,
+                            "serviceResourceId": self.vnf_inst_id,
+                            "solution": {
+                                "identifierType": "serviceInstanceId",
+                                "identifiers": [
+                                    "xx"
+                                ],
+                                "cloudOwner": "CloudOwner1 "
+                            },
+                            "assignmentInfo": []
+                        }
+                    ]
+                ],
+                "licenseSolutions": [
+                    {
+                        "resourceModuleName": "string",
+                        "serviceResourceId": "string",
+                        "entitlementPoolUUID": [
+                            "string"
+                        ],
+                        "licenseKeyGroupUUID": [
+                            "string"
+                        ],
+                        "entitlementPoolInvariantUUID": [
+                            "string"
+                        ],
+                        "licenseKeyGroupInvariantUUID": [
+                            "string"
+                        ]
+                    }
+                ]
+            }
+        }
+        PlaceVnfs(resp).extract()
+        db_info = OOFDataModel.objects.filter(request_id=resp.get("requestId"), transaction_id=resp.get("transactionId"))
+        self.assertEqual(db_info[0].request_status, "pending")
+        self.assertEqual(db_info[0].vim_id, "none")
+        self.assertEqual(db_info[0].cloud_owner, "none")
+        self.assertEqual(db_info[0].cloud_region_id, "none")
+        self.assertEqual(db_info[0].vdu_info, "none")
+
+    def test_place_vnf_with_no_assignment_info(self):
+        resp = {
+            "requestId": "1234",
+            "transactionId": "1234",
+            "statusMessage": "xx",
+            "requestStatus": "completed",
+            "solutions": {
+                "placementSolutions": [
+                    [
+                        {
+                            "resourceModuleName": self.vnf_inst_name,
+                            "serviceResourceId": self.vnf_inst_id,
+                            "solution": {
+                                "identifierType": "serviceInstanceId",
+                                "identifiers": [
+                                    "xx"
+                                ],
+                                "cloudOwner": "CloudOwner1 "
+                            }
+                        }
+                    ]
+                ],
+                "licenseSolutions": [
+                    {
+                        "resourceModuleName": "string",
+                        "serviceResourceId": "string",
+                        "entitlementPoolUUID": [
+                            "string"
+                        ],
+                        "licenseKeyGroupUUID": [
+                            "string"
+                        ],
+                        "entitlementPoolInvariantUUID": [
+                            "string"
+                        ],
+                        "licenseKeyGroupInvariantUUID": [
+                            "string"
+                        ]
+                    }
+                ]
+            }
+        }
+        PlaceVnfs(resp).extract()
+        db_info = OOFDataModel.objects.filter(request_id=resp.get("requestId"), transaction_id=resp.get("transactionId"))
+        self.assertEqual(db_info[0].request_status, "completed")
+        self.assertEqual(db_info[0].vim_id, "none")
+        self.assertEqual(db_info[0].cloud_owner, "none")
+        self.assertEqual(db_info[0].cloud_region_id, "none")
+        self.assertEqual(db_info[0].vdu_info, "none")
+
+    def test_place_vnf_no_directives(self):
+        resp = {
+            "requestId": "1234",
+            "transactionId": "1234",
+            "statusMessage": "xx",
+            "requestStatus": "completed",
+            "solutions": {
+                "placementSolutions": [
+                    [
+                        {
+                            "resourceModuleName": self.vnf_inst_name,
+                            "serviceResourceId": self.vnf_inst_id,
+                            "solution": {
+                                "identifierType": "serviceInstanceId",
+                                "identifiers": [
+                                    "xx"
+                                ],
+                                "cloudOwner": "CloudOwner1 "
+                            },
+                            "assignmentInfo": [
+                                {"key": "locationId",
+                                 "value": "DLLSTX1A"
+                                 }
+                            ]
+                        }
+                    ]
+                ],
+                "licenseSoutions": [
+                    {
+                        "resourceModuleName": "string",
+                        "serviceResourceId": "string",
+                        "entitlementPoolUUID": [
+                            "string"
+                        ],
+                        "licenseKeyGroupUUID": [
+                            "string"
+                        ],
+                        "entitlementPoolInvariantUUID": [
+                            "string"
+                        ],
+                        "licenseKeyGroupInvariantUUID": [
+                            "string"
+                        ]
+                    }
+                ]
+            }
+        }
+        PlaceVnfs(resp).extract()
+        db_info = OOFDataModel.objects.filter(request_id=resp.get("requestId"), transaction_id=resp.get("transactionId"))
+        self.assertEqual(db_info[0].request_status, "completed")
+        self.assertEqual(db_info[0].vim_id, "none")
+        self.assertEqual(db_info[0].cloud_owner, "none")
+        self.assertEqual(db_info[0].cloud_region_id, "none")
+        self.assertEqual(db_info[0].vdu_info, "none")
+
+    def test_place_vnf_with_no_solution(self):
+        resp = {
+            "requestId": "1234",
+            "transactionId": "1234",
+            "statusMessage": "xx",
+            "requestStatus": "completed",
+            "solutions": {
+                "placementSolutions": [],
+                "licenseSoutions": []
+            }
+        }
+        PlaceVnfs(resp).extract()
+        db_info = OOFDataModel.objects.filter(request_id=resp.get("requestId"), transaction_id=resp.get("transactionId"))
+        self.assertEqual(db_info[0].request_status, "completed")
+        self.assertEqual(db_info[0].vim_id, "no-solution")
+        self.assertEqual(db_info[0].cloud_owner, "no-solution")
+        self.assertEqual(db_info[0].cloud_region_id, "no-solution")
+        self.assertEqual(db_info[0].vdu_info, "no-solution")
 
 
 vnfd_model_dict = {
@@ -1376,4 +1589,98 @@ nf_package_info = {
         "downloadUrl": "1"
     },
     "imageInfo": []
+}
+
+vnf_place_request = {
+    "requestId": "1234",
+    "transactionId": "1234",
+    "statusMessage": "xx",
+    "requestStatus": "completed",
+    "solutions": {
+        "placementSolutions": [
+            [
+                {
+                    "resourceModuleName": "vG",
+                    "serviceResourceId": "1234",
+                    "solution": {
+                        "identifierType": "serviceInstanceId",
+                        "identifiers": [
+                            "xx"
+                        ],
+                        "cloudOwner": "CloudOwner1"
+                    },
+                    "assignmentInfo": [
+                        {"key": "isRehome",
+                         "value": "false"
+                         },
+                        {"key": "locationId",
+                         "value": "DLLSTX1A"
+                         },
+                        {"key": "locationType",
+                         "value": "openstack-cloud"
+                         },
+                        {"key": "vimId",
+                         "value": "CloudOwner1_DLLSTX1A"
+                         },
+                        {"key": "physicalLocationId",
+                         "value": "DLLSTX1223"
+                         },
+                        {"key": "oofDirectives",
+                         "value": {
+                             "directives": [
+                                 {
+                                     "id": "vG_0",
+                                     "type": "tocsa.nodes.nfv.Vdu.Compute",
+                                     "directives": [
+                                         {
+                                             "type": "flavor_directive",
+                                             "attributes": [
+                                                 {
+                                                     "attribute_name": "flavor_name",
+                                                     "attribute_value": "HPA.flavor.1"
+                                                 }
+                                             ]
+                                         }
+                                     ]
+                                 },
+                                 {
+                                     "id": "",
+                                     "type": "vnf",
+                                     "directives": [
+                                         {"type": " ",
+                                          "attributes": [
+                                              {
+                                                  "attribute_name": " ",
+                                                  "attribute_value": " "
+                                              }
+                                          ]
+                                          }
+                                     ]
+                                 }
+                             ]
+                         }
+                         }
+                    ]
+                }
+            ]
+        ],
+        "licenseSolutions": [
+            {
+                "resourceModuleName": "string",
+                "serviceResourceId": "string",
+                "entitlementPoolUUID": [
+                    "string"
+                ],
+                "licenseKeyGroupUUID": [
+                    "string"
+                ],
+                "entitlementPoolInvariantUUID": [
+                    "string"
+                ],
+                "licenseKeyGroupInvariantUUID": [
+                    "string"
+                ]
+            }
+        ]
+    }
 }
