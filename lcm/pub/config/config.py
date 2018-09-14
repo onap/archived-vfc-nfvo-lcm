@@ -68,3 +68,8 @@ MR_PORT = '3904'
 DEPLOY_WORKFLOW_WHEN_START = False
 # Support option: activiti/wso2/buildin
 WORKFLOW_OPTION = "buildin"
+
+# [OOF config]
+OOF_BASE_URL = "http://oof.api.simpledemo.onap.org:8698"
+OOF_USER = "vfc_test"
+OOF_PASSWD = "vfc_testpwd"
