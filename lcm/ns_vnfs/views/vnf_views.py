@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import logging
 import traceback
 
@@ -20,9 +21,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.ns_vnfs.biz.grant_vnf import GrantVnf
-from lcm.ns_vnfs.biz.handle_notification import HandleVnfLcmOocNotification, HandleVnfIdentifierCreationNotification, HandleVnfIdentifierDeletionNotification
 from lcm.ns_vnfs.serializers.grant_vnf_serializer import GrantRequestSerializer
 from lcm.ns_vnfs.serializers.grant_vnf_serializer import GrantSerializer
+from lcm.ns_vnfs.biz.handle_notification import HandleVnfLcmOocNotification, HandleVnfIdentifierCreationNotification, HandleVnfIdentifierDeletionNotification
 from lcm.ns_vnfs.serializers.grant_vnf_serializer import VnfLcmOperationOccurrenceNotificationSerializer, VnfIdentifierCreationNotificationSerializer, VnfIdentifierDeletionNotificationSerializer
 
 logger = logging.getLogger(__name__)
