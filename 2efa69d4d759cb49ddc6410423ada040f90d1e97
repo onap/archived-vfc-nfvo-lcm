@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_bd37554c",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-14T05:32:10Z",
+      "side": 1,
+      "message": "Intel?",
+      "range": {
+        "startLine": 1,
+        "startChar": 17,
+        "endLine": 1,
+        "endChar": 22
+      },
+      "revId": "2efa69d4d759cb49ddc6410423ada040f90d1e97",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_9d34d94a",
+        "filename": "lcm/ns/serializers/update_serializers.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-14T05:32:10Z",
+      "side": 1,
+      "message": "pls add license header",
+      "range": {
+        "startLine": 1,
+        "startChar": 27,
+        "endLine": 1,
+        "endChar": 38
+      },
+      "revId": "2efa69d4d759cb49ddc6410423ada040f90d1e97",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
