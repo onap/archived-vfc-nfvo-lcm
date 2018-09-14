@@ -32,6 +32,7 @@ from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
+from lcm.ns_vnfs.biz.subscribe import Subscription
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +79,7 @@ class CreateVnfs(Thread):
             self.send_get_vnfm_request_to_extsys()
             self.send_create_vnf_request_to_resmgr()
             self.wait_vnfm_job_finish()
+            self.subscribe()
             self.write_vnf_creation_info()
             self.save_info_to_db()
             JobUtil.add_job_status(self.job_id, 100, 'vnf instantiation success', 0)
@@ -242,6 +244,13 @@ class CreateVnfs(Thread):
         if ret != JOB_MODEL_STATUS.FINISHED:
             logger.error('VNF instantiation failed on VNFM side. ret=[%s]', ret)
             raise NSLCMException('VNF instantiation failed on VNFM side.')
+
+    def subscribe(self):
+        data = {
+            'vnfInstanceId': self.vnfm_nf_inst_id,
+            'vnfmId': self.vnfm_inst_id
+        }
+        Subscription(data).do_biz()
 
     def write_vnf_creation_info(self):
         logger.debug("write_vnf_creation_info start")

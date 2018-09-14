@@ -1037,7 +1037,7 @@ class VnfIdentifierCreationNotificationSerializer(serializers.Serializer):
         allow_null=True,
         allow_blank=True
     )
-    timeStamp = serializers.DateField(
+    timeStamp = serializers.DateTimeField(
         help_text="Date-time of the generation of the notification.",
         required=True,
         allow_null=False,
@@ -1079,7 +1079,7 @@ class VnfIdentifierDeletionNotificationSerializer(serializers.Serializer):
         allow_null=True,
         allow_blank=True
     )
-    timeStamp = serializers.DateField(
+    timeStamp = serializers.DateTimeField(
         help_text="Date-time of the generation of the notification.",
         required=True,
         allow_null=False,

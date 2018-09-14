@@ -203,7 +203,7 @@ VNF_IDENTIFIER_CREATION_NOTIFICATION_DATA = {
     'id': 'Identifier of this notification',
     'notificationType': 'VnfIdentifierCreationNotification',
     'subscriptionId': 'Identifier of the subscription',
-    'timeStamp': '2018-9-11',
+    'timeStamp': '2018-9-12T00:00:00',
     'vnfInstanceId': '2',
     '_links': {
         'vnfInstance': {'href': 'URI of the referenced resource'},
@@ -216,7 +216,7 @@ VNF_IDENTIFIER_DELETION_NOTIFICATION_DATA = {
     'id': 'Identifier of this notification',
     'notificationType': 'VnfIdentifierDeletionNotification',
     'subscriptionId': 'Identifier of the subscription',
-    'timeStamp': '2018-9-11',
+    'timeStamp': '2018-9-12T00:00:00',
     'vnfInstanceId': '2',
     '_links': {
         'vnfInstance': {'href': 'URI of the referenced resource'},
