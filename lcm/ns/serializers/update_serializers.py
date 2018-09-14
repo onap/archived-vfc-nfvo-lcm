@@ -2,16 +2,22 @@ from rest_framework import serializers
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(help_text="The id of vnf instance", required=True)
-    vnfProfileId = serializers.CharField(help_text="The id of vnf profile", required=False, allow_null=True)
+    vnfInstanceId = serializers.CharField(help_text="Identifier of the existing VNF instance to be used in the NS.",
+                                          required=True)
+    vnfProfileId = serializers.CharField(
+        help_text="Identifier of (Reference to) a vnfProfile defined in the NSD which the existing VNF instance "
+                  "shall be matched with", required=False, allow_null=True)
 
 
 class InstantiateVnfDataSerializer(serializers.Serializer):
-    vnfdId = serializers.CharField(help_text="ID of vnfd", required=True)
-    vnfFlavourId = serializers.CharField(help_text="Id of vnf flavour", required=True)
-    vnfInstantiationLevelId = serializers.CharField(help_text="Id of vnf instantiation level", required=False,
-                                                    allow_null=True)
-    vnfInstanceName = serializers.CharField(help_text="Name of vnf instance", required=False, allow_null=True)
+    vnfdId = serializers.CharField(help_text="Information sufficient to identify the VNFD", required=True)
+    vnfFlavourId = serializers.CharField(
+        help_text="Identifier of the VNF deployment flavour to be instantiated.", required=True)
+    vnfInstantiationLevelId = serializers.CharField(
+        help_text="Identifier of the instantiation level of the deployment flavour to be instantiated.", required=False,
+        allow_null=True)
+    vnfInstanceName = serializers.CharField(help_text="Human-readable name of the VNF instance to be created.",
+                                            required=False, allow_null=True)
 
 
 class IpOverEthernetAddressDataSerializer(serializers.Serializer):
@@ -28,19 +34,27 @@ class CpProtocolDataSerializer(serializers.Serializer):
 
 
 class VnfExtCpConfigSerializer(serializers.Serializer):
-    cpInstanceId = serializers.CharField(help_text="ID of cp instance", required=False, allow_null=True)
-    linkPortId = serializers.CharField(help_text="ID of link port", required=False, allow_null=True)
-    cpProtocolData = serializers.ListField(help_text="Data of cp proto col",
+    cpInstanceId = serializers.CharField(help_text="Identifier of the external CP instance to which this set of"
+                                                   "configuration parameters is requested to be applied. ",
+                                         required=False, allow_null=True)
+    linkPortId = serializers.CharField(help_text="Identifier of a pre-conFigured link port to which the"
+                                                 "external CP will be associated.", required=False, allow_null=True)
+    cpProtocolData = serializers.ListField(help_text="Parameters for configuring the network protocols on the"
+                                                     "link port that connects the CP to a VL",
                                            child=(CpProtocolDataSerializer(help_text="Data of cp proto col",
                                                                            required=True)),
                                            required=False, allow_null=True)
 
 
 class VnfExtCpData(serializers.Serializer):
-    cpdId = serializers.CharField(help_text="ID of cpd", required=True)
-    cpConfig = serializers.ListField(help_text="Config of cp",
-                                     child=(VnfExtCpConfigSerializer(help_text="Config of vnf ext cp", required=True)),
-                                     required=False, allow_null=True)
+    cpdId = serializers.CharField(help_text="The identifier of the CPD in the VNFD", required=True)
+    cpConfig = serializers.ListField(help_text="List of instance data that need to be conFigured on the CP instances"
+                                               "created from the respective CPD.",
+                                     child=(VnfExtCpConfigSerializer(help_text="This type represents an externally "
+                                                                               "provided link port or network address "
+                                                                               "information per instance of a VNF "
+                                                                               "external connection point.",
+                                                                     required=True)), required=False, allow_null=True)
 
 
 class ResourceHandleSerializer(serializers.Serializer):
@@ -57,28 +71,69 @@ class ExtLinkPortDataSerializer(serializers.Serializer):
 
 
 class ExtVirtualLinkDataSerializer(serializers.Serializer):
-    extVirtualLinkId = serializers.CharField(help_text="ID of ext virtual link", required=False, allow_null=True)
-    vimId = serializers.CharField(help_text="ID of vim", required=False, allow_null=True)
-    resourceProviderId = serializers.CharField(help_text="ID of resource provider", required=False, allow_null=True)
-    resourceId = serializers.CharField(help_text="ID of resource", required=True)
-    extCps = serializers.ListField(VnfExtCpData(help_text="Data of vnf ext cp", required=True),
+    extVirtualLinkId = serializers.CharField(help_text="The identifier of the external VL instance, if provided.",
+                                             required=False, allow_null=True)
+    vimId = serializers.CharField(help_text="Identifier of the VIM that manages this resource.",
+                                  required=False, allow_null=True)
+    resourceProviderId = serializers.CharField(help_text="Identifies the entity responsible for the management of this"
+                                                         "resource.", required=False, allow_null=True)
+    resourceId = serializers.CharField(help_text="The identifier of the resource in the scope of the VIM or the"
+                                                 "resource provider.", required=True)
+    extCps = serializers.ListField(VnfExtCpData(help_text="External CPs of the VNF to be connected to this external VL",
+                                                required=True),
                                    required=False, allow_null=True)
-    extLinkPorts = serializers.ListField(help_text="Ext link ports", child=(
-        ExtLinkPortDataSerializer(help_text="Data of ext link port", required=True)), required=False, allow_null=True)
+    extLinkPorts = serializers.ListField(help_text="Externally provided link ports to be used to connect external "
+                                                   "connection points to this external VL.",
+                                         child=(ExtLinkPortDataSerializer(help_text="Data of ext link port",
+                                                                          required=True)),
+                                         required=False, allow_null=True)
+
+
+class IdentifierInVimSerializer(serializers.Serializer):
+    IdentifierInVim = serializers.CharField(help_text="An identifier maintained by the VIM or other resource provider.")
+
+
+class ExtManagedVirtualLinkDataSerializer(serializers.Serializer):
+    extManagedVirtualLinkId = serializers.CharField(help_text="The identifier of the externally-managed internal VL"
+                                                              "instance, if provided.", required=False, allow_null=True)
+
+    virtualLinkDescId = serializers.CharField(help_text="The identifier of the VLD in the VNFD for this VL",
+                                              required=True)
+
+    resourceProviderId = serializers.CharField(help_text="Identifies the entity responsible for the management of"
+                                                         "this resource.", required=False, allow_null=True)
+
+    resourceId = IdentifierInVimSerializer(help_text="The identifier of the resource in the scope of the VIM or the"
+                                                     "resource provider.", required=True)
+
+
+class KeyValuePairsSerializer(serializers.Serializer):
+    KeyValuePairs = serializers.CharField(help_text="This type represents a list of key-value pairs.")
 
 
 class ChangeVnfFlavourDataSerizlizer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(help_text="ID of vnf instance", required=True)
-    newFlavourId = serializers.CharField(help_text="ID of new flavour", required=True)
-    instantiationLevelId = serializers.CharField(help_text="ID of instantiation level", required=False, allow_null=True)
-    extVirtualLinks = serializers.ListField(help_text="Ext of virtual links",
-                                            child=(ExtVirtualLinkDataSerializer(help_text="Data of ext virtual link",
-                                                                                required=True)),
+    vnfInstanceId = serializers.CharField(help_text="Identifier of the VNF instance to be modified.", required=True)
+    newFlavourId = serializers.CharField(help_text="Identifier of the VNF deployment flavour to be instantiated.",
+                                         required=True)
+    instantiationLevelId = serializers.CharField(help_text="Identifier of the instantiation level of the deployment "
+                                                           "flavour to be instantiated.",
+                                                 required=False, allow_null=True)
+    extVirtualLinks = serializers.ListField(help_text="Information about external VLs to connect the VNF to.",
+                                            child=(ExtVirtualLinkDataSerializer(
+                                                help_text="This type represents an external VL", required=True)),
                                             required=False, allow_null=True)
+    extManagedVirtualLinks = serializers.ListField(help_text="Information about internal VLs that are managed by NFVO.",
+                                                   child=(ExtManagedVirtualLinkDataSerializer(
+                                                       help_text="This type represents an externally-managed internal"
+                                                                 "VL.", required=True)),
+                                                   required=False, allow_null=True)
+    additionalParams = KeyValuePairsSerializer(help_text="Additional input parameters for the flavour change process,",
+                                               required=False, allow_null=True)
 
 
 class OperationalStatesSerializer(serializers.Serializer):
-    OperationalStates = serializers.ChoiceField(help_text="State of operation",
+    OperationalStates = serializers.ChoiceField(help_text="STARTED The VNF instance is up and running or the VNF"
+                                                          "instance has been shut down. ",
                                                 choices=["STARTED", "STOPPED"])
 
 
@@ -87,10 +142,13 @@ class StopTypeSerializer(serializers.Serializer):
 
 
 class OperateVnfDataSerializer(serializers.Serializer):
-    nsInstanceId = serializers.CharField(help_text="ID of NS Instance", required=True)
-    changeStateTo = OperationalStatesSerializer(help_text="Change state of start or stop", required=True)
-    stopType = StopTypeSerializer(help_text="Stop of VNF after accepting the request", required=False, allow_null=True)
-    gracefulStopTimeout = serializers.CharField(help_text="Timeout of NS", required=False, allow_null=True)
+    nsInstanceId = serializers.CharField(help_text="Identifier of the VNF instance.", required=True)
+    changeStateTo = OperationalStatesSerializer(help_text="The desired operational state", required=True)
+    stopType = StopTypeSerializer(help_text="It signals whether forceful or graceful stop is requested.",
+                                  required=False, allow_null=True)
+    gracefulStopTimeout = serializers.CharField(help_text="The time interval (in seconds) to wait for the VNF to be "
+                                                          "taken out of service during graceful stop",
+                                                required=False, allow_null=True)
 
 
 class ModifyVnfInfoDataSerializer(serializers.Serializer):
@@ -235,30 +293,38 @@ class DateTimeSerializer(serializers.Serializer):
 
 
 class UpdateNsReqSerializer(serializers.Serializer):
-    updateType = serializers.ChoiceField(help_text="Type of NS Update",
+    updateType = serializers.ChoiceField(help_text="The type of update.",
                                          choices=["ADD_VNF", "REMOVE_VNF", "INSTANTIATE_VNF", "CHANGE_VNF_DF",
                                                   "OPERATE_VNF", "MODIFY_VNF_INFORMATION",
                                                   "CHANGE_EXTERNAL_VNF_CONNECTIVITY", "REMOVE_SAP", "ADD_NESTED_NS",
                                                   "REMOVE_NESTED_NS", "ASSOC_NEW_NSD_VERSION", "MOVE_VNF", "ADD_VNFFG",
                                                   "REMOVE_VNFFG", "UPDATE_VNFFG", "CHANGE_NS_DF", "ADD_PNF",
                                                   "MODIFY_PNF", "REMOVE_PNF"], required=True)
-    addVnfInstance = serializers.ListField(help_text="Add vnf instance",
-                                           child=(VnfInstanceDataSerializer(help_text="Data of vnf instance",
-                                                                            required=True)),
-                                           required=False, allow_null=True)
-    removeVnfInstanceId = serializers.ListField(help_text="ID of remove vnf instance", required=False, allow_null=True)
-    instantiateVnfData = serializers.ListField(help_text="Instantiate data of vnf",
-                                               child=(InstantiateVnfDataSerializer(help_text="Data of vnf instance",
-                                                                                   required=True)),
+    addVnfInstance = serializers.ListField(
+        help_text="Identifies an existing VNF instance to be added to the NS instance.",
+        child=(VnfInstanceDataSerializer(
+            help_text="This type specifies an existing VNF instance to be used in the NS instance and if needed",
+            required=True)), required=False, allow_null=True)
+    removeVnfInstanceId = serializers.ListField(
+        help_text="Identifies an existing VNF instance to be removed from the NS instance. ",
+        required=False, allow_null=True)
+    instantiateVnfData = serializers.ListField(help_text="Identifies the new VNF to be instantiated.",
+                                               child=(InstantiateVnfDataSerializer(
+                                                   help_text="This type represents the information related to a SAP "
+                                                             "of a NS.", required=True)),
                                                required=False, allow_null=True)
-    changeVnfFlavourData = serializers.ListField(help_text="Change data of vnf flavour",
-                                                 child=(ChangeVnfFlavourDataSerizlizer(help_text="Data of vnf flavour"
-                                                                                                 "Changed",
-                                                                                       required=True)),
+    changeVnfFlavourData = serializers.ListField(help_text="Identifies the new DF of the VNF instance to be changed to",
+                                                 child=(ChangeVnfFlavourDataSerizlizer(
+                                                     help_text="The type represents the information that is requested "
+                                                               "to be changed deployment flavour for an existing VNF"
+                                                               " instance.", required=True)),
                                                  required=False, allow_null=True)
-    operateVnfData = serializers.ListField(help_text="Data of operate Vnf",
-                                           child=(OperateVnfDataSerializer(help_text="Data of vnf operate",
-                                                                           required=True)),
+    operateVnfData = serializers.ListField(help_text="Identifies the state of the VNF instance to be changed.",
+                                           child=(OperateVnfDataSerializer(help_text="This type represents a VNF "
+                                                                                     "instance for which the "
+                                                                                     "operational state needs to be"
+                                                                                     " changed and the requested new "
+                                                                                     "state.", required=True)),
                                            required=False, allow_null=True)
     modifyVnfInfoData = serializers.ListField(help_text="Data of modify vnf",
                                               child=(ModifyVnfInfoDataSerializer(help_text="Data of modify vnf info",
