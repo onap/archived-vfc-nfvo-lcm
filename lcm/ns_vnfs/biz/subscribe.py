@@ -15,14 +15,16 @@
 import json
 import logging
 
+from lcm.pub.database.models import SubscriptionModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vnfm_by_id
 from lcm.pub.utils.restcall import req_by_msb
+from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
 
 
-class Subscription(object):
+class SubscriptionCreation(object):
     def __init__(self, data):
         self.data = data
         self.vnf_instance_id = self.data['vnfInstanceId']
@@ -34,7 +36,7 @@ class Subscription(object):
     def do_biz(self):
         logger.debug('Start subscribing...')
         self.prepare_subscription_request_data()
-        self.subscribe_lccn_notification()
+        self.send_subscription_request()
         self.save_subscription_response_data()
         logger.debug('Subscribing has completed.')
 
@@ -80,12 +82,55 @@ class Subscription(object):
             }
         }
 
-    def subscribe_lccn_notification(self):
-        ret = req_by_msb('api/gvnfmdrvier/v1/%s/subscriptions' % self.vnfm_id, self.subscription_request_data)
+    def send_subscription_request(self):
+        ret = req_by_msb('api/gvnfmdrvier/v1/%s/subscriptions' % self.vnfm_id, 'POST', self.subscription_request_data)
         if ret[0] != 0:
             logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
             raise NSLCMException("Failed to subscribe from vnfm(%s)." % self.vnfm_id)
         self.subscription_response_data = json.JSONDecoder().decode(ret[1])
 
     def save_subscription_response_data(self):
-        pass
+        logger.debug("Save subscription[%s] to the database" % self.subscription_response_data['id'])
+        lccn_filter = self.subscription_response_data['filter']
+        SubscriptionModel.objects.create(
+            subscription_id=self.subscription_response_data['id'],
+            notification_types=json.dumps(lccn_filter['notificationTypes']),
+            operation_types=json.dumps(lccn_filter['operationTypes']),
+            operation_states=json.dumps(lccn_filter['operationStates']),
+            vnf_instance_filter=json.dumps(lccn_filter['vnfInstanceSubscriptionFilter']),
+            callback_uri=self.subscription_response_data['callbackUri'],
+            links=json.dumps(self.subscription_response_data['_links'])
+        )
+        logger.debug('Subscription[%s] has been created', self.subscription_response_data['id'])
+
+
+class SubscriptionDeletion(object):
+    def __init__(self, vnfm_id, vnf_instance_id):
+        self.vnfm_id = vnfm_id
+        self.vnf_instance_id = vnf_instance_id
+        self.subscription_id = None
+        self.subscription = None
+
+    def do_biz(self):
+        self.filter_subscription()
+        self.send_subscription_deletion_request()
+        self.delete_subscription_in_db()
+
+    def filter_subscription(self):
+        subscritptions = SubscriptionModel.objects.filter(vnf_instance_filter__contains=self.vnf_instance_id)
+        if not subscritptions.exists():
+            logger.debug("Subscription contains VNF(%s) does not exist." % self.vnf_instacne_id)
+        self.subscription = subscritptions.first()
+
+    def send_subscription_deletion_request(self):
+        if self.subscription:
+            self.subscription_id = ignore_case_get(self.subscription, 'id')
+            ret = req_by_msb('api/gvnfmdrvier/v1/%s/subscriptions/%s' % (self.vnfm_id, self.subscription_id), 'DELETE')
+            if ret[0] != 0:
+                logger.error('Status code is %s, detail is %s.', ret[2], ret[1])
+                raise NSLCMException("Failed to subscribe from vnfm(%s)." % self.vnfm_id)
+            logger.debug('Subscripton(%s) in vnfm(%s) has been deleted.' % (self.subscription, self.vnfm_id))
+
+    def delete_subscription_in_db(self):
+        if self.subscription:
+            self.subscription.delete()

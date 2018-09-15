@@ -1,4 +1,4 @@
-# Copyright 2016 ZTE Corporation.
+# Copyright 2016-2018 ZTE Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
+from lcm.ns_vnfs.biz.subscribe import SubscriptionDeletion
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,7 @@ class TerminateVnfs(threading.Thread):
             if REPORT_TO_AAI:
                 self.delete_vserver_in_aai()
                 self.delete_vnf_in_aai()
+            self.delete_subscription()
             self.delete_data_from_db()
         except NSLCMException as e:
             self.set_job_err(e.message)
@@ -127,6 +129,9 @@ class TerminateVnfs(threading.Thread):
         if ret != JOB_MODEL_STATUS.FINISHED:
             logger.error('VNF terminate failed on VNFM side.')
             raise NSLCMException('VNF terminate failed on VNFM side.')
+
+    def delete_subscription(self):
+        SubscriptionDeletion(self.vnfm_inst_id, self.vnf_inst_id).do_biz()
 
     def delete_data_from_db(self):
         NfInstModel.objects.filter(nfinstid=self.vnf_inst_id).delete()
