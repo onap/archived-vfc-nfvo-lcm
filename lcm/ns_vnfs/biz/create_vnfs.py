@@ -1,4 +1,4 @@
-# Copyright 2016 ZTE Corporation.
+# Copyright 2016-2018 ZTE Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import json
 import logging
 import traceback
@@ -34,7 +35,7 @@ from lcm.pub.utils import restcall
 from lcm.ns_vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
 from lcm.pub.config.config import REG_TO_MSB_REG_PARAM, OOF_BASE_URL, OOF_PASSWD, OOF_USER
-from lcm.ns_vnfs.biz.subscribe import Subscription
+from lcm.ns_vnfs.biz.subscribe import SubscriptionCreation
 
 logger = logging.getLogger(__name__)
 
@@ -335,7 +336,7 @@ class CreateVnfs(Thread):
             'vnfInstanceId': self.vnfm_nf_inst_id,
             'vnfmId': self.vnfm_inst_id
         }
-        Subscription(data).do_biz()
+        SubscriptionCreation(data).do_biz()
 
     def write_vnf_creation_info(self):
         logger.debug("write_vnf_creation_info start")

@@ -330,3 +330,16 @@ class OOFDataModel(models.Model):
     cloud_owner = models.CharField(db_column='CLOUDOWNER', max_length=100, null=True, blank=True)
     cloud_region_id = models.CharField(db_column='CLOUDREGIONID', max_length=255, null=True, blank=True)
     vdu_info = models.TextField(db_column='VDUINFO', max_length=65535, null=True, blank=True)
+
+
+class SubscriptionModel(models.Model):
+    class Meta:
+        db_table = 'NFVO_SUBSCRIPTION'
+
+    subscription_id = models.CharField(db_column='SUBSCRIPTIONID', max_length=255, primary_key=True)
+    vnf_instance_filter = models.TextField(db_column='VNFINSTANCEFILTER', null=True)
+    notification_types = models.TextField(db_column='NOTIFICATIONTYPES', null=True)
+    operation_types = models.TextField(db_column='OPERATIONTYPES', null=True)
+    operation_states = models.TextField(db_column='OPERATIONSTATES', null=True)
+    callback_uri = models.CharField(db_column='CALLBACKURI', max_length=255)
+    links = models.TextField(db_column='LINKS', max_length=20000)
