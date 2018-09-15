@@ -18,7 +18,7 @@ import mock
 from django.test import TestCase, Client
 from rest_framework import status
 
-from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel
+from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel, SubscriptionModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JOB_MODEL_STATUS
@@ -28,6 +28,7 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
+from lcm.ns_vnfs.biz.subscribe import SubscriptionDeletion
 from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
 from lcm.ns_vnfs.const import VNF_STATUS, INST_TYPE
 from lcm.ns_vnfs.biz import create_vnfs
@@ -203,7 +204,8 @@ class TestTerminateVnfViews(TestCase):
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
-    def test_terminate_vnf(self, mock_call_req):
+    @mock.patch.object(SubscriptionDeletion, 'send_subscription_deletion_request')
+    def test_terminate_vnf(self, mock_send_subscription_deletion_request, mock_call_req):
         job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
 
         nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
@@ -211,6 +213,43 @@ class TestTerminateVnfViews(TestCase):
             self.failUnlessEqual(1, 1)
         else:
             self.failUnlessEqual(1, 0)
+
+        notification_types = ["VnfLcmOperationOccurrenceNotification"],
+        operation_types = [
+            "INSTANTIATE",
+            "SCALE",
+            "SCALE_TO_LEVEL",
+            "CHANGE_FLAVOUR",
+            "TERMINATE",
+            "HEAL",
+            "OPERATE",
+            "CHANGE_EXT_CONN",
+            "MODIFY_INFO"
+        ],
+        operation_states = [
+            "STARTING",
+            "PROCESSING",
+            "COMPLETED",
+            "FAILED_TEMP",
+            "FAILED",
+            "ROLLING_BACK",
+            "ROLLED_BACK"
+        ],
+        vnf_instance_subscription_filter = {
+            "vnfdIds": [],
+            "vnfInstanceIds": '1',
+            "vnfInstanceNames": [],
+            "vnfProductsFromProviders": {}
+        }
+        SubscriptionModel.objects.create(
+            subscription_id='1',
+            notification_types=json.dumps(notification_types),
+            operation_types=json.dumps(operation_types),
+            operation_states=json.dumps(operation_states),
+            vnf_instance_filter=json.dumps(vnf_instance_subscription_filter),
+            # callback_uri,
+            # links=json.dumps(...)
+        )
 
         vnf_info = {
             "vnf-id": "vnf-id-test111",
@@ -263,6 +302,7 @@ class TestTerminateVnfViews(TestCase):
 
         def side_effect(*args):
             return mock_vals[args[4]]
+
         mock_call_req.side_effect = side_effect
 
         req_data = {
