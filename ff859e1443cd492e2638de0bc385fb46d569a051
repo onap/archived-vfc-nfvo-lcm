@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_72700472",
+        "filename": "lcm/ns/tests/test_ns_heal.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-15T07:19:47Z",
+      "side": 1,
+      "message": "Why still manual scale here?",
+      "range": {
+        "startLine": 134,
+        "startChar": 23,
+        "endLine": 134,
+        "endChar": 35
+      },
+      "revId": "ff859e1443cd492e2638de0bc385fb46d569a051",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_126bd085",
+        "filename": "lcm/ns/tests/test_ns_heal.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-15T07:19:47Z",
+      "side": 1,
+      "message": "why?",
+      "range": {
+        "startLine": 158,
+        "startChar": 21,
+        "endLine": 158,
+        "endChar": 33
+      },
+      "revId": "ff859e1443cd492e2638de0bc385fb46d569a051",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
