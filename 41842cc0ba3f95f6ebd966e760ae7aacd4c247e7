@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_86b32597",
+        "filename": "lcm/ns_vnfs/biz/create_vnfs.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-17T01:25:16Z",
+      "side": 1,
+      "message": "Should use resp[0] !\u003d 0",
+      "range": {
+        "startLine": 284,
+        "startChar": 7,
+        "endLine": 284,
+        "endChar": 39
+      },
+      "revId": "41842cc0ba3f95f6ebd966e760ae7aacd4c247e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
