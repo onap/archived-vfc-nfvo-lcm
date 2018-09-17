@@ -173,3 +173,31 @@ def select_vnfm(vnfm_type, vim_id):
         if vnfmtype == vnfm_type and vimid == vim_id:
             return vnfm_info
     raise NSLCMException('No vnfm found with %s in vim(%s)' % (vnfm_type, vim_id))
+
+
+def get_ems_by_id(ems_inst_id):
+    uri = "/external-system/esr-ems-list/esr-ems/%s?depth=all" % ems_inst_id
+    ret = call_aai(uri, "GET")
+    if ret[0] > 0:
+        logger.error('Send get EMS information request to extsys failed.')
+        raise NSLCMException('Send get EMS information request to extsys failed.')
+    # convert vnfm_info_aai to internal vnfm_info
+    ems_info_aai = json.JSONDecoder().decode(ret[1])
+    ems_info = convert_ems_info(ems_info_aai)
+    logger.debug("ems_inst_id=%s, ems_info=%s", ems_inst_id, ems_info)
+    return ems_info
+
+
+def convert_ems_info(ems_info_aai):
+    esr_system_info = ignore_case_get(ignore_case_get(ems_info_aai, "esr-system-info-list"), "esr-system-info")
+    ems_info_aai = {
+        "emsId": ems_info_aai["ems-id"],
+        "type": ignore_case_get(esr_system_info[0], "type"),
+        "vendor": ignore_case_get(esr_system_info[0], "vendor"),
+        "version": ignore_case_get(esr_system_info[0], "version"),
+        "url": ignore_case_get(esr_system_info[0], "service-url"),
+        "userName": ignore_case_get(esr_system_info[0], "user-name"),
+        "password": ignore_case_get(esr_system_info[0], "password"),
+        "createTime": ""
+    }
+    return ems_info_aai
