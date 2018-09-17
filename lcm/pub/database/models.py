@@ -330,3 +330,17 @@ class OOFDataModel(models.Model):
     cloud_owner = models.CharField(db_column='CLOUDOWNER', max_length=100, null=True, blank=True)
     cloud_region_id = models.CharField(db_column='CLOUDREGIONID', max_length=255, null=True, blank=True)
     vdu_info = models.TextField(db_column='VDUINFO', max_length=65535, null=True, blank=True)
+
+
+class PNFInstModel(models.Model):
+    class Meta:
+        db_table = 'NFVO_PNFINST'
+
+    pnfId = models.CharField(db_column='PNFID', primary_key=True, max_length=255)
+    pnfName = models.CharField(db_column='PNFNAME', max_length=255)
+    pnfdId = models.CharField(db_column='PNFDID', max_length=50)
+    pnfdInfoId = models.CharField(db_column='PNFDINFOID', max_length=100)
+    pnfProfileId = models.CharField(db_column='PNFPROFILEID', max_length=255)
+    cpInfo = models.TextField(db_column='CPINFO', max_length=255, null=True, blank=True)
+    emsId = models.CharField(db_column='EMSID', null=True, max_length=255)
+    nsInstances = models.TextField(db_column='NSINSTANCES', max_length=1000, null=True, blank=True)
