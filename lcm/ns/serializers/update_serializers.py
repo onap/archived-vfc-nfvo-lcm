@@ -82,14 +82,10 @@ class OperationalStatesSerializer(serializers.Serializer):
                                                 choices=["STARTED", "STOPPED"])
 
 
-class StopTypeSerializer(serializers.Serializer):
-    StopType = serializers.ChoiceField(help_text="Type of stop", choices=["FORCEFUL ", "GRACEFUL"])
-
-
 class OperateVnfDataSerializer(serializers.Serializer):
-    nsInstanceId = serializers.CharField(help_text="ID of NS Instance", required=True)
+    vnfInstanceId = serializers.CharField(help_text="ID of NS Instance", required=True)
     changeStateTo = OperationalStatesSerializer(help_text="Change state of start or stop", required=True)
-    stopType = StopTypeSerializer(help_text="Stop of VNF after accepting the request", required=False, allow_null=True)
+    stopType = serializers.ChoiceField(help_text="Type of stop", choices=["FORCEFUL ", "GRACEFUL"], required=False, allow_null=True)
     gracefulStopTimeout = serializers.CharField(help_text="Timeout of NS", required=False, allow_null=True)
 
 
