@@ -343,3 +343,17 @@ class SubscriptionModel(models.Model):
     operation_states = models.TextField(db_column='OPERATIONSTATES', null=True)
     callback_uri = models.CharField(db_column='CALLBACKURI', max_length=255)
     links = models.TextField(db_column='LINKS', max_length=20000)
+
+
+class PNFInstModel(models.Model):
+    class Meta:
+        db_table = 'NFVO_PNFINST'
+
+    pnfId = models.CharField(db_column='PNFID', primary_key=True, max_length=255)
+    pnfName = models.CharField(db_column='PNFNAME', max_length=255)
+    pnfdId = models.CharField(db_column='PNFDID', max_length=50)
+    pnfdInfoId = models.CharField(db_column='PNFDINFOID', max_length=100)
+    pnfProfileId = models.CharField(db_column='PNFPROFILEID', max_length=255)
+    cpInfo = models.TextField(db_column='CPINFO', max_length=255, null=True, blank=True)
+    emsId = models.CharField(db_column='EMSID', null=True, max_length=255)
+    nsInstances = models.TextField(db_column='NSINSTANCES', max_length=1000, null=True, blank=True)

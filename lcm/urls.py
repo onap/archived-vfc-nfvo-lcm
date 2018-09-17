@@ -21,6 +21,7 @@ from lcm.pub.config.config import REG_TO_MSB_WHEN_START, REG_TO_MSB_REG_URL, REG
 urlpatterns = [
     url(r'^', include('lcm.samples.urls')),
     url(r'^', include('lcm.ns_vnfs.urls')),
+    url(r'^', include('lcm.ns_pnfs.urls')),
     url(r'^', include('lcm.ns_vls.urls')),
     url(r'^', include('lcm.ns_sfcs.urls')),
     url(r'^', include('lcm.ns.urls')),
