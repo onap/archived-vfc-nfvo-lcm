@@ -22,6 +22,30 @@
       "revId": "41842cc0ba3f95f6ebd966e760ae7aacd4c247e7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_a623c1bb",
+        "filename": "lcm/ns_vnfs/biz/create_vnfs.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 2977
+      },
+      "writtenOn": "2018-09-17T01:36:16Z",
+      "side": 1,
+      "message": "The normal response code must be 202. And I\u0027ll add one more condition to judge the resp[0]",
+      "parentUuid": "1a76adc5_86b32597",
+      "range": {
+        "startLine": 284,
+        "startChar": 7,
+        "endLine": 284,
+        "endChar": 39
+      },
+      "revId": "41842cc0ba3f95f6ebd966e760ae7aacd4c247e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
