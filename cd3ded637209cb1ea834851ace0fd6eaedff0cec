@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_1f6af4ed",
+        "filename": "lcm/ns_pnfs/biz/__init__.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_ff77f89d",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_1f7bd48c",
         "filename": "lcm/ns_pnfs/biz/active_pnf.py",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2018-09-17T11:12:54Z",
       "side": 1,
       "message": "Change to 2018",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_df6f9cfa",
+        "filename": "lcm/ns_pnfs/biz/active_pnf.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_1f7bd48c",
       "range": {
         "startLine": 1,
         "startChar": 12,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_3f80108a",
+        "filename": "lcm/ns_pnfs/biz/delete_pnf.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_3f61f0d2",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_1fa2f4fc",
         "filename": "lcm/ns_pnfs/biz/get_pnf.py",
         "patchSetId": 2
@@ -82,6 +154,30 @@
       "writtenOn": "2018-09-17T11:12:54Z",
       "side": 1,
       "message": "Change to 2018",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_7f7a08be",
+        "filename": "lcm/ns_pnfs/biz/get_pnf.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_1fa2f4fc",
       "range": {
         "startLine": 1,
         "startChar": 12,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_ff4db89a",
+        "filename": "lcm/ns_pnfs/serializers/__init__.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_dfa79c09",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_7fb2084d",
         "filename": "lcm/ns_pnfs/tests/test_create_pnf.py",
         "patchSetId": 2
@@ -128,6 +248,30 @@
       "writtenOn": "2018-09-17T11:12:54Z",
       "side": 1,
       "message": "Change to 2018",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_df46bc7a",
+        "filename": "lcm/ns_pnfs/tests/test_create_pnf.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_7fb2084d",
       "range": {
         "startLine": 1,
         "startChar": 12,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_9f5cc44c",
+        "filename": "lcm/ns_pnfs/tests/test_delete_pnf.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_3fb81029",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_5fb38c4c",
         "filename": "lcm/ns_pnfs/tests/test_get_pnf.py",
         "patchSetId": 2
@@ -174,6 +342,30 @@
       "writtenOn": "2018-09-17T11:12:54Z",
       "side": 1,
       "message": "Change to 2018",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_3f57b027",
+        "filename": "lcm/ns_pnfs/tests/test_get_pnf.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_5fb38c4c",
       "range": {
         "startLine": 1,
         "startChar": 12,
@@ -266,6 +458,30 @@
       "writtenOn": "2018-09-17T11:12:54Z",
       "side": 1,
       "message": "Do not need this function, use PnfInstData.__dict__ instead",
+      "range": {
+        "startLine": 122,
+        "startChar": 4,
+        "endLine": 122,
+        "endChar": 16
+      },
+      "revId": "cd3ded637209cb1ea834851ace0fd6eaedff0cec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_ff34d8fc",
+        "filename": "lcm/ns_pnfs/views/pnf_view.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-17T12:54:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_3f8fb076",
       "range": {
         "startLine": 122,
         "startChar": 4,
