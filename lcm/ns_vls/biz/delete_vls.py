@@ -84,19 +84,19 @@ class DeleteVls(object):
             VNFFGInstModel.objects.filter(vnffginstid=vnffg_info.vnffginstid).update(vllist=new_vl_id_list)
 
     def delete_network_and_subnet_in_aai(self):
-        logger.debug("DeleteVls::delete_network_in_aai::delete network[%s] in aai." % self.vl_inst_id)
+        logger.debug("DeleteVls::delete_network_in_aai[%s] in aai.", self.vl_inst_id)
         try:
             # query network in aai, get resource_version
             customer_info = query_network_aai(self.vl_inst_id)
-            resource_version = customer_info["resource-version"]
+            resource_version = customer_info.get("resource-version")
 
             # delete network from aai
             resp_data, resp_status = delete_network_aai(self.vl_inst_id, resource_version)
-            logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
-                         % (self.vl_inst_id, resp_status))
+            logger.debug("Delete network[%s] from aai successfully, status: %s", self.vl_inst_id, resp_status)
         except NSLCMException as e:
-            logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.message))
-        except:
+            logger.debug("Fail to delete network[%s] from aai: %s", self.vl_inst_id, e.message)
+        except Exception as e:
+            logger.error("Exception occurs when delete network[%s] from aai: %s", self.vl_inst_id, e.message)
             logger.error(traceback.format_exc())
 
     def delete_vl_from_db(self, vl_inst_info):
