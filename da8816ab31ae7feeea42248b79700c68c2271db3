@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_2f28dd98",
+        "filename": "lcm/ns/serializers/update_serializers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-18T01:16:56Z",
+      "side": 1,
+      "message": "please update the help_text as well.",
+      "range": {
+        "startLine": 86,
+        "startChar": 59,
+        "endLine": 86,
+        "endChar": 61
+      },
+      "revId": "da8816ab31ae7feeea42248b79700c68c2271db3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_4f23d9bc",
+        "filename": "lcm/ns/serializers/update_serializers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 141
+      },
+      "writtenOn": "2018-09-18T01:16:56Z",
+      "side": 1,
+      "message": "please update the help_text as well.",
+      "range": {
+        "startLine": 89,
+        "startChar": 70,
+        "endLine": 89,
+        "endChar": 72
+      },
+      "revId": "da8816ab31ae7feeea42248b79700c68c2271db3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
