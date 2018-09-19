@@ -15,7 +15,8 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns.views.create_ns_view import CreateNSView
-from lcm.ns.views.views import NSInstView, TerminateNSView, NSDetailView, NSInstPostDealView, \
+from lcm.ns.views.inst_ns_view import NSInstView
+from lcm.ns.views.views import TerminateNSView, NSDetailView, NSInstPostDealView, \
     NSManualScaleView, NSHealView
 
 urlpatterns = [

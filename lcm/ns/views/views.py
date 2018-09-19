@@ -18,7 +18,6 @@ import traceback
 from drf_yasg.utils import swagger_auto_schema
 from lcm.ns.biz.ns_get import GetNSInfoService
 from lcm.ns.biz.ns_heal import NSHealService
-from lcm.ns.biz.ns_instant import InstantNSService
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from rest_framework import status
@@ -28,7 +27,6 @@ from rest_framework.views import APIView
 from lcm.ns.biz.ns_delete import DeleteNsService
 from lcm.ns.serializers.ns_serializers import HealNsReqSerializer
 from lcm.ns.serializers.ns_serializers import InstNsPostDealReqSerializer
-from lcm.ns.serializers.ns_serializers import InstantNsReqSerializer
 from lcm.ns.serializers.ns_serializers import ManualScaleNsReqSerializer
 from lcm.ns.serializers.ns_serializers import NsOperateJobSerializer
 from lcm.ns.serializers.ns_serializers import QueryNsRespSerializer
@@ -40,30 +38,6 @@ from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
-
-
-class NSInstView(APIView):
-    @swagger_auto_schema(
-        request_body=InstantNsReqSerializer(),
-        responses={
-            status.HTTP_200_OK: NsOperateJobSerializer(),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
-        }
-    )
-    def post(self, request, ns_instance_id):
-        logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
-        logger.debug("request.data=%s", request.data)
-        req_serializer = InstantNsReqSerializer(data=request.data)
-        if not req_serializer.is_valid():
-            return Response({'error': req_serializer.errors},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        ack = InstantNSService(ns_instance_id, request.data).do_biz()
-        resp_serializer = NsOperateJobSerializer(data=ack['data'])
-        if not resp_serializer.is_valid():
-            return Response({'error': resp_serializer.errors},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        logger.debug("Leave NSInstView::post::ack=%s", ack)
-        return Response(data=resp_serializer.data, status=ack['status'])
 
 
 class TerminateNSView(APIView):
