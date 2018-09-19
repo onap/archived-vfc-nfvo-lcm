@@ -20,7 +20,7 @@ from lcm.ns.views.term_ns_view import TerminateNSView
 from lcm.ns.views.heal_ns_view import NSHealView
 from lcm.ns.views.get_del_ns_view import NSDetailView
 from lcm.ns.views.inst_ns_post_deal_view import NSInstPostDealView
-from lcm.ns.views.views import NSManualScaleView
+from lcm.ns.views.scale_ns_views import NSManualScaleView
 
 urlpatterns = [
     # API will be deprecated in the future release
