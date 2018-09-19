@@ -16,6 +16,7 @@ import logging
 import json
 
 from lcm.pub.database.models import OOFDataModel
+from lcm.pub.utils import values
 
 logger = logging.getLogger(__name__)
 
@@ -24,12 +25,15 @@ class PlaceVnfs(object):
     def __init__(self, data):
         self.data = data
         self.placements = ""
+        self.request_id = data.get("requestId")
+        self.transaction_id = data.get("transactionId")
 
     def validateCallbackResponse(self):
         if self.data == "":
             logger.error("Error occurred in Homing: OOF Async Callback Response is empty")
             return False
-        if self.data.get('requestStatus') == "completed":
+        if self.data.get('requestStatus') == "completed" and self.data.get("requestId") \
+                and self.data.get("transactionId"):
             if self.data.get("solutions").get("placementSolutions") is not None:
                 self.placements = self.data.get("solutions").get("placementSolutions")
                 logger.debug("Got placement solutions in OOF Async Callback response")
@@ -50,66 +54,71 @@ class PlaceVnfs(object):
             return False
 
     def extract(self):
-        params = ["locationId", "vimId", "oofDirectives"]
+        params = ["locationId", "vimId", "oof_directives", "cloudOwner"]
         vim_info = {}
         if not self.validateCallbackResponse():
             logger.error("OOF request Failed")
-            self.update_response_to_db(self.data.get("requestId"), self.data.get("transactionId"),
+            self.update_response_to_db(self.request_id, self.transaction_id,
                                        self.data.get("requestStatus"), "none", "none", "none", "none")
             return
         if self.placements == [] or self.placements == [[]]:
-            logger.debug("No solution found for request %s " % self.data.get("requestId"))
-            self.update_response_to_db(self.data.get("requestId"), self.data.get("transactionId"),
+            logger.debug("No solution found for request %s " % self.request_id)
+            self.update_response_to_db(self.request_id, self.transaction_id,
                                        self.data.get("requestStatus"), "no-solution", "no-solution",
                                        "no-solution", "no-solution")
             return
         for item in self.placements:
             if not isinstance(item, list):
-                self.update_response_to_db(self.data.get("requestId"), self.data.get("transactionId"),
+                self.update_response_to_db(self.request_id, self.transaction_id,
                                            self.data.get("requestStatus"), "no-solution", "no-solution",
                                            "no-solution", "no-solution")
                 continue
             for placement in item:
                 assignmentInfo = placement.get("assignmentInfo")
-                if not assignmentInfo:
+                if not assignmentInfo or not placement.get("solution"):
                     logger.debug(
-                        "No assignment info inside Homing response for request %s" % self.data.get(
-                            "requestId"))
-                    self.update_response_to_db(self.data.get("requestId"),
-                                               self.data.get("transactionId"),
+                        "No assignment info/Solution inside Homing response for request %s"
+                        % self.request_id)
+                    self.update_response_to_db(self.request_id,
+                                               self.transaction_id,
                                                self.data.get("requestStatus"), "none", "none", "none",
                                                "none")
                     continue
                 for info in assignmentInfo:
                     if info.get("key") in params:
                         vim_info[info.get("key")] = info.get("value")
-                    if not vim_info.get("oofDirectives"):
+                    if not vim_info.get("oof_directives"):
                         logger.warn("Missing flavor info as no directive found in response")
-                        self.update_response_to_db(self.data.get("requestId"),
-                                                   self.data.get("transactionId"),
+                        self.update_response_to_db(self.request_id,
+                                                   self.transaction_id,
                                                    self.data.get("requestStatus"), "none", "none",
                                                    "none", "none")
                         continue
                     vduinfo = self.get_info_from_directives(
-                        vim_info['oofDirectives'])
+                        vim_info['oof_directives'])
                     if not vduinfo:
-                        self.update_response_to_db(self.data.get("requestId"),
-                                                   self.data.get("transactionId"),
+                        self.update_response_to_db(self.request_id,
+                                                   self.transaction_id,
                                                    self.data.get("requestStatus"), "none", "none",
                                                    "none", "none")
                         return
                     else:
-                        self.update_response_to_db(requestId=self.data.get("requestId"),
-                                                   transactionId=self.data.get("transactionId"),
+                        cloud_owner = placement.get("solution").get("cloudOwner") \
+                            if placement.get("solution").get("cloudOwner") \
+                            else vim_info.get("cloudOwner")
+                        vim_id = vim_info['vimId'] if vim_info.get('vimId') \
+                            else cloud_owner + "_" + vim_info.get("locationId")
+                        self.update_response_to_db(requestId=self.request_id,
+                                                   transactionId=self.transaction_id,
                                                    requestStatus=self.data.get("requestStatus"),
-                                                   vimId=vim_info['vimId'],
-                                                   cloudOwner=placement.get("solution").get("cloudOwner"),
-                                                   cloudRegionId=vim_info['locationId'],
+                                                   vimId=vim_id,
+                                                   cloudOwner=cloud_owner,
+                                                   cloudRegionId=values.ignore_case_get(vim_info, "locationId"),
                                                    vduInfo=vduinfo
                                                    )
                         logger.debug(
                             "Placement solution has been stored for request %s "
-                            % self.data.get("requestId"))
+                            % self.request_id)
                         return "Done"
 
     def get_info_from_directives(self, directives):
@@ -119,7 +128,7 @@ class PlaceVnfs(object):
                 vdu = {"vduName": directive.get("id")}
                 other_directives = []
                 for item in directive.get("directives"):
-                    if item.get("type") == "flavor_directive":
+                    if item.get("type") == "flavor_directives":
                         for attribute in item.get("attributes"):
                             vdu['flavorName'] = attribute.get("attribute_value")
                     else:

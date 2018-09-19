@@ -1718,7 +1718,7 @@ vnf_place_request = {
                         {"key": "physicalLocationId",
                          "value": "DLLSTX1223"
                          },
-                        {"key": "oofDirectives",
+                        {"key": "oof_directives",
                          "value": {
                              "directives": [
                                  {
@@ -1726,7 +1726,7 @@ vnf_place_request = {
                                      "type": "tocsa.nodes.nfv.Vdu.Compute",
                                      "directives": [
                                          {
-                                             "type": "flavor_directive",
+                                             "type": "flavor_directives",
                                              "attributes": [
                                                  {
                                                      "attribute_name": "flavor_name",
