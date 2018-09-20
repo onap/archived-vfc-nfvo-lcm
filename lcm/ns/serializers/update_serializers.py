@@ -146,12 +146,16 @@ class OperationalStatesSerializer(serializers.Serializer):
                                                 choices=["STARTED", "STOPPED"])
 
 
+class StopTypeSerializer(serializers.Serializer):
+    StopType = serializers.CharField(help_text="Type of stop", choices=["FORCEFUL ", "GRACEFUL"])
+
+
 class OperateVnfDataSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="Identifier of the VNF instance.", required=True)
     changeStateTo = OperationalStatesSerializer(help_text="The desired operational state to change the VNF to.",
                                                 required=True)
-    stopType = serializers.ChoiceField(help_text="It signals whether forceful or graceful stop is requested.",
-                                       choices=["FORCEFUL ", "GRACEFUL"], required=False, allow_null=True)
+    stopType = StopTypeSerializer(help_text="It signals whether forceful or graceful stop is requested.",
+                                  required=False, allow_null=True)
     gracefulStopTimeout = serializers.CharField(help_text="The time interval to wait for the VNF to be taken out of"
                                                           "service during graceful stop.",
                                                 required=False, allow_null=True)
