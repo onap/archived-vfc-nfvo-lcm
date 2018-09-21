@@ -54,7 +54,7 @@ class PnfView(APIView):
         return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
-        request_body="None",
+        request_body=None,
         responses={
             status.HTTP_200_OK: PnfInstancesSerializer(help_text="Pnf instances", many=True),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
@@ -77,7 +77,7 @@ class PnfView(APIView):
 
 class IndividualPnfView(APIView):
     @swagger_auto_schema(
-        request_body="None",
+        request_body=None,
         responses={
             status.HTTP_204_NO_CONTENT: 'successful',
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
@@ -94,7 +94,7 @@ class IndividualPnfView(APIView):
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
-        request_body="None",
+        request_body=None,
         responses={
             status.HTTP_200_OK: PnfInstanceSerializer(help_text="Pnf instance", many=True),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error",
