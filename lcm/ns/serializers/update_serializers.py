@@ -147,7 +147,7 @@ class OperationalStatesSerializer(serializers.Serializer):
 
 
 class StopTypeSerializer(serializers.Serializer):
-    StopType = serializers.CharField(help_text="Type of stop", choices=["FORCEFUL", "GRACEFUL"])
+    StopType = serializers.ChoiceField(help_text="Type of stop", choices=["FORCEFUL", "GRACEFUL"])
 
 
 class OperateVnfDataSerializer(serializers.Serializer):
