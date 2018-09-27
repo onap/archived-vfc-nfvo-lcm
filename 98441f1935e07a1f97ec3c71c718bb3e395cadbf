@@ -1,0 +1,349 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_6eab00d7",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Remove this line",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 20
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_2eb50831",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Should be 2018 CMCC",
+      "range": {
+        "startLine": 2,
+        "startChar": 11,
+        "endLine": 2,
+        "endChar": 22
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_ce5d74ee",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Add logger.error statement",
+      "range": {
+        "startLine": 46,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 69
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_0e8fec76",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Duplicated log, remove this line",
+      "range": {
+        "startLine": 63,
+        "startChar": 11,
+        "endLine": 63,
+        "endChar": 75
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_cee81419",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Duplicated log, remove this line",
+      "range": {
+        "startLine": 68,
+        "startChar": 11,
+        "endLine": 68,
+        "endChar": 86
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_eeedd026",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Duplicated log, remove this line",
+      "range": {
+        "startLine": 75,
+        "startChar": 16,
+        "endLine": 75,
+        "endChar": 84
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_aef7d8f4",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Duplicated log, remove this line",
+      "range": {
+        "startLine": 86,
+        "startChar": 19,
+        "endLine": 86,
+        "endChar": 52
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_4edc0475",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Duplicated log, remove this line",
+      "range": {
+        "startLine": 89,
+        "startChar": 12,
+        "endLine": 89,
+        "endChar": 42
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_0ee60c45",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Duplicated log, remove this line",
+      "range": {
+        "startLine": 104,
+        "startChar": 12,
+        "endLine": 104,
+        "endChar": 79
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_2ee3c834",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Duplicated log, remove this line",
+      "range": {
+        "startLine": 110,
+        "startChar": 12,
+        "endLine": 110,
+        "endChar": 79
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_eed4f048",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Should be defined to enum",
+      "range": {
+        "startLine": 117,
+        "startChar": 33,
+        "endLine": 117,
+        "endChar": 42
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_ee3b909a",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Can not understand those two lines",
+      "range": {
+        "startLine": 118,
+        "startChar": 11,
+        "endLine": 119,
+        "endChar": 62
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_8ec9bcae",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Should be defined to enum",
+      "range": {
+        "startLine": 120,
+        "startChar": 28,
+        "endLine": 120,
+        "endChar": 38
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_6ec0e07c",
+        "filename": "lcm/ns/biz/ns_update.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Delete these lines",
+      "range": {
+        "startLine": 122,
+        "startChar": 8,
+        "endLine": 125,
+        "endChar": 16
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_8e40dc08",
+        "filename": "lcm/ns/views/update_ns_view.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-09-27T12:07:54Z",
+      "side": 1,
+      "message": "Merge to one logger",
+      "range": {
+        "startLine": 41,
+        "startChar": 9,
+        "endLine": 42,
+        "endChar": 67
+      },
+      "revId": "98441f1935e07a1f97ec3c71c718bb3e395cadbf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
