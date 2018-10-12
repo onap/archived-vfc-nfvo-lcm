@@ -30,14 +30,21 @@ logger = logging.getLogger(__name__)
 
 
 class JobView(APIView):
+
+    input_job_id = openapi.Parameter(
+        'job_id',
+        openapi.IN_QUERY,
+        description="job id",
+        type=openapi.TYPE_STRING)
+    input_response_id = openapi.Parameter(
+        'responseId',
+        openapi.IN_QUERY,
+        description="response id",
+        type=openapi.TYPE_STRING)
+
     @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter('responseId',
-                              openapi.IN_QUERY,
-                              "responseId",
-                              type=openapi.TYPE_INTEGER
-                              ),
-        ],
+        operation_description="Query job",
+        manual_parameters=[input_job_id, input_response_id],
         responses={
             status.HTTP_200_OK: JobQueryRespSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
@@ -56,6 +63,8 @@ class JobView(APIView):
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
+        operation_description="Update job",
+        manual_parameters=[input_job_id],
         request_body=JobUpdReqSerializer(),
         responses={
             status.HTTP_202_ACCEPTED: JobUpdRespSerializer()
