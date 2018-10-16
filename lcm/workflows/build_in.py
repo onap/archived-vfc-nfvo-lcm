@@ -53,6 +53,7 @@ def run_ns_instantiate(input_data):
     nsd_json = ignore_case_get(input_data, "object_context")
     ns_param_json = ignore_case_get(input_data, "object_additionalParamForNs")
     vnf_param_json = ignore_case_get(input_data, "object_additionalParamForVnf")
+    pnf_param_json = ignore_case_get(input_data, "object_additionalParamForPnf")
     vl_count = int(ignore_case_get(input_data, "vlCount", 0))
     vnf_count = int(ignore_case_get(input_data, "vnfCount", 0))
     sfc_count = int(ignore_case_get(input_data, "sfcCount", 0))
@@ -68,6 +69,9 @@ def run_ns_instantiate(input_data):
         wait_until_jobs_done(job_id, jobs)
 
         [confirm_vnf_status(inst_id) for inst_id, _, _ in jobs]
+
+        update_job(job_id, 50, "true", "Start to create PNF")
+        create_pnf(pnf_param_json)
 
         update_job(job_id, 70, "true", "Start to create SFC")
         g_jobs_status[job_id] = [1 for i in range(sfc_count)]
@@ -186,6 +190,7 @@ class JobWaitThread(Thread):
     """
     Job Wait
     """
+
     def __init__(self, inst_id, job_id, ns_job_id, index):
         Thread.__init__(self)
         self.inst_id = inst_id
@@ -269,3 +274,16 @@ def confirm_sfc_status(sfc_inst_id):
     sfc_status = ret[1]["sfcStatus"]
     if sfc_status != "active":
         raise NSLCMException("Status of SFC(%s) is not active" % sfc_inst_id)
+
+
+def create_pnf(pnf_param_json):
+    if pnf_param_json and len(pnf_param_json) > 0:
+        pnfs = json.JSONDecoder().decode(pnf_param_json)
+        for pnf in pnfs:
+            uri = "/api/nslcm/v1/pnfs"
+            method = "POST"
+            content = json.JSONEncoder().encode(pnf["input"]["content"])
+            ret = restcall.req_by_msb(uri, method, content)
+            if ret[0] != 0:
+                logger.error("Failed to call create_pnf(%s) result %s", content, ret)
+                raise NSLCMException("Failed to call create_pnf(%s)" % content)

@@ -242,7 +242,8 @@ class InstantNSService(object):
         vls = len(data.get('vls', []))
         sfcs = len(data.get('fps', []))
         vnfs = len(data.get('vnfs', []))
-        return {'vlCount': str(vls), 'sfcCount': str(sfcs), 'vnfCount': str(vnfs)}
+        pnfs = len(data.get('pnfs', []))
+        return {'vlCount': str(vls), 'sfcCount': str(sfcs), 'vnfCount': str(vnfs), 'pnfCount': str(pnfs)}
 
     def init_pnf_para(self, plan_dict):
         pnfs_in_input = ignore_case_get(self.req_data, "addpnfData")
