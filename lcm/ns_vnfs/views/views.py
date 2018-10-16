@@ -67,7 +67,6 @@ class NfView(APIView):
             logger.error(req_serializer.errors)
 
         data = {'ns_instance_id': ignore_case_get(request.data, 'nsInstanceId'),
-                'additional_param_for_ns': ignore_case_get(request.data, 'additionalParamForVnf'),
                 'additional_param_for_vnf': ignore_case_get(request.data, 'additionalParamForVnf'),
                 'vnf_index': ignore_case_get(request.data, 'vnfIndex')}
         nf_inst_id, job_id = create_vnfs.prepare_create_params()
