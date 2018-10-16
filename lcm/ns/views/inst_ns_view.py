@@ -38,6 +38,7 @@ class NSInstView(APIView):
         logger.debug("request.data=%s", request.data)
         req_serializer = InstantNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():
+            logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
             return Response({'error': req_serializer.errors},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         ack = InstantNSService(ns_instance_id, request.data).do_biz()
