@@ -51,9 +51,9 @@ This is the initial release
 
 **Known Issues**
 
- - VFC-896  vim-id in AAI is handled as a mandatory parameter
- - VFC-890  The hard coded SDC user and password in catalog & LCM is not present in SDC
- - VFC-891  The AAI credentials is hard coded in LCM
+ - `VFC-896 <https://jira.onap.org/browse/VFC-896>`_  vim-id in AAI is handled as a mandatory parameter
+ - `VFC-890 <https://jira.onap.org/browse/VFC-890>`_  The hard coded SDC user and password in catalog & LCM is not present in SDC
+ - `VFC-891 <https://jira.onap.org/browse/VFC-891>`_  The AAI credentials is hard coded in LCM
 
 **Security Notes**
 
