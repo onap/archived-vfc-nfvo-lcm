@@ -86,7 +86,7 @@ Version: 1.0.0
 **New Features**
 
 - NS lifecycle management, including NS instance creation, termination and healing
-- VNF lifecycle management, including VNF nstance creation, termination and healing
+- VNF lifecycle management, including VNF instance creation, termination and healing
 - VNF FCAPS, collecting FCAPS data from vendor EMS
 - VNFM Integration, integration with specific VNFMs of vendors to deploy commercial VNFs
 - VNF Integration, integration with VNF via GVNFM
