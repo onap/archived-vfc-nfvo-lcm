@@ -66,7 +66,7 @@ MR_PORT = '3904'
 
 # [workflow]
 DEPLOY_WORKFLOW_WHEN_START = False
-# Support option: activiti/wso2/buildin
+# Support option: activiti/wso2/buildin/grapflow
 WORKFLOW_OPTION = "buildin"
 
 # [OOF config]
