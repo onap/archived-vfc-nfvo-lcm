@@ -11,7 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+
+from django.test import TestCase
+from lcm.workflows.graphflow.flow.graph import Graph
+
+logger = logging.getLogger(__name__)
 
 
-TASK_STAUS = (STARTED, PROCESSING, FINISHED, ERROR) = ("started", "processing", "finished", "error")
-TIMEOUT_DEFAULT = 10
+class TestToscaparser(TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_graph(self):
+        data = {
+            "cucp": [],
+            "du": [],
+            "vl_flat_net": ["cucp", "cuup"],
+            "vl_ext_net": ["cucp", "cuup"],
+            "cuup": []
+        }
+        graph = Graph(data)
+        self.assertEqual(['vl_ext_net', 'vl_flat_net'].sort(), graph.get_pre_nodes("cucp").sort())
