@@ -115,14 +115,14 @@ class CreateVnfs(Thread):
     def get_vnfd_id(self):
         if self.vnfd_id:
             logger.debug("need not get vnfd_id")
-            self.nsd_model = {'ns_vnfs': [], 'ns_vls': [], 'vnffgs': []}
+            self.nsd_model = {'vnfs': [], 'vls': [], 'vnffgs': []}
             self.vnf_inst_name = self.vnfd_id + str(uuid.uuid4())
             self.vnf_inst_name = self.vnf_inst_name[:30]
             return
         ns_inst_info = NSInstModel.objects.get(id=self.ns_inst_id)
         self.ns_inst_name = ns_inst_info.name
         self.nsd_model = json.loads(ns_inst_info.nsd_model)
-        for vnf_info in self.nsd_model['ns_vnfs']:
+        for vnf_info in self.nsd_model['vnfs']:
             if self.vnf_id == vnf_info['vnf_id']:
                 self.vnfd_id = vnf_info['properties']['id']
                 if 'name' not in vnf_info['properties']:
@@ -144,7 +144,7 @@ class CreateVnfs(Thread):
 
     def get_virtual_link_info(self, vnf_id):
         virtual_link_list, ext_virtual_link = [], []
-        for vnf_info in self.nsd_model['ns_vnfs']:
+        for vnf_info in self.nsd_model['vnfs']:
             if vnf_info['vnf_id'] != vnf_id:
                 continue
             for network_info in vnf_info['networks']:

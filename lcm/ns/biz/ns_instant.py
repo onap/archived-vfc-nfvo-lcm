@@ -28,11 +28,12 @@ from lcm.pub.msapi import activiti
 from lcm.pub.msapi import sdc_run_catalog
 from lcm.pub.msapi.catalog import get_process_id
 from lcm.pub.msapi.catalog import get_servicetemplate_id, get_servicetemplate
-from lcm.pub.msapi.extsys import select_vnfm
+from lcm.pub.msapi import extsys
 from lcm.pub.msapi.wso2bpel import workflow_run
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.workflows import build_in
+from lcm.ns.biz.ns_instantiate_flow import run_ns_instantiate
 
 logger = logging.getLogger(__name__)
 
@@ -72,18 +73,18 @@ class InstantNSService(object):
             JobUtil.add_job_status(job_id, 5, 'Start query nsd(%s)' % ns_inst.nspackage_id)
             dst_plan = sdc_run_catalog.parse_nsd(ns_inst.nspackage_id, input_parameters)
             logger.debug('tosca plan dest: %s' % dst_plan)
-
+            logger.debug('Start query nsd(%s)' % ns_inst.nspackage_id)
             NSInstModel.objects.filter(id=self.ns_inst_id).update(nsd_model=dst_plan)
 
             params_json = json.JSONEncoder().encode(self.req_data["additionalParamForNs"])
-            # start
             params_vnf = []
             plan_dict = json.JSONDecoder().decode(dst_plan)
-            for vnf in ignore_case_get(plan_dict, "ns_vnfs"):
+            for vnf in ignore_case_get(plan_dict, "vnfs"):
                 vnfd_id = vnf['properties']['id']
                 vnfm_type = vnf['properties'].get("nf_type", "undefined")
                 vimid = self.get_vnf_vim_id(vim_id, location_constraints, vnfd_id)
-                vnfm_info = select_vnfm(vnfm_type=vnfm_type, vim_id=vimid)
+                vnfm_info = extsys.select_vnfm(vnfm_type=vnfm_type, vim_id=vimid)
+
                 params_vnf.append({
                     "vnfProfileId": vnf["vnf_id"],
                     "additionalParam": {
@@ -94,12 +95,13 @@ class InstantNSService(object):
                         "inputs": params_json
                     }
                 })
-            # end
 
             self.set_vl_vim_id(vim_id, location_constraints, plan_dict)
             dst_plan = json.JSONEncoder().encode(plan_dict)
             logger.debug('tosca plan dest add vimid:%s' % dst_plan)
             NSInstModel.objects.filter(id=self.ns_inst_id).update(nsd_model=dst_plan)
+
+            pnf_params_json = json.JSONEncoder().encode(self.init_pnf_para(plan_dict))
 
             vnf_params_json = json.JSONEncoder().encode(params_vnf)
             plan_input = {
@@ -107,7 +109,8 @@ class InstantNSService(object):
                 'nsInstanceId': self.ns_inst_id,
                 'object_context': dst_plan,
                 'object_additionalParamForNs': params_json,
-                'object_additionalParamForVnf': vnf_params_json
+                'object_additionalParamForVnf': vnf_params_json,
+                'object_additionalParamForPnf': pnf_params_json
             }
             plan_input.update(**self.get_model_count(dst_plan))
             plan_input["sdnControllerId"] = ignore_case_get(
@@ -142,18 +145,20 @@ class InstantNSService(object):
             else:
                 # TODO:
                 pass
-
+            logger.debug("workflow option: %s" % WORKFLOW_OPTION)
             if WORKFLOW_OPTION == "wso2":
                 return self.start_wso2_workflow(job_id, ns_inst, plan_input)
             elif WORKFLOW_OPTION == "activiti":
                 return self.start_activiti_workflow()
+            elif WORKFLOW_OPTION == "grapflow":
+                return self.start_buildin_grapflow(job_id, plan_input)
             else:
                 return self.start_buildin_workflow(job_id, plan_input)
 
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("ns-instant(%s) workflow error:%s" % (self.ns_inst_id, e.message))
-            JobUtil.add_job_status(job_id, 255, 'NS instantiation failed: %s' % e.message)
+            JobUtil.add_job_status(job_id, 255, 'NS instantiation failed')
             return dict(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def start_wso2_workflow(self, job_id, ns_inst, plan_input):
@@ -191,6 +196,11 @@ class InstantNSService(object):
         BuildInWorkflowThread(plan_input).start()
         return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
 
+    def start_buildin_grapflow(self, job_id, plan_input):
+        JobUtil.add_job_status(job_id, 10, 'NS inst(%s) buildin grap workflow started.' % self.ns_inst_id)
+        run_ns_instantiate(plan_input)
+        return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+
     @staticmethod
     def get_vnf_vim_id(vim_id, location_constraints, vnfdid):
         for location in location_constraints:
@@ -202,11 +212,11 @@ class InstantNSService(object):
 
     @staticmethod
     def set_vl_vim_id(vim_id, location_constraints, plan_dict):
-        if "ns_vls" not in plan_dict:
+        if "vls" not in plan_dict:
             logger.debug("No vl is found in nsd.")
             return
         vl_vnf = {}
-        for vnf in ignore_case_get(plan_dict, "ns_vnfs"):
+        for vnf in ignore_case_get(plan_dict, "vnfs"):
             if "dependencies" in vnf:
                 for depend in vnf["dependencies"]:
                     vl_vnf[depend["vl_id"]] = vnf['properties']['id']
@@ -215,7 +225,7 @@ class InstantNSService(object):
             if "vnfProfileId" in location:
                 vnfd_id = location["vnfProfileId"]
                 vnf_vim[vnfd_id] = location["locationConstraints"]["vimId"]
-        for vl in plan_dict["ns_vls"]:
+        for vl in plan_dict["vls"]:
             vnfdid = ignore_case_get(vl_vnf, vl["vl_id"])
             vimid = ignore_case_get(vnf_vim, vnfdid)
             if not vimid:
@@ -229,7 +239,27 @@ class InstantNSService(object):
     @staticmethod
     def get_model_count(context):
         data = json.JSONDecoder().decode(context)
-        vls = len(data.get('ns_vls', []))
+        vls = len(data.get('vls', []))
         sfcs = len(data.get('fps', []))
-        vnfs = len(data.get('ns_vnfs', []))
+        vnfs = len(data.get('vnfs', []))
         return {'vlCount': str(vls), 'sfcCount': str(sfcs), 'vnfCount': str(vnfs)}
+
+    def init_pnf_para(self, plan_dict):
+        pnfs_in_input = ignore_case_get(self.req_data, "addpnfData")
+        pnfs_in_nsd = ignore_case_get(plan_dict, "pnfs")
+        logger.debug("addpnfData ; %s" % pnfs_in_input)
+        logger.debug("pnfs_in_nsd ; %s" % pnfs_in_nsd)
+        pnfs = {}
+        for pnf in pnfs_in_input:
+            for pnfd in pnfs_in_nsd:
+                if pnfd["properties"]["descriptor_id"] == pnf["pnfdId"]:
+                    k = pnfd["pnf_id"]
+                    pnf["nsInstances"] = self.ns_inst_id
+                    # todo pnf["pnfdInfoId"]
+                    pnfs[k] = {
+                        "type": "CreatePnf",
+                        "input": {
+                            "content": pnf
+                        }
+                    }
+        return pnfs
