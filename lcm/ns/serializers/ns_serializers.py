@@ -79,6 +79,50 @@ class LocationConstraintSerializer(serializers.Serializer):
     locationConstraints = VimSerializer(help_text="Location constraint", required=False, allow_null=True)
 
 
+class AddressRange(serializers.Serializer):
+    minAddress = serializers.IPAddressField(help_text="Lowest IP address belonging to the range.", required=True)
+    maxAddress = serializers.IPAddressField(help_text="Highest IP address belonging to the range.", required=True)
+
+
+class IpAddress(serializers.Serializer):
+    type = serializers.ChoiceField(help_text="The type of the IP addresses.", required=True, choices=["IPV4", "IPV6"])
+    fixedAddresses = serializers.ListField(child=serializers.CharField(help_text="Fixed addresses to assign."), required=False)
+    numDynamicAddresses = serializers.IntegerField(help_text="Number of dynamic addresses to assign.", required=False)
+    addressRange = AddressRange(help_text="An IP address range to be used.", required=False)
+    subnetId = serializers.CharField(help_text="Subnet defined by the identifier of the subnet resource in the VIM.", required=False)
+
+
+class IpOverEthernetAddressData(serializers.Serializer):
+    macAddress = serializers.CharField(help_text="MAC address.", required=False)
+    ipAddresses = IpAddress(help_text="List of IP addresses to assign to the extCP instance.", required=False, many=True)
+
+
+class CpProtocolInfoSerializer(serializers.Serializer):
+    layerProtocol = serializers.ChoiceField(
+        help_text="The identifier of layer(s) and protocol(s) associated to the network address information.",
+        choices=["IP_OVER_ETHERNET"],
+        required=True,
+        allow_null=False)
+    ipOverEthernet = IpOverEthernetAddressData(
+        help_text="IP addresses over Ethernet to assign to the extCP instance.",
+        required=False,
+        allow_null=True)
+
+
+class PnfExtCpData(serializers.Serializer):
+    cpInstanceId = serializers.CharField(help_text="Identifier of the CP", required=False, allow_null=False)
+    cpdId = serializers.CharField(help_text="Identifier of the Connection Point Descriptor", required=False, allow_null=False)
+    cpProtocolData = CpProtocolInfoSerializer(help_text="Address assigned for this CP", required=True, allow_null=False, many=True)
+
+
+class AddPnfData(serializers.Serializer):
+    pnfId = serializers.CharField(help_text="Identifier of the PNF", required=True, allow_null=False)
+    pnfName = serializers.CharField(help_text="Name of the PNF", required=True, allow_null=True)
+    pnfdId = serializers.CharField(help_text="Identifier of the PNFD", required=True, allow_null=False)
+    pnfProfileId = serializers.CharField(help_text="Identifier of related PnfProfile in the NSD", required=True, allow_null=False)
+    cpData = PnfExtCpData(help_text="Address assigned for the PNF external CP", required=False, many=True)
+
+
 class InstantNsReqSerializer(serializers.Serializer):
     locationConstraints = LocationConstraintSerializer(help_text="Location constraints", required=False, many=True)
     additionalParamForNs = serializers.DictField(
@@ -87,6 +131,7 @@ class InstantNsReqSerializer(serializers.Serializer):
         required=False,
         allow_null=True
     )
+    addpnfData = AddPnfData(help_text="Information on the PNF", required=False, many=True)
 
 
 class NsOperateJobSerializer(serializers.Serializer):
