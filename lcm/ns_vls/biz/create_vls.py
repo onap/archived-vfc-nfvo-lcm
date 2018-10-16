@@ -74,7 +74,7 @@ class CreateVls(object):
     def get_data(self):
         if isinstance(self.context, (unicode, str)):
             self.context = json.JSONDecoder().decode(self.context)
-        vl_info = self.get_vl_info(ignore_case_get(self.context, "ns_vls"))
+        vl_info = self.get_vl_info(ignore_case_get(self.context, "vls"))
         self.vld_id = ignore_case_get(vl_info, "vl_id")
         self.description = ignore_case_get(vl_info, "description")
         self.vl_properties = ignore_case_get(vl_info, "properties")
