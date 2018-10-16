@@ -11,3 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from lcm.workflows.graphflow.task.lcm_sync_rest_task import LcmSyncRestTask
+
+
+class CreateVl(LcmSyncRestTask):
+    def __init__(self, *args):
+        super(CreateVl, self).__init__(*args)
+        self.url = "/api/nslcm/v1/ns/vls"
+        self.method = self.POST
+        self.timeout = 10
+
+
+class DeleteVl(LcmSyncRestTask):
+    def __init__(self, *args):
+        super(DeleteVl, self).__init__(*args)
+        self.url = "/api/nslcm/v1/ns/vls/%s"
+        self.method = self.DELETE
+        self.timeout = 10

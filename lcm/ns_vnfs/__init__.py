@@ -11,3 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from lcm.workflows.graphflow.task.lcm_async_rest_task import LcmASyncRestTask
+
+
+class CreateVnf(LcmASyncRestTask):
+    def __init__(self, *args):
+        super(CreateVnf, self).__init__(*args)
+        self.url = "/api/nslcm/v1/ns/vnfs"
+        self.method = self.POST
+        self.timeout = 10
+
+
+class DeleteVnf(LcmASyncRestTask):
+    def __init__(self, *args):
+        super(DeleteVnf, self).__init__(*args)
+        self.url = "/api/nslcm/v1/ns/vnfs/%s"
+        self.method = self.DELETE
+        self.timeout = 10
