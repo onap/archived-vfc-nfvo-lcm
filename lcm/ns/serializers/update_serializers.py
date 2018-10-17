@@ -12,6 +12,7 @@
 # limitations under the License.
 
 from rest_framework import serializers
+from lcm.ns.serializers.ns_serializers import IpAddress
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
@@ -35,8 +36,7 @@ class InstantiateVnfDataSerializer(serializers.Serializer):
 
 class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
-    ipAddresses = serializers.ListField(help_text="List of IP addresses to assign to the extCP instance.",
-                                        required=False, allow_null=True)
+    ipAddresses = serializers.ListField(help_text="List of IP addresses to assign to the extCP instance.", child=IpAddress(help_text="IP addresses to assign to the extCP instance.", required=False), required=False, allow_null=True)
 
 
 class CpProtocolDataSerializer(serializers.Serializer):
@@ -94,8 +94,8 @@ class ExtVirtualLinkDataSerializer(serializers.Serializer):
                                                          "this resource.", required=False, allow_null=True)
     resourceId = serializers.CharField(help_text="The identifier of the resource in the scope of the VIM or the"
                                                  " resource provider.", required=True)
-    extCps = serializers.ListField(VnfExtCpData(help_text="External CPs of the VNF to be connected to this external "
-                                                          "VL.", required=True), required=False, allow_null=True)
+    extCps = serializers.ListField(child=VnfExtCpData(help_text="External CPs of the VNF to be connected to this external "
+                                                      "VL.", required=True), required=False, allow_null=True)
     extLinkPorts = serializers.ListField(help_text="Externally provided link ports to be used to connect external "
                                                    "connection points to this external VL. ",
                                          child=(ExtLinkPortDataSerializer(help_text="This type represents an externally"
