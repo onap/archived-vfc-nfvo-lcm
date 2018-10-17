@@ -33,7 +33,8 @@ RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/m
     rm -rf vfc-nfvo-lcm.zip
 
 WORKDIR /service/vfc/nfvo/lcm
-RUN pip install --pre -r requirements.txt
+RUN pip install --upgrade setuptools pip && \
+    pip install --pre -r requirements.txt
 
 EXPOSE 8403
 
