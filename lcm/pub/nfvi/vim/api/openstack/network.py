@@ -132,8 +132,7 @@ def get_subnet_id(neutron, data, network_id):
     subnet_id = None
     if "subnet_name" in data and data["subnet_name"]:
         all_subnets = neutron.list_subnets()
-        filter_subnets = [subnet for subnet in all_subnets["subnets"] if subnet["name"] == data["subnet_name"] and
-                          subnet["network_id"] == network_id]
+        filter_subnets = [subnet for subnet in all_subnets["subnets"] if subnet["name"] == data["subnet_name"] and subnet["network_id"] == network_id]
         count_filter_subnets = len(filter_subnets)
         if 1 > count_filter_subnets:
             logger.error("Subnet name(%s) does not exist" % data["subnet_name"])
@@ -158,8 +157,7 @@ def create_port(auth_info, data):
     neutron_admin = neutronbase.get_neutron_default(fun_name(), auth_info)
     all_nets = neutron_admin.list_networks()
     filter_nets = [net for net in all_nets['networks'] if net['name'] == data["network_name"]]
-    sel_nets = [net for net in filter_nets if net['tenant_id'] == tenant_id or
-                (net['tenant_id'] != tenant_id and net['shared'])]
+    sel_nets = [net for net in filter_nets if net['tenant_id'] == tenant_id or (net['tenant_id'] != tenant_id and net['shared'])]
     count_sel_nets = len(sel_nets)
     if 1 > count_sel_nets:
         logger.error("Network(%s) does not exist" % data["network_name"])
@@ -181,8 +179,7 @@ def create_port(auth_info, data):
     # check port
     port_data = None
     ports = neutron.list_ports()
-    sel_ports = [port for port in ports['ports'] if port['tenant_id'] == tenant_id and
-                 port['network_id'] == network_id]
+    sel_ports = [port for port in ports['ports'] if port['tenant_id'] == tenant_id and port['network_id'] == network_id]
     filter_ports = []
     for port in sel_ports:
         if port['name'] == data["port_name"] and port['fixed_ips']:
@@ -261,8 +258,7 @@ def create_network(auth_info, data):
     neutron_admin = neutronbase.get_neutron_default(fun_name(), auth_info)
     all_nets = neutron_admin.list_networks()
     filter_nets = [net for net in all_nets['networks'] if net['name'] == data["network_name"]]
-    sel_nets = [net for net in filter_nets if net['tenant_id'] == tenant_id or
-                (net['tenant_id'] != tenant_id and net['shared'])]
+    sel_nets = [net for net in filter_nets if net['tenant_id'] == tenant_id or (net['tenant_id'] != tenant_id and net['shared'])]
     count_sel_nets = len(sel_nets)
     if 1 < count_sel_nets:
         for sel_net in sel_nets:
@@ -356,8 +352,7 @@ def create_subnet(neutron, network_id, data):
                 'name': data["subnet_name"],
                 'cidr': data["cidr"],
                 'ip_version': int(data["ip_version"]) if "ip_version" in data else const.IPV4, }}
-        create_params["subnet"]["enable_dhcp"] = ("enable_dhcp" in data and
-                                                  int(data["enable_dhcp"]) == const.ENABLE_DHCP)
+        create_params["subnet"]["enable_dhcp"] = ("enable_dhcp" in data and int(data["enable_dhcp"]) == const.ENABLE_DHCP)
         if "gateway_ip" in data and data["gateway_ip"]:
             create_params["subnet"]["gateway_ip"] = data["gateway_ip"]
         else:
