@@ -63,7 +63,7 @@ class TestNsInstant(TestCase):
         }
         self.nsd_model = nsd_model
         self.updated_nsd_model = {
-            "ns_vnfs": [{
+            "vnfs": [{
                 "dependencies": [{
                     "vl_id": "5"
                 }],
@@ -73,7 +73,7 @@ class TestNsInstant(TestCase):
                     "id": "vnfd1"
                 }
             }],
-            "ns_vls": [{
+            "vls": [{
                 "vl_id": "5",
                 "properties": {
                     "location_info": {

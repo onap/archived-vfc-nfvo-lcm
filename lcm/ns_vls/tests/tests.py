@@ -39,8 +39,8 @@ class TestVlViews(TestCase):
                       "end_ip": "190.168.100.100", "gateway_ip": "190.168.100.1", "start_ip": "190.168.100.2",
                       "cidr": "190.168.100.0/24", "mtu": 1500, "network_name": "sub_mnet", "ip_version": 4}
         self.context = {
-            "ns_vls": [{"vl_id": self.vl_id_1, "description": "", "properties": properties, "route_external": False},
-                       {"vl_id": self.vl_id_2, "description": "", "properties": properties, "route_external": False}],
+            "vls": [{"vl_id": self.vl_id_1, "description": "", "properties": properties, "route_external": False},
+                    {"vl_id": self.vl_id_2, "description": "", "properties": properties, "route_external": False}],
             "vnffgs": [{"vnffg_id": self.vnffg_id, "description": "",
                         "properties": {"vendor": "zte", "version": "1.1.2", "number_of_endpoints": 7,
                                        "dependent_virtual_link": [self.vl_id_2, self.vl_id_1],

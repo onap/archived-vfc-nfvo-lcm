@@ -1166,7 +1166,7 @@ nsd_model = {
         "param2": "22",
     },
 
-    "ns_vnfs": [
+    "vnfs": [
         {
             "type": "tosca.nodes.nfv.ext.VNF.FireWall",
             "vnf_id": "vnf_1",
