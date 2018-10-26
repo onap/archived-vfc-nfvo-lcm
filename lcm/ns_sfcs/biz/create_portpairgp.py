@@ -261,7 +261,7 @@ class CreatePortPairGroup(object):
                 return cp_model_info
 
     def get_vnf_model_info_by_vnf_id(self, vnfid):
-        for vnf_model_info in self.ns_model_data["ns_vnfs"]:
+        for vnf_model_info in self.ns_model_data["vnfs"]:
             if (vnf_model_info["vnf_id"] == vnfid):
                 return vnf_model_info
 

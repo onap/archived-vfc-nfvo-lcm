@@ -110,7 +110,7 @@ class VnfGrantViewTest(unittest.TestCase):
                 "external_cps": [],
                 "forward_cps": []
             },
-            "ns_vls": [],
+            "vls": [],
             "cps": [],
             "metadata": {
                 "designer": "sdno",

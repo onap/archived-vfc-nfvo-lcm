@@ -26,7 +26,7 @@ nsd_model = {
         "param2": "22",
     },
 
-    "ns_vnfs": [
+    "vnfs": [
         {
             "type": "tosca.nodes.nfv.ext.VNF.FireWall",
             "vnf_id": "vnf_1",
@@ -129,7 +129,7 @@ nsd_model = {
         }
     ],
 
-    "ns_vls": [
+    "vls": [
         {
             "vl_id": "vldId1",
             "description": "",
@@ -520,7 +520,7 @@ vnfd_model_dict1 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -571,7 +571,7 @@ vnfd_model_dict1 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -622,7 +622,7 @@ vnfd_model_dict1 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -673,7 +673,7 @@ vnfd_model_dict1 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -724,7 +724,7 @@ vnfd_model_dict1 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -775,7 +775,7 @@ vnfd_model_dict1 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -826,7 +826,7 @@ vnfd_model_dict1 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -905,7 +905,7 @@ vnfd_model_dict1 = {
             'image_file_id': u'sss'
         }
     ],
-    'ns_vls': [
+    'vls': [
 
     ],
     'cps': [
@@ -974,7 +974,7 @@ vnfd_model_dict2 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -1025,7 +1025,7 @@ vnfd_model_dict2 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -1076,7 +1076,7 @@ vnfd_model_dict2 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -1127,7 +1127,7 @@ vnfd_model_dict2 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -1178,7 +1178,7 @@ vnfd_model_dict2 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -1229,7 +1229,7 @@ vnfd_model_dict2 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -1280,7 +1280,7 @@ vnfd_model_dict2 = {
             'dependencies': [
 
             ],
-            'ns_vls': [
+            'vls': [
 
             ],
             'cps': [
@@ -1359,7 +1359,7 @@ vnfd_model_dict2 = {
             'image_file_id': u'sss'
         }
     ],
-    'ns_vls': [
+    'vls': [
 
     ],
     'cps': [
