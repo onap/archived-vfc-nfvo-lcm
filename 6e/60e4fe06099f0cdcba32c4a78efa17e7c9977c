@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Ruoyu Ying <ruoyu.ying@intel.com>
+Code-Review+2: maopeng zhang <zhang.maopeng1@zte.com.cn>
+Submitted-by: maopeng zhang <zhang.maopeng1@zte.com.cn>
+Submitted-at: Fri, 26 Oct 2018 06:02:55 +0000
+Reviewed-on: https://gerrit.onap.org/r/71294
+Project: vfc/nfvo/lcm
+Branch: refs/heads/master
