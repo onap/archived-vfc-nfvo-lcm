@@ -178,7 +178,7 @@ class CreateVnfs(Thread):
         return ""
 
     def get_network_info_of_vl(self, vl_id):
-        for vnf_info in self.nsd_model['ns_vls']:
+        for vnf_info in self.nsd_model['vls']:
             if vnf_info['vl_id'] == vl_id:
                 return vnf_info['properties']['vl_profile']['networkName'], vnf_info['properties']['vl_profile']['initiationParameters']['name']
         return '', ''
