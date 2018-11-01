@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from lcm.pub.database.models import NfInstModel
+from lcm.pub.database.models import NfInstModel, VmInstModel
 
 
 class GetVnf(object):
@@ -21,3 +21,12 @@ class GetVnf(object):
     def do_biz(self):
         nf_inst_info = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
         return nf_inst_info
+
+
+class GetVnfVms(object):
+    def __init__(self, nf_inst_id):
+        self.nf_inst_id = nf_inst_id
+
+    def do_biz(self):
+        vnf_vms = VmInstModel.objects.filter(instid=self.nf_inst_id)
+        return vnf_vms

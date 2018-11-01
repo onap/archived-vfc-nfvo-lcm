@@ -25,7 +25,7 @@ from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
-from lcm.ns_vnfs.biz.get_vnfs import GetVnf
+from lcm.ns_vnfs.biz.get_vnfs import GetVnf, GetVnfVms
 from lcm.ns_vnfs.serializers.serializers import GetVnfRespSerializer
 from lcm.ns_vnfs.serializers.serializers import GrantVnfReqSerializer
 from lcm.ns_vnfs.serializers.serializers import GrantVnfRespSerializer
@@ -96,10 +96,16 @@ class NfDetailView(APIView):
         if not nf_inst_info:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        vnf_vms = GetVnfVms(vnfinstid).do_biz()
+
         rsp = {
             'vnfInstId': nf_inst_info[0].nfinstid,
             'vnfName': nf_inst_info[0].nf_name,
-            'vnfStatus': nf_inst_info[0].status
+            'vnfStatus': nf_inst_info[0].status,
+            'vnfVms': [{
+                'vmId': vm.vmid,
+                'vmName': vm.vmname
+            } for vm in vnf_vms]
         }
         resp_serializer = GetVnfRespSerializer(data=rsp)
         if not resp_serializer.is_valid():
