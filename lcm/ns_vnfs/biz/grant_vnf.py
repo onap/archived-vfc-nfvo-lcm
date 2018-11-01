@@ -102,7 +102,7 @@ class GrantVnf(object):
                     'vnfdVirtualComputeDescId': None,  # TODO: required
                     'vimFlavourId': off.flavor_name
                 })
-                grant_resp['additionalparams'][off.vim_id] = off.directive
+                # grant_resp['additionalparams'][off.vim_id] = off.directive
 
         logger.debug("grant_resp=%s", grant_resp)
         return grant_resp
