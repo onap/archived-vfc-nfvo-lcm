@@ -58,14 +58,18 @@ class InstantNSService(object):
             logger.debug('ns-instant(%s) workflow starting...' % self.ns_inst_id)
             logger.debug('req_data=%s' % self.req_data)
             ns_inst = NSInstModel.objects.get(id=self.ns_inst_id)
+            vim_id = ''
 
             input_parameters = []
-            for key, val in self.req_data['additionalParamForNs'].items():
-                input_parameters.append({"key": key, "value": val})
+            if 'additionalParamForNs' in self.req_data:
+                for key, val in self.req_data['additionalParamForNs'].items():
+                    input_parameters.append({"key": key, "value": val})
+                if 'location' in self.req_data['additionalParamForNs']:
+                    vim_id = self.req_data['additionalParamForNs']['location']
+                params_json = json.JSONEncoder().encode(self.req_data["additionalParamForNs"])
+            else:
+                params_json = {}
 
-            vim_id = ''
-            if 'location' in self.req_data['additionalParamForNs']:
-                vim_id = self.req_data['additionalParamForNs']['location']
             location_constraints = []
             if 'locationConstraints' in self.req_data:
                 location_constraints = self.req_data['locationConstraints']
@@ -76,7 +80,6 @@ class InstantNSService(object):
             logger.debug('Start query nsd(%s)' % ns_inst.nspackage_id)
             NSInstModel.objects.filter(id=self.ns_inst_id).update(nsd_model=dst_plan)
 
-            params_json = json.JSONEncoder().encode(self.req_data["additionalParamForNs"])
             params_vnf = []
             plan_dict = json.JSONDecoder().decode(dst_plan)
             for vnf in ignore_case_get(plan_dict, "vnfs"):
@@ -113,8 +116,10 @@ class InstantNSService(object):
                 'object_additionalParamForPnf': pnf_params_json
             }
             plan_input.update(**self.get_model_count(dst_plan))
-            plan_input["sdnControllerId"] = ignore_case_get(
-                self.req_data['additionalParamForNs'], "sdncontroller")
+
+            if 'additionalParamForNs' in self.req_data:
+                plan_input["sdnControllerId"] = ignore_case_get(
+                    self.req_data['additionalParamForNs'], "sdncontroller")
 
             ServiceBaseInfoModel(service_id=self.ns_inst_id,
                                  service_name=ns_inst.name,
