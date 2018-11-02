@@ -84,7 +84,17 @@ class GrantVnf(object):
                         break
                 req_param[grant_type].append(grant_res)
             self.data = req_param
-        vimConnections.append(resmgr.grant_vnf(self.data))
+        tmp = resmgr.grant_vnf(self.data)
+        vimConnections.append(
+            {
+                "id": tmp["vim"]["vimId"],
+                "vimId": tmp["vim"]["vimId"],
+                "vimType": None,
+                "interfaceInfo": None,
+                "accessInfo": tmp["vim"]["accessInfo"],
+                "extra": None
+            }
+        )
 
         grant_resp = {
             "id": str(uuid.uuid4()),
@@ -102,7 +112,7 @@ class GrantVnf(object):
                     'vnfdVirtualComputeDescId': None,  # TODO: required
                     'vimFlavourId': off.flavor_name
                 })
-                grant_resp['additionalparams'][off.vim_id] = off.directive
+                # grant_resp['additionalparams'][off.vim_id] = off.directive
 
         logger.debug("grant_resp=%s", grant_resp)
         return grant_resp
