@@ -64,14 +64,14 @@ class PlaceVnfs(object):
         if self.placements == [] or self.placements == [[]]:
             logger.debug("No solution found for request %s " % self.request_id)
             self.update_response_to_db(self.request_id, self.transaction_id,
-                                       self.data.get("requestStatus"), "no-solution", "no-solution",
-                                       "no-solution", "no-solution")
+                                       self.data.get("requestStatus"), "none", "none",
+                                       "none", "none")
             return
         for item in self.placements:
             if not isinstance(item, list):
                 self.update_response_to_db(self.request_id, self.transaction_id,
-                                           self.data.get("requestStatus"), "no-solution", "no-solution",
-                                           "no-solution", "no-solution")
+                                           self.data.get("requestStatus"), "none", "none",
+                                           "none", "none")
                 continue
             for placement in item:
                 assignmentInfo = placement.get("assignmentInfo")
@@ -106,8 +106,15 @@ class PlaceVnfs(object):
                         cloud_owner = placement.get("solution").get("cloudOwner") \
                             if placement.get("solution").get("cloudOwner") \
                             else vim_info.get("cloudOwner")
+                        location_id = vim_info.get("locationId")
+                        if not cloud_owner or not location_id:
+                            self.update_response_to_db(self.request_id,
+                                                       self.transaction_id,
+                                                       self.data.get("requestStatus"), "none", "none",
+                                                       "none", "none")
+                            return
                         vim_id = vim_info['vimId'] if vim_info.get('vimId') \
-                            else cloud_owner + "_" + vim_info.get("locationId")
+                            else cloud_owner + "_" + location_id
                         self.update_response_to_db(requestId=self.request_id,
                                                    transactionId=self.transaction_id,
                                                    requestStatus=self.data.get("requestStatus"),

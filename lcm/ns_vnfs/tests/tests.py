@@ -930,10 +930,10 @@ class TestPlaceVnfViews(TestCase):
         PlaceVnfs(resp).extract()
         db_info = OOFDataModel.objects.filter(request_id=resp.get("requestId"), transaction_id=resp.get("transactionId"))
         self.assertEqual(db_info[0].request_status, "completed")
-        self.assertEqual(db_info[0].vim_id, "no-solution")
-        self.assertEqual(db_info[0].cloud_owner, "no-solution")
-        self.assertEqual(db_info[0].cloud_region_id, "no-solution")
-        self.assertEqual(db_info[0].vdu_info, "no-solution")
+        self.assertEqual(db_info[0].vim_id, "none")
+        self.assertEqual(db_info[0].cloud_owner, "none")
+        self.assertEqual(db_info[0].cloud_region_id, "none")
+        self.assertEqual(db_info[0].vdu_info, "none")
 
 
 vnfd_model_dict = {
