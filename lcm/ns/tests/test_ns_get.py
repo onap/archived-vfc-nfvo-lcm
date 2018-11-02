@@ -27,7 +27,6 @@ class TestNsQuery(TestCase):
         response = self.client.get("/api/nslcm/v1/ns/1")
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
         self.assertIsNotNone(response.data)
-        self.assertEqual(1, len(response.data))
 
     def test_query_all_nsinstance(self):
         response = self.client.get("/api/nslcm/v1/ns")
