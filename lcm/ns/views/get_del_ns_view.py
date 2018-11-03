@@ -44,7 +44,7 @@ class NSDetailView(APIView):
             if not ret:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             logger.debug("Leave NSDetailView::get::ret=%s", ret)
-            resp_serializer = QueryNsRespSerializer(data=ret, many=True)
+            resp_serializer = QueryNsRespSerializer(data=ret[0])
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
