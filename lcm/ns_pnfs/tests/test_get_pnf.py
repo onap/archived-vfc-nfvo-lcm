@@ -97,3 +97,24 @@ class TestGetPnfViews(TestCase):
                      ).save()
         response = self.client.get("/api/nslcm/v1/pnfs/%s" % pnfId)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_get_fileter_nsinstance_restapi(self):
+        pnfId = str(uuid.uuid4())
+        nsInstanceId = str(uuid.uuid4())
+        PNFInstModel(pnfId=pnfId,
+                     pnfName="Test PNF",
+                     pnfdId=str(uuid.uuid4()),
+                     pnfdInfoId=str(uuid.uuid4()),
+                     pnfProfileId=str(uuid.uuid4()),
+                     cpInfo=[{
+                         "cpInstanceId": str(uuid.uuid4()),
+                         "cpdId": "pnf_ext_cp01",
+                         "cpProtocolData": []
+                     }],
+                     emsId=str(uuid.uuid4()),
+                     nsInstances=nsInstanceId
+                     ).save()
+        response = self.client.get("/api/nslcm/v1/pnfs?nsInstanceId=%s" % nsInstanceId)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(1, len(response.data))
+        self.assertEqual(pnfId, response.data[0]['pnfId'])
