@@ -15,6 +15,7 @@ import json
 import logging
 
 from lcm.ns.const import OWNER_TYPE
+from lcm.pub.utils import restcall
 from lcm.pub.database.models import NSInstModel, NfInstModel, VLInstModel, CPInstModel, VNFFGInstModel
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ class GetNSInfoService(object):
             'nsdId': ns_inst.nsd_id,
             'nsdInvariantId': ns_inst.nsd_invariant_id,
             'vnfInfo': self.get_vnf_infos(ns_inst.id),
+            'pnfInfo': self.get_pnf_infos(ns_inst.id),
             'vlInfo': self.get_vl_infos(ns_inst.id),
             'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
             'nsState': ns_inst.status}
@@ -75,13 +77,13 @@ class GetNSInfoService(object):
         return [{
             'vnffgInstanceId': vnffg.vnffginstid,
             'vnfId': self.convert_string_to_list(vnffg.vnflist),
-            'pnfId': self.get_pnf_infos(nsd_model),
+            'pnfId': self.get_pnf_ids(nsd_model),
             'virtualLinkId': self.convert_string_to_list(vnffg.vllist),
             'cpId': self.convert_string_to_list(vnffg.cplist),
             'nfp': self.convert_string_to_list(vnffg.fplist)} for vnffg in vnffgs]
 
     @staticmethod
-    def get_pnf_infos(nsd_model):
+    def get_pnf_ids(nsd_model):
         context = json.loads(nsd_model)
         pnfs = context['pnfs']
         return [pnf['pnf_id'] for pnf in pnfs]
@@ -91,3 +93,12 @@ class GetNSInfoService(object):
         if not detail_id_string:
             return None
         return detail_id_string.split(',')
+
+    @staticmethod
+    def get_pnf_infos(ns_instance_id):
+        uri = "api/nslcm/v1/pnfs?nsInstanceId=%s" % ns_instance_id
+        ret = restcall.req_by_msb(uri, "GET")
+        if ret[0] == 0:
+            return json.loads(ret[1])
+        else:
+            return []

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from rest_framework import serializers
+from lcm.ns_pnfs.serializers.pnf_serializer import PnfInstanceSerializer
 
 
 class ContextSerializer(serializers.Serializer):
@@ -65,6 +66,7 @@ class QueryNsRespSerializer(serializers.Serializer):
     description = serializers.CharField(help_text="Description of NS instance", required=False, allow_null=True)
     nsdId = serializers.CharField(help_text="ID of NSD", required=True)
     vnfInfo = VnfInstSerializer(help_text="VNF instances", many=True, required=False, allow_null=True)
+    pnfInfo = PnfInstanceSerializer(help_text="PNF instances", many=True, required=False, allow_null=True)
     vlInfo = VlInstSerializer(help_text="VL instances", many=True, required=False, allow_null=True)
     vnffgInfo = VnffgInstSerializer(help_text="VNFFG instances", many=True, required=False, allow_null=True)
     nsState = serializers.CharField(help_text="State of NS instance", required=False, allow_null=True)

@@ -63,7 +63,12 @@ class PnfView(APIView):
     def get(self, request):
         try:
             logger.debug("PnfView::get")
-            pnfInstDataSet = GetPnf().do_biz()
+            nsInstanceId = request.query_params.get('nsInstanceId', None)
+            if nsInstanceId is not None:
+                filter = {"nsInstanceId": nsInstanceId}
+                pnfInstDataSet = GetPnf(filter).do_biz()
+            else:
+                pnfInstDataSet = GetPnf().do_biz()
             logger.debug("PnfView::get::ret=%s", pnfInstDataSet)
             resp_serializer = PnfInstancesSerializer(data=[pnfInstData.__dict__ for pnfInstData in pnfInstDataSet])
             if not resp_serializer.is_valid():
