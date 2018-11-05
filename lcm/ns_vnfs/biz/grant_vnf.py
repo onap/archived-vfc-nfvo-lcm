@@ -105,12 +105,13 @@ class GrantVnf(object):
 
         offs = OOFDataModel.objects.filter(service_resource_id=ignore_case_get(self.data, "vnfInstanceId"))
         if offs.exists():
-            for off in offs:
+            vdu_info = eval(offs.vdu_info)
+            for vdu in vdu_info:
                 grant_resp['vimAssets']['computeResourceFlavours'].append({
-                    'vimConnectionId': off.vim_id,
-                    'resourceProviderId': off.vdu_name,
+                    'vimConnectionId': offs.vim_id,
+                    'resourceProviderId': vdu.get("vduName"),
                     'vnfdVirtualComputeDescId': None,  # TODO: required
-                    'vimFlavourId': off.flavor_name
+                    'vimFlavourId': vdu.get("flavorName")
                 })
                 # grant_resp['additionalparams'][off.vim_id] = off.directive
 
