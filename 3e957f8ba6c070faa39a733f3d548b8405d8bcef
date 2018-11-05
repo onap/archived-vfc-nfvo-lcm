@@ -16,6 +16,52 @@
       "revId": "3e957f8ba6c070faa39a733f3d548b8405d8bcef",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_ae1fd2b6",
+        "filename": "lcm/ns_vnfs/biz/grant_vnf.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-11-05T08:57:52Z",
+      "side": 1,
+      "message": "need be changed to json.loads because offs.vdu_info is a json string.",
+      "range": {
+        "startLine": 108,
+        "startChar": 23,
+        "endLine": 108,
+        "endChar": 27
+      },
+      "revId": "3e957f8ba6c070faa39a733f3d548b8405d8bcef",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_ce1c96c4",
+        "filename": "lcm/ns_vnfs/biz/grant_vnf.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2018-11-05T08:57:52Z",
+      "side": 1,
+      "message": "need be changed to offs[0].vim_id because offs is a list of records",
+      "range": {
+        "startLine": 111,
+        "startChar": 39,
+        "endLine": 111,
+        "endChar": 50
+      },
+      "revId": "3e957f8ba6c070faa39a733f3d548b8405d8bcef",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
