@@ -26,6 +26,7 @@ from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
+from lcm.ns_vnfs.biz.grant_vnf import GrantVnf
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
 from lcm.ns_vnfs.biz.subscribe import SubscriptionDeletion
@@ -33,6 +34,7 @@ from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
 from lcm.ns_vnfs.const import VNF_STATUS, INST_TYPE
 from lcm.ns_vnfs.biz import create_vnfs
 from lcm.ns_vnfs.biz.place_vnfs import PlaceVnfs
+from lcm.pub.msapi import resmgr
 
 
 class TestGetVnfViews(TestCase):
@@ -934,6 +936,38 @@ class TestPlaceVnfViews(TestCase):
         self.assertEqual(db_info[0].cloud_owner, "none")
         self.assertEqual(db_info[0].cloud_region_id, "none")
         self.assertEqual(db_info[0].vdu_info, "none")
+
+
+class TestGrantVnfViews(TestCase):
+    def setUp(self):
+        self.vnf_inst_id = str(uuid.uuid4())
+        self.data = {
+            "vnfInstanceId": self.vnf_inst_id,
+            "vnfLcmOpOccId": "1234"
+        }
+        vdu_info_dict = [{"vduName": "vg", "flavorName": "flavor_1", "directive": []}]
+        OOFDataModel(request_id='1234', transaction_id='1234', request_status='done', request_module_name='vg',
+                     service_resource_id=self.vnf_inst_id, vim_id='cloudOwner_casa', cloud_owner='cloudOwner',
+                     cloud_region_id='casa', vdu_info=json.dumps(vdu_info_dict)).save()
+
+    def tearDown(self):
+        OOFDataModel.objects.all().delete()
+
+    @mock.patch.object(resmgr, "grant_vnf")
+    def test_exec_grant(self, mock_grant):
+        resmgr_grant_resp = {
+            "vim": {
+                "vimId": "cloudOwner_casa",
+                "accessInfo": {
+                    "tenant": "tenantA"
+                }
+            }
+        }
+        mock_grant.return_value = resmgr_grant_resp
+        resp = GrantVnf(self.data).exec_grant()
+        self.assertEquals(resp['vimAssets']['computeResourceFlavours'][0]['vimConnectionId'], 'cloudOwner_casa')
+        self.assertEquals(resp['vimAssets']['computeResourceFlavours'][0]['resourceProviderId'], 'vg')
+        self.assertEquals(resp['vimAssets']['computeResourceFlavours'][0]['vimFlavourId'], 'flavor_1')
 
 
 vnfd_model_dict = {
