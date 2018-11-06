@@ -102,7 +102,7 @@ class CreateVls(object):
             "mtu": self.vl_profile.get("mtu", const.DEFAULT_MTU),
             "vlan_transparent": self.vl_profile.get("vlanTransparent", False),
             "subnet_list": [{
-                "subnet_name": self.vl_profile.get("initiationParameters").get("name", ""),
+                "subnet_name": self.vl_profile.get("networkName"),  # self.vl_profile.get("initiationParameters").get("name", ""),
                 "cidr": self.vl_profile.get("cidr", "192.168.0.0/24"),
                 "ip_version": self.vl_profile.get("ip_version", const.IPV4),
                 "enable_dhcp": self.vl_profile.get("dhcpEnabled", False),
