@@ -167,7 +167,11 @@ class CreateVnfs(Thread):
                     "cpdId": self.get_cpd_id_of_vl(network_info['key_name']),
                     "vim": {
                         "vimid": vl_instance.vimid
-                    }
+                    },
+                    # SOL 003 align
+                    "id": vl_instance_id,
+                    "vimConnectionId": vl_instance.vimid,
+                    "extCps": [{"cpdId": self.get_cpd_id_of_vl(network_info['key_name']), "cpConfig":[]}]
                 })
         return virtual_link_list, ext_virtual_link
 
@@ -189,6 +193,7 @@ class CreateVnfs(Thread):
             'vnfInstanceName': self.vnf_inst_name,
             'vnfPackageId': ignore_case_get(self.nf_package_info, "vnfPackageId"),
             'vnfDescriptorId': self.vnfd_id,
+            'flavourId': "default",
             'extVirtualLink': ext_virtual_link,
             'additionalParam': {
                 "properties": self.properties,
