@@ -35,6 +35,10 @@ if REG_TO_MSB_WHEN_START:
     import json
     from lcm.pub.utils.restcall import req_by_msb
     req_by_msb(REG_TO_MSB_REG_URL, "POST", json.JSONEncoder().encode(REG_TO_MSB_REG_PARAM))
+    v2_param = REG_TO_MSB_REG_PARAM.copy()
+    v2_param["version"] = "v2"
+    v2_param["url"] = v2_param["url"].replace("v1", "v2")
+    req_by_msb(REG_TO_MSB_REG_URL, "POST", json.JSONEncoder().encode(v2_param))
 
 # deploy workflow when startup
 if DEPLOY_WORKFLOW_WHEN_START:
