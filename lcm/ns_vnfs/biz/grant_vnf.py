@@ -52,9 +52,12 @@ class GrantVnf(object):
             additional_param = ignore_case_get(self.data, "additionalparams")
             vnfm_inst_id = ignore_case_get(additional_param, "vnfmid")
             vim_id = ignore_case_get(additional_param, "vimid")
-
-            vnfinsts = NfInstModel.objects.filter(
-                nfinstid=m_vnf_inst_id, vnfm_inst_id=vnfm_inst_id)
+            if vnfm_inst_id and vnfm_inst_id != "":
+                vnfinsts = NfInstModel.objects.filter(
+                    mnfinstid=m_vnf_inst_id, vnfm_inst_id=vnfm_inst_id)
+            else:
+                vnfinsts = NfInstModel.objects.filter(
+                    mnfinstid=m_vnf_inst_id)
             if not vnfinsts:
                 raise NSLCMException("Vnfinst(%s) is not found in vnfm(%s)" % (
                     m_vnf_inst_id, vnfm_inst_id))
