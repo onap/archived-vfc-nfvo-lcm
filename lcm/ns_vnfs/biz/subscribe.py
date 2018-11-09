@@ -20,6 +20,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vnfm_by_id
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
+from lcm.pub.config import config as pub_config
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +36,14 @@ class SubscriptionCreation(object):
 
     def do_biz(self):
         logger.debug('Start subscribing...')
-        self.prepare_subscription_request_data()
+        self.prepare_lccn_subscription_request_data()
         self.send_subscription_request()
         self.save_subscription_response_data()
         logger.debug('Subscribing has completed.')
 
     def prepare_lccn_subscription_request_data(self):
         vnfm_info = get_vnfm_by_id(self.vnfm_id)
+        call_back = "http://%s:%s/api/gvnfmdriver/v1/vnfs/lifecyclechangesnotification" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
         self.subscription_request_data = {
             "filter": {
                 "notificationTypes": ["VnfLcmOperationOccurrenceNotification"],
@@ -66,24 +68,28 @@ class SubscriptionCreation(object):
                     "ROLLED_BACK"
                 ],
                 "vnfInstanceSubscriptionFilter": {
-                    "vnfdIds": [],
+                    # "vnfdIds": [],
                     "vnfInstanceIds": [self.vnf_instance_id],
-                    "vnfInstanceNames": [],
-                    "vnfProductsFromProviders": {}
+                    # "vnfInstanceNames": [],
+                    # "vnfProductsFromProviders": {}
                 }
             },
-            "callbackUri": "api/gvnfmdriver/v1/vnfs/lifecyclechangesnotification",  # TODO: need reconfirming
+            "callbackUri": call_back,  # TODO: need reconfirming
             "authentication": {
                 "authType": ["BASIC"],
                 "paramsBasic": {
-                    "userName": vnfm_info['userName'],
-                    "password": vnfm_info['password']
+                    # "userName": vnfm_info['userName'],
+                    # "password": vnfm_info['password']
                 }
             }
         }
+        if vnfm_info['userName']:
+            self.subscription_request_data["authentication"]["paramsBasic"]["userName"] = vnfm_info['userName']
+        if vnfm_info['password']:
+            self.subscription_request_data["authentication"]["paramsBasic"]["password"] = vnfm_info['password']
 
     def send_subscription_request(self):
-        ret = req_by_msb('api/gvnfmdrvier/v1/%s/subscriptions' % self.vnfm_id, 'POST', self.subscription_request_data)
+        ret = req_by_msb('api/gvnfmdriver/v1/%s/subscriptions' % self.vnfm_id, 'POST', json.JSONEncoder().encode(self.subscription_request_data))
         if ret[0] != 0:
             logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
             raise NSLCMException("Failed to subscribe from vnfm(%s)." % self.vnfm_id)
@@ -125,7 +131,7 @@ class SubscriptionDeletion(object):
     def send_subscription_deletion_request(self):
         if self.subscription:
             self.subscription_id = ignore_case_get(self.subscription, 'id')
-            ret = req_by_msb('api/gvnfmdrvier/v1/%s/subscriptions/%s' % (self.vnfm_id, self.subscription_id), 'DELETE')
+            ret = req_by_msb('api/gvnfmdriver/v1/%s/subscriptions/%s' % (self.vnfm_id, self.subscription_id), 'DELETE')
             if ret[0] != 0:
                 logger.error('Status code is %s, detail is %s.', ret[2], ret[1])
                 raise NSLCMException("Failed to subscribe from vnfm(%s)." % self.vnfm_id)

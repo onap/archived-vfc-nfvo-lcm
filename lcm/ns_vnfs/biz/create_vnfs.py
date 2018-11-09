@@ -171,9 +171,19 @@ class CreateVnfs(Thread):
                     # SOL 003 align
                     "id": vl_instance_id,
                     "vimConnectionId": vl_instance.vimid,
-                    "extCps": [{"cpdId": self.get_cpd_id_of_vl(network_info['key_name']), "cpConfig":[]}]
+                    "extCps": self.get_cpds_of_vl(network_info['key_name'])
                 })
         return virtual_link_list, ext_virtual_link
+
+    def get_cpds_of_vl(self, vl_key):
+        extCps = []
+        logger.debug("vl_keya; %s" % vl_key)
+        for cpd in self.vnfd_model["vnf_exposed"]["external_cps"]:
+            logger.debug("exposed_cpd; %s" % cpd)
+            if vl_key == cpd["key_name"]:
+                cp = {"cpdId": cpd["cpd_id"], "cpConfig": []}
+                extCps.append(cp)
+        return extCps
 
     def get_cpd_id_of_vl(self, vl_key):
         for cpd in self.vnfd_model["vnf_exposed"]["external_cps"]:
