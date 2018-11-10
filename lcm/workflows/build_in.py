@@ -279,7 +279,7 @@ def confirm_sfc_status(sfc_inst_id):
 def create_pnf(pnf_param_json):
     if pnf_param_json and len(pnf_param_json) > 0:
         pnfs = json.JSONDecoder().decode(pnf_param_json)
-        for pnf in pnfs:
+        for pnf in pnfs.itervalues():
             uri = "/api/nslcm/v1/pnfs"
             method = "POST"
             content = json.JSONEncoder().encode(pnf["input"]["content"])
