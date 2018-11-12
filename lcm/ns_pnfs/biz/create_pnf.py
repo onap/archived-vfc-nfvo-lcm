@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 
 class CreatePnf(object):
     def __init__(self, data):
-        self.pnfId = data.get("pnfId"),
-        self.pnfName = data.get("pnfName"),
-        self.pnfdId = data.get("pnfdId"),
-        self.pnfdInfoId = data.get("pnfdInfoId"),
-        self.pnfProfileId = data.get("pnfProfileId"),
+        self.pnfId = data.get("pnfId")
+        self.pnfName = data.get("pnfName")
+        self.pnfdId = data.get("pnfdId")
+        self.pnfdInfoId = data.get("pnfdInfoId","")
+        self.pnfProfileId = data.get("pnfProfileId","")
         self.cpInfo = data.get("cpInfo", "")
         self.emsId = data.get("emsId", "")
         self.nsInstances = data.get("nsInstances")
@@ -41,7 +41,7 @@ class CreatePnf(object):
         return GetPnf({"pnfId": self.pnfId}, True).do_biz()
 
     def check_pnfd_valid(self):
-        pnf_package_info = query_pnf_descriptor({"pnfId": self.pnfdInfoId})
+        pnf_package_info = query_pnf_descriptor({"pnfdId": self.pnfdId})
         if not pnf_package_info:
             raise NSLCMException("Pnfd(%s) does not exist." % self.pnfdInfoId)
 
@@ -59,7 +59,8 @@ class CreatePnf(object):
             if not pnfInstances.filter(nsInstances__contains=self.nsInstances):
                 for pnfInstance in pnfInstances:
                     new_nsInstances = pnfInstance.nsInstances + "," + self.nsInstances
-                    pnfInstance.update(nsInstances=new_nsInstances)
+                    pnfInstance.nsInstances = new_nsInstances
+                    pnfInstance.save()
         else:
             PNFInstModel(pnfId=self.pnfId,
                          pnfName=self.pnfName,

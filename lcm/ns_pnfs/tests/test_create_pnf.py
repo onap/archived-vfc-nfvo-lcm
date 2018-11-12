@@ -83,7 +83,27 @@ class TestCreatePnfViews(TestCase):
                 }
             ],
             "emsId": str(uuid.uuid4()),
-            "nsInstances": str(uuid.uuid4()) + "," + str(uuid.uuid4())
+            "nsInstances": str(uuid.uuid4())
+        }
+
+        response = self.client.post("/api/nslcm/v1/pnfs", data=data, format='json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        data = {
+            "pnfId": id,
+            "pnfName": "Test PNF",
+            "pnfdId": str(uuid.uuid4()),
+            "pnfdInfoId": str(uuid.uuid4()),
+            "pnfProfileId": str(uuid.uuid4()),
+            "cpInfo": [
+                {
+                    "cpInstanceId": str(uuid.uuid4()),
+                    "cpdId": "pnf_ext_cp01",
+                    "cpProtocolData": []
+                }
+            ],
+            "emsId": str(uuid.uuid4()),
+            "nsInstances": str(uuid.uuid4())
         }
 
         response = self.client.post("/api/nslcm/v1/pnfs", data=data, format='json')
