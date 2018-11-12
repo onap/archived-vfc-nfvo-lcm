@@ -24,6 +24,7 @@ from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
 from lcm.ns.const import OWNER_TYPE
+from lcm.pub.database.models import PNFInstModel
 
 JOB_ERROR = 255
 
@@ -48,6 +49,7 @@ class TerminateNsService(threading.Thread):
             self.cancel_sfc_list()
             self.cancel_vnf_list()
             self.cancel_vl_list()
+            self.cancel_pnf_list()
 
             NSInstModel.objects.filter(id=self.ns_inst_id).update(status='null')
             JobUtil.add_job_status(self.job_id, 100, "ns terminate ends.", '')
@@ -165,3 +167,21 @@ class TerminateNsService(threading.Thread):
         if job_timeout:
             logger.error("Job(%s) timeout", vnf_job_id)
         return job_end_normal
+
+    def cancel_pnf_list(self):
+        pnfinst_list = PNFInstModel.objects.filter(nsInstances__contains=self.ns_inst_id)
+        if len(pnfinst_list) > 0:
+            cur_progress = 90
+            step_progress = 5 / len(pnfinst_list)
+            for pnfinst in pnfinst_list:
+                delete_result = "fail"
+                try:
+                    ret = call_from_ns_cancel_resource('pnf', pnfinst.pnfId)
+                    if ret[0] == 0:
+                            delete_result = "success"
+                except Exception as e:
+                    logger.error("[cancel_pnf_list] error[%s]!" % e.message)
+                    logger.error(traceback.format_exc())
+                job_msg = "Delete pnfinst:[%s] %s" % (pnfinst.pnfId, delete_result)
+                cur_progress += step_progress
+                JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
