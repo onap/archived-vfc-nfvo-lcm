@@ -267,7 +267,6 @@ class InstantNSService(object):
                 if pnfd["properties"]["descriptor_id"] == pnf["pnfdId"]:
                     k = pnfd["pnf_id"]
                     pnf["nsInstances"] = self.ns_inst_id
-                    # todo pnf["pnfdInfoId"]
                     pnfs[k] = {
                         "type": "CreatePnf",
                         "input": {

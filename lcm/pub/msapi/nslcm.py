@@ -24,14 +24,15 @@ def call_from_ns_cancel_resource(res_type, instid):
     method = "DELETE"
     if res_type == 'vl':
         uri = '/api/nslcm/v1/ns/vls/%s' % instid
-
     elif res_type == 'sfc':
         uri = '/api/nslcm/v1/ns/sfcs/%s' % instid
+    elif res_type == 'pnf':
+        uri = '/api/nslcm/v1/pnfs/%s' % instid
     else:
         # vnf
         method = "POST"
         uri = '/api/nslcm/v1/ns/terminatevnf/%s' % instid
     req_param = {}
     ret = req_by_msb(uri, method, json.dumps(req_param))
-    logger.info("[NS terminate] call vnfm [%s] result:%s" % (res_type, ret))
+    logger.info("[NS terminate] call res_type [%s] result:%s" % (res_type, ret))
     return ret

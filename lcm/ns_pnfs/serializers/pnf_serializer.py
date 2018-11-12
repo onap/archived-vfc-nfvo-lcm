@@ -19,9 +19,9 @@ class PnfInstanceSerializer(serializers.Serializer):
     pnfId = serializers.CharField(help_text="Identifier of the PNF.", required=True, allow_null=False)
     pnfName = serializers.CharField(help_text="Name of the PNF.", required=True, allow_null=True)
     pnfdId = serializers.CharField(help_text="Identifier of the PNFD on which the PNF is based.", required=True, allow_null=True)
-    pnfdInfoId = serializers.CharField(help_text="Identifier of the PNFD information object related to this PNF.", required=True, allow_null=True)
+    pnfdInfoId = serializers.CharField(help_text="Identifier of the PNFD information object related to this PNF.", required=False, allow_null=True, allow_blank=True)
     pnfProfileId = serializers.CharField(help_text="Identifier of the related PnfProfile in the NSD on which the PNF is based.", required=True, allow_null=True)
-    cpInfo = serializers.CharField(help_text="Information on the external CP of the PNF.", required=True, allow_null=True)
+    cpInfo = serializers.CharField(help_text="Information on the external CP of the PNF.", required=False, allow_null=True, allow_blank=True)
 
 
 class PnfInstancesSerializer(serializers.ListSerializer):
