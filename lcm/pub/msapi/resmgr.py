@@ -60,6 +60,8 @@ def grant_vnf(req_param):
             if isinstance(vim, list):
                 vim = vim[0]
                 vim_id = vim["vimId"]
+            if "vimId" in vim:
+                vim_id = vim["vimId"]
             grant_rsp = {
                 "vim": {
                     "vimId": vim_id,
