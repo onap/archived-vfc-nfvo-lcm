@@ -122,11 +122,17 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
 
     def delete_vnf(self, nf_instid):
-        ret = call_from_ns_cancel_resource('vnf', nf_instid)
+        term_param = {
+            "terminationType": self.terminate_type
+        }
+        if self.terminate_timeout:
+            term_param["gracefulTerminationTimeout"] = int(self.terminate_timeout)
+        ret = call_from_ns_cancel_resource('vnf', nf_instid, term_param)
         if ret[0] != 0:
+            logger.error("Terminate VNF(%s) failed: %s", nf_instid, ret[1])
             return False
         job_info = json.JSONDecoder().decode(ret[1])
-        vnf_job_id = ignore_case_get(job_info, "jobid")
+        vnf_job_id = ignore_case_get(job_info, "jobId")
         return self.wait_delete_vnf_job_finish(vnf_job_id)
 
     def wait_delete_vnf_job_finish(self, vnf_job_id):
