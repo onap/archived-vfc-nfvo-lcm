@@ -125,7 +125,7 @@ class SubscriptionDeletion(object):
     def filter_subscription(self):
         subscritptions = SubscriptionModel.objects.filter(vnf_instance_filter__contains=self.vnf_instance_id)
         if not subscritptions.exists():
-            logger.debug("Subscription contains VNF(%s) does not exist." % self.vnf_instacne_id)
+            logger.debug("Subscription contains VNF(%s) does not exist." % self.vnf_instance_id)
         self.subscription = subscritptions.first()
 
     def send_subscription_deletion_request(self):
