@@ -54,6 +54,8 @@ def grant_vnf(req_param):
             vim_id = req_param["vimId"]
         elif "additionalparam" in req_param and "vimid" in req_param["additionalparam"]:
             vim_id = req_param["additionalparam"]["vimid"]
+        elif "additionalParams" in req_param and "vimid" in req_param["additionalParams"]:
+            vim_id = req_param["additionalParams"]["vimid"]
         try:
             from lcm.pub.msapi import extsys
             vim = extsys.get_vim_by_id(vim_id)
