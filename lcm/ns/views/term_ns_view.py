@@ -45,7 +45,7 @@ class TerminateNSView(APIView):
 
             termination_type = ignore_case_get(request.data, 'terminationType')
             graceful_termination_timeout = ignore_case_get(request.data, 'gracefulTerminationTimeout')
-            job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, ns_instance_id)
+            job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
             TerminateNsService(ns_instance_id, termination_type, graceful_termination_timeout, job_id).start()
 
             resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
