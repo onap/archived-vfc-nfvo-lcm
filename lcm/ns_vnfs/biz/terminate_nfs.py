@@ -43,6 +43,11 @@ class TerminateVnfs(threading.Thread):
         self.vnfm_job_id = ''
         self.terminationType = data['terminationType']
         self.gracefulTerminationTimeout = data['gracefulTerminationTimeout']
+        if not self.gracefulTerminationTimeout:
+            self.gracefulTerminationTimeout = 120
+        else:
+            self.gracefulTerminationTimeout = int(self.gracefulTerminationTimeout)
+
         self.initdata()
 
     def run(self):
