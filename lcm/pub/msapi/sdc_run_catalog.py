@@ -59,11 +59,11 @@ def query_vnfpackage_by_id(csar_id):
 
 def query_pnf_descriptor(filter=None):
     if filter:
-        pnfdInfoId = filter.get("pnfdInfoId")
-        ret = req_by_msb("/api/catalog/v1/pnf_descriptors/%s" % pnfdInfoId, "GET")
+        pnfdId = filter.get("pnfdId")
+        ret = req_by_msb("/api/nsd/v1/pnf_descriptors?pnfdId=%s" % pnfdId, "GET")
     else:
-        ret = req_by_msb("/api/catalog/v1/pnf_descriptors", "GET")
+        ret = req_by_msb("/api/nsd/v1/pnf_descriptors", "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
-        raise NSLCMException("Failed to query pnf descriptor(%s) from catalog." % pnfdInfoId)
+        raise NSLCMException("Failed to query pnf descriptor(%s) from catalog." % pnfdId)
     return json.JSONDecoder().decode(ret[1])
