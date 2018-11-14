@@ -19,7 +19,7 @@ import traceback
 
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi.vnfmdriver import send_nf_heal_request
+from lcm.pub.msapi.vnfmdriver import send_nf_operate_request
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import VNF_STATUS
@@ -39,7 +39,7 @@ class NFOperateService(threading.Thread):
 
         self.nf_model = {}
         self.nf_additional_params = {}
-        self.nf_operate_params = {}
+        self.nf_operate_params = data
         self.m_nf_inst_id = ''
         self.vnfm_inst_id = ''
 
@@ -73,7 +73,8 @@ class NFOperateService(threading.Thread):
 
     def send_nf_operating_request(self):
         req_param = json.JSONEncoder().encode(self.nf_operate_params)
-        rsp = send_nf_heal_request(self.vnfm_inst_id, self.m_nf_inst_id, req_param)
+        # rsp = send_nf_heal_request(self.vnfm_inst_id, self.m_nf_inst_id, req_param)
+        rsp = send_nf_operate_request(self.vnfm_inst_id, self.m_nf_inst_id, req_param)
         vnfm_job_id = ignore_case_get(rsp, 'jobId')
         ret = wait_job_finish(self.vnfm_inst_id, self.job_id, vnfm_job_id, progress_range=None, timeout=1200,
                               mode='1')
