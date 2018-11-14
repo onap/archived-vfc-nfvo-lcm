@@ -115,15 +115,14 @@ class NSUpdateService(threading.Thread):
         operational_states = ignore_case_get(change_state_to, 'OperationalStates')
         if operational_states == OPERATIONAL_STATES.STOPPED:
             stop_type = ignore_case_get(vnf_data, 'stopType')
-            Stop_Type = ignore_case_get(stop_type, 'StopType')
-            if Stop_Type == STOP_TYPE.GRACEFUL:
+            if stop_type == STOP_TYPE.GRACEFUL:
                 graceful_stop_timeout = ignore_case_get(vnf_data, 'gracefulStopTimeout')
 
         result = {
             "vnfInstanceId": vnf_instance_id,
             "changeStateTo": operational_states,
-            "stopType": Stop_Type,
-            "gracefulStopTimeout": graceful_stop_timeout
+            "stopType": stop_type,
+            "gracefulStopTimeout": graceful_stop_timeout if graceful_stop_timeout else 0
         }
         return result
 
