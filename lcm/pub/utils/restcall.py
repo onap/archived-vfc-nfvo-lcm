@@ -35,6 +35,7 @@ def call_req(base_url, user, passwd, auth_type, resource, method, content='', ad
     logger.debug("[%s]call_req('%s','%s','%s',%s,'%s','%s','%s')" % (
         callid, base_url, user, passwd, auth_type, resource, method, content))
     ret = None
+    resp_Location = ''
     resp_status = ''
     try:
         full_url = combine_url(base_url, resource)
@@ -50,34 +51,35 @@ def call_req(base_url, user, passwd, auth_type, resource, method, content='', ad
             try:
                 resp, resp_content = http.request(full_url, method=method.upper(), body=content, headers=headers)
                 resp_status, resp_body = resp['status'], resp_content
+                resp_Location = resp.get('Location', "")
                 logger.debug("[%s][%d]status=%s)" % (callid, retry_times, resp_status))
                 if headers['accept'] == 'application/json':
                     resp_body = resp_content.decode('UTF-8')
                     logger.debug("resp_body=%s", resp_body)
                 if resp_status in status_ok_list:
-                    ret = [0, resp_body, resp_status]
+                    ret = [0, resp_body, resp_status, resp_Location]
                 else:
-                    ret = [1, resp_body, resp_status]
+                    ret = [1, resp_body, resp_status, resp_Location]
                 break
             except Exception as ex:
                 if 'httplib.ResponseNotReady' in str(sys.exc_info()):
                     logger.debug("retry_times=%d", retry_times)
                     logger.error(traceback.format_exc())
-                    ret = [1, "Unable to connect to %s" % full_url, resp_status]
+                    ret = [1, "Unable to connect to %s" % full_url, resp_status, resp_Location]
                     continue
                 raise ex
     except urllib2.URLError as err:
-        ret = [2, str(err), resp_status]
+        ret = [2, str(err), resp_status, resp_Location]
     except Exception as ex:
         logger.error(traceback.format_exc())
         logger.error("[%s]ret=%s" % (callid, str(sys.exc_info())))
         res_info = str(sys.exc_info())
         if 'httplib.ResponseNotReady' in res_info:
             res_info = "The URL[%s] request failed or is not responding." % full_url
-        ret = [3, res_info, resp_status]
+        ret = [3, res_info, resp_status, resp_Location]
     except:
         logger.error(traceback.format_exc())
-        ret = [4, str(sys.exc_info()), resp_status]
+        ret = [4, str(sys.exc_info()), resp_status, resp_Location]
 
     logger.debug("[%s]ret=%s" % (callid, str(ret)))
     return ret
