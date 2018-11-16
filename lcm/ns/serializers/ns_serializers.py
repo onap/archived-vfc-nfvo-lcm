@@ -94,7 +94,7 @@ class IpAddress(serializers.Serializer):
     subnetId = serializers.CharField(help_text="Subnet defined by the identifier of the subnet resource in the VIM.", required=False)
 
 
-class IpOverEthernetAddressData(serializers.Serializer):
+class IpOverEthernetSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="MAC address.", required=False)
     ipAddresses = IpAddress(help_text="List of IP addresses to assign to the extCP instance.", required=False, many=True)
 
@@ -105,7 +105,7 @@ class CpProtocolInfoSerializer(serializers.Serializer):
         choices=["IP_OVER_ETHERNET"],
         required=True,
         allow_null=False)
-    ipOverEthernet = IpOverEthernetAddressData(
+    ipOverEthernet = IpOverEthernetSerializer(
         help_text="IP addresses over Ethernet to assign to the extCP instance.",
         required=False,
         allow_null=True)
