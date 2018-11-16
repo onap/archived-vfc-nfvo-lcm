@@ -87,7 +87,7 @@ class GrantVnfRespSerializer(serializers.Serializer):
     vim = VimSerializer(help_text="VIM Info", required=True)
 
 
-class AffectedVnfcSerializer(serializers.Serializer):
+class AffectedVnfcLcmSerializer(serializers.Serializer):
     vnfcInstanceId = serializers.CharField(help_text="ID of VNFC instance", required=False, allow_null=True, allow_blank=True)
     vduId = serializers.CharField(help_text="ID of VDU in VNFD", required=False, allow_null=True, allow_blank=True)
     changeType = serializers.ChoiceField(
@@ -162,7 +162,7 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     )
     jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True, allow_blank=True)
     vnfdmodule = serializers.CharField(help_text="VNFD Module", required=False, allow_null=True, allow_blank=True)
-    affectedVnfc = AffectedVnfcSerializer(help_text="Affected VNFC", many=True)
+    affectedVnfc = AffectedVnfcLcmSerializer(help_text="Affected VNFC", many=True)
     affectedVl = AffectedVirtualLinkSerializer(help_text="Affected VL", many=True)
     affectedCp = AffectedCpSerializer(help_text="Affected CP", many=True)
     affectedVirtualStorage = AffectedVirtualStorage(help_text="Affected Virtual Storage(Not supported)", many=True)
