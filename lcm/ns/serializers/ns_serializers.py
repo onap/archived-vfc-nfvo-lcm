@@ -72,13 +72,13 @@ class QueryNsRespSerializer(serializers.Serializer):
     nsState = serializers.CharField(help_text="State of NS instance", required=False, allow_null=True)
 
 
-class VimSerializer(serializers.Serializer):
+class VnfLocationSerializer(serializers.Serializer):
     vimId = serializers.CharField(help_text="ID of VIM", required=False, allow_null=True)
 
 
 class LocationConstraintSerializer(serializers.Serializer):
     vnfProfileId = serializers.CharField(help_text="ID of VNF profile", required=False, allow_null=True)
-    locationConstraints = VimSerializer(help_text="Location constraint", required=False, allow_null=True)
+    locationConstraints = VnfLocationSerializer(help_text="Location constraint", required=False, allow_null=True)
 
 
 class AddressRange(serializers.Serializer):
