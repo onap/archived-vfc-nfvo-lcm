@@ -436,7 +436,7 @@ class IpAddresseSerializer(serializers.Serializer):
     )
 
 
-class IpOverEthernetAddressDataSerializer(serializers.Serializer):
+class IpOverEthernetAddressSerializer(serializers.Serializer):
     macAddress = serializers.CharField(
         help_text="MAC address.",
         required=False,
@@ -450,20 +450,20 @@ class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     )
 
 
-class CpProtocolDataSerializer(serializers.Serializer):
+class CpProtocolDataConfigSerializer(serializers.Serializer):
     layerProtocol = serializers.ChoiceField(
         help_text="Identifier of layer(s) and protocol(s).",
         choices=["IP_OVER_ETHERNET"],
         required=True
     )
-    ipOverEthernet = IpOverEthernetAddressDataSerializer(
+    ipOverEthernet = IpOverEthernetAddressSerializer(
         help_text="Network address data for IP over Ethernet to assign to the extCP instance.",
         required=False,
         allow_null=True,
     )
 
 
-class VnfExtCpConfigSerializer(serializers.Serializer):
+class VnfExtCpConfigDataSerializer(serializers.Serializer):
     cpInstanceId = serializers.CharField(
         help_text="Identifier of the external CP instance to which this set of configuration parameters is requested to be applied.",
         required=False,
@@ -476,26 +476,26 @@ class VnfExtCpConfigSerializer(serializers.Serializer):
         allow_null=True,
         allow_blank=True
     )
-    cpProtocolData = CpProtocolDataSerializer(
+    cpProtocolData = CpProtocolDataConfigSerializer(
         help_text="Parameters for configuring the network protocols on the link port that connects the CP to a VL.",
         many=True,
         required=False
     )
 
 
-class VnfExtCpDataSerializer(serializers.Serializer):
+class VnfExtCpSerializer(serializers.Serializer):
     cpdId = serializers.CharField(
         help_text="The identifier of the CPD in the VNFD.",
         required=True
     )
-    cpConfig = VnfExtCpConfigSerializer(
+    cpConfig = VnfExtCpConfigDataSerializer(
         help_text="List of instance data that need to be configured on the CP instances created from the respective CPD.",
         many=True,
         required=False
     )
 
 
-class ExtLinkPortDataSerializer(serializers.Serializer):
+class ExtLinkPortSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this link port as provided by the entity that has created the link port.",
         required=True
@@ -506,7 +506,7 @@ class ExtLinkPortDataSerializer(serializers.Serializer):
     )
 
 
-class ExtVirtualLinkDataSerializer(serializers.Serializer):
+class ExtVirtualLinkSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="The identifier of the external VL instance.",
         required=True
@@ -527,19 +527,19 @@ class ExtVirtualLinkDataSerializer(serializers.Serializer):
         help_text="The identifier of the resource in the scope of the VIM or the resource provider.",
         required=True
     )
-    extCps = VnfExtCpDataSerializer(
+    extCps = VnfExtCpSerializer(
         help_text="External CPs of the VNF to be connected to this external VL.",
         many=True,
         required=False
     )
-    extLinkPorts = ExtLinkPortDataSerializer(
+    extLinkPorts = ExtLinkPortSerializer(
         help_text="Externally provided link ports to be used to connect external connection points to this external VL.",
         many=True,
         required=False
     )
 
 
-class ExtManagedVirtualLinkDataSerializer(serializers.Serializer):
+class ExtManagedVirtualLinkSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="The identifier of the externally-managed internal VL instance.",
         required=True
@@ -654,12 +654,12 @@ class GrantSerializer(serializers.Serializer):
         required=False,
         allow_null=True
     )
-    extVirtualLinks = ExtVirtualLinkDataSerializer(
+    extVirtualLinks = ExtVirtualLinkSerializer(
         help_text="Information about external VLs to connect the VNF to.",
         many=True,
         required=False
     )
-    extManagedVirtualLinks = ExtManagedVirtualLinkDataSerializer(
+    extManagedVirtualLinks = ExtManagedVirtualLinkSerializer(
         help_text="Information about internal VLs that are managed by other entities than the VNFM.",
         many=True,
         required=False
