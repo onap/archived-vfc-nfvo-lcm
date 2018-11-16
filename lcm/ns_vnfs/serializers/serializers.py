@@ -87,7 +87,7 @@ class GrantVnfRespSerializer(serializers.Serializer):
     vim = VimSerializer(help_text="VIM Info", required=True)
 
 
-class AffectedVnfcSerializer(serializers.Serializer):
+class AffectedVnfcLcmSerializer(serializers.Serializer):
     vnfcInstanceId = serializers.CharField(help_text="ID of VNFC instance", required=False, allow_null=True, allow_blank=True)
     vduId = serializers.CharField(help_text="ID of VDU in VNFD", required=False, allow_null=True, allow_blank=True)
     changeType = serializers.ChoiceField(
@@ -110,7 +110,7 @@ class NetworkResourceSerializer(serializers.Serializer):
     resourceName = serializers.CharField(help_text="Name of network resource", required=False, allow_null=True, allow_blank=True)
 
 
-class AffectedVirtualLinkSerializer(serializers.Serializer):
+class AffectedVirtualLinkLcmSerializer(serializers.Serializer):
     vlInstanceId = serializers.CharField(help_text="ID of VL instance", required=False, allow_null=True, allow_blank=True)
     vldId = serializers.CharField(help_text="ID of VLD in VNFD", required=False, allow_null=True, allow_blank=True)
     changeType = serializers.ChoiceField(
@@ -145,7 +145,7 @@ class AffectedCpSerializer(serializers.Serializer):
     portResource = PortResourceSerializer(help_text="Port Resource", required=False, allow_null=True)
 
 
-class AffectedVirtualStorage(serializers.Serializer):
+class AffectedVirtualStorageLcm(serializers.Serializer):
     pass
 
 
@@ -162,10 +162,10 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     )
     jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True, allow_blank=True)
     vnfdmodule = serializers.CharField(help_text="VNFD Module", required=False, allow_null=True, allow_blank=True)
-    affectedVnfc = AffectedVnfcSerializer(help_text="Affected VNFC", many=True)
-    affectedVl = AffectedVirtualLinkSerializer(help_text="Affected VL", many=True)
+    affectedVnfc = AffectedVnfcLcmSerializer(help_text="Affected VNFC", many=True)
+    affectedVl = AffectedVirtualLinkLcmSerializer(help_text="Affected VL", many=True)
     affectedCp = AffectedCpSerializer(help_text="Affected CP", many=True)
-    affectedVirtualStorage = AffectedVirtualStorage(help_text="Affected Virtual Storage(Not supported)", many=True)
+    affectedVirtualStorage = AffectedVirtualStorageLcm(help_text="Affected Virtual Storage(Not supported)", many=True)
 
 
 class ScaleVnfDataSerializer(serializers.Serializer):
