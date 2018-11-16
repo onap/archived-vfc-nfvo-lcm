@@ -68,7 +68,7 @@ class VnfExtCpData(serializers.Serializer):
                                      required=False, allow_null=True)
 
 
-class ResourceHandleSerializer(serializers.Serializer):
+class ExtLinkPortResourceHandleSerializer(serializers.Serializer):
     vimId = serializers.CharField(help_text="Identifier of the VIM under whose control this resource is placed.",
                                   required=False, allow_null=True)
     resourceProviderId = serializers.CharField(help_text="Identifier of the entity responsible for the management of "
@@ -81,8 +81,8 @@ class ResourceHandleSerializer(serializers.Serializer):
 
 class ExtLinkPortDataSerializer(serializers.Serializer):
     id = serializers.CharField(help_text="Provided by the entity that has created the link port", required=True)
-    resourceHandle = ResourceHandleSerializer(help_text="Identifier(s) of the virtualised network resource(s) "
-                                                        "realizing the VL instance", required=True)
+    resourceHandle = ExtLinkPortResourceHandleSerializer(help_text="Identifier(s) of the virtualised network resource(s) "
+                                                                   "realizing the VL instance", required=True)
 
 
 class ExtVirtualLinkDataSerializer(serializers.Serializer):
