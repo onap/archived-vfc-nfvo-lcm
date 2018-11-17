@@ -41,7 +41,7 @@ class HandleVnfLcmOocNotification(object):
         self.vnf_instid = get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
         self.operation = ignore_case_get(data, 'operation')
         self.affectedVnfcs = ignore_case_get(data, 'affectedVnfcs')
-        self.affectedVls = ignore_case_get(data, 'affectedVls')
+        self.affectedVls = ignore_case_get(data, 'affectedVirtualLinks')
         self.affectedCps = ignore_case_get(data, 'changedExtConnectivity')
         self.affectedVirtualStorage = ignore_case_get(data, 'affectedVirtualStorages')
 
