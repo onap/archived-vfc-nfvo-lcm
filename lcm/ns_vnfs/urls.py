@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns/terminatevnf/(?P<vnfinstid>[0-9a-zA-Z_-]+)$', NfTerminate.as_view()),
     url(r'^api/nslcm/v1/ns/grantvnf$', NfGrant.as_view()),
     url(r'^api/nslcm/v1/ns/placevnf$', NfPlacement.as_view()),
-    url(r'^api/nslcm/v1/ns/(?P<vnfmid>[0-9a-zA-Z_-]+)/ns_vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$', LcmNotify.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<vnfmid>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$', LcmNotify.as_view()),
     url(r'^api/nslcm/v1/ns/ns_vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)/scaling$', NfScaleView.as_view()),
     url(r'^api/nslcm/v1/vnfonboarding$', NfVerifyView.as_view()),
     url(r'^api/nslcm/v1/vnfms/(?P<vnfmid>[0-9a-zA-Z_-]+)', NfVnfmInfoView.as_view()),
@@ -33,7 +33,7 @@ urlpatterns = [
 
     # move form v2
     url(r'^api/nslcm/v2/grants$', VnfGrantView.as_view()),
-    url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/ns_vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$',
+    url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$',
         VnfNotifyView.as_view()),
 ]
 

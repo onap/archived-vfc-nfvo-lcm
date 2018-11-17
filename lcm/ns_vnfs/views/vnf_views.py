@@ -77,17 +77,17 @@ class VnfNotifyView(APIView):
             if notification_type == 'VnfLcmOperationOccurrenceNotification':
                 notification = VnfLcmOperationOccurrenceNotificationSerializer(data=request.data)
                 if not notification.is_valid():
-                    raise Exception(notification.errors)
+                    logger.warn(notification.errors)
                 HandleVnfLcmOocNotification(vnfmId, vnfInstanceId, notification.data).do_biz()
             elif notification_type == 'VnfIdentifierCreationNotification':
                 notification = VnfIdentifierCreationNotificationSerializer(data=request.data)
                 if not notification.is_valid():
-                    raise Exception(notification.errors)
+                    logger.warn(notification.errors)
                 HandleVnfIdentifierCreationNotification(vnfmId, vnfInstanceId, notification.data).do_biz()
             elif notification_type == 'VnfIdentifierDeletionNotification':
                 notification = VnfIdentifierDeletionNotificationSerializer(data=request.data)
                 if not notification.is_valid():
-                    raise Exception(notification.errors)
+                    logger.warn(notification.errors)
                 HandleVnfIdentifierDeletionNotification(vnfmId, vnfInstanceId, notification.data).do_biz()
             else:
                 raise Exception('Unexpected noitifcation type value.')

@@ -165,20 +165,20 @@ class VnfGrantViewTest(unittest.TestCase):
         self.assertEqual(expect_resp_data, resp_data)
 
     def test_get_notify_vnf_normal(self):
-        response = self.client.get("/api/nslcm/v2/ns/1/ns_vnfs/1/Notify")
+        response = self.client.get("/api/nslcm/v2/ns/1/vnfs/1/Notify")
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)
 
     def test_notify_vnflcmopooc_normal(self):
         NfInstModel.objects.create(nfinstid='22',
                                    mnfinstid='2',
                                    vnfm_inst_id='1')
-        response = self.client.post("/api/nslcm/v2/ns/1/ns_vnfs/2/Notify",
+        response = self.client.post("/api/nslcm/v2/ns/1/vnfs/2/Notify",
                                     data=VNF_LCM_OP_OCC_NOTIFICATION_DATA,
                                     format='json')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     def test_notify_vnf_identifier_creation_normal(self):
-        response = self.client.post("/api/nslcm/v2/ns/1/ns_vnfs/2/Notify",
+        response = self.client.post("/api/nslcm/v2/ns/1/vnfs/2/Notify",
                                     data=VNF_IDENTIFIER_CREATION_NOTIFICATION_DATA,
                                     format='json')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
@@ -187,7 +187,7 @@ class VnfGrantViewTest(unittest.TestCase):
         NfInstModel.objects.create(nfinstid='22',
                                    mnfinstid='2',
                                    vnfm_inst_id='1')
-        response = self.client.post("/api/nslcm/v2/ns/1/ns_vnfs/2/Notify",
+        response = self.client.post("/api/nslcm/v2/ns/1/vnfs/2/Notify",
                                     data=VNF_IDENTIFIER_DELETION_NOTIFICATION_DATA,
                                     format='json')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
