@@ -17,14 +17,14 @@ from lcm.ns_pnfs.serializers.pnf_serializer import PnfInstanceSerializer
 
 
 class ContextSerializer(serializers.Serializer):
-    globalCustomerId = serializers.CharField(help_text="Global customer ID", required=False, allow_null=True)
-    serviceType = serializers.CharField(help_text="Service type", required=False, allow_null=True)
+    globalCustomerId = serializers.CharField(help_text="Global customer ID", required=False, allow_null=True, allow_blank=True)
+    serviceType = serializers.CharField(help_text="Service type", required=False, allow_null=True, allow_blank=True)
 
 
 class CreateNsReqSerializer(serializers.Serializer):
-    csarId = serializers.CharField(help_text="Package ID of NS", required=False, allow_null=True)
-    nsName = serializers.CharField(help_text="Name of NS", required=False, allow_null=True)
-    description = serializers.CharField(help_text="Description of NS", required=False, allow_null=True)
+    csarId = serializers.CharField(help_text="Package ID of NS", required=False, allow_null=True, allow_blank=True)
+    nsName = serializers.CharField(help_text="Name of NS", required=False, allow_null=True, allow_blank=True)
+    description = serializers.CharField(help_text="Description of NS", required=False, allow_null=True, allow_blank=True)
     context = ContextSerializer(help_text="Context of NS", required=False)
 
 
@@ -34,50 +34,50 @@ class CreateNsRespSerializer(serializers.Serializer):
 
 class VnfInstSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=True)
-    vnfInstanceName = serializers.CharField(help_text="Name of VNF instance", required=False, allow_null=True)
-    vnfdId = serializers.CharField(help_text="ID of VNFD", required=False, allow_null=True)
+    vnfInstanceName = serializers.CharField(help_text="Name of VNF instance", required=False, allow_null=True, allow_blank=True)
+    vnfdId = serializers.CharField(help_text="ID of VNFD", required=False, allow_null=True, allow_blank=True)
 
 
 class CpInstInfoSerializer(serializers.Serializer):
     cpInstanceId = serializers.CharField(help_text="ID of CP instance", required=True)
-    cpInstanceName = serializers.CharField(help_text="Name of CP instance", required=False, allow_null=True)
-    cpdId = serializers.CharField(help_text="ID of CPD", required=False, allow_null=True)
+    cpInstanceName = serializers.CharField(help_text="Name of CP instance", required=False, allow_null=True, allow_blank=True)
+    cpdId = serializers.CharField(help_text="ID of CPD", required=False, allow_null=True, allow_blank=True)
 
 
 class VlInstSerializer(serializers.Serializer):
     vlInstanceId = serializers.CharField(help_text="ID of VL instance", required=True)
-    vlInstanceName = serializers.CharField(help_text="Name of VL instance", required=False, allow_null=True)
-    vldId = serializers.CharField(help_text="ID of VLD", required=False, allow_null=True)
+    vlInstanceName = serializers.CharField(help_text="Name of VL instance", required=False, allow_null=True, allow_blank=True)
+    vldId = serializers.CharField(help_text="ID of VLD", required=False, allow_null=True, allow_blank=True)
     relatedCpInstanceId = CpInstInfoSerializer(help_text="Related CP instances", many=True)
 
 
 class VnffgInstSerializer(serializers.Serializer):
     vnffgInstanceId = serializers.CharField(help_text="ID of VNFFG instance", required=True)
-    vnfdId = serializers.CharField(help_text="ID of VNFD", required=False, allow_null=True)
-    pnfId = serializers.CharField(help_text="ID of PNF", required=False, allow_null=True)
-    virtualLinkId = serializers.CharField(help_text="ID of virtual link", required=False, allow_null=True)
-    cpdId = serializers.CharField(help_text="ID of CPD", required=False, allow_null=True)
-    nfp = serializers.CharField(help_text="nfp", required=False, allow_null=True)
+    vnfdId = serializers.CharField(help_text="ID of VNFD", required=False, allow_null=True, allow_blank=True)
+    pnfId = serializers.CharField(help_text="ID of PNF", required=False, allow_null=True, allow_blank=True)
+    virtualLinkId = serializers.CharField(help_text="ID of virtual link", required=False, allow_null=True, allow_blank=True)
+    cpdId = serializers.CharField(help_text="ID of CPD", required=False, allow_null=True, allow_blank=True)
+    nfp = serializers.CharField(help_text="nfp", required=False, allow_null=True, allow_blank=True)
 
 
 class QueryNsRespSerializer(serializers.Serializer):
     nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=True)
-    nsName = serializers.CharField(help_text="Name of NS instance", required=False, allow_null=True)
-    description = serializers.CharField(help_text="Description of NS instance", required=False, allow_null=True)
+    nsName = serializers.CharField(help_text="Name of NS instance", required=False, allow_null=True, allow_blank=True)
+    description = serializers.CharField(help_text="Description of NS instance", required=False, allow_null=True, allow_blank=True)
     nsdId = serializers.CharField(help_text="ID of NSD", required=True)
     vnfInfo = VnfInstSerializer(help_text="VNF instances", many=True, required=False, allow_null=True)
     pnfInfo = PnfInstanceSerializer(help_text="PNF instances", many=True, required=False, allow_null=True)
     vlInfo = VlInstSerializer(help_text="VL instances", many=True, required=False, allow_null=True)
     vnffgInfo = VnffgInstSerializer(help_text="VNFFG instances", many=True, required=False, allow_null=True)
-    nsState = serializers.CharField(help_text="State of NS instance", required=False, allow_null=True)
+    nsState = serializers.CharField(help_text="State of NS instance", required=False, allow_null=True, allow_blank=True)
 
 
 class VnfLocationSerializer(serializers.Serializer):
-    vimId = serializers.CharField(help_text="ID of VIM", required=False, allow_null=True)
+    vimId = serializers.CharField(help_text="ID of VIM", required=False, allow_null=True, allow_blank=True)
 
 
 class LocationConstraintSerializer(serializers.Serializer):
-    vnfProfileId = serializers.CharField(help_text="ID of VNF profile", required=False, allow_null=True)
+    vnfProfileId = serializers.CharField(help_text="ID of VNF profile", required=False, allow_null=True, allow_blank=True)
     locationConstraints = VnfLocationSerializer(help_text="Location constraint", required=False, allow_null=True)
 
 
@@ -91,11 +91,11 @@ class IpAddress(serializers.Serializer):
     fixedAddresses = serializers.ListField(child=serializers.CharField(help_text="Fixed addresses to assign."), required=False)
     numDynamicAddresses = serializers.IntegerField(help_text="Number of dynamic addresses to assign.", required=False)
     addressRange = AddressRange(help_text="An IP address range to be used.", required=False)
-    subnetId = serializers.CharField(help_text="Subnet defined by the identifier of the subnet resource in the VIM.", required=False)
+    subnetId = serializers.CharField(help_text="Subnet defined by the identifier of the subnet resource in the VIM.", required=False, allow_null=True, allow_blank=True)
 
 
 class IpOverEthernetSerializer(serializers.Serializer):
-    macAddress = serializers.CharField(help_text="MAC address.", required=False)
+    macAddress = serializers.CharField(help_text="MAC address.", required=False, allow_null=True, allow_blank=True)
     ipAddresses = IpAddress(help_text="List of IP addresses to assign to the extCP instance.", required=False, many=True)
 
 
@@ -112,16 +112,16 @@ class CpProtocolInfoSerializer(serializers.Serializer):
 
 
 class PnfExtCpData(serializers.Serializer):
-    cpInstanceId = serializers.CharField(help_text="Identifier of the CP", required=False, allow_null=False)
-    cpdId = serializers.CharField(help_text="Identifier of the Connection Point Descriptor", required=False, allow_null=False)
+    cpInstanceId = serializers.CharField(help_text="Identifier of the CP", required=False, allow_null=True, allow_blank=True)
+    cpdId = serializers.CharField(help_text="Identifier of the Connection Point Descriptor", required=False, allow_null=True, allow_blank=True)
     cpProtocolData = CpProtocolInfoSerializer(help_text="Address assigned for this CP", required=True, allow_null=False, many=True)
 
 
 class AddPnfData(serializers.Serializer):
-    pnfId = serializers.CharField(help_text="Identifier of the PNF", required=True, allow_null=False)
-    pnfName = serializers.CharField(help_text="Name of the PNF", required=True, allow_null=True)
-    pnfdId = serializers.CharField(help_text="Identifier of the PNFD", required=True, allow_null=False)
-    pnfProfileId = serializers.CharField(help_text="Identifier of related PnfProfile in the NSD", required=True, allow_null=False)
+    pnfId = serializers.CharField(help_text="Identifier of the PNF", required=True, allow_null=False, allow_blank=True)
+    pnfName = serializers.CharField(help_text="Name of the PNF", required=True, allow_null=True, allow_blank=True)
+    pnfdId = serializers.CharField(help_text="Identifier of the PNFD", required=True, allow_null=False, allow_blank=True)
+    pnfProfileId = serializers.CharField(help_text="Identifier of related PnfProfile in the NSD", required=True, allow_null=False, allow_blank=True)
     cpData = PnfExtCpData(help_text="Address assigned for the PNF external CP", required=False, many=True)
 
 
@@ -141,24 +141,24 @@ class NsOperateJobSerializer(serializers.Serializer):
 
 
 class TerminateNsReqSerializer(serializers.Serializer):
-    terminationType = serializers.CharField(help_text="Type of NS termination", required=False, allow_null=True)
-    gracefulTerminationTimeout = serializers.CharField(help_text="Timeout of NS graceful termination", required=False, allow_null=True)
+    terminationType = serializers.CharField(help_text="Type of NS termination", required=False, allow_null=True, allow_blank=True)
+    gracefulTerminationTimeout = serializers.CharField(help_text="Timeout of NS graceful termination", required=False, allow_null=True, allow_blank=True)
 
 
 class ActionVmSerializer(serializers.Serializer):
-    vmid = serializers.CharField(help_text="ID of VM", required=False, allow_null=True)
-    vduid = serializers.CharField(help_text="ID of vdu", required=False, allow_null=True)
-    vmname = serializers.CharField(help_text="Name of VM", required=False, allow_null=True)
+    vmid = serializers.CharField(help_text="ID of VM", required=False, allow_null=True, allow_blank=True)
+    vduid = serializers.CharField(help_text="ID of vdu", required=False, allow_null=True, allow_blank=True)
+    vmname = serializers.CharField(help_text="Name of VM", required=False, allow_null=True, allow_blank=True)
 
 
 class HealNsAdditionalParamsSerializer(serializers.Serializer):
-    action = serializers.CharField(help_text="Action of NS heal", required=False, allow_null=True)
+    action = serializers.CharField(help_text="Action of NS heal", required=False, allow_null=True, allow_blank=True)
     actionvminfo = ActionVmSerializer(help_text="VM info of action", required=False, allow_null=True)
 
 
 class HealVnfDataSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="ID of VNF Instance", required=True)
-    cause = serializers.CharField(help_text="Cause of NS heal", required=False, allow_null=True)
+    cause = serializers.CharField(help_text="Cause of NS heal", required=False, allow_null=True, allow_blank=True)
     additionalParams = HealNsAdditionalParamsSerializer(help_text="Additional params of NS heal", required=False, allow_null=True)
 
 
@@ -168,8 +168,8 @@ class HealNsDataSerializer(serializers.Serializer):
         help_text="A list of actions",
         child=serializers.CharField(help_text="One action", required=True),
         required=False)
-    healScript = serializers.CharField(help_text="script of NS heal", required=False, allow_null=True)
-    additionalParamsforNs = serializers.CharField(help_text="Addition params of NS heal", required=False, allow_null=True)
+    healScript = serializers.CharField(help_text="script of NS heal", required=False, allow_null=True, allow_blank=True)
+    additionalParamsforNs = serializers.CharField(help_text="Addition params of NS heal", required=False, allow_null=True, allow_blank=True)
 
 
 class HealNsReqSerializer(serializers.Serializer):
