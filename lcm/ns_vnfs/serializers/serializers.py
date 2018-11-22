@@ -301,7 +301,7 @@ class SolutionSerializer(serializers.Serializer):
                                                          allow_empty=True,
                                                          many=True)
     licenseSolutions = LicenseSolutionSerializer(help_text="A list of License Solutions",
-                                                 required=True, many=True)
+                                                 required=False, many=True)
 
 
 class PlaceVnfReqSerializer(serializers.Serializer):
