@@ -127,7 +127,7 @@ class PlaceVnfs(object):
                 for item in directive.get("directives"):
                     if item.get("type") == "flavor_directives":
                         for attribute in item.get("attributes"):
-                            vdu['flavorName'] = attribute.get("attribute_value")
+                            vdu[attribute.get("attribute_name")] = attribute.get("attribute_value")
                     else:
                         other_directives.append(item)
                 if other_directives:
