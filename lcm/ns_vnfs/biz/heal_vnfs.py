@@ -19,7 +19,7 @@ import traceback
 
 from lcm.pub.config.config import MR_IP
 from lcm.pub.config.config import MR_PORT
-from lcm.pub.database.models import NfInstModel, VNFCInstModel
+from lcm.pub.database.models import NfInstModel, VNFCInstModel, VmInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_heal_request
 from lcm.pub.utils import restcall
@@ -80,6 +80,14 @@ class NFHealService(threading.Thread):
 
         actionvminfo = ignore_case_get(self.nf_additional_params, 'actionvminfo')
         vmid = ignore_case_get(actionvminfo, 'vmid')
+        self.nf_heal_params = {
+            "action": "vmReset",
+            "affectedvm": {
+                "vmid": vmid,
+                "vduid": self.get_vudId(vmid),
+                "vmname": self.get_vmname(vmid)
+            }
+        }
         retry_count = 10
         while (retry_count > 0):
             resp = restcall.call_req('http://%s:%s/events' % (MR_IP, MR_PORT),
@@ -122,8 +130,13 @@ class NFHealService(threading.Thread):
         if not vnfcInstances:
             raise NSLCMException('VDU [vmid=%s, vnfInstanceId=%s] does not exist' % (vmid, self.vnf_instance_id))
 
-        vnfcInstance = VNFCInstModel.objects.filter(vmid=vmid, nfinstid=self.vnf_instance_id).first()
-        return vnfcInstance.vduid
+        return vnfcInstances.first().vduid
+
+    def get_vmname(self, vmid):
+        vms = VmInstModel.objects.filter(resouceid=vmid)
+        if not vms:
+            return vmid
+        return vms.first().vmname
 
     def update_job(self, progress, desc=''):
         JobUtil.add_job_status(self.job_id, progress, desc)
