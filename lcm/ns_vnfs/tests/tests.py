@@ -729,14 +729,14 @@ class TestGetVimInfoViews(TestCase):
 class TestPlaceVnfViews(TestCase):
     def setUp(self):
         self.vnf_inst_id = "1234"
-        self.vnf_inst_name = "vG"
+        self.vnf_id = "vG"
         self.client = Client()
         OOFDataModel.objects.all().delete()
         OOFDataModel.objects.create(
             request_id="1234",
             transaction_id="1234",
             request_status="init",
-            request_module_name=self.vnf_inst_name,
+            request_module_name=self.vnf_id,
             service_resource_id=self.vnf_inst_id,
             vim_id="",
             cloud_owner="",
@@ -752,6 +752,7 @@ class TestPlaceVnfViews(TestCase):
         vdu_info_json = [{
             "vduName": "vG_0",
             "flavorName": "HPA.flavor.1",
+            "flavorId": "12345",
             "directive": []
         }]
         PlaceVnfs(vnf_place_request).extract()
@@ -772,7 +773,7 @@ class TestPlaceVnfViews(TestCase):
                 "placementSolutions": [
                     [
                         {
-                            "resourceModuleName": self.vnf_inst_name,
+                            "resourceModuleName": self.vnf_id,
                             "serviceResourceId": self.vnf_inst_id,
                             "solution": {
                                 "identifierType": "serviceInstanceId",
@@ -823,7 +824,7 @@ class TestPlaceVnfViews(TestCase):
                 "placementSolutions": [
                     [
                         {
-                            "resourceModuleName": self.vnf_inst_name,
+                            "resourceModuleName": self.vnf_id,
                             "serviceResourceId": self.vnf_inst_id,
                             "solution": {
                                 "identifierType": "serviceInstanceId",
@@ -873,7 +874,7 @@ class TestPlaceVnfViews(TestCase):
                 "placementSolutions": [
                     [
                         {
-                            "resourceModuleName": self.vnf_inst_name,
+                            "resourceModuleName": self.vnf_id,
                             "serviceResourceId": self.vnf_inst_id,
                             "solution": {
                                 "identifierType": "serviceInstanceId",
@@ -946,7 +947,7 @@ class TestGrantVnfViews(TestCase):
             "vnfLcmOpOccId": "1234",
             "operation": "INSTANTIATE"
         }
-        vdu_info_dict = [{"vduName": "vg", "flavorName": "flavor_1", "directive": []}]
+        vdu_info_dict = [{"vduName": "vg", "flavorName": "flavor_1", "flavorId": "12345", "directive": []}]
         OOFDataModel(request_id='1234', transaction_id='1234', request_status='done', request_module_name='vg',
                      service_resource_id=self.vnf_inst_id, vim_id='cloudOwner_casa', cloud_owner='cloudOwner',
                      cloud_region_id='casa', vdu_info=json.dumps(vdu_info_dict)).save()
@@ -968,7 +969,7 @@ class TestGrantVnfViews(TestCase):
         resp = GrantVnf(self.data).exec_grant()
         self.assertEquals(resp['vimAssets']['computeResourceFlavours'][0]['vimConnectionId'], 'cloudOwner_casa')
         self.assertEquals(resp['vimAssets']['computeResourceFlavours'][0]['resourceProviderId'], 'vg')
-        self.assertEquals(resp['vimAssets']['computeResourceFlavours'][0]['vimFlavourId'], 'flavor_1')
+        self.assertEquals(resp['vimAssets']['computeResourceFlavours'][0]['vimFlavourId'], '12345')
 
 
 vnfd_model_dict = {
@@ -1764,9 +1765,13 @@ vnf_place_request = {
                                              "type": "flavor_directives",
                                              "attributes": [
                                                  {
-                                                     "attribute_name": "flavor_name",
+                                                     "attribute_name": "flavorName",
                                                      "attribute_value": "HPA.flavor.1"
-                                                 }
+                                                 },
+                                                 {
+                                                     "attribute_name": "flavorId",
+                                                     "attribute_value": "12345"
+                                                 },
                                              ]
                                          }
                                      ]

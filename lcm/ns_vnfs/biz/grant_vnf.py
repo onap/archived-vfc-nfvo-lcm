@@ -123,7 +123,7 @@ class GrantVnf(object):
                         'vimConnectionId': offs[0].vim_id,
                         'resourceProviderId': vdu.get("vduName"),
                         'vnfdVirtualComputeDescId': None,  # TODO: required
-                        'vimFlavourId': vdu.get("flavorName")
+                        'vimFlavourId': vdu.get("flavorId")
                     })
                     # grant_resp['additionalparams'][off.vim_id] = off.directive
                 break
