@@ -26,14 +26,12 @@ class PlaceVnfs(object):
         self.data = data
         self.placements = ""
         self.request_id = data.get("requestId")
-        self.transaction_id = data.get("transactionId")
 
     def validateCallbackResponse(self):
         if self.data == "":
             logger.error("Error occurred in Homing: OOF Async Callback Response is empty")
             return False
-        if self.data.get('requestStatus') == "completed" and self.data.get("requestId") \
-                and self.data.get("transactionId"):
+        if self.data.get('requestStatus') == "completed" and self.data.get("requestId"):
             if self.data.get("solutions").get("placementSolutions") is not None:
                 self.placements = self.data.get("solutions").get("placementSolutions")
                 logger.debug("Got placement solutions in OOF Async Callback response")
@@ -58,19 +56,17 @@ class PlaceVnfs(object):
         vim_info = {}
         if not self.validateCallbackResponse():
             logger.error("OOF request Failed")
-            self.update_response_to_db(self.request_id, self.transaction_id,
-                                       self.data.get("requestStatus"), "none", "none", "none", "none")
+            self.update_response_to_db(self.request_id, self.data.get("requestStatus"), "none", "none",
+                                       "none", "none")
             return
         if self.placements == [] or self.placements == [[]]:
             logger.debug("No solution found for request %s " % self.request_id)
-            self.update_response_to_db(self.request_id, self.transaction_id,
-                                       self.data.get("requestStatus"), "none", "none",
+            self.update_response_to_db(self.request_id, self.data.get("requestStatus"), "none", "none",
                                        "none", "none")
             return
         for item in self.placements:
             if not isinstance(item, list):
-                self.update_response_to_db(self.request_id, self.transaction_id,
-                                           self.data.get("requestStatus"), "none", "none",
+                self.update_response_to_db(self.request_id, self.data.get("requestStatus"), "none", "none",
                                            "none", "none")
                 continue
             for placement in item:
@@ -79,10 +75,8 @@ class PlaceVnfs(object):
                     logger.debug(
                         "No assignment info/Solution inside Homing response for request %s"
                         % self.request_id)
-                    self.update_response_to_db(self.request_id,
-                                               self.transaction_id,
-                                               self.data.get("requestStatus"), "none", "none", "none",
-                                               "none")
+                    self.update_response_to_db(self.request_id, self.data.get("requestStatus"), "none", "none", 
+                                               "none", "none")
                     continue
                 for info in assignmentInfo:
                     if info.get("key") in params:
@@ -90,7 +84,6 @@ class PlaceVnfs(object):
                     if not vim_info.get("oof_directives"):
                         logger.warn("Missing flavor info as no directive found in response")
                         self.update_response_to_db(self.request_id,
-                                                   self.transaction_id,
                                                    self.data.get("requestStatus"), "none", "none",
                                                    "none", "none")
                         continue
@@ -98,7 +91,6 @@ class PlaceVnfs(object):
                         vim_info['oof_directives'])
                     if not vduinfo:
                         self.update_response_to_db(self.request_id,
-                                                   self.transaction_id,
                                                    self.data.get("requestStatus"), "none", "none",
                                                    "none", "none")
                         return
@@ -109,14 +101,12 @@ class PlaceVnfs(object):
                         location_id = vim_info.get("locationId")
                         if not cloud_owner or not location_id:
                             self.update_response_to_db(self.request_id,
-                                                       self.transaction_id,
                                                        self.data.get("requestStatus"), "none", "none",
                                                        "none", "none")
                             return
                         vim_id = vim_info['vimId'] if vim_info.get('vimId') \
                             else cloud_owner + "_" + location_id
                         self.update_response_to_db(requestId=self.request_id,
-                                                   transactionId=self.transaction_id,
                                                    requestStatus=self.data.get("requestStatus"),
                                                    vimId=vim_id,
                                                    cloudOwner=cloud_owner,
@@ -153,10 +143,9 @@ class PlaceVnfs(object):
             logger.warn("No OOF directive for VDU")
             return None
 
-    def update_response_to_db(self, requestId, transactionId, requestStatus, vimId, cloudOwner,
+    def update_response_to_db(self, requestId, requestStatus, vimId, cloudOwner,
                               cloudRegionId, vduInfo):
-        OOFDataModel.objects.filter(request_id=requestId,
-                                    transaction_id=transactionId).update(
+        OOFDataModel.objects.filter(request_id=requestId).update(
             request_status=requestStatus,
             vim_id=vimId,
             cloud_owner=cloudOwner,

@@ -18,7 +18,7 @@ import threading
 import traceback
 
 from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.database.models import NfInstModel, VmInstModel
+from lcm.pub.database.models import NfInstModel, VmInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import resmgr
 from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai, query_vserver_aai, delete_vserver_aai
@@ -140,6 +140,8 @@ class TerminateVnfs(threading.Thread):
 
     def delete_data_from_db(self):
         NfInstModel.objects.filter(nfinstid=self.vnf_inst_id).delete()
+        vmInstModel.objects.filter(instid=self.vnf_inst_id).delete()
+        OOFDataModel.objects.filter(service_resource_id=self.vnf_inst_id).delete()
         JobUtil.add_job_status(self.job_id, 100, 'vnf terminate success', 0)
 
     def delete_vnf_in_aai(self):

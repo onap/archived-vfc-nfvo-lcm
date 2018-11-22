@@ -15,6 +15,7 @@
 import json
 import logging
 import uuid
+import time
 from lcm.pub.database.models import NfInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
@@ -34,6 +35,7 @@ class GrantVnf(object):
             self.data = json.JSONDecoder().decode(self.data)
         has_res_tpl = False
         grant_type = None
+        action_type = ignore_case_get(self.data, "operation")
         vimConnections = []
         if ignore_case_get(self.data, "addResources"):
             grant_type = "addResources"
@@ -106,18 +108,25 @@ class GrantVnf(object):
             "vimConnections": vimConnections
         }
 
-        offs = OOFDataModel.objects.filter(service_resource_id=ignore_case_get(self.data, "vnfInstanceId"))
-        if offs.exists():
-            vdu_info = json.loads(offs[0].vdu_info)
-            grant_resp['vimAssets'] = {'computeResourceFlavours': []}
-            for vdu in vdu_info:
-                grant_resp['vimAssets']['computeResourceFlavours'].append({
-                    'vimConnectionId': offs[0].vim_id,
-                    'resourceProviderId': vdu.get("vduName"),
-                    'vnfdVirtualComputeDescId': None,  # TODO: required
-                    'vimFlavourId': vdu.get("flavorName")
-                })
-                # grant_resp['additionalparams'][off.vim_id] = off.directive
+        logger.debug("action_type=%s" % action_type)
+        if action_type == 'INSTANTIATE':
+            for i in range(18):
+                offs = OOFDataModel.objects.filter(service_resource_id=ignore_case_get(self.data, "vnfInstanceId"))
+                if not (offs.exists() and offs[0].vdu_info):
+                    logger.debug("Cannot find oof data, retry%s" % (i+1))
+                    time.sleep(5)
+                    continue
+                vdu_info = json.loads(offs[0].vdu_info)
+                grant_resp['vimAssets'] = {'computeResourceFlavours': []}
+                for vdu in vdu_info:
+                    grant_resp['vimAssets']['computeResourceFlavours'].append({
+                        'vimConnectionId': offs[0].vim_id,
+                        'resourceProviderId': vdu.get("vduName"),
+                        'vnfdVirtualComputeDescId': None,  # TODO: required
+                        'vimFlavourId': vdu.get("flavorName")
+                    })
+                    # grant_resp['additionalparams'][off.vim_id] = off.directive
+                break
 
         logger.debug("grant_resp=%s", grant_resp)
         return grant_resp
