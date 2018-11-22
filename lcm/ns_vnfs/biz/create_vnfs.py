@@ -35,6 +35,7 @@ from lcm.pub.utils import restcall
 from lcm.ns_vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
 from lcm.pub.config.config import REG_TO_MSB_REG_PARAM, OOF_BASE_URL, OOF_PASSWD, OOF_USER
+from lcm.pub.config.config import CUST_NAME, CUST_LAT, CUST_LONG
 from lcm.ns_vnfs.biz.subscribe import SubscriptionCreation
 
 logger = logging.getLogger(__name__)
@@ -231,7 +232,7 @@ class CreateVnfs(Thread):
 
     def build_homing_request(self):
         id = str(uuid.uuid4())
-        callback_uri = " {vfcBaseUrl}/api/nslcm/v1/ns/placevnf"
+        callback_uri = "http://{vfcBaseUrl}/api/nslcm/v1/ns/placevnf"
         IP = REG_TO_MSB_REG_PARAM["nodes"][0]["ip"]
         PORT = REG_TO_MSB_REG_PARAM["nodes"][0]["port"]
         vfcBaseUrl = IP + ':' + PORT
@@ -240,7 +241,7 @@ class CreateVnfs(Thread):
         modelVersionId = "no-resourceModelVersionId"
         nsInfo = NSInstModel.objects.filter(id=self.ns_inst_id)
         placementDemand = {
-            "resourceModuleName": self.vnf_inst_name,
+            "resourceModuleName": self.vnf_id,
             "serviceResourceId": self.vnfm_nf_inst_id,
             "resourceModelInfo": {
                 "modelInvariantId": modelInvariantId,
@@ -259,6 +260,16 @@ class CreateVnfs(Thread):
                 "timeout": 600
             },
             "placementInfo": {
+                "requestParameters": {
+                    "customerLatitude": CUST_LAT,
+                    "customerLongitude": CUST_LONG,
+                    "customerName": CUST_NAME
+                },
+                "subscriberInfo": {
+                    "globalSubscriberId": "",
+                    "subscriberName": "",
+                    "subscriberCommonSiteId": "",
+                },
                 "placementDemands": []
             },
             "serviceInfo": {
@@ -276,8 +287,8 @@ class CreateVnfs(Thread):
             request_id=id,
             transaction_id=id,
             request_status="init",
-            request_module_name=self.vnfm_nf_inst_id,
-            service_resource_id=self.vnf_inst_name,
+            request_module_name=self.vnf_id,
+            service_resource_id=self.vnfm_nf_inst_id,
             vim_id="",
             cloud_owner="",
             cloud_region_id="",
@@ -291,7 +302,7 @@ class CreateVnfs(Thread):
         resources = "/api/oof/v1/placement"
         resp = restcall.call_req(base_url=base_url, user=OOF_USER, passwd=OOF_PASSWD,
                                  auth_type=restcall.rest_oneway_auth, resource=resources,
-                                 method="POST", content=req_body, additional_headers="")
+                                 method="POST", content=json.dumps(req_body), additional_headers="")
         resp_body = resp[-2]
         resp_status = resp[-1]
         if resp_body:

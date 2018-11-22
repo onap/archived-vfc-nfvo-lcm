@@ -943,7 +943,8 @@ class TestGrantVnfViews(TestCase):
         self.vnf_inst_id = str(uuid.uuid4())
         self.data = {
             "vnfInstanceId": self.vnf_inst_id,
-            "vnfLcmOpOccId": "1234"
+            "vnfLcmOpOccId": "1234",
+            "operation": "INSTANTIATE"
         }
         vdu_info_dict = [{"vduName": "vg", "flavorName": "flavor_1", "directive": []}]
         OOFDataModel(request_id='1234', transaction_id='1234', request_status='done', request_module_name='vg',
