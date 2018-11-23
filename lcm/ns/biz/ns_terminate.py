@@ -109,19 +109,32 @@ class TerminateNsService(threading.Thread):
         if not array_vnfinst:
             logger.info("[cancel_vnf_list] no vnfinst attatch to ns_inst_id: %s" % self.ns_inst_id)
             return
-        step_progress = 20 / len(array_vnfinst)
+        step_progress = 10 / len(array_vnfinst)
         cur_progress = 50
+        vnf_jobs = []
         for vnfinst in array_vnfinst:
             cur_progress += step_progress
             delete_result = "failed"
+            vnf_job_id = ''
             try:
-                if self.delete_vnf(vnfinst.nfinstid):
-                    delete_result = "success"
+                vnf_job_id = self.delete_vnf(vnfinst.nfinstid)
+                if vnf_job_id:
+                    delete_result = "deleting"
             except Exception as e:
                 logger.error("[cancel_vnf_list] error[%s]!" % e.message)
                 logger.error(traceback.format_exc())
             job_msg = "Delete vnfinst:[%s] %s." % (vnfinst.nfinstid, delete_result)
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
+            vnf_jobs.append((vnfinst.nfinstid, vnf_job_id))
+
+        for vnfinstid, vnfjobid in vnf_jobs:
+            cur_progress += step_progress
+            if not vnfjobid:
+                continue
+            is_job_ok = self.wait_delete_vnf_job_finish(vnfjobid)
+            msg = "%s to delete VNF(%s)" % ("Succeed" if is_job_ok else "Failed", vnfinstid)
+            logger.debug(msg)
+            JobUtil.add_job_status(vnfjobid, cur_progress, msg)
 
     def delete_vnf(self, nf_instid):
         term_param = {
@@ -132,10 +145,10 @@ class TerminateNsService(threading.Thread):
         ret = call_from_ns_cancel_resource('vnf', nf_instid, term_param)
         if ret[0] != 0:
             logger.error("Terminate VNF(%s) failed: %s", nf_instid, ret[1])
-            return False
+            return ''
         job_info = json.JSONDecoder().decode(ret[1])
         vnf_job_id = ignore_case_get(job_info, "jobId")
-        return self.wait_delete_vnf_job_finish(vnf_job_id)
+        return vnf_job_id
 
     def wait_delete_vnf_job_finish(self, vnf_job_id):
         count = 0
