@@ -214,7 +214,7 @@ class JobWaitThread(Thread):
                 continue
             job_result = json.JSONDecoder().decode(ret[1])
             if "responseDescriptor" not in job_result:
-                logger.error("Job(%s) does not exist.", self.job_id)
+                logger.debug("No new progress after response_id(%s) in job(%s)", response_id, self.job_id)
                 continue
             progress = job_result["responseDescriptor"]["progress"]
             new_response_id = job_result["responseDescriptor"]["responseId"]
