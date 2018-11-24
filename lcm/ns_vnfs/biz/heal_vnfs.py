@@ -118,6 +118,8 @@ class NFHealService(threading.Thread):
         req_param = json.JSONEncoder().encode(self.nf_heal_params)
         rsp = send_nf_heal_request(self.vnfm_inst_id, self.m_nf_inst_id, req_param)
         vnfm_job_id = ignore_case_get(rsp, 'jobId')
+        if not vnfm_job_id:
+            return
         ret = wait_job_finish(self.vnfm_inst_id, self.job_id, vnfm_job_id, progress_range=None, timeout=1200,
                               mode='1')
         if ret != JOB_MODEL_STATUS.FINISHED:

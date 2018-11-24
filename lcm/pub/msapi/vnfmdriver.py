@@ -77,7 +77,7 @@ def send_nf_heal_request(vnfm_inst_id, vnf_inst_id, req_param):
     if ret[0] > 0:
         logger.error("Failed to send nf heal req:%s,%s", ret[2], ret[1])
         raise NSLCMException('Failed to send nf heal request to VNFM(%s)' % vnfm_inst_id)
-    return json.JSONDecoder().decode(ret[1])
+    return json.JSONDecoder().decode(ret[1]) if ret[1] else {}
 
 
 def send_nf_operate_request(vnfm_inst_id, vnf_inst_id, req_param):
