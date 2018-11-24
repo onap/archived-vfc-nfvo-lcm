@@ -128,13 +128,18 @@ class TerminateNsService(threading.Thread):
             vnf_jobs.append((vnfinst.nfinstid, vnf_job_id))
 
         for vnfinstid, vnfjobid in vnf_jobs:
-            cur_progress += step_progress
-            if not vnfjobid:
-                continue
-            is_job_ok = self.wait_delete_vnf_job_finish(vnfjobid)
-            msg = "%s to delete VNF(%s)" % ("Succeed" if is_job_ok else "Failed", vnfinstid)
-            logger.debug(msg)
-            JobUtil.add_job_status(self.job_id, cur_progress, msg)
+            try:
+                cur_progress += step_progress
+                if not vnfjobid:
+                    continue
+                is_job_ok = self.wait_delete_vnf_job_finish(vnfjobid)
+                msg = "%s to delete VNF(%s)" % ("Succeed" if is_job_ok else "Failed", vnfinstid)
+                logger.debug(msg)
+                JobUtil.add_job_status(self.job_id, cur_progress, msg)
+            except Exception as e:
+                msg = "Exception occurs when delete VNF(%s)" % vnfinstid
+                logger.debug(msg)
+                JobUtil.add_job_status(self.job_id, cur_progress, msg)
 
     def delete_vnf(self, nf_instid):
         term_param = {
