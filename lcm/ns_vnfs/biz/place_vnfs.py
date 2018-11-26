@@ -81,47 +81,45 @@ class PlaceVnfs(object):
                 for info in assignmentInfo:
                     if info.get("key") in params:
                         vim_info[info.get("key")] = info.get("value")
-                    if not vim_info.get("oof_directives"):
-                        logger.warn("Missing flavor info as no directive found in response")
-                        self.update_response_to_db(self.request_id,
-                                                   self.data.get("requestStatus"), "none", "none",
-                                                   "none", "none")
-                        continue
-                    vduinfo = self.get_info_from_directives(
-                        vim_info['oof_directives'])
-                    if not vduinfo:
+                if not vim_info.get("oof_directives"):
+                    logger.warn("Missing flavor info as no directive found in response")
+                    self.update_response_to_db(self.request_id,
+                                               self.data.get("requestStatus"), "none", "none",
+                                               "none", "none")
+                    continue
+                vduinfo = self.get_info_from_directives(
+                    vim_info['oof_directives'])
+                if not vduinfo:
+                    self.update_response_to_db(self.request_id,
+                                               self.data.get("requestStatus"), "none", "none",
+                                               "none", "none")
+                    return
+                else:
+                    cloud_owner = placement.get("solution").get("cloudOwner") \
+                        if placement.get("solution").get("cloudOwner") \
+                        else vim_info.get("cloudOwner")
+                    location_id = vim_info.get("locationId")
+                    if not cloud_owner or not location_id:
                         self.update_response_to_db(self.request_id,
                                                    self.data.get("requestStatus"), "none", "none",
                                                    "none", "none")
                         return
-                    else:
-                        cloud_owner = placement.get("solution").get("cloudOwner") \
-                            if placement.get("solution").get("cloudOwner") \
-                            else vim_info.get("cloudOwner")
-                        location_id = vim_info.get("locationId")
-                        if not cloud_owner or not location_id:
-                            self.update_response_to_db(self.request_id,
-                                                       self.data.get("requestStatus"), "none", "none",
-                                                       "none", "none")
-                            return
-                        vim_id = vim_info['vimId'] if vim_info.get('vimId') \
-                            else cloud_owner + "_" + location_id
-                        self.update_response_to_db(requestId=self.request_id,
-                                                   requestStatus=self.data.get("requestStatus"),
-                                                   vimId=vim_id,
-                                                   cloudOwner=cloud_owner,
-                                                   cloudRegionId=values.ignore_case_get(vim_info, "locationId"),
-                                                   vduInfo=vduinfo
-                                                   )
-                        logger.debug(
-                            "Placement solution has been stored for request %s "
-                            % self.request_id)
-                        return "Done"
+                    vim_id = vim_info['vimId'] if vim_info.get('vimId') \
+                        else cloud_owner + "_" + location_id
+                    self.update_response_to_db(requestId=self.request_id,
+                                               requestStatus=self.data.get("requestStatus"),
+                                               vimId=vim_id,
+                                               cloudOwner=cloud_owner,
+                                               cloudRegionId=values.ignore_case_get(vim_info, "locationId"),
+                                               vduInfo=vduinfo)
+                    logger.debug(
+                        "Placement solution has been stored for request %s " % self.request_id)
+                    return "Done"
 
     def get_info_from_directives(self, directives):
         vduinfo = []
         for directive in directives.get("directives"):
-            if directive.get("type") == "tocsa.nodes.nfv.Vdu.Compute":
+            if directive.get("type") == "tosca.nodes.nfv.Vdu.Compute":
                 vdu = {"vduName": directive.get("id")}
                 other_directives = []
                 for item in directive.get("directives"):
