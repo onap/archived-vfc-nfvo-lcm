@@ -1759,7 +1759,7 @@ vnf_place_request = {
                              "directives": [
                                  {
                                      "id": "vG_0",
-                                     "type": "tocsa.nodes.nfv.Vdu.Compute",
+                                     "type": "tosca.nodes.nfv.Vdu.Compute",
                                      "directives": [
                                          {
                                              "type": "flavor_directives",
