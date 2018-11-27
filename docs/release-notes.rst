@@ -14,7 +14,7 @@ with multi vendor VNFMs via drivers.
 Version: 1.2.0
 --------------
 
-:Release Date: 2018-11-15
+:Release Date: 2018-11-30
 
 **New Features**
 
@@ -26,22 +26,22 @@ Version: 1.2.0
 Released components:
 
 NFVO
- - vfc-nfvo-lcm
- - vfc-nfvo-catalog
- - vfc-nfvo-resmgr
- - vfc-nfvo-driver-emsdriver
- - vfc-nfvo-driver-gvnfm-gvnfmadapter
- - vfc-nfvo-driver-gvnfm-jujudriver
- - vfc-nfvo-driver-svnfm-ztedriver
- - vfc-nfvo-driver-svnfm-huaweidriver
- - vfc-nfvo-driver-svnfm-nokiav2driver
- - vfc-nfvo-driver-sfc-ztesfcdriver
- - vfc-nfvo-multivimproxy
- - vfc-nfvo-db 
+ - vfc-nfvo-lcm 1.2.2
+ - vfc-nfvo-catalog 1.2.2
+ - vfc-nfvo-resmgr 1.2.1
+ - vfc-nfvo-driver-emsdriver 1.2.1
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.2.2
+ - vfc-nfvo-driver-gvnfm-jujudriver 1.2.1
+ - vfc-nfvo-driver-svnfm-ztedriver 1.2.1
+ - vfc-nfvo-driver-svnfm-huaweidriver 1.2.1
+ - vfc-nfvo-driver-svnfm-nokiav2driver 1.2.1
+ - vfc-nfvo-driver-sfc-ztesfcdriver 1.2.0
+ - vfc-nfvo-multivimproxy 1.2.1
+ - vfc-nfvo-db 1.2.2
 GVNFM
- - vfc-gvnfm-vnflcm
- - vfc-gvnfm-vnfmgr
- - vfc-gvnfm-vnfres
+ - vfc-gvnfm-vnflcm 1.2.2
+ - vfc-gvnfm-vnfmgr 1.2.1
+ - vfc-gvnfm-vnfres 1.2.1
 Workflow
  - workflow-engine-mgr-service
  - activiti-extension
@@ -53,6 +53,7 @@ Workflow
  - `VFC-896 <https://jira.onap.org/browse/VFC-896>`_  vim-id in AAI is handled as a mandatory parameter
  - `VFC-890 <https://jira.onap.org/browse/VFC-890>`_  The hard coded SDC user and password in catalog & LCM is not present in SDC
  - `VFC-891 <https://jira.onap.org/browse/VFC-891>`_  The AAI credentials is hard coded in LCM
+ - SDC-1897 - Parser exported CSAR with error OPEN (Will be fixed at Dublin),VFC could ignore that error. To ignore that error, we need either apply the patch at https://jira.opnfv.org/browse/PARSER-187 locally in nfv-toscaparser which VFC uses or wait for nfv-toscaparser got that fixed.
 
 **Security Notes**
 
