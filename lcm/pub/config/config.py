@@ -70,7 +70,7 @@ DEPLOY_WORKFLOW_WHEN_START = False
 WORKFLOW_OPTION = "buildin"
 
 # [OOF config]
-OOF_BASE_URL = "http://oof-osdf.onap.org:8698"
+OOF_BASE_URL = "http://oof-osdf.onap:8698"
 OOF_USER = "vfc_test"
 OOF_PASSWD = "vfc_testpwd"
 

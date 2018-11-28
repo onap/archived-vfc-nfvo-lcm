@@ -116,16 +116,19 @@ class GrantVnf(object):
                     logger.debug("Cannot find oof data, retry%s" % (i + 1))
                     time.sleep(5)
                     continue
-                vdu_info = json.loads(offs[0].vdu_info)
-                grant_resp['vimAssets'] = {'computeResourceFlavours': []}
-                for vdu in vdu_info:
-                    grant_resp['vimAssets']['computeResourceFlavours'].append({
-                        'vimConnectionId': offs[0].vim_id,
-                        'resourceProviderId': vdu.get("vduName"),
-                        'vnfdVirtualComputeDescId': None,  # TODO: required
-                        'vimFlavourId': vdu.get("flavorId")
-                    })
-                    # grant_resp['additionalparams'][off.vim_id] = off.directive
+                try:
+                    vdu_info = json.loads(offs[0].vdu_info)
+                    grant_resp['vimAssets'] = {'computeResourceFlavours': []}
+                    for vdu in vdu_info:
+                        grant_resp['vimAssets']['computeResourceFlavours'].append({
+                            'vimConnectionId': offs[0].vim_id,
+                            'resourceProviderId': vdu.get("vduName"),
+                            'vnfdVirtualComputeDescId': None,  # TODO: required
+                            'vimFlavourId': vdu.get("flavorId")
+                        })
+                        # grant_resp['additionalparams'][off.vim_id] = off.directive
+                except Exception:
+                    logger.debug("Load OOF data error")
                 break
 
         logger.debug("grant_resp=%s", grant_resp)
