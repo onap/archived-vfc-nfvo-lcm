@@ -325,7 +325,7 @@ class OOFDataModel(models.Model):
     transaction_id = models.CharField(db_column='TRANSACTIONID', max_length=255)
     request_status = models.CharField(db_column='REQUESTSTATUS', max_length=50)
     request_module_name = models.CharField(db_column='RESOURCEMODULENAME', max_length=100)
-    service_resource_id = models.CharField(db_column='SERVICERESOURCEID', max_length=255)
+    service_resource_id = models.CharField(db_column='SERVICERESOURCEID', max_length=255, primary_key=True)
     vim_id = models.CharField(db_column='VIMID', max_length=255, null=True, blank=True)
     cloud_owner = models.CharField(db_column='CLOUDOWNER', max_length=100, null=True, blank=True)
     cloud_region_id = models.CharField(db_column='CLOUDREGIONID', max_length=255, null=True, blank=True)
