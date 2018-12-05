@@ -86,11 +86,9 @@ class InstantNSService(object):
                 vnfd_id = vnf['properties']['id']
                 vnfm_type_temp = vnf['properties'].get("vnfm_info", "undefined")
                 logger.debug("vnfd_id: %s, vnfm_type : %s", vnfd_id, vnfm_type_temp)
-                if vnfm_type_temp != "undefined":
-                    if isinstance(vnfm_type_temp, list):
-                        vnfm_type = vnfm_type_temp[0]
-                    if isinstance(vnfm_type_temp, str):
-                        vnfm_type = vnfm_type_temp
+                vnfm_type = vnfm_type_temp
+                if isinstance(vnfm_type_temp, list):
+                    vnfm_type = vnfm_type_temp[0]
                 vimid = self.get_vnf_vim_id(vim_id, location_constraints, vnfd_id)
                 vnfm_info = extsys.select_vnfm(vnfm_type=vnfm_type, vim_id=vimid)
 
