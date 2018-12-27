@@ -68,7 +68,7 @@ class VnfExtCpData(serializers.Serializer):
                                      required=False, allow_null=True)
 
 
-class ExtLinkPortResourceHandleSerializer(serializers.Serializer):
+class ResourceHandleSerializer(serializers.Serializer):
     vimId = serializers.CharField(help_text="Identifier of the VIM under whose control this resource is placed.",
                                   required=False, allow_null=True)
     resourceProviderId = serializers.CharField(help_text="Identifier of the entity responsible for the management of "
@@ -81,8 +81,8 @@ class ExtLinkPortResourceHandleSerializer(serializers.Serializer):
 
 class ExtLinkPortDataSerializer(serializers.Serializer):
     id = serializers.CharField(help_text="Provided by the entity that has created the link port", required=True)
-    resourceHandle = ExtLinkPortResourceHandleSerializer(help_text="Identifier(s) of the virtualised network resource(s) "
-                                                                   "realizing the VL instance", required=True)
+    resourceHandle = ResourceHandleSerializer(help_text="Identifier(s) of the virtualised network resource(s) "
+                                                        "realizing the VL instance", required=True)
 
 
 class ExtVirtualLinkDataSerializer(serializers.Serializer):
@@ -146,12 +146,16 @@ class OperationalStatesSerializer(serializers.Serializer):
                                                 choices=["STARTED", "STOPPED"])
 
 
+class StopTypeSerializer(serializers.Serializer):
+    StopType = serializers.ChoiceField(help_text="Type of stop", choices=["FORCEFUL", "GRACEFUL"])
+
+
 class OperateVnfDataSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="Identifier of the VNF instance.", required=True)
     changeStateTo = OperationalStatesSerializer(help_text="The desired operational state to change the VNF to.",
                                                 required=True)
-    stopType = serializers.ChoiceField(help_text="It signals whether forceful or graceful stop is requested.",
-                                       choices=["FORCEFUL", "GRACEFUL"], required=False, allow_null=True)
+    stopType = StopTypeSerializer(help_text="It signals whether forceful or graceful stop is requested.",
+                                  required=False, allow_null=True)
     gracefulStopTimeout = serializers.CharField(help_text="The time interval to wait for the VNF to be taken out of"
                                                           "service during graceful stop.",
                                                 required=False, allow_null=True)
