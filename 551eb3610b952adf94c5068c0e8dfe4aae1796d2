@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_aee2e02c",
+        "filename": "lcm/ns/serializers/common_Link.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2018-12-28T01:49:30Z",
+      "side": 1,
+      "message": "I don\u0027t know the default of allow_null is True or False, I think you should set allow_null\u003dTrue.",
+      "revId": "551eb3610b952adf94c5068c0e8dfe4aae1796d2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
