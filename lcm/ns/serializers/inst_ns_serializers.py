@@ -15,7 +15,7 @@
 from rest_framework import serializers
 
 from lcm.ns.serializers.create_ns_serializers import IpOverEthernetAddressDataSerializer
-from lcm.ns.serializers.update_ns_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer
+from lcm.ns.serializers.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer
 
 
 class CpProtocolDataSerializer(serializers.Serializer):

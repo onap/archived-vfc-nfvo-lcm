@@ -16,8 +16,8 @@ from lcm.ns.serializers.ns_serializers import IpAddress
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(help_text="Specify the target NS instance where the VNF instances are "
-                                                    "moved to", required=True)
+    vnfInstanceId = serializers.CharField(help_text="Specify the target NS instance where the VNF instances "
+                                                    "are moved to", required=True)
     vnfProfileId = serializers.CharField(help_text="Specify the VNF instance that is moved.",
                                          required=False, allow_null=True)
 
