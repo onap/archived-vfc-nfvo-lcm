@@ -15,15 +15,25 @@
 from rest_framework import serializers
 
 
+class ActionVmSerializer(serializers.Serializer):
+    vmid = serializers.CharField(help_text="ID of VM", required=False, allow_null=True, allow_blank=True)
+    vduid = serializers.CharField(help_text="ID of vdu", required=False, allow_null=True, allow_blank=True)
+    vmname = serializers.CharField(help_text="Name of VM", required=False, allow_null=True, allow_blank=True)
+
+
+class HealNsAdditionalParamsSerializer(serializers.Serializer):
+    action = serializers.CharField(help_text="Action of NS heal", required=False, allow_null=True, allow_blank=True)
+    actionvminfo = ActionVmSerializer(help_text="VM info of action", required=False, allow_null=True)
+
+
 class HealVnfDataSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="Identifies the VNF instance,", required=True)
     cause = serializers.CharField(help_text="Indicates the reason why a healing procedure is required",
                                   required=False, allow_null=True, allow_blank=True)
     additionalParams = serializers.DictField(help_text="Additional parameters passed by the NFVO as input to "
                                                        "the healing process",
-                                             child=serializers.CharField(help_text="KeyValue Pairs",
-                                                                         allow_blank=True),
-                                             required=False, allow_null=True)
+                                             child=HealNsAdditionalParamsSerializer(
+                                                 help_text="KeyValue Pairs"), required=False, allow_null=True)
 
 
 class HealNsDataSerializer(serializers.Serializer):
@@ -37,10 +47,7 @@ class HealNsDataSerializer(serializers.Serializer):
 
 
 class HealNsReqSerializer(serializers.Serializer):
-    healVnfData = serializers.ListField(help_text="Provides the information needed to heal a VNF. ",
-                                        child=HealVnfDataSerializer(
-                                            help_text="This type represents the information to heal a VNF"
-                                                      "that is part of an NS", required=True),
-                                        required=False, allow_null=True)
+    healVnfData = HealVnfDataSerializer(help_text="Data of heal VNF", required=False, allow_null=True,
+                                        many=True)
     healNsData = HealNsDataSerializer(help_text="Provides the information needed to heal an NS",
                                       required=False, allow_null=True)

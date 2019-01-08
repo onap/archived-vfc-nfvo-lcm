@@ -145,38 +145,6 @@ class TerminateNsReqSerializer(serializers.Serializer):
     gracefulTerminationTimeout = serializers.CharField(help_text="Timeout of NS graceful termination", required=False, allow_null=True, allow_blank=True)
 
 
-class ActionVmSerializer(serializers.Serializer):
-    vmid = serializers.CharField(help_text="ID of VM", required=False, allow_null=True, allow_blank=True)
-    vduid = serializers.CharField(help_text="ID of vdu", required=False, allow_null=True, allow_blank=True)
-    vmname = serializers.CharField(help_text="Name of VM", required=False, allow_null=True, allow_blank=True)
-
-
-class HealNsAdditionalParamsSerializer(serializers.Serializer):
-    action = serializers.CharField(help_text="Action of NS heal", required=False, allow_null=True, allow_blank=True)
-    actionvminfo = ActionVmSerializer(help_text="VM info of action", required=False, allow_null=True)
-
-
-class HealVnfDataSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(help_text="ID of VNF Instance", required=True)
-    cause = serializers.CharField(help_text="Cause of NS heal", required=False, allow_null=True, allow_blank=True)
-    additionalParams = HealNsAdditionalParamsSerializer(help_text="Additional params of NS heal", required=False, allow_null=True)
-
-
-class HealNsDataSerializer(serializers.Serializer):
-    degreeHealing = serializers.ChoiceField(help_text="degree of healing", choices=["HEAL_RESTORE", "HEAL_QOS", "HEAL_RESET", "PARTIAL_HEALING"], required=True)
-    actionsHealing = serializers.ListField(
-        help_text="A list of actions",
-        child=serializers.CharField(help_text="One action", required=True),
-        required=False)
-    healScript = serializers.CharField(help_text="script of NS heal", required=False, allow_null=True, allow_blank=True)
-    additionalParamsforNs = serializers.CharField(help_text="Addition params of NS heal", required=False, allow_null=True, allow_blank=True)
-
-
-class HealNsReqSerializer(serializers.Serializer):
-    healVnfData = HealVnfDataSerializer(help_text="Data of heal VNF", required=False, allow_null=True)
-    healNsData = HealNsDataSerializer(help_text="Data of heal NS", required=False, allow_null=True)
-
-
 class InstNsPostDealReqSerializer(serializers.Serializer):
     status = serializers.CharField(help_text="Status of NS Inst", required=True)
 

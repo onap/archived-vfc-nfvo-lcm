@@ -77,7 +77,7 @@ class TestHealNsViews(TestCase):
     def test_heal_vnf_url(self, mock_run):
 
         data = {
-            "healVnfData": {
+            "healVnfData": [{
                 "vnfInstanceId": self.nf_inst_id,
                 "cause": "vm is down",
                 "additionalParams": {
@@ -88,7 +88,7 @@ class TestHealNsViews(TestCase):
                         "vmname": "xgw-smp11"
                     }
                 }
-            }
+            }]
         }
 
         response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
@@ -134,7 +134,7 @@ class TestHealNsViews(TestCase):
     def test_heal_vnf_thread(self, mock_start, mock_wait, mock_update):
 
         data = {
-            "healVnfData": {
+            "healVnfData": [{
                 "vnfInstanceId": self.nf_inst_id,
                 "cause": "vm is down",
                 "additionalParams": {
@@ -145,7 +145,7 @@ class TestHealNsViews(TestCase):
                         "vmname": "xgw-smp11"
                     }
                 }
-            }
+            }]
         }
 
         NSHealService(self.ns_inst_id, data, self.job_id).run()
@@ -182,7 +182,7 @@ class TestHealNsViews(TestCase):
         ns_inst_id = "2"
 
         data = {
-            "healVnfData": {
+            "healVnfData": [{
                 "vnfInstanceId": self.nf_inst_id,
                 "cause": "vm is down",
                 "additionalParams": {
@@ -192,7 +192,7 @@ class TestHealNsViews(TestCase):
                         "vmname": "xgw-smp11"
                     }
                 }
-            }
+            }]
         }
 
         response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=data)
