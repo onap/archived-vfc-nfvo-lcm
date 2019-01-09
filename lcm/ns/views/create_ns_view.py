@@ -21,7 +21,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.ns.biz.ns_get import GetNSInfoService
-from lcm.ns.serializers.ns_serializers import CreateNsReqSerializer, CreateNsRespSerializer
+from lcm.ns.serializers.create_ns_serializers import CreateNsReqSerializer, CreateNsRespSerializer
 from lcm.ns.serializers.ns_serializers import QueryNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.values import ignore_case_get
@@ -74,7 +74,14 @@ class CreateNSView(APIView):
             ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
 
             logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
-            resp_serializer = CreateNsRespSerializer(data={'nsInstanceId': ns_inst_id})
+            resp_serializer = CreateNsRespSerializer(
+                data={'nsInstanceId': ns_inst_id,
+                      'nsInstanceName': 'nsInstanceName',
+                      'nsInstanceDescription': 'nsInstanceDescription',
+                      'nsdId': 123,
+                      'nsdInfoId': 456,
+                      'nsState': 'NOT_INSTANTIATED',
+                      '_links': {'self': {'href': 'href'}}})
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
             return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)

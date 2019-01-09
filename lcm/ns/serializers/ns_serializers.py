@@ -16,22 +16,6 @@ from rest_framework import serializers
 from lcm.ns_pnfs.serializers.pnf_serializer import PnfInstanceSerializer
 
 
-class ContextSerializer(serializers.Serializer):
-    globalCustomerId = serializers.CharField(help_text="Global customer ID", required=False, allow_null=True, allow_blank=True)
-    serviceType = serializers.CharField(help_text="Service type", required=False, allow_null=True, allow_blank=True)
-
-
-class CreateNsReqSerializer(serializers.Serializer):
-    csarId = serializers.CharField(help_text="Package ID of NS", required=False, allow_null=True, allow_blank=True)
-    nsName = serializers.CharField(help_text="Name of NS", required=False, allow_null=True, allow_blank=True)
-    description = serializers.CharField(help_text="Description of NS", required=False, allow_null=True, allow_blank=True)
-    context = ContextSerializer(help_text="Context of NS", required=False)
-
-
-class CreateNsRespSerializer(serializers.Serializer):
-    nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=True)
-
-
 class VnfInstSerializer(serializers.Serializer):
     vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=True)
     vnfInstanceName = serializers.CharField(help_text="Name of VNF instance", required=False, allow_null=True, allow_blank=True)
