@@ -54,10 +54,17 @@ class TestNsInstant(TestCase):
             "additionalParamForNs": {
                 "sdnControllerId": "2"
             },
-            "locationConstraints": [{
+            "nsFlavourId": 12345,
+            "localizationLanguage": [{
                 "vnfProfileId": "vnfd1",
                 "locationConstraints": {
-                    "vimId": "3"
+                    "countryCode": "countryCode",
+                    # "vimId": "3",
+                    "civicAddressElement": [
+                        {"caType": "type1",
+                         "caValue": 1
+                         }
+                    ]
                 }
             }]
         }

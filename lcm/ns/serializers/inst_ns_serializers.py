@@ -14,7 +14,7 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.create_ns_serializers import IpOverEthernetAddressDataSerializer
+from lcm.ns.serializers.pub_serializers import IpOverEthernetAddressDataSerializer
 from lcm.ns.serializers.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer
 
 
@@ -30,28 +30,23 @@ class SapDataSerializer(serializers.Serializer):
     sapdId = serializers.CharField(help_text="Reference to the SAPD for this SAP.", required=True)
     sapName = serializers.CharField(help_text="Human readable name for the SAP.", required=True)
     description = serializers.CharField(help_text="Human readable description for the SAP.", required=True)
-    sapProtocolData = serializers.ListField(help_text="Parameters for configuring the network protocols on"
-                                                      "the SAP.",
-                                            child=(CpProtocolDataSerializer(help_text="This type represents "
-                                                                                      "network protocol "
-                                                                                      "data.")),
-                                            required=False, allow_null=True)
+    sapProtocolData = CpProtocolDataSerializer(help_text="Parameters for configuring the network protocols"
+                                                         " on the SAP.",
+                                               required=False, allow_null=True, many=True)
 
 
 class civicAddressElementSerializer(serializers.Serializer):
     caType = serializers.CharField(help_text="Describe the content type of caValue.", required=True)
-    caValue = serializers.Serializer(help_text="Content of civic address element corresponding to the"
-                                               "caType.", required=True)
+    caValue = serializers.CharField(help_text="Content of civic address element corresponding to the"
+                                              "aType.", required=True)
 
 
 class LocationConstraintsSerializer(serializers.Serializer):
     countryCode = serializers.CharField(help_text="The two-letter ISO 3166 [29] country code in capital"
                                                   "letters.", required=True)
-    civicAddressElement = serializers.ListField(help_text="Zero or more elements comprising the civic"
-                                                          "address.",
-                                                child=civicAddressElementSerializer(
-                                                    help_text="caType and caValue", required=True),
-                                                required=False, allow_null=True)
+    civicAddressElement = civicAddressElementSerializer(help_text="Zero or more elements comprising the civic"
+                                                                  "address.",
+                                                        required=False, allow_null=True, many=True)
 
 
 class VnfLocationConstraintSerializer(serializers.Serializer):
@@ -89,65 +84,35 @@ class AffinityOrAntiAffinityRuleSerializer(serializers.Serializer):
 class InstantNsReqSerializer(serializers.Serializer):
     nsFlavourId = serializers.CharField(help_text="Identifier of the NS deployment flavour to be"
                                                   "instantiated.", required=True)
-    sapData = serializers.ListField(help_text="Create data concerning the SAPs of this NS",
-                                    child=(SapDataSerializer(
-                                        help_text="This type represents the information related to a SAP"
-                                                  "of a NS.", required=True)),
-                                    required=False, allow_null=True)
-    addpnfData = serializers.ListField(help_text="Information on the PNF(s) that are part of this NS.",
-                                       child=(AddPnfDataSerializer(help_text="This type specifies an PNF to "
-                                                                             "be added to the NS instance and"
-                                                                             "the PNF Profile to use for"
-                                                                             "this PNF.", required=True)),
-                                       required=False, allow_null=True)
-    vnfInstanceData = serializers.ListField(help_text="Specify an existing VNF instance to be used in the"
-                                                      "NS.",
-                                            child=(VnfInstanceDataSerializer(help_text="This type specifies "
-                                                                                       "an existing VNF "
-                                                                                       "instance to be used "
-                                                                                       "in the NS instance "
-                                                                                       "and if needed",
-                                                                             required=True)),
-                                            required=False, allow_null=True)
+    sapData = SapDataSerializer(help_text="Create data concerning the SAPs of this NS",
+                                required=False, allow_null=True, many=True)
+    addpnfData = AddPnfDataSerializer(help_text="Information on the PNF(s) that are part of this NS.",
+                                      required=False, allow_null=True, many=True)
+    vnfInstanceData = VnfInstanceDataSerializer(help_text="Specify an existing VNF instance to be used in "
+                                                          "the NS.",
+                                                required=False, allow_null=True, many=True)
     nestedNsInstanceId = serializers.ListField(help_text="Specify an existing NS instance to be used as a "
                                                          "nested NS within the NS",
                                                required=False, allow_null=True)
-    localizationLanguage = serializers.ListField(help_text="Defines the location constraints for the VNF to"
-                                                           "be instantiated as part of the NS instantiation.",
-                                                 child=(VnfLocationConstraintSerializer(
-                                                     help_text="This type represents the association of"
-                                                               "location constraints to a VNF instance to be"
-                                                               "created according to a specific VNF profile",
-                                                     required=True)), required=False, allow_null=True)
+    localizationLanguage = VnfLocationConstraintSerializer(help_text="Defines the location constraints for "
+                                                                     "the VNF to be instantiated as part of"
+                                                                     " the NS instantiation.",
+                                                           required=False, allow_null=True, many=True)
     additionalParamForNs = serializers.DictField(
         help_text="Allows the OSS/BSS to provide additional parameters at the NS level ",
         child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
         required=False,
         allow_null=True
     )
-    additionalParamsForVnf = serializers.ListField(help_text="Allows the OSS/BSS to provide additional"
-                                                             "parameter(s)per VNF instance",
-                                                   child=(ParamsForVnfSerializer(
-                                                       help_text="This type defines the additional parameters"
-                                                                 "for the VNF instance to be created"
-                                                                 "associated with an NS instance",
-                                                       required=True)), required=False, allow_null=True)
+    additionalParamsForVnf = ParamsForVnfSerializer(help_text="Allows the OSS/BSS to provide additional "
+                                                              "parameter(s)per VNF instance",
+                                                    required=False, allow_null=True, many=True)
     startTime = serializers.DateTimeField(help_text="Timestamp indicating the earliest time to instantiate"
                                                     "the NS.", required=False, allow_null=True)
     nsInstantiationLevelId = serializers.CharField(help_text="Identifies one of the NS instantiation levels"
                                                              "declared in the DF applicable to this NS "
                                                              "instance", required=False, allow_null=True)
-    additionalAffinityOrAntiAffiniityRule = serializers.ListField(help_text="Specifies additional affinity or"
-                                                                            "anti-affinity constraint for the"
-                                                                            "VNF instances to be instantiated"
-                                                                            "as part of the NS "
-                                                                            "instantiation.",
-                                                                  child=(
-                                                                      AffinityOrAntiAffinityRuleSerializer(
-                                                                          help_text="This type describes the"
-                                                                                    "additional affinity or"
-                                                                                    "anti-affinity rule"
-                                                                                    "applicable between the"
-                                                                                    "VNF instances",
-                                                                          required=True)),
-                                                                  required=False, allow_null=True)
+    additionalAffinityOrAntiAffiniityRule = AffinityOrAntiAffinityRuleSerializer(
+        help_text="Specifies additional affinity or anti-affinity constraint for the VNF instances to be"
+                  " instantiated as part of the NS instantiation.",
+        required=False, allow_null=True, many=True)

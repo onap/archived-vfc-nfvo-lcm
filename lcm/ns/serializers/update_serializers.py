@@ -12,7 +12,8 @@
 # limitations under the License.
 
 from rest_framework import serializers
-from lcm.ns.serializers.ns_serializers import IpAddress
+
+from lcm.ns.serializers.pub_serializers import IpAddressSerialzier
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
@@ -36,7 +37,8 @@ class InstantiateVnfDataSerializer(serializers.Serializer):
 
 class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
-    ipAddresses = serializers.ListField(help_text="List of IP addresses to assign to the extCP instance.", child=IpAddress(help_text="IP addresses to assign to the extCP instance.", required=False), required=False, allow_null=True)
+    ipAddresses = IpAddressSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
+                                      required=False, allow_null=True, many=True)
 
 
 class CpProtocolDataSerializer(serializers.Serializer):
@@ -304,10 +306,8 @@ class PnfExtCpDataSerializer(serializers.Serializer):
                                               required=False, allow_null=True)
     cpdId = IdentifierInNsdSerializer(help_text="Identifier of the Connection Point Descriptor (CPD) for this CP",
                                       required=False, allow_null=True)
-    cpProtocolData = serializers.ListField(help_text="Address assigned for this CP.",
-                                           child=(CpProtocolDataSerializer(
-                                               help_text="This type represents network protocol data.", required=True)),
-                                           required=False, allow_null=True)
+    cpProtocolData = CpProtocolDataSerializer(help_text="Address assigned for this CP.",
+                                              required=False, allow_null=True, many=True)
 
 
 class AddPnfDataSerializer(serializers.Serializer):
@@ -316,10 +316,8 @@ class AddPnfDataSerializer(serializers.Serializer):
     pnfdId = serializers.CharField(help_text="Identifier of the PNFD on which the PNF is based.", required=True)
     pnfProfileId = serializers.CharField(
         help_text="Identifier of related PnfProfile in the NSD on which the PNF is based.", required=True)
-    cpData = serializers.ListField(help_text="Address assigned for the PNF external CP(s). ",
-                                   child=(PnfExtCpDataSerializer(
-                                       help_text="Serializer data of pnf ext cp", required=True)),
-                                   required=False, allow_null=True)
+    cpData = PnfExtCpDataSerializer(help_text="Address assigned for the PNF external CP(s). ",
+                                    required=False, allow_null=True, many=True)
 
 
 class ModifyPnfDataSerializer(serializers.Serializer):
