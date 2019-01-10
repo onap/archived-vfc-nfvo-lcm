@@ -14,8 +14,7 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.ns_serializers import IpAddress
-from lcm.ns.serializers.common_Link import LinkSerializer
+from lcm.ns.serializers.pub_serializers import Links, IpAddressSerialzier, ipAddressesSerializer
 
 
 class ContextSerializer(serializers.Serializer):
@@ -40,20 +39,16 @@ class VnfInstanceSerializer(serializers.Serializer):
 
 class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
-    ipAddresses = serializers.ListField(help_text="List of IP addresses to assign to the extCP instance.",
-                                        child=IpAddress(
-                                            help_text="List of IP addresses to assign to the extCP instance.",
-                                            required=True), required=False, allow_null=True)
+    ipAddresses = IpAddressSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
+                                      required=False, allow_null=True, many=True)
 
 
 class cpProtocolDataSerializer(serializers.Serializer):
     layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s).",
                                             choices=["IP_OVER_ETHERNET"], required=True)
-    ipOverEthernet = serializers.ListField(help_text="Network address data for IP over Ethernet to assign to"
-                                                     "the extCP instance.",
-                                           child=(IpOverEthernetAddressDataSerializer(
-                                               help_text="This typerepresents network address data for IP"
-                                                         "over Ethernet.", required=True)), required=True)
+    ipOverEthernet = IpOverEthernetAddressDataSerializer(help_text="Network address data for IP over Ethernet"
+                                                                   " to assign to the extCP instance.",
+                                                         required=True, many=True)
 
 
 class PnfExtCpInfoSerializer(serializers.Serializer):
@@ -63,11 +58,8 @@ class PnfExtCpInfoSerializer(serializers.Serializer):
     cpdId = serializers.CharField(help_text="Identifier of (reference to) the Connection Point Descriptor"
                                             "(CPD) for this CP.", required=True)
 
-    cpProtocolData = serializers.ListField(help_text="Parameters for configuring the network protocols on"
-                                                     "the CP.",
-                                           child=(cpProtocolDataSerializer(help_text="This type represents"
-                                                                                     "network protocol data",
-                                                                           required=True)), required=True)
+    cpProtocolData = cpProtocolDataSerializer(help_text="Parameters for configuring the network protocols on"
+                                                        "the CP.", required=True, many=True)
 
 
 class PnfInfoSerializer(serializers.Serializer):
@@ -81,11 +73,8 @@ class PnfInfoSerializer(serializers.Serializer):
     pnfProfileId = serializers.CharField(help_text="Identifier of the related PnfProfile in the NSD on which "
                                                    "the PNF is based.", required=True)
 
-    cpInfo = serializers.ListField(help_text="Information on the external CP of the PNF",
-                                   child=(PnfExtCpInfoSerializer(help_text="This type represents the"
-                                                                           "information about the external "
-                                                                           "CP of the PNF.", required=True)),
-                                   required=True)
+    cpInfo = PnfExtCpInfoSerializer(help_text="Information on the external CP of the PNF",
+                                    required=True, many=True)
 
 
 class ResourceHandleSerializer(serializers.Serializer):
@@ -104,13 +93,9 @@ class ResourceHandleSerializer(serializers.Serializer):
 class NsVirtualLinkInfoSerializer(serializers.Serializer):
     id = serializers.CharField(help_text="Identifier of the VL instance.", required=True)
     nsVirtualLinkDescId = serializers.CharField(help_text="Identifier of the VLD in the NSD.", required=True)
-    resourceHandle = serializers.ListField(help_text="Identifier(s) of the virtualised network resource(s) "
-                                                     "realizing the VL instance",
-                                           child=(ResourceHandleSerializer(
-                                               help_text="This type represents the information that allows"
-                                                         "addressing a virtualised resource that is used by a"
-                                                         "VNF instance or by an NS instance.",
-                                               required=True)), required=True)
+    resourceHandle = ResourceHandleSerializer(help_text="Identifier(s) of the virtualised network resource(s)"
+                                                        " realizing the VL instance",
+                                              required=True, many=True)
 
 
 class NsCpHandleSerializer(serializers.Serializer):
@@ -129,7 +114,6 @@ class NsCpHandleSerializer(serializers.Serializer):
                                                       "instance.", required=False, allow_null=True)
 
 
-# end 167
 class MaskSerializer(serializers.Serializer):
     startingPoint = serializers.CharField(help_text="Indicates the offset between the last bit of the source"
                                                     "mac address and the first bit of the sequence of bits"
@@ -164,13 +148,8 @@ class NfpRuleSerializer(serializers.Serializer):
     destinationIpAddressPrefix = serializers.CharField(help_text="Indicates the destination IP address range"
                                                                  "in CIDRformat.",
                                                        required=False, allow_null=True)
-    extendedCriteria = serializers.ListField(help_text="Indicates values of specific bits in a frame",
-                                             child=(MaskSerializer(help_text="The Mask data type identifies"
-                                                                             "the value to be matched for a"
-                                                                             "sequence of bits at a particular"
-                                                                             " location in a frame",
-                                                                   required=True)),
-                                             required=False, allow_null=True)
+    extendedCriteria = MaskSerializer(help_text="Indicates values of specific bits in a frame",
+                                      required=False, allow_null=True, many=True)
 
 
 class NfpInfoSerializer(serializers.Serializer):
@@ -180,12 +159,9 @@ class NfpInfoSerializer(serializers.Serializer):
     nfpName = serializers.CharField(help_text="Human readable name for the NFP instance.",
                                     required=False, allow_null=True)
     description = serializers.CharField(help_text="Human readable description for the NFP instance.",
-                                        required=False, allow_null=True)
-    nscpHandle = serializers.ListField(help_text="Identifier(s) of the CPs and/or SAPs which the NFP "
-                                                 "passes by",
-                                       child=NsCpHandleSerializer(
-                                           help_text="This type represents an identifier of the CP or SAP"
-                                                     "instance"), required=True)
+                                        required=True)
+    nscpHandle = NsCpHandleSerializer(help_text="Identifier(s) of the CPs and/or SAPs which the NFP "
+                                                "passes by", required=True, many=True)
     totalCp = serializers.CharField(help_text="Total number of CP and SAP instances in this NFP"
                                               "instance.", required=False, allow_null=True)
     nfpRule = NfpRuleSerializer(help_text="The NfpRule data type is an expression of the conditions that "
@@ -210,48 +186,17 @@ class VnffgInfoSerializer(serializers.Serializer):
                                                           "thisVNFFG instance.",
                                                 child=serializers.CharField(
                                                     help_text="ID of ns virtual link info"), required=True)
-    nsCpHandle = serializers.ListField(help_text="Identifiers of the CP instances attached to the constituent"
-                                                 "VNFs and PNFs or the SAP instances of the VNFFG.",
-                                       child=NsCpHandleSerializer(help_text="This type represents an"
-                                                                            "identifier of the CP or SAP"
-                                                                            "instance", required=False),
-                                       required=True, allow_null=False)
-    nfpInfo = serializers.ListField(help_text="Information on the NFP instances.",
-                                    child=(NfpInfoSerializer(help_text="This type represents an NFP instance",
-
-                                                             required=True)), required=True, allow_null=False)
-
-
-class AddressRange(serializers.Serializer):
-    minAddress = serializers.IPAddressField(help_text="Lowest IP address belonging to the range.",
-                                            required=True)
-    maxAddress = serializers.IPAddressField(help_text="Highest IP address belonging to the range.",
-                                            required=True)
-
-
-class ipAddressesSerializer(serializers.Serializer):
-    type = serializers.ChoiceField(help_text="The type of the IP addresses.",
-                                   choices=["IPV4", "IPV6"], required=True)
-    addresses = serializers.ListField(help_text="Fixed addresses assigned (from the subnet defined by "
-                                                "subnetId if provided)",
-                                      child=serializers.CharField(help_text="An IPV4 or IPV6 address."),
-                                      required=False, allow_null=True)
-# question
-    isDynamic = serializers.BooleanField(help_text="Indicates whether this set of addresses was assigned "
-                                                   "dynamically (true) or based on address information "
-                                                   "provided as input from the API consumer (false).",
-                                         required=False, default=True)
-    addressRange = AddressRange(help_text="An IP address range used", required=False, allow_null=True)
-    subnetId = serializers.CharField(help_text="Subnet defined by the identifier of the subnet"
-                                               "resource in the VIM", required=False, allow_null=True)
+    nsCpHandle = NsCpHandleSerializer(help_text="Identifiers of the CP instances attached to the "
+                                                "constituent VNFs and PNFs or the SAP instances of "
+                                                "the VNFFG.", required=True, allow_null=False, many=True)
+    nfpInfo = NfpInfoSerializer(help_text="Information on the NFP instances.",
+                                required=True, allow_null=False, many=True)
 
 
 class IpOverEthernetAddressInfoSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="Assigned MAC address", required=True)
-    ipAddresses = serializers.ListField(help_text="Addresses assigned to the CP or SAP instance.",
-                                        child=(ipAddressesSerializer(help_text="Serializer of ip addresses",
-                                                                     required=True)),
-                                        required=False, allow_null=True)
+    ipAddresses = ipAddressesSerializer(help_text="Addresses assigned to the CP or SAP instance.",
+                                        required=False, allow_null=True, many=True)
 
 
 class CpProtocolInfoSerializer(serializers.Serializer):
@@ -269,11 +214,8 @@ class SapInfoSerializer(serializers.Serializer):
     sapName = serializers.CharField(help_text="Human readable name for the SAP instance.", required=True)
     description = serializers.CharField(help_text="Human readable description for the SAP instance.",
                                         required=True)
-    sapProtocolInfo = serializers.ListField(help_text="Network protocol information for this SAP.",
-                                            child=(CpProtocolInfoSerializer(
-                                                help_text="This type describes the protocol layer(s) that a"
-                                                          "CP or SAP uses together with protocol-related"
-                                                          "information", required=True)), required=True)
+    sapProtocolInfo = CpProtocolInfoSerializer(help_text="Network protocol information for this SAP.",
+                                               required=True, many=True)
 
 
 class NsScaleInfoSerializer(serializers.Serializer):
@@ -300,18 +242,6 @@ class AffinityOrAntiAffinityRuleSerializer(serializers.Serializer):
                                     choices=["NFVI_POP", "ZONE", "ZONE_GROUP", "NFVI_NODE"], required=True)
 
 
-class Links(serializers.Serializer):
-    self = LinkSerializer(help_text="URI of this resource.", required=True)
-    nestedNsInstances = LinkSerializer(help_text="Links to the nested NS instances of the present NS"
-                                                 "instance.", required=False, allow_null=True)
-    instantiate = LinkSerializer(help_text="Link to the 'instantiate' task resource", required=False,
-                                 allow_null=True)
-    terminate = LinkSerializer(help_text="Link to the 'terminate' task resource", required=False, allow_null=True)
-    update = LinkSerializer(help_text="Link to the 'update' task resource", required=False, allow_null=True)
-    scale = LinkSerializer(help_text="Link to the 'scale' task resource", required=False, allow_null=True)
-    heal = LinkSerializer(help_text="Link to the 'heal' task resource", required=False, allow_null=True)
-
-
 class CreateNsRespSerializer(serializers.Serializer):
     nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=True)
     nsInstanceName = serializers.CharField(help_text="Human readable name of the NS instance.", required=True)
@@ -321,62 +251,30 @@ class CreateNsRespSerializer(serializers.Serializer):
                                   required=True)
     nsdInfoId = serializers.CharField(help_text="Identifier of the NSD information object on which the "
                                                 "NS instance is based.", required=True)
-
     flavourId = serializers.CharField(help_text="Identifier of the NS deployment flavour applied to "
                                                 "the NS instance.", required=False, allow_null=True)
-    vnfInstance = serializers.ListField(help_text="Information on constituent VNF(s) of the NS instance.",
-                                        child=(VnfInstanceSerializer(help_text="This type represents a VNF"
-                                                                               "instance", required=True)),
-                                        required=False, allow_null=True)
+    vnfInstance = VnfInstanceSerializer(help_text="Information on constituent VNF(s) of the NS instance.",
+                                        required=False, allow_null=True, many=True)
 
-    pnfInfo = serializers.ListField(help_text="Information on the PNF(s) that are part of the NS instance.",
-                                    child=(PnfInfoSerializer(help_text="This type represents the information "
-                                           "about a PNF that is part of an NS instance.", required=True)),
-                                    required=False, allow_null=True)
-    virtualLinkInfo = serializers.ListField(help_text="Information on the VL(s) of the NS instance.",
-                                            child=(NsVirtualLinkInfoSerializer(help_text="This type specifies the"
-                                                                                         "information about an"
-                                                                                         "NS VL instance.",
-                                                                               required=True)), required=False,
-                                            allow_null=True)
-    vnffgInfo = serializers.ListField(help_text="Information on the VNFFG(s) of the NS instance",
-                                      child=(VnffgInfoSerializer(help_text="This type specifies the information"
-                                                                           "about a VNFFG instance.", required=True)),
-                                      required=False, allow_null=True)
-    sapInfo = serializers.ListField(help_text="Information on the SAP(s) of the NS instance",
-                                    child=(SapInfoSerializer(help_text="This type represents an SAP"
-                                                                       "instance.", required=True)),
-                                    required=False, allow_null=True)
+    pnfInfo = PnfInfoSerializer(help_text="Information on the PNF(s) that are part of the NS instance.",
+                                required=False, allow_null=True, many=True)
+    virtualLinkInfo = NsVirtualLinkInfoSerializer(help_text="Information on the VL(s) of the NS instance.",
+                                                  required=False, allow_null=True, many=True)
+    vnffgInfo = VnffgInfoSerializer(help_text="Information on the VNFFG(s) of the NS instance",
+                                    required=False, allow_null=True, many=True)
+    sapInfo = SapInfoSerializer(help_text="Information on the SAP(s) of the NS instance",
+                                required=False, allow_null=True, many=True)
     nestedNsInstanceId = serializers.ListField(help_text="Identifier of the nested NS(s) of the NS instance.",
                                                child=serializers.CharField(help_text="nested of the NS"
                                                                                      "instance",),
                                                required=False, allow_null=True)
     nsState = serializers.ChoiceField(help_text="The state of the NS instance.", required=True,
                                       choices=["NOT_INSTANTIATED", "INSTANTIATED"])
-    nsScaleStatus = serializers.ListField(help_text="Status of each NS scaling aspect declared in the"
+    nsScaleStatus = NsScaleInfoSerializer(help_text="Status of each NS scaling aspect declared in the"
                                                     "applicable DF, how 'big' the NS instance has been"
                                                     "scaled w.r.t. that aspect.",
-                                          child=(NsScaleInfoSerializer(help_text="This type represents the"
-                                                                                 "target NS Scale level for"
-                                                                                 "each NS scaling aspect of"
-                                                                                 "the current deployment"
-                                                                                 "flavour.")), required=False,
-                                          allow_null=True)
-    additionalAffinityOrAntiAffinityRule = serializers.ListField(help_text="Information on the additional"
-                                                                           "affinity or anti-affinity rule"
-                                                                           "from NS instantiation operation.",
-                                                                 child=(AffinityOrAntiAffinityRuleSerializer(
-                                                                     help_text="This type describes the "
-                                                                               "additional affinity or"
-                                                                               "anti-affinity rule applicable"
-                                                                               "between the VNF instances to"
-                                                                               "be instantiated in the NS"
-                                                                               "instantiation operation"
-                                                                               "request or between the VNF"
-                                                                               "instances to be instantiated"
-                                                                               "in the NS instantiation"
-                                                                               "operation request and the"
-                                                                               "existing VNF instances.",
-                                                                     required=True)), required=False,
-                                                                 allow_null=True)
+                                          required=False, allow_null=True, many=True)
+    additionalAffinityOrAntiAffinityRule = AffinityOrAntiAffinityRuleSerializer(
+        help_text="Information on the additional affinity or anti-affinity rule from NS instantiation "
+                  "operation.", required=False, allow_null=True, many=True)
     _links = Links(help_text="Links to resources related to this resource.", required=True)

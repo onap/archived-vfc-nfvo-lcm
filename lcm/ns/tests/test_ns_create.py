@@ -51,7 +51,8 @@ class TestNsInstantiate(TestCase):
             },
             "csarId": self.nsd_id,
             "nsName": "ns",
-            "description": "description"
+            "nsDescription": "description",
+            'nsdId': 'nsdId'
         }
         response = self.client1.post("/api/nslcm/v1/ns", data=data, format='json')
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
@@ -59,7 +60,9 @@ class TestNsInstantiate(TestCase):
     @mock.patch.object(CreateNSService, "do_biz")
     def test_create_ns_empty_data(self, mock_do_biz):
         mock_do_biz.side_effect = Exception("Exception in CreateNS.")
-        data = {}
+        data = {
+            'nsdId': 'nsdId'
+        }
         response = self.client.post("/api/nslcm/v1/ns", data=data)
         self.assertEqual(response.data["error"], "Exception in CreateNS.")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -72,7 +75,8 @@ class TestNsInstantiate(TestCase):
         data = {
             'csarId': new_nsd_id,
             'nsName': 'ns',
-            'description': 'description'
+            'nsDescription': 'description',
+            'nsdId': 'nsdId'
         }
         response = self.client.post("/api/nslcm/v1/ns", data=data)
         self.assertEqual(response.data["error"], "nsd not exists.")
@@ -85,7 +89,7 @@ class TestNsInstantiate(TestCase):
         data = {
             'csarId': '1',
             'nsName': 'ns',
-            'description': 'description'
+            'nsDescription': 'description'
         }
         response = self.client.post("/api/nslcm/v1/ns", data=data)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -102,7 +106,7 @@ class TestNsInstantiate(TestCase):
         data = {
             'csarId': '1',
             'nsName': 'ns1',
-            'description': 'description'
+            'nsDescription': 'description'
         }
         response = self.client.post("/api/nslcm/v1/ns", data=data)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
