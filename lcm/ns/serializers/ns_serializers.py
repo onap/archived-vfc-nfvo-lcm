@@ -14,6 +14,10 @@
 
 from rest_framework import serializers
 from lcm.ns_pnfs.serializers.pnf_serializer import PnfInstanceSerializer
+<<<<<<< HEAD
+=======
+from lcm.ns.serializers.pub_serializers import IpOverEthernetAddressDataSerializer
+>>>>>>> separate ns-inst
 
 
 class VnfInstSerializer(serializers.Serializer):
@@ -70,17 +74,9 @@ class AddressRange(serializers.Serializer):
     maxAddress = serializers.IPAddressField(help_text="Highest IP address belonging to the range.", required=True)
 
 
-class IpAddress(serializers.Serializer):
-    type = serializers.ChoiceField(help_text="The type of the IP addresses.", required=True, choices=["IPV4", "IPV6"])
-    fixedAddresses = serializers.ListField(child=serializers.CharField(help_text="Fixed addresses to assign."), required=False)
-    numDynamicAddresses = serializers.IntegerField(help_text="Number of dynamic addresses to assign.", required=False)
-    addressRange = AddressRange(help_text="An IP address range to be used.", required=False)
-    subnetId = serializers.CharField(help_text="Subnet defined by the identifier of the subnet resource in the VIM.", required=False, allow_null=True, allow_blank=True)
-
-
-class IpOverEthernetSerializer(serializers.Serializer):
-    macAddress = serializers.CharField(help_text="MAC address.", required=False, allow_null=True, allow_blank=True)
-    ipAddresses = IpAddress(help_text="List of IP addresses to assign to the extCP instance.", required=False, many=True)
+# class IpOverEthernetSerializer(serializers.Serializer):
+#     macAddress = serializers.CharField(help_text="MAC address.", required=False, allow_null=True, allow_blank=True)
+#     ipAddresses = IpAddress(help_text="List of IP addresses to assign to the extCP instance.", required=False, many=True)
 
 
 class CpProtocolInfoSerializer(serializers.Serializer):
@@ -89,7 +85,7 @@ class CpProtocolInfoSerializer(serializers.Serializer):
         choices=["IP_OVER_ETHERNET"],
         required=True,
         allow_null=False)
-    ipOverEthernet = IpOverEthernetSerializer(
+    ipOverEthernet = IpOverEthernetAddressDataSerializer(
         help_text="IP addresses over Ethernet to assign to the extCP instance.",
         required=False,
         allow_null=True)

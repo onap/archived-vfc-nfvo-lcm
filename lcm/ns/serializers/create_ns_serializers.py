@@ -14,8 +14,7 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.ns_serializers import IpAddress
-from lcm.ns.serializers.common_Link import LinkSerializer
+from lcm.ns.serializers.pub_serializers import Links, IpAddressSerialzier, ipAddressesSerializer
 
 
 class ContextSerializer(serializers.Serializer):
@@ -40,10 +39,15 @@ class VnfInstanceSerializer(serializers.Serializer):
 
 class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
+<<<<<<< HEAD
     ipAddresses = serializers.ListField(help_text="List of IP addresses to assign to the extCP instance.",
                                         child=IpAddress(
                                             help_text="List of IP addresses to assign to the extCP instance.",
                                             required=True), required=False, allow_null=True, )
+=======
+    ipAddresses = IpAddressSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
+                                      required=False, allow_null=True, many=True)
+>>>>>>> separate ns-inst
 
 
 class cpProtocolDataSerializer(serializers.Serializer):
@@ -194,6 +198,7 @@ class VnffgInfoSerializer(serializers.Serializer):
                                                 "the VNFFG.", required=True, allow_null=False, many=True)
     nfpInfo = NfpInfoSerializer(help_text="Information on the NFP instances.",
                                 required=True, allow_null=False, many=True)
+<<<<<<< HEAD
 
 
 class AddressRange(serializers.Serializer):
@@ -218,6 +223,8 @@ class ipAddressesSerializer(serializers.Serializer):
     addressRange = AddressRange(help_text="An IP address range used", required=False, allow_null=True)
     subnetId = serializers.CharField(help_text="Subnet defined by the identifier of the subnet"
                                                "resource in the VIM", required=False, allow_null=True)
+=======
+>>>>>>> separate ns-inst
 
 
 class IpOverEthernetAddressInfoSerializer(serializers.Serializer):
@@ -267,18 +274,6 @@ class AffinityOrAntiAffinityRuleSerializer(serializers.Serializer):
     scope = serializers.ChoiceField(help_text="Specifies the scope of the rule where the placement"
                                               "constraint applies.",
                                     choices=["NFVI_POP", "ZONE", "ZONE_GROUP", "NFVI_NODE"], required=True)
-
-
-class Links(serializers.Serializer):
-    self = LinkSerializer(help_text="URI of this resource.", required=True)
-    nestedNsInstances = LinkSerializer(help_text="Links to the nested NS instances of the present NS"
-                                                 "instance.", required=False, allow_null=True)
-    instantiate = LinkSerializer(help_text="Link to the 'instantiate' task resource", required=False,
-                                 allow_null=True)
-    terminate = LinkSerializer(help_text="Link to the 'terminate' task resource", required=False, allow_null=True)
-    update = LinkSerializer(help_text="Link to the 'update' task resource", required=False, allow_null=True)
-    scale = LinkSerializer(help_text="Link to the 'scale' task resource", required=False, allow_null=True)
-    heal = LinkSerializer(help_text="Link to the 'heal' task resource", required=False, allow_null=True)
 
 
 class CreateNsRespSerializer(serializers.Serializer):
