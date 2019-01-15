@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 
-from lcm.ns.serializers.ns_serializers import InstNsPostDealReqSerializer
+from lcm.ns.serializers.inst_ns_serializers import InstNsPostDealReqSerializer
 from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.restcall import req_by_msb

@@ -18,9 +18,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
-
 from lcm.ns.biz.ns_update import NSUpdateService
-from lcm.ns.serializers.ns_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.pub_serializers import NsOperateJobSerializer
 from lcm.ns.serializers.update_serializers import UpdateNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE

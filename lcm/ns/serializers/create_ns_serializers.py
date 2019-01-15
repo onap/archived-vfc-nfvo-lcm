@@ -45,10 +45,10 @@ class IpOverEthernetAddressDataSerializer(serializers.Serializer):
 
 class cpProtocolDataSerializer(serializers.Serializer):
     layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s).",
-                                            choices=["IP_OVER_ETHERNET"], required=True)
+                                            choices=["IP_OVER_ETHERNET"], required=True, allow_null=False)
     ipOverEthernet = IpOverEthernetAddressDataSerializer(help_text="Network address data for IP over Ethernet"
                                                                    " to assign to the extCP instance.",
-                                                         required=True, many=True)
+                                                         required=False, allow_null=True)
 
 
 class PnfExtCpInfoSerializer(serializers.Serializer):

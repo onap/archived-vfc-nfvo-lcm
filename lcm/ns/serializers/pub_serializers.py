@@ -14,6 +14,7 @@
 
 from rest_framework import serializers
 from lcm.ns.serializers.common_Link import LinkSerializer
+from lcm.ns_pnfs.serializers.pnf_serializer import PnfInstanceSerializer
 
 
 class AddressRangeSerializer(serializers.Serializer):
@@ -66,3 +67,47 @@ class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
     ipAddresses = IpAddressSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
                                       required=False, allow_null=True, many=True)
+
+
+class NsOperateJobSerializer(serializers.Serializer):
+    jobId = serializers.CharField(help_text="ID of NS operate job", required=True)
+
+
+class VnfInstSerializer(serializers.Serializer):
+    vnfInstanceId = serializers.CharField(help_text="ID of VNF instance", required=True)
+    vnfInstanceName = serializers.CharField(help_text="Name of VNF instance", required=False, allow_null=True, allow_blank=True)
+    vnfdId = serializers.CharField(help_text="ID of VNFD", required=False, allow_null=True, allow_blank=True)
+
+
+class CpInstInfoSerializer(serializers.Serializer):
+    cpInstanceId = serializers.CharField(help_text="ID of CP instance", required=True)
+    cpInstanceName = serializers.CharField(help_text="Name of CP instance", required=False, allow_null=True, allow_blank=True)
+    cpdId = serializers.CharField(help_text="ID of CPD", required=False, allow_null=True, allow_blank=True)
+
+
+class VlInstSerializer(serializers.Serializer):
+    vlInstanceId = serializers.CharField(help_text="ID of VL instance", required=True)
+    vlInstanceName = serializers.CharField(help_text="Name of VL instance", required=False, allow_null=True, allow_blank=True)
+    vldId = serializers.CharField(help_text="ID of VLD", required=False, allow_null=True, allow_blank=True)
+    relatedCpInstanceId = CpInstInfoSerializer(help_text="Related CP instances", many=True)
+
+
+class VnffgInstSerializer(serializers.Serializer):
+    vnffgInstanceId = serializers.CharField(help_text="ID of VNFFG instance", required=True)
+    vnfdId = serializers.CharField(help_text="ID of VNFD", required=False, allow_null=True, allow_blank=True)
+    pnfId = serializers.CharField(help_text="ID of PNF", required=False, allow_null=True, allow_blank=True)
+    virtualLinkId = serializers.CharField(help_text="ID of virtual link", required=False, allow_null=True, allow_blank=True)
+    cpdId = serializers.CharField(help_text="ID of CPD", required=False, allow_null=True, allow_blank=True)
+    nfp = serializers.CharField(help_text="nfp", required=False, allow_null=True, allow_blank=True)
+
+
+class QueryNsRespSerializer(serializers.Serializer):
+    nsInstanceId = serializers.CharField(help_text="ID of NS instance", required=True)
+    nsName = serializers.CharField(help_text="Name of NS instance", required=False, allow_null=True, allow_blank=True)
+    description = serializers.CharField(help_text="Description of NS instance", required=False, allow_null=True, allow_blank=True)
+    nsdId = serializers.CharField(help_text="ID of NSD", required=True)
+    vnfInfo = VnfInstSerializer(help_text="VNF instances", many=True, required=False, allow_null=True)
+    pnfInfo = PnfInstanceSerializer(help_text="PNF instances", many=True, required=False, allow_null=True)
+    vlInfo = VlInstSerializer(help_text="VL instances", many=True, required=False, allow_null=True)
+    vnffgInfo = VnffgInstSerializer(help_text="VNFFG instances", many=True, required=False, allow_null=True)
+    nsState = serializers.CharField(help_text="State of NS instance", required=False, allow_null=True, allow_blank=True)

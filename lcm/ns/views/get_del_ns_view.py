@@ -21,7 +21,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_get import GetNSInfoService
 from lcm.ns.biz.ns_delete import DeleteNsService
-from lcm.ns.serializers.ns_serializers import QueryNsRespSerializer
+from lcm.ns.serializers.pub_serializers import QueryNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)

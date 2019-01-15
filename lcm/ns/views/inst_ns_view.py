@@ -20,7 +20,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_instant import InstantNSService
 from lcm.ns.serializers.inst_ns_serializers import InstantNsReqSerializer
-from lcm.ns.serializers.ns_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.pub_serializers import NsOperateJobSerializer
 
 logger = logging.getLogger(__name__)
 

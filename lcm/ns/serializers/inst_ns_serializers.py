@@ -116,3 +116,7 @@ class InstantNsReqSerializer(serializers.Serializer):
         help_text="Specifies additional affinity or anti-affinity constraint for the VNF instances to be"
                   " instantiated as part of the NS instantiation.",
         required=False, allow_null=True, many=True)
+
+
+class InstNsPostDealReqSerializer(serializers.Serializer):
+    status = serializers.CharField(help_text="Status of NS Inst", required=True)

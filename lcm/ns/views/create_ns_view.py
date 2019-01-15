@@ -22,7 +22,7 @@ from drf_yasg.utils import swagger_auto_schema
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.ns.biz.ns_get import GetNSInfoService
 from lcm.ns.serializers.create_ns_serializers import CreateNsReqSerializer, CreateNsRespSerializer
-from lcm.ns.serializers.ns_serializers import QueryNsRespSerializer
+from lcm.ns.serializers.pub_serializers import QueryNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.values import ignore_case_get
 

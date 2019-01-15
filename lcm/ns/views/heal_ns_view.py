@@ -20,7 +20,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.serializers.heal_serializers import HealNsReqSerializer
-from lcm.ns.serializers.ns_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.pub_serializers import NsOperateJobSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
