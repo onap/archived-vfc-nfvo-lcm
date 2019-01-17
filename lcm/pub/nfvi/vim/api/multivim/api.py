@@ -20,16 +20,26 @@ from lcm.pub.nfvi.vim import const
 
 logger = logging.getLogger(__name__)
 
-VIM_DRIVER_BASE_URL = "api/multicloud/v0"
+VIM_DRIVER_BASE_URL = "api/multicloud/v1"
 
+
+def split_vim_to_owner_region(vim_id):
+    split_vim = vim_id.split('_')
+    cloud_owner = split_vim[0]
+    cloud_region = "".join(split_vim[1:])
+    return cloud_owner, cloud_region
 
 def call(vim_id, tenant_id, res, method, data=''):
     if data and not isinstance(data, (str, unicode)):
         data = json.JSONEncoder().encode(data)
-    url = "{base_url}/{vim_id}{tenant_id}/{res}".format(
+    vim_id = split_vim_to_owner_region(vim_id)
+    cloud_owner = vim_id[0]
+    cloud_region_id = vim_id[1]
+    url = "{base_url}/{cloud_owner}/{cloud_region_id}/{tenant_id}/{res}".format(
         base_url=VIM_DRIVER_BASE_URL,
-        vim_id=vim_id,
-        tenant_id="/" + tenant_id if tenant_id else "",
+        cloud_owner=cloud_owner,
+        cloud_region_id=cloud_region_id,
+        tenant_id=tenant_id if tenant_id else "",
         res=res)
     ret = req_by_msb(url, method, data)
     if ret[0] > 0:
