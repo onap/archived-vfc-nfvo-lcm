@@ -58,7 +58,7 @@ class GrantVnfReqSerializer(serializers.Serializer):
     vnfDescriptorId = serializers.CharField(help_text="ID of VNF Descriptor", required=False, allow_null=True, allow_blank=True)
     lifecycleOperation = serializers.ChoiceField(
         help_text="Lifecycle Operation",
-        choices=["Terminal", "Instantiate", "Scalein", "Scaleout", "Scaledown", "Scaleup", "Heal"],
+        choices=["Terminate", "Instantiate", "Scalein", "Scaleout", "Scaledown", "Scaleup", "Heal"],
         required=True
     )
     jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True, allow_blank=True)
@@ -157,7 +157,7 @@ class NotifyLcmReqSerializer(serializers.Serializer):
     )
     operation = serializers.ChoiceField(
         help_text="Lifecycle Operation",
-        choices=["Terminal", "Instantiate", "Scalein", "Scaleout", "Scaledown", "Scaleup", "Heal"],
+        choices=["Terminate", "Instantiate", "Scalein", "Scaleout", "Scaledown", "Scaleup", "Heal"],
         required=True
     )
     jobId = serializers.CharField(help_text="ID of Job", required=False, allow_null=True, allow_blank=True)
