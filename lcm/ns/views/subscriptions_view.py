@@ -117,8 +117,8 @@ class SubscriptionsView(APIView):
             if not subscriptions_serializer.is_valid():
                 raise NSLCMException(subscriptions_serializer.errors)
 
-            logger.debug("SubscribeNotification--get::> Remove default fields if exclude_default" +
-                         " is specified")
+            logger.debug("SubscribeNotification--get::> Remove default fields if exclude_default is"
+                         " specified")
             return Response(data=subscriptions_serializer.data, status=status.HTTP_200_OK)
         except NSLCMException as e:
             logger.error(e.message)

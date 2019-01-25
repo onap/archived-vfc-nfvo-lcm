@@ -101,8 +101,7 @@ class CreateSubscription:
             raise NSLCMException('Auth type should be ' + const.BASIC)
         if self.authentication.get("paramsOauth2ClientCredentials", {}) and \
                 const.OAUTH2_CLIENT_CREDENTIALS not in self.authentication.get("authType"):
-            raise NSLCMException('Auth type should be ' +
-                                 const.OAUTH2_CLIENT_CREDENTIALS)
+            raise NSLCMException('Auth type should be ' + const.OAUTH2_CLIENT_CREDENTIALS)
 
     def check_filter_exists(self, sub):
         # Check the notificationTypes, operationTypes, operationStates

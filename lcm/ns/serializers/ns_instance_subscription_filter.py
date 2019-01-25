@@ -23,14 +23,14 @@ class NsInstanceSubscriptionFilter(serializers.Serializer):
         allow_null=False)
     vnfdIds = serializers.ListField(
         child=serializers.UUIDField(),
-        help_text="If present, match NS instances that contain VNF instances that were created based on" +
-        "dentified by one of the vnfdId values listed in this attribute.",
+        help_text="If present, match NS instances that contain VNF instances that were created based on "
+                  "dentified by one of the vnfdId values listed in this attribute.",
         required=False,
         allow_null=False)
     pnfdIds = serializers.ListField(
         child=serializers.UUIDField(),
-        help_text="If present, match NS instances that contain PNFs that are represented by" +
-        "a PNFD identified by one of the pnfdId values listed in this attribute",
+        help_text="If present, match NS instances that contain PNFs that are represented by a PNFD "
+                  "identified by one of the pnfdId values listed in this attribute",
         required=False,
         allow_null=False)
     nsInstanceIds = serializers.ListField(

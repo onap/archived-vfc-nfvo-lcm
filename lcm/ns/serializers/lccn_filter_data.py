@@ -35,8 +35,9 @@ class LifeCycleChangeNotificationsFilter(serializers.Serializer):
         required=False)
     operationStates = serializers.ListField(
         child=serializers.ChoiceField(required=True, choices=LCM_OPERATION_STATE_TYPES),
-        help_text="Match particular LCM operation state values as reported " +
-        "in notifications of type NsLcmOperationOccurrenceNotification.",
+        help_text="Match particular LCM operation state values as reported " + "in notifications of type"
+                                                                               " NsLcmOperationOccurrence"
+                                                                               "Notification.",
         allow_null=False,
         required=False)
 
@@ -45,7 +46,7 @@ class LifeCycleChangeNotificationsFilter(serializers.Serializer):
         help_text="Match particular NS component types for the notification of type NsChangeNotification. ",
         required=False,
         allow_null=False)
-    lcmOpNameImpactingNsComponent = serializers.ListField (
+    lcmOpNameImpactingNsComponent = serializers.ListField(
         child=serializers.ChoiceField(required=True, choices=LCM_OPName_For_Change_Notification_Type),
         help_text="Match particular LCM operation names for the notification of type NsChangeNotification. ",
         required=False,
@@ -55,4 +56,3 @@ class LifeCycleChangeNotificationsFilter(serializers.Serializer):
         help_text="Match particular LCM operation status values as reported in notifications of type NsChangeNotification.",
         required=False,
         allow_null=False)
-

@@ -22,10 +22,11 @@ NS_INST_STATUS = enum(EMPTY='empty', INSTANTIATING='instantiating', TERMINATING=
 SERVICE_TYPE = 'NetworkService'
 SERVICE_ROLE = 'NetworkService'
 
-#new_add
+# new_add
 HEAL_ACTION_TYPE = enum(START="vmCreate", RESTART="vmReset")
 ACTION_TYPE = enum(START=1, STOP=2, REBOOT=3)
-GRANT_TYPE = enum(INSTANTIATE="INSTANTIATE", TERMINATE="TERMINATE", HEAL_CREATE="Heal Create", HEAL_RESTART="Heal Restart", OPERATE="OPERATE")
+GRANT_TYPE = enum(INSTANTIATE="INSTANTIATE", TERMINATE="TERMINATE",
+                  HEAL_CREATE="Heal Create", HEAL_RESTART="Heal Restart", OPERATE="OPERATE")
 VNF_STATUS = enum(NULL='null', INSTANTIATING="instantiating", INACTIVE='inactive', ACTIVE="active",
                   FAILED="failed", TERMINATING="terminating", SCALING="scaling", OPERATING="operating",
                   UPDATING="updating", HEALING="healing")
@@ -63,21 +64,21 @@ OPName_For_Change_Notification_Type = enum(
     VNF_SCALE_TO_LEVEL="VNF_SCALE_TO_LEVEL",
     VNF_CHANGE_FLAVOUR="VNF_CHANGE_FLAVOUR",
     VNF_TERMINATE="VNF_TERMINATE",
-    VNF_HEAL="VNF_HEAL",    
+    VNF_HEAL="VNF_HEAL",
     VNF_OPERATE="VNF_OPERATE",
     VNF_CHANGE_EXT_CONN="VNF_CHANGE_EXT_CONN",
-    VNF_MODIFY_INFO="VNF_MODIFY_INFO",   
-    NS_INSTANTIATE="NS_INSTANTIATE",    
+    VNF_MODIFY_INFO="VNF_MODIFY_INFO",
+    NS_INSTANTIATE="NS_INSTANTIATE",
     NS_SCALE="NS_SCALE",
-    NS_UPDATE="NS_UPDATE",  
+    NS_UPDATE="NS_UPDATE",
     NS_TERMINATE="NS_TERMINATE",
-    NS_HEAL="NS_HEAL", 
+    NS_HEAL="NS_HEAL",
 )
 
 
 OpOcc_Status_For_ChangeNotification_Type = enum(
     START="START",
-    COMPLETED ="COMPLETED ",
+    COMPLETED="COMPLETED ",
     PARTIALLY_COMPLETED="PARTIALLY_COMPLETED",
     FAILED="FAILED",
     ROLLED_BACK="ROLLED_BACK",
@@ -102,8 +103,6 @@ OAUTH2_CLIENT_CREDENTIALS = "OAUTH2_CLIENT_CREDENTIALS"
 #                 'Flavour': 'flavor', 'Vm': 'vm'}
 
 ROOT_URI = "api/nslcm/v1/subscriptions/"
-
-
 
 
 LCCNNOTIFICATION = "NsLcmOperationOccurrenceNotification"
@@ -164,4 +163,3 @@ LCM_OpOcc_Status_For_ChangeNotification_Type = [
     OpOcc_Status_For_ChangeNotification_Type.FAILED,
     OpOcc_Status_For_ChangeNotification_Type.ROLLED_BACK,
 ]
-
