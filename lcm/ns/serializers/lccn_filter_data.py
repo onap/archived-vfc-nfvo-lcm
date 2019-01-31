@@ -20,7 +20,8 @@ from lcm.ns.const import NOTIFICATION_TYPES, NS_LCM_OP_TYPES, LCM_OPERATION_STAT
 
 class LifeCycleChangeNotificationsFilter(serializers.Serializer):
     nsInstanceSubscriptionFilter = NsInstanceSubscriptionFilter(
-        help_text="Filter criteria to select NS instances about which to notify.", required=False, allow_null=False)
+        help_text="Filter criteria to select NS instances about which to notify.",
+        required=False, allow_null=False)
     notificationTypes = serializers.ListField(
         child=serializers.ChoiceField(required=True, choices=NOTIFICATION_TYPES),
         help_text="Match particular notification types", allow_null=False, required=False)

@@ -22,5 +22,5 @@ class ProblemDetailsSerializer(serializers.Serializer):
     detail = serializers.CharField(help_text="Detail", required=True, allow_null=True)
     instance = serializers.CharField(help_text="Instance", required=False, allow_null=True)
     additional_details = serializers.ListField(
-        help_text="Any number of additional attributes, as defined in a specification or by an implementation.",
-        required=False, allow_null=True)
+        help_text="Any number of additional attributes, as defined in a specification or by an "
+                  "implementation.", required=False, allow_null=True)

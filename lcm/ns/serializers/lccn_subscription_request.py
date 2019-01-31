@@ -24,10 +24,11 @@ class LccnSubscriptionRequestSerializer(serializers.Serializer):
         required=True,
         allow_null=False)
     filter = LifeCycleChangeNotificationsFilter(
-        help_text="Filter settings for this subscription, to define the subset of all notifications this subscription "
-                  "relates to A particular notification is sent to the subscriber if the filter matches, or if there "
-                  "is no filter.", required=False, allow_null=True)
+        help_text="Filter settings for this subscription, to define the subset of all notifications this "
+                  "subscription relates to A particular notification is sent to the subscriber if the filter "
+                  "matches, or if there is no filter.", required=False, allow_null=True)
     authentication = SubscriptionAuthenticationSerializer(
-        help_text="Authentication parameters to conFigure the use of Authorization when sending notifications "
-                  "corresponding to this subscription, as defined in clause 4.5.3 This attribute shall only be present "
-                  "if the subscriber requires authorization of notifications.", required=False, allow_null=True)
+        help_text="Authentication parameters to conFigure the use of Authorization when sending "
+                  "notifications corresponding to this subscription, as defined in clause 4.5.3 This "
+                  "attribute shall only be present if the subscriber requires authorization of "
+                  "notifications.", required=False, allow_null=True)

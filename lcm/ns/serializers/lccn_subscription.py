@@ -37,8 +37,8 @@ class LccnSubscriptionSerializer(serializers.Serializer):
         required=True,
         allow_null=False)
     filter = LifeCycleChangeNotificationsFilter(
-        help_text="Filter settings for this subscription, to define the of all notifications this subscription relates "
-                  "to A particular notification is sent to the subscriber if the filter matches, or if there is no "
-                  "filter.", required=False)
+        help_text="Filter settings for this subscription, to define the of all notifications this "
+                  "subscription  relates to A particular notification is sent to the subscriber if the "
+                  "filter matches, or if there is no filter.", required=False)
     _links = LinkSerializer(
         help_text="Links to resources related to this resource.", required=True)
