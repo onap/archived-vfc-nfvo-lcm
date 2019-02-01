@@ -338,11 +338,16 @@ class SubscriptionModel(models.Model):
 
     subscription_id = models.CharField(db_column='SUBSCRIPTIONID', max_length=255, primary_key=True)
     vnf_instance_filter = models.TextField(db_column='VNFINSTANCEFILTER', null=True)
+    ns_instance_filter = models.TextField(db_column='NSINSTANCEFILTER', null=True)
     notification_types = models.TextField(db_column='NOTIFICATIONTYPES', null=True)
     operation_types = models.TextField(db_column='OPERATIONTYPES', null=True)
     operation_states = models.TextField(db_column='OPERATIONSTATES', null=True)
+    ns_component_types = models.TextField(db_column='NSCOMPONENTTYPES', null=True)
+    lcm_opname_impacting_nscomponent = models.TextField(db_column='LCMOPNAMEIMPACTINGNSCOMPONENT', null=True)
+    lcm_opoccstatus_impacting_nscomponent = models.TextField(db_column='LCMOPOCCSTATUSIMPACTINGNSCOMPONENT', null=True)
     callback_uri = models.CharField(db_column='CALLBACKURI', max_length=255)
     links = models.TextField(db_column='LINKS', max_length=20000)
+    auth_info = models.TextField(db_column='AUTHINFO', max_length=20000, blank=True, null=True)
 
 
 class PNFInstModel(models.Model):
