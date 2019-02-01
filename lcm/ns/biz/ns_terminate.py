@@ -202,7 +202,7 @@ class TerminateNsService(threading.Thread):
                 try:
                     ret = call_from_ns_cancel_resource('pnf', pnfinst.pnfId)
                     if ret[0] == 0:
-                            delete_result = "success"
+                        delete_result = "success"
                 except Exception as e:
                     logger.error("[cancel_pnf_list] error[%s]!" % e.message)
                     logger.error(traceback.format_exc())
