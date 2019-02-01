@@ -22,10 +22,11 @@ from lcm.ns.views.update_ns_view import NSUpdateView
 from lcm.ns.views.get_del_ns_view import NSDetailView
 from lcm.ns.views.inst_ns_post_deal_view import NSInstPostDealView
 from lcm.ns.views.scale_ns_views import NSManualScaleView
+from lcm.ns.views.subscriptions_view import SubscriptionsView
 
 urlpatterns = [
     # API will be deprecated in the future release
-
+    url(r'^api/nslcm/v1/subscriptions$', SubscriptionsView.as_view()),
     url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$', NSInstView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNSView.as_view()),
@@ -35,7 +36,8 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', NSHealView.as_view()),
 
     # SOL005 URL API definition TODO
-    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update$', NSUpdateView.as_view())
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update$',
+        NSUpdateView.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
