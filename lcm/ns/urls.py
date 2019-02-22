@@ -23,6 +23,7 @@ from lcm.ns.views.get_del_ns_view import NSDetailView
 from lcm.ns.views.inst_ns_post_deal_view import NSInstPostDealView
 from lcm.ns.views.scale_ns_views import NSManualScaleView
 from lcm.ns.views.subscriptions_view import SubscriptionsView
+from lcm.ns.views.lcm_op_occs_view import QueryMultiNsLcmOpOccs, QuerySingleNsLcmOpOcc
 
 urlpatterns = [
     # API will be deprecated in the future release
@@ -34,6 +35,8 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$', NSInstPostDealView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$', NSManualScaleView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', NSHealView.as_view()),
+    url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view()),
+    url(r'^api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)$', QuerySingleNsLcmOpOcc.as_view()),
 
     # SOL005 URL API definition TODO
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update$',

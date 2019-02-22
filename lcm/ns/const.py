@@ -16,16 +16,15 @@ from lcm.pub.utils.enumutil import enum
 OWNER_TYPE = enum(VNF=0, VNFM=1, NS=2)
 
 NS_INST_STATUS = enum(EMPTY='empty', INSTANTIATING='instantiating', TERMINATING='terminating',
-                      ACTIVE='active', FAILED='failed', INACTIVE='inactive', UPDATING='updating',
-                      SCALING='scaling', HEALING='healing')
+                      ACTIVE='active', FAILED='failed', INACTIVE='inactive', UPDATING='updating', SCALING='scaling',
+                      HEALING='healing')
 
 SERVICE_TYPE = 'NetworkService'
 SERVICE_ROLE = 'NetworkService'
 
 HEAL_ACTION_TYPE = enum(START="vmCreate", RESTART="vmReset")
 ACTION_TYPE = enum(START=1, STOP=2, REBOOT=3)
-GRANT_TYPE = enum(INSTANTIATE="INSTANTIATE", TERMINATE="TERMINATE", HEAL_CREATE="Heal Create",
-                  HEAL_RESTART="Heal Restart", OPERATE="OPERATE")
+GRANT_TYPE = enum(INSTANTIATE="INSTANTIATE", TERMINATE="TERMINATE", HEAL_CREATE="Heal Create", HEAL_RESTART="Heal Restart", OPERATE="OPERATE")
 VNF_STATUS = enum(NULL='null', INSTANTIATING="instantiating", INACTIVE='inactive', ACTIVE="active",
                   FAILED="failed", TERMINATING="terminating", SCALING="scaling", OPERATING="operating",
                   UPDATING="updating", HEALING="healing")
@@ -76,25 +75,38 @@ BASIC = "BASIC"
 
 OAUTH2_CLIENT_CREDENTIALS = "OAUTH2_CLIENT_CREDENTIALS"
 
-# CHANGE_TYPE = enum(
-#     ADDED='ADDED',
-#     REMOVED='REMOVED',
-#     MODIFIED='MODIFIED',
-#     TEMPORARY='TEMPORARY',
-#     LINK_PORT_ADDED='LINK_PORT_ADDED',
-#     LINK_PORT_REMOVED='LINK_PORT_REMOVED'
-# )
+CHANGE_TYPES = enum(
+    ADD='ADD',
+    DELETE='DELETE',
+    REMOVE='REMOVE',
+    INSTANTIATE='INSTANTIATE',
+    TERMINATE='TERMINATE',
+    SCALE='SCALE',
+    UPDATE='UPDATE',
+    CHANGE_FLAVOUR='CHANGE_FLAVOUR',
+    HEAL='HEAL',
+    OPERATE='OPERATE',
+    MODIFY='MODIFY',
+    MODIFY_INFORMATION='MODIFY_INFORMATION',
+    CHANGE_EXTERNAL_VNF_CONNECTIVITY='CHANGE_EXTERNAL_VNF_CONNECTIVITY',
+    ADD_LINK_PORT='ADD_LINK_PORT',
+    REMOVE_LINK_PORT='REMOVE_LINK_PORT'
+)
 
-# RESOURCE_MAP = {'Storage': 'volumn', 'Network': 'network', 'SubNetwork': 'subnet', 'Port': 'port',
-#                 'Flavour': 'flavor', 'Vm': 'vm'}
+CHANGE_RESULTS = enum(
+    COMPLETED='COMPLETED',
+    ROLLED_BACK='ROLLED_BACK',
+    FAILED='FAILED',
+    PARTIALLY_COMPLETED='PARTIALLY_COMPLETED'
+)
+
 
 ROOT_URI = "api/nslcm/v1/subscriptions/"
 
 LCCNNOTIFICATION = "NsLcmOperationOccurrenceNotification"
 
 NOTIFICATION_TYPES = [
-    "NsLcmOperationOccurrenceNotification", "NsIdentifierCreationNotification",
-    "NsIdentifierDeletionNotification",
+    "NsLcmOperationOccurrenceNotification", "NsIdentifierCreationNotification", "NsIdentifierDeletionNotification",
     "NsChangeNotification",
 ]
 
@@ -146,4 +158,11 @@ LCM_OpOcc_Status_For_ChangeNotification_Type = [
     OpOcc_Status_For_ChangeNotification_Type.PARTIALLY_COMPLETED,
     OpOcc_Status_For_ChangeNotification_Type.FAILED,
     OpOcc_Status_For_ChangeNotification_Type.ROLLED_BACK,
+]
+
+
+CHANGE_RESULT = [
+    CHANGE_RESULTS.COMPLETED,
+    CHANGE_RESULTS.ROLLED_BACK,
+    CHANGE_RESULTS.FAILED
 ]

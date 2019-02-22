@@ -345,11 +345,29 @@ class SubscriptionModel(models.Model):
     operation_states = models.TextField(db_column='OPERATIONSTATES', null=True)
     ns_component_types = models.TextField(db_column='NSCOMPONENTTYPES', null=True)
     lcm_opname_impacting_nscomponent = models.TextField(db_column='LCMOPNAMEIMPACTINGNSCOMPONENT', null=True)
-    lcm_opoccstatus_impacting_nscomponent = models.TextField(db_column='LCMOPOCCSTATUSIMPACTINGNSCOMPONENT',
-                                                             null=True)
+    lcm_opoccstatus_impacting_nscomponent = models.TextField(db_column='LCMOPOCCSTATUSIMPACTINGNSCOMPONENT', null=True)
     callback_uri = models.CharField(db_column='CALLBACKURI', max_length=255)
     links = models.TextField(db_column='LINKS', max_length=20000)
     auth_info = models.TextField(db_column='AUTHINFO', max_length=20000, blank=True, null=True)
+
+
+class NSLcmOpOccModel(models.Model):
+    class Meta:
+        db_table = 'NSLCMOPOCCS'
+
+    id = models.CharField(db_column='ID', max_length=255, primary_key=True)
+    operation_state = models.CharField(db_column='OPERATIONSTATE', null=False, max_length=30)
+    state_entered_time = models.CharField(db_column='STATEENTEREDTIME', null=False, max_length=30)
+    start_time = models.CharField(db_column='STARTTIME', null=False, max_length=30)
+    ns_instance_id = models.CharField(db_column='NSINSTANCEID', null=False, max_length=255)
+    operation = models.CharField(db_column='OPERATION', null=False, max_length=30)
+    is_automatic_invocation = models.CharField(db_column='ISAUTOMATICINVOCATION', null=False, max_length=5)
+    operation_params = models.TextField(db_column='OPERATIONPARAMS', null=False)
+    is_cancel_pending = models.CharField(db_column='ISCANCELPENDING', null=False, max_length=5)
+    cancel_mode = models.TextField(db_column='CANCELMODE', null=True)
+    error = models.TextField(db_column='ERROR', null=True)
+    resource_changes = models.TextField(db_column='RESOURCECHANGES', null=True)
+    links = models.TextField(db_column='LINKS', null=False)
 
 
 class PNFInstModel(models.Model):
