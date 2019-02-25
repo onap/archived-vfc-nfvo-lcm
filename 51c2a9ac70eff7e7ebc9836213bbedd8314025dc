@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46b3716c_1c431a66",
+        "filename": "lcm/ns_vnfs/biz/create_vnfs.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2019-02-25T11:52:33Z",
+      "side": 1,
+      "message": "please delete blank and this line which will cause pep8 error.",
+      "range": {
+        "startLine": 251,
+        "startChar": 0,
+        "endLine": 251,
+        "endChar": 1
+      },
+      "revId": "51c2a9ac70eff7e7ebc9836213bbedd8314025dc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
