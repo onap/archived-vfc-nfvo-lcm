@@ -248,6 +248,20 @@ class CreateVnfs(Thread):
                 "modelVersionId": modelVersionId
             }
         }
+        if self.vim_id:
+            vim_info = self.vim_id.split("_")
+            identifiers = list()
+            identifiers.append(vim_info[1])
+            cloudOwner = vim_info[0]
+            required_candidate = [
+                {
+                    "identifierType": "vimId",
+                    "cloudOwner": cloudOwner,
+                    "identifiers": identifiers
+                }
+            ]
+            placementDemand["requiredCandidates"] = required_candidate
+
         req_body = {
             "requestInfo": {
                 "transactionId": id,
