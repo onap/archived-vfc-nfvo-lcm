@@ -14,7 +14,8 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.pub_serializers import Links, IpAddressSerialzier, ipAddressesSerializer
+from lcm.ns.serializers.pub_serializers import IpOverEthernetAddressDataSerializer, Links, ipAddressesSerializer
+# from lcm.ns.serializers.pub_serializers import Links, IpAddressSerialzier, ipAddressesSerializer
 
 
 class ContextSerializer(serializers.Serializer):
@@ -37,10 +38,10 @@ class VnfInstanceSerializer(serializers.Serializer):
                                             allow_null=True)
 
 
-class IpOverEthernetAddressDataSerializer(serializers.Serializer):
-    macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
-    ipAddresses = IpAddressSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
-                                      required=False, allow_null=True, many=True)
+# class IpOverEthernetAddressDataSerializer(serializers.Serializer):
+#     macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
+#     ipAddresses = IpAddressSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
+#                                       required=False, allow_null=True, many=True)
 
 
 class cpProtocolDataSerializer(serializers.Serializer):
