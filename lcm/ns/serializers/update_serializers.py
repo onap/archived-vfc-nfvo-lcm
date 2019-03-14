@@ -17,6 +17,7 @@ from rest_framework import serializers
 from lcm.ns.serializers.pub_serializers import IpAddressSerialzier
 from lcm.ns.serializers.pub_serializers import CpProtocolDataSerializer
 from lcm.ns.serializers.create_ns_serializers import ResourceHandleSerializer
+from lcm.ns.serializers.inst_ns_serializers import SapDataSerializer
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
@@ -175,16 +176,6 @@ class ChangeExtVnfConnectivityDataSerializer(serializers.Serializer):
     additionalParams = serializers.CharField(help_text="Additional parameters passed by the OSS as input to the "
                                                        "external connectivity change process",
                                              required=False, allow_null=True)
-
-
-class SapDataSerializer(serializers.Serializer):
-    sapdId = serializers.CharField(help_text="Reference to the SAPD for this SAP.", required=True)
-    sapName = serializers.CharField(help_text="Human readable name for the SAP.", required=True)
-    description = serializers.CharField(help_text="Human readable description for the SAP. ", required=True)
-    sapProtocolData = serializers.ListField(help_text="Parameters for configuring the network protocols on the SAP.",
-                                            child=(CpProtocolDataSerializer(
-                                                help_text="This type represents network protocol data.", required=True)),
-                                            required=False, allow_null=True)
 
 
 class AssocNewNsdVersionDataSerializer(serializers.Serializer):
