@@ -111,3 +111,11 @@ class QueryNsRespSerializer(serializers.Serializer):
     vlInfo = VlInstSerializer(help_text="VL instances", many=True, required=False, allow_null=True)
     vnffgInfo = VnffgInstSerializer(help_text="VNFFG instances", many=True, required=False, allow_null=True)
     nsState = serializers.CharField(help_text="State of NS instance", required=False, allow_null=True, allow_blank=True)
+
+
+class CpProtocolDataSerializer(serializers.Serializer):
+    layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s)",
+                                            choices=["IP_OVER_ETHERNET"], required=True)
+    ipOverEthernet = IpOverEthernetAddressDataSerializer(help_text="Network address data for IP over Ethernet"
+                                                                   "to assign to the extCP instance.",
+                                                         required=False, allow_null=True)
