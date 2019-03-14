@@ -14,16 +14,8 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.pub_serializers import IpOverEthernetAddressDataSerializer
+from lcm.ns.serializers.pub_serializers import CpProtocolDataSerializer
 from lcm.ns.serializers.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer
-
-
-class CpProtocolDataSerializer(serializers.Serializer):
-    layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s)",
-                                            choices=["IP_OVER_ETHERNET"], required=True)
-    ipOverEthernet = IpOverEthernetAddressDataSerializer(help_text="Network address data for IP over Ethernet"
-                                                                   "to assign to the extCP instance.",
-                                                         required=False, allow_null=True)
 
 
 class SapDataSerializer(serializers.Serializer):
