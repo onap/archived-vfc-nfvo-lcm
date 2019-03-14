@@ -14,6 +14,8 @@
 
 from rest_framework import serializers
 from lcm.ns.serializers.update_serializers import VnfInstanceDataSerializer
+from lcm.ns.serializers.create_ns_serializers import NsScaleInfoSerializer
+from lcm.ns.serializers.inst_ns_serializers import VnfLocationConstraintSerializer, ParamsForVnfSerializer
 
 
 # class VnfInstanceDataSerializer(serializers.Serializer):
@@ -33,9 +35,9 @@ class ScaleNsByStepsDataSerializer(serializers.Serializer):
                                                     "to 1. ", required=False, allow_null=True)
 
 
-class NsScaleInfoSerializer(serializers.Serializer):
-    nsScalingAspectId = serializers.CharField(help_text="Identifier of the NS scaling aspect.", required=True)
-    nsScaleLevelId = serializers.CharField(help_text="Identifier of the NS scale level.", required=True)
+# class NsScaleInfoSerializer(serializers.Serializer):
+#     nsScalingAspectId = serializers.CharField(help_text="Identifier of the NS scaling aspect.", required=True)
+#     nsScaleLevelId = serializers.CharField(help_text="Identifier of the NS scale level.", required=True)
 
 
 class ScaleNsToLevelDataSerializer(serializers.Serializer):
@@ -51,32 +53,32 @@ class ScaleNsToLevelDataSerializer(serializers.Serializer):
                                         required=False, allow_null=True)
 
 
-class ParamsForVnfSerializer(serializers.Serializer):
-    vnfProfileId = serializers.CharField(help_text="Identifier of (reference to) a vnfProfile to which the "
-                                                   "additional parameters apply.", required=True)
-    additionalParams = serializers.DictField(help_text="Additional parameters that are applied for the VNF "
-                                                       "instance to be created.",
-                                             child=serializers.CharField(help_text="KeyValue Pairs",
-                                                                         allow_blank=True),
-                                             required=False, allow_null=True)
+# class ParamsForVnfSerializer(serializers.Serializer):
+#     vnfProfileId = serializers.CharField(help_text="Identifier of (reference to) a vnfProfile to which the "
+#                                                    "additional parameters apply.", required=True)
+#     additionalParams = serializers.DictField(help_text="Additional parameters that are applied for the VNF "
+#                                                        "instance to be created.",
+#                                              child=serializers.CharField(help_text="KeyValue Pairs",
+#                                                                          allow_blank=True),
+#                                              required=False, allow_null=True)
 
 
-class LocationConstraintsSerializer(serializers.Serializer):
-    countryCode = serializers.CharField(help_text="The two-letter ISO 3166 [29] country code in capital "
-                                                  "letters", required=True)
-    civicAddressElement = serializers.ListField(help_text="Zero or more elements comprising the civic "
-                                                          "address.", required=False, allow_null=True)
+# class LocationConstraintsSerializer(serializers.Serializer):
+#     countryCode = serializers.CharField(help_text="The two-letter ISO 3166 [29] country code in capital "
+#                                                   "letters", required=True)
+#     civicAddressElement = serializers.ListField(help_text="Zero or more elements comprising the civic "
+#                                                           "address.", required=False, allow_null=True)
 
 
-class VnfLocationConstraintSerializer(serializers.Serializer):
-    vnfProfileId = serializers.CharField(help_text="Identifier (reference to) of a VnfProfile in the NSD used "
-                                                   "to manage the lifecycle of the VNF instance.",
-                                         required=True)
-
-    locationConstraints = LocationConstraintsSerializer(help_text="This type represents location constraints "
-                                                                  "for a VNF to be instantiated. The location"
-                                                                  " constraints shall be presented as a "
-                                                                  "country code", required=True)
+# class VnfLocationConstraintSerializer(serializers.Serializer):
+#     vnfProfileId = serializers.CharField(help_text="Identifier (reference to) of a VnfProfile in the NSD used "
+#                                                    "to manage the lifecycle of the VNF instance.",
+#                                          required=True)
+#
+#     locationConstraints = LocationConstraintsSerializer(help_text="This type represents location constraints "
+#                                                                   "for a VNF to be instantiated. The location"
+#                                                                   " constraints shall be presented as a "
+#                                                                   "country code", required=True)
 
 
 class ScaleNsDataSerializer(serializers.Serializer):
