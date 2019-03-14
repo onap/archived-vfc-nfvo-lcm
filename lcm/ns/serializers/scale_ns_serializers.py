@@ -13,14 +13,15 @@
 # limitations under the License.
 
 from rest_framework import serializers
+from lcm.ns.serializers.update_serializers import VnfInstanceDataSerializer
 
 
-class VnfInstanceDataSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(help_text="Identifier of the existing VNF instance to be used in"
-                                                    "the NS. ", required=True)
-    vnfProfileId = serializers.CharField(help_text="Identifier of (Reference to) a vnfProfile defined in the "
-                                                   "NSD which the existing VNF instance shall be matched "
-                                                   "with. If not present", required=False, allow_null=True)
+# class VnfInstanceDataSerializer(serializers.Serializer):
+#     vnfInstanceId = serializers.CharField(help_text="Identifier of the existing VNF instance to be used in"
+#                                                     "the NS. ", required=True)
+#     vnfProfileId = serializers.CharField(help_text="Identifier of (Reference to) a vnfProfile defined in the "
+#                                                    "NSD which the existing VNF instance shall be matched "
+#                                                    "with. If not present", required=False, allow_null=True)
 
 
 class ScaleNsByStepsDataSerializer(serializers.Serializer):
