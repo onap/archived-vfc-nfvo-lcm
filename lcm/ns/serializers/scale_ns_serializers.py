@@ -14,6 +14,7 @@
 
 from rest_framework import serializers
 from lcm.ns.serializers.update_serializers import VnfInstanceDataSerializer
+from lcm.ns.serializers.create_ns_serializers import NsScaleInfoSerializer
 
 
 # class VnfInstanceDataSerializer(serializers.Serializer):
@@ -31,11 +32,6 @@ class ScaleNsByStepsDataSerializer(serializers.Serializer):
                                                "declared in the NSD. ", required=True)
     numberOfSteps = serializers.CharField(help_text="The number of scaling steps to be performed. Defaults "
                                                     "to 1. ", required=False, allow_null=True)
-
-
-class NsScaleInfoSerializer(serializers.Serializer):
-    nsScalingAspectId = serializers.CharField(help_text="Identifier of the NS scaling aspect.", required=True)
-    nsScaleLevelId = serializers.CharField(help_text="Identifier of the NS scale level.", required=True)
 
 
 class ScaleNsToLevelDataSerializer(serializers.Serializer):
