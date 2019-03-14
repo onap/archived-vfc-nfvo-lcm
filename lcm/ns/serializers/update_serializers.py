@@ -15,6 +15,7 @@
 from rest_framework import serializers
 
 from lcm.ns.serializers.pub_serializers import IpAddressSerialzier
+from lcm.ns.serializers.inst_ns_serializers import CpProtocolDataSerializer
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
@@ -42,12 +43,12 @@ class IpOverEthernetAddressDataSerializer(serializers.Serializer):
                                       required=False, allow_null=True, many=True)
 
 
-class CpProtocolDataSerializer(serializers.Serializer):
-    layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s).",
-                                            choices=["IP_OVER_ETHERNET"], required=True)
-    ipOverEthernet = IpOverEthernetAddressDataSerializer(
-        help_text="Network address data for IP over Ethernet to assign to the extCP instance.",
-        required=False, allow_null=True)
+# class CpProtocolDataSerializer(serializers.Serializer):
+#     layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s).",
+#                                             choices=["IP_OVER_ETHERNET"], required=True)
+#     ipOverEthernet = IpOverEthernetAddressDataSerializer(
+#         help_text="Network address data for IP over Ethernet to assign to the extCP instance.",
+#         required=False, allow_null=True)
 
 
 class VnfExtCpConfigSerializer(serializers.Serializer):
