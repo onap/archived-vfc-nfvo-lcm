@@ -16,6 +16,7 @@ from rest_framework import serializers
 
 from lcm.ns.serializers.pub_serializers import CpProtocolDataSerializer
 from lcm.ns.serializers.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer
+from lcm.ns.serializers.create_ns_serializers import AffinityOrAntiAffinityRuleSerializer
 
 
 class SapDataSerializer(serializers.Serializer):
@@ -57,20 +58,6 @@ class ParamsForVnfSerializer(serializers.Serializer):
                                              child=serializers.CharField(help_text="KeyValue Pairs",
                                                                          allow_blank=True),
                                              required=False, allow_null=True)
-
-
-class AffinityOrAntiAffinityRuleSerializer(serializers.Serializer):
-    vnfdId = serializers.ListField(help_text="Reference to a VNFD.", required=False, allow_null=True)
-    vnfProfileId = serializers.ListField(help_text="Reference to a vnfProfile defined in the NSD.",
-                                         required=True)
-    vnfInstanceId = serializers.ListField(help_text="Reference to the existing VNF instance as the subject of"
-                                                    "the affinity or anti-affinity rule.",
-                                          required=False, allow_null=True)
-    affinityOrAntiAffiinty = serializers.ChoiceField(help_text="The type of the constraint.",
-                                                     choices=["AFFINITY", "ANTI_AFFINITY"], required=True)
-    scope = serializers.ChoiceField(help_text="Specifies the scope of the rule where the placement constraint"
-                                              "applies.", choices=["NFVI_POP", "ZONE", "ZONE_GROUP",
-                                                                   "NFVI_NODE"], required=True)
 
 
 class InstantNsReqSerializer(serializers.Serializer):
