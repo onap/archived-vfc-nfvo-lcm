@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from rest_framework import serializers
-from lcm.ns.serializers.common_Link import LinkSerializer
+from link import LinkSerializer
 from lcm.ns_pnfs.serializers.pnf_serializer import PnfInstanceSerializer
 
 

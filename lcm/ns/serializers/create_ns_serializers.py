@@ -15,6 +15,7 @@
 from rest_framework import serializers
 
 from lcm.ns.serializers.pub_serializers import Links, ipAddressesSerializer, CpProtocolDataSerializer
+from resource_handle import ResourceHandleSerializer
 
 
 class ContextSerializer(serializers.Serializer):
@@ -63,17 +64,17 @@ class PnfInfoSerializer(serializers.Serializer):
                                     required=True, many=True)
 
 
-class ResourceHandleSerializer(serializers.Serializer):
-    vimId = serializers.CharField(help_text="Identifier of the VIM under whose control this resource is"
-                                            "placed.", required=False, allow_null=True)
-    resourceProviderId = serializers.CharField(help_text="Identifier of the entity responsible for the"
-                                                         "management of the resource", required=False,
-                                               allow_null=True)
-    resourceId = serializers.CharField(help_text="Identifier of the resource in the scope of the VIM or the "
-                                                 "resource provider.", required=True)
-    vimLevelResourceType = serializers.CharField(help_text="Type of the resource in the scope of the VIM or"
-                                                           "the resource provider",
-                                                 required=False, allow_null=True)
+# class ResourceHandleSerializer(serializers.Serializer):
+#     vimId = serializers.CharField(help_text="Identifier of the VIM under whose control this resource is"
+#                                             "placed.", required=False, allow_null=True)
+#     resourceProviderId = serializers.CharField(help_text="Identifier of the entity responsible for the"
+#                                                          "management of the resource", required=False,
+#                                                allow_null=True)
+#     resourceId = serializers.CharField(help_text="Identifier of the resource in the scope of the VIM or the "
+#                                                  "resource provider.", required=True)
+#     vimLevelResourceType = serializers.CharField(help_text="Type of the resource in the scope of the VIM or"
+#                                                            "the resource provider",
+#                                                  required=False, allow_null=True)
 
 
 class NsVirtualLinkInfoSerializer(serializers.Serializer):
