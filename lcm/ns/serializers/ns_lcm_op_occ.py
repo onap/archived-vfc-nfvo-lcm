@@ -22,7 +22,7 @@ from affected_vnffgs import AffectedVnffgsSerializer
 from affected_nss import AffectedNssSerializer
 from affected_saps import AffectedSapsSerializer
 
-from link import LinkSerializer
+from common_Link import LinkSerializer
 from response import ProblemDetailsSerializer
 from lcm.ns import const
 
