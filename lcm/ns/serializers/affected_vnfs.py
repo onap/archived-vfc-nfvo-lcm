@@ -14,7 +14,7 @@
 
 
 from rest_framework import serializers
-from modify_vnf_info_data import ModifyVnfInfoDataSerializer
+from lcm.ns.serializers.update_serializers import ModifyVnfInfoDataSerializer
 from ext_virtual_link_info import ExtVirtualLinkInfoSerializer
 
 from lcm.ns.const import CHANGE_TYPES, CHANGE_RESULT
