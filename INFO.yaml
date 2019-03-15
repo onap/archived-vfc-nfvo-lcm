@@ -8,11 +8,17 @@ project_lead: &onap_releng_ptl
     id: 'yangyan'
     company: 'China Mobile'
     timezone: 'Asia/Shanghai'
+project_category: ''
 primary_contact: *onap_releng_ptl
 issue_tracking:
     type: 'jira'
     url: 'https://jira.onap.org/projects/VFC'
     key: 'VFC'
+mailing_list:
+    type: 'groups.io'
+    url: 'lists.onap.org'
+    tag: '<[sub-project_name]>'
+realtime_discussion: ''
 meetings:
     - type: 'zoom'
       agenda: 'https://wiki.onap.org/pages/viewpage.action?pageId=6590138'
@@ -21,6 +27,21 @@ meetings:
       channel: 'n/a'
       repeats: 'weekly'
       time: '09:00 UTC'
+repositories:
+    - 'vfc-gvnfm-vnflcm'
+    - 'vfc-gvnfm-vnfmgr'
+    - 'vfc-gvnfm-vnfres'
+    - 'vfc-nfvo-catalog'
+    - 'vfc-nfvo-db'
+    - 'vfc-nfvo-driver-ems'
+    - 'vfc-nfvo-driver-sfc'
+    - 'vfc-nfvo-driver-vnfm-gvnfm'
+    - 'vfc-nfvo-driver-vnfm-svnfm'
+    - 'vfc-nfvo-lcm'
+    - 'vfc-nfvo-multivimproxy'
+    - 'vfc-nfvo-resmanagement'
+    - 'vfc-nfvo-wfengine'
+    - 'vfc-oom'
 committers:
     - <<: *onap_releng_ptl
     - name: 'Anatoly Andrianov'
@@ -123,6 +144,7 @@ committers:
       company: 'Intel'
       id: 'Ruoyu'
       timezone: 'Asia/ShangHai'
+
 tsc:
     approval: 'https://lists.onap.org/pipermail/onap-tsc'
     changes:
