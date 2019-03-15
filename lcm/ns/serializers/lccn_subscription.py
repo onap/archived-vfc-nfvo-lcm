@@ -18,13 +18,6 @@ from link import LinkSerializer
 from lccn_filter_data import LifeCycleChangeNotificationsFilter
 
 
-class LinkSerializer(serializers.Serializer):
-    self = LinkSerializer(
-        help_text="URI of this resource.",
-        required=True,
-        allow_null=False)
-
-
 class LccnSubscriptionSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this subscription resource.",
