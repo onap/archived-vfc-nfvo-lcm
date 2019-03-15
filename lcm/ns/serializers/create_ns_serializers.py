@@ -14,8 +14,7 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.pub_serializers import IpOverEthernetAddressDataSerializer, Links, ipAddressesSerializer
-# from lcm.ns.serializers.pub_serializers import Links, IpAddressSerialzier, ipAddressesSerializer
+from lcm.ns.serializers.pub_serializers import Links, ipAddressesSerializer, CpProtocolDataSerializer
 
 
 class ContextSerializer(serializers.Serializer):
@@ -38,14 +37,6 @@ class VnfInstanceSerializer(serializers.Serializer):
                                             allow_null=True)
 
 
-class cpProtocolDataSerializer(serializers.Serializer):
-    layerProtocol = serializers.ChoiceField(help_text="Identifier of layer(s) and protocol(s).",
-                                            choices=["IP_OVER_ETHERNET"], required=True, allow_null=False)
-    ipOverEthernet = IpOverEthernetAddressDataSerializer(help_text="Network address data for IP over Ethernet"
-                                                                   " to assign to the extCP instance.",
-                                                         required=False, allow_null=True)
-
-
 class PnfExtCpInfoSerializer(serializers.Serializer):
     cpInstanceId = serializers.CharField(help_text="Identifier of the CP in the scope of the PNF.",
                                          required=True)
@@ -53,7 +44,7 @@ class PnfExtCpInfoSerializer(serializers.Serializer):
     cpdId = serializers.CharField(help_text="Identifier of (reference to) the Connection Point Descriptor"
                                             "(CPD) for this CP.", required=True)
 
-    cpProtocolData = cpProtocolDataSerializer(help_text="Parameters for configuring the network protocols on"
+    cpProtocolData = CpProtocolDataSerializer(help_text="Parameters for configuring the network protocols on"
                                                         "the CP.", required=True, many=True)
 
 

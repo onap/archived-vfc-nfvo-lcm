@@ -16,7 +16,8 @@ from rest_framework import serializers
 
 from lcm.ns.serializers.pub_serializers import IpAddressSerialzier
 from lcm.ns.serializers.pub_serializers import CpProtocolDataSerializer
-from lcm.ns.serializers.create_ns_serializers import ResourceHandleSerializer
+from lcm.ns.serializers.create_ns_serializers import ResourceHandleSerializer, NsCpHandleSerializer, \
+    NfpRuleSerializer
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
@@ -63,17 +64,6 @@ class VnfExtCpData(serializers.Serializer):
                                                "created from the respective CPD.",
                                      child=(VnfExtCpConfigSerializer(help_text="Config of vnf ext cp", required=True)),
                                      required=False, allow_null=True)
-
-
-# class ResourceHandleSerializer(serializers.Serializer):
-#     vimId = serializers.CharField(help_text="Identifier of the VIM under whose control this resource is placed.",
-#                                   required=False, allow_null=True)
-#     resourceProviderId = serializers.CharField(help_text="Identifier of the entity responsible for the management of "
-#                                                          "the resource.", required=False, allow_null=True)
-#     resourceId = serializers.CharField(help_text="Identifier of the resource in the scope of the VIM or the "
-#                                                  "resource provider.", required=True)
-#     vimLevelResourceType = serializers.CharField(help_text="Type of the resource in the scope of the VIM or the "
-#                                                            "resource provider.", required=False, allow_null=True)
 
 
 class ExtLinkPortDataSerializer(serializers.Serializer):
@@ -199,59 +189,9 @@ class MoveVnfInstanceDataSerializer(serializers.Serializer):
                                           required=False, allow_null=True)
 
 
-class NsCpHandleSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(help_text="Identifier of the VNF instance associated to the CP instance.",
-                                          required=False, allow_null=True)
-    vnfExtCpInstanceId = serializers.CharField(help_text="Identifier of the VNF external CP instance in the scope "
-                                                         "of the VNF instance. ", required=False, allow_null=True)
-    pnfInfoId = serializers.CharField(help_text="Identifier of the PNF instance associated to the CP instance.",
-                                      required=False, allow_null=True)
-    pnfExtCpInstanceId = serializers.CharField(help_text="Identifier of the PNF external CP instance in the scope "
-                                                         "of the PNF.", required=False, allow_null=True)
-    nsInstanceId = serializers.CharField(help_text="Identifier of the NS instance associated to the SAP instance.",
-                                         required=False, allow_null=True)
-    nsSapInstanceId = serializers.CharField(help_text="Identifier of the SAP instance in the scope of the NS instance",
-                                            required=False, allow_null=True)
-
-
 class PortRangeSerializer(serializers.Serializer):
     lowerPort = serializers.CharField(help_text="Identifies the lower bound of the port range. ", required=True)
     upperPort = serializers.CharField(help_text="Identifies the upper bound of the port range ", required=True)
-
-
-class MaskSerializer(serializers.Serializer):
-    startingPoint = serializers.CharField(help_text="Indicates the offset between the last bit of the source mac "
-                                                    "address and the first bit of the sequence of bits to "
-                                                    "be matched.", required=True)
-    length = serializers.CharField(help_text="Indicates the number of bits to be matched. ", required=True)
-    value = serializers.CharField(help_text="Provide the sequence of bit values to be matched. ", required=True)
-
-
-class NfpRuleSerializer(serializers.Serializer):
-    etherDestinationAddress = serializers.CharField(help_text="Indicates a destination Mac address ",
-                                                    required=False, allow_null=True)
-    etherSourceAddress = serializers.CharField(help_text="Indicates a source Mac address",
-                                               required=False, allow_null=True)
-    etherType = serializers.ChoiceField(help_text="Indicates the protocol carried over the Ethernet layer.",
-                                        choices=["IPV4", "IPV6"], required=False, allow_null=True)
-    vlanTag = serializers.CharField(help_text="Indicates a VLAN identifier in an IEEE 802.1Q-2014 tag [6] ",
-                                    required=False, allow_null=True)
-    protocol = serializers.ChoiceField(help_text="Indicates the L4 protocol",
-                                       choices=["TCP", "UDP", "ICMP"], required=False, allow_null=True)
-    dscp = serializers.CharField(help_text="For IPv4 [7] a string of 0 and 1 digits that corresponds to the 6-bit "
-                                           "Differentiated Services Code Point (DSCP) field of the IP header",
-                                 required=False, allow_null=True)
-    sourcePortRange = PortRangeSerializer(help_text="Indicates a range of source ports. ",
-                                          required=False, allow_null=True)
-    destinationPortRange = PortRangeSerializer(help_text="Indicates a range of destination ports.",
-                                               required=False, allow_null=True)
-    sourceIpAddressPrefix = serializers.CharField(
-        help_text="Prefix of source ip address", required=False, allow_null=True)
-    destinationIpAddressPrefix = serializers.CharField(
-        help_text="Prefix of destination ip address", required=False, allow_null=True)
-    extendedCriteria = serializers.ListField(help_text="Indicates values of specific bits in a frame.",
-                                             child=(MaskSerializer(help_text="Mask serializer", required=True)),
-                                             required=False, allow_null=True)
 
 
 class NfpDataSerializer(serializers.Serializer):

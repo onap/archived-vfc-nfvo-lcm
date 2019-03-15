@@ -14,18 +14,8 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.pub_serializers import CpProtocolDataSerializer
-from lcm.ns.serializers.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer
+from lcm.ns.serializers.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer, SapDataSerializer
 from lcm.ns.serializers.create_ns_serializers import AffinityOrAntiAffinityRuleSerializer
-
-
-class SapDataSerializer(serializers.Serializer):
-    sapdId = serializers.CharField(help_text="Reference to the SAPD for this SAP.", required=True)
-    sapName = serializers.CharField(help_text="Human readable name for the SAP.", required=True)
-    description = serializers.CharField(help_text="Human readable description for the SAP.", required=True)
-    sapProtocolData = CpProtocolDataSerializer(help_text="Parameters for configuring the network protocols"
-                                                         " on the SAP.",
-                                               required=False, allow_null=True, many=True)
 
 
 class civicAddressElementSerializer(serializers.Serializer):
