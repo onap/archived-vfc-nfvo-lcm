@@ -22,7 +22,7 @@ from affected_vnffgs import AffectedVnffgsSerializer
 from affected_nss import AffectedNssSerializer
 from affected_saps import AffectedSapsSerializer
 
-from link import LinkSerializer
+from link import linkSerializer
 from response import ProblemDetailsSerializer
 from lcm.ns import const
 
@@ -61,7 +61,7 @@ class ResourceChangesSerializer(serializers.Serializer):
 
 
 class LcmOpLinkSerializer(serializers.Serializer):
-    self = LinkSerializer(
+    self = linkSerializer(
         help_text="URI of this resource.",
         required=True,
         allow_null=False)
