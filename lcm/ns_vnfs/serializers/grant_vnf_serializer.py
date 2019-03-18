@@ -16,6 +16,8 @@ from rest_framework import serializers
 from lcm.ns.serializers.resource_handle import ResourceHandleSerializer
 from lcm.ns.serializers.link import linkSerializer
 from lcm.ns.serializers.pub_serializers import AddressRangeSerializer
+from lcm.ns.serializers.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
+from lcm.ns.serializers.response import ProblemDetailsSerializer
 
 # class ResourceHandleSerializer(serializers.Serializer):
 #     vimConnectionId = serializers.CharField(
@@ -868,49 +870,49 @@ class ExtLinkPortInfoSerializer(serializers.Serializer):
     )
 
 
-class ExtVirtualLinkInfoSerializer(serializers.Serializer):
-    id = serializers.CharField(
-        help_text="Identifier of the external VL and the related external VL information instance.",
-        required=True
-    )
-    resourceHandle = ResourceHandleSerializer(
-        help_text="Reference to the resource realizing this VL.",
-        required=True
-    )
-    extLinkPorts = ExtLinkPortInfoSerializer(
-        help_text="Link ports of this VL.",
-        many=True,
-        required=False
-    )
+# class ExtVirtualLinkInfoSerializer(serializers.Serializer):
+#     id = serializers.CharField(
+#         help_text="Identifier of the external VL and the related external VL information instance.",
+#         required=True
+#     )
+#     resourceHandle = ResourceHandleSerializer(
+#         help_text="Reference to the resource realizing this VL.",
+#         required=True
+#     )
+#     extLinkPorts = ExtLinkPortInfoSerializer(
+#         help_text="Link ports of this VL.",
+#         many=True,
+#         required=False
+#     )
 
 
-class ProblemDetailsSerializer(serializers.Serializer):
-    type = serializers.CharField(
-        help_text="A URI reference according to IETF RFC 3986 [5] that identifies the problem type.",
-        required=False,
-        allow_null=True,
-        allow_blank=True
-    )
-    title = serializers.CharField(
-        help_text="A short, human-readable summary of the problem type.",
-        required=False,
-        allow_null=True,
-        allow_blank=True
-    )
-    status = serializers.IntegerField(
-        help_text="The HTTP status code for this occurrence of the problem.",
-        required=True
-    )
-    detail = serializers.CharField(
-        help_text="A human-readable explanation specific to this occurrence of the problem.",
-        required=True
-    )
-    instance = serializers.CharField(
-        help_text="A URI reference that identifies the specific occurrence of the problem.",
-        required=False,
-        allow_null=True,
-        allow_blank=True
-    )
+# class ProblemDetailsSerializer(serializers.Serializer):
+#     type = serializers.CharField(
+#         help_text="A URI reference according to IETF RFC 3986 [5] that identifies the problem type.",
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True
+#     )
+#     title = serializers.CharField(
+#         help_text="A short, human-readable summary of the problem type.",
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True
+#     )
+#     status = serializers.IntegerField(
+#         help_text="The HTTP status code for this occurrence of the problem.",
+#         required=True
+#     )
+#     detail = serializers.CharField(
+#         help_text="A human-readable explanation specific to this occurrence of the problem.",
+#         required=True
+#     )
+#     instance = serializers.CharField(
+#         help_text="A URI reference that identifies the specific occurrence of the problem.",
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True
+#     )
 
 
 class LccnLinksSerializer(serializers.Serializer):
