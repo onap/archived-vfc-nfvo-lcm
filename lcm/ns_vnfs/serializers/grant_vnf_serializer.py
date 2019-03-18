@@ -15,6 +15,7 @@
 from rest_framework import serializers
 from lcm.ns.serializers.resource_handle import ResourceHandleSerializer
 from lcm.ns.serializers.link import linkSerializer
+from lcm.ns.serializers.pub_serializers import AddressRangeSerializer
 
 # class ResourceHandleSerializer(serializers.Serializer):
 #     vimConnectionId = serializers.CharField(
@@ -397,15 +398,15 @@ class VimAssetsSerializer(serializers.Serializer):
     )
 
 
-class AddressRangeSerializer(serializers.Serializer):
-    minAddress = serializers.CharField(
-        help_text="Lowest IP address belonging to the range.",
-        required=True
-    )
-    maxAddress = serializers.CharField(
-        help_text="Highest IP address belonging to the range.",
-        required=True
-    )
+# class AddressRangeSerializer(serializers.Serializer):
+#     minAddress = serializers.CharField(
+#         help_text="Lowest IP address belonging to the range.",
+#         required=True
+#     )
+#     maxAddress = serializers.CharField(
+#         help_text="Highest IP address belonging to the range.",
+#         required=True
+#     )
 
 
 class IpAddresseSerializer(serializers.Serializer):
