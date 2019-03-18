@@ -16,6 +16,6 @@
 from rest_framework import serializers
 
 
-class LinkSerializer(serializers.Serializer):
+class linkSerializer(serializers.Serializer):
     href = serializers.CharField(
         help_text="URI of the referenced resource.", required=True, allow_null=False, allow_blank=False)

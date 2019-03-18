@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from rest_framework import serializers
-from link import LinkSerializer
+from link import linkSerializer
 from lcm.ns_pnfs.serializers.pnf_serializer import PnfInstanceSerializer
 
 
@@ -52,15 +52,15 @@ class ipAddressesSerializer(serializers.Serializer):
 
 
 class Links(serializers.Serializer):
-    self = LinkSerializer(help_text="URI of this resource.", required=True)
-    nestedNsInstances = LinkSerializer(help_text="Links to the nested NS instances of the present NS"
+    self = linkSerializer(help_text="URI of this resource.", required=True)
+    nestedNsInstances = linkSerializer(help_text="Links to the nested NS instances of the present NS"
                                                  "instance.", required=False, allow_null=True)
-    instantiate = LinkSerializer(help_text="Link to the 'instantiate' task resource", required=False,
+    instantiate = linkSerializer(help_text="Link to the 'instantiate' task resource", required=False,
                                  allow_null=True)
-    terminate = LinkSerializer(help_text="Link to the 'terminate' task resource", required=False, allow_null=True)
-    update = LinkSerializer(help_text="Link to the 'update' task resource", required=False, allow_null=True)
-    scale = LinkSerializer(help_text="Link to the 'scale' task resource", required=False, allow_null=True)
-    heal = LinkSerializer(help_text="Link to the 'heal' task resource", required=False, allow_null=True)
+    terminate = linkSerializer(help_text="Link to the 'terminate' task resource", required=False, allow_null=True)
+    update = linkSerializer(help_text="Link to the 'update' task resource", required=False, allow_null=True)
+    scale = linkSerializer(help_text="Link to the 'scale' task resource", required=False, allow_null=True)
+    heal = linkSerializer(help_text="Link to the 'heal' task resource", required=False, allow_null=True)
 
 
 class IpOverEthernetAddressDataSerializer(serializers.Serializer):
