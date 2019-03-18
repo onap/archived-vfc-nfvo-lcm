@@ -13,31 +13,32 @@
 # limitations under the License.
 
 from rest_framework import serializers
+from lcm.ns.serializers.resource_handle import ResourceHandleSerializer
+from lcm.ns.serializers.link import linkSerializer
 
-
-class ResourceHandleSerializer(serializers.Serializer):
-    vimConnectionId = serializers.CharField(
-        help_text="Identifier of the VIM connection to manage the resource.",
-        required=False,
-        allow_null=True,
-        allow_blank=True
-    )
-    resourceProviderId = serializers.CharField(
-        help_text="Identifier of the entity responsible for the management of the resource.",
-        required=False,
-        allow_null=True,
-        allow_blank=True
-    )
-    resourceId = serializers.CharField(
-        help_text="Identifier of the resource in the scope of the VIM or the resource provider.",
-        required=True
-    )
-    vimLevelResourceType = serializers.CharField(
-        help_text="Type of the resource in the scope of the VIM or the resource provider.",
-        required=False,
-        allow_null=True,
-        allow_blank=True
-    )
+# class ResourceHandleSerializer(serializers.Serializer):
+#     vimConnectionId = serializers.CharField(
+#         help_text="Identifier of the VIM connection to manage the resource.",
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True
+#     )
+#     resourceProviderId = serializers.CharField(
+#         help_text="Identifier of the entity responsible for the management of the resource.",
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True
+#     )
+#     resourceId = serializers.CharField(
+#         help_text="Identifier of the resource in the scope of the VIM or the resource provider.",
+#         required=True
+#     )
+#     vimLevelResourceType = serializers.CharField(
+#         help_text="Type of the resource in the scope of the VIM or the resource provider.",
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True
+#     )
 
 
 class ResourceDefinitionSerializer(serializers.Serializer):
@@ -123,19 +124,19 @@ class VimConstraintSerializer(serializers.Serializer):
     )
 
 
-class LinkSerializer(serializers.Serializer):
-    href = serializers.CharField(
-        help_text="URI of the referenced resource.",
-        required=True
-    )
+# class LinkSerializer(serializers.Serializer):
+#     href = serializers.CharField(
+#         help_text="URI of the referenced resource.",
+#         required=True
+#     )
 
 
 class GrantRequestLinksSerializer(serializers.Serializer):
-    vnfLcmOpOcc = LinkSerializer(
+    vnfLcmOpOcc = linkSerializer(
         help_text="Related VNF lifecycle management operation occurrence.",
         required=True
     )
-    vnfInstance = LinkSerializer(
+    vnfInstance = linkSerializer(
         help_text="Related VNF instance.",
         required=True
     )
@@ -567,15 +568,15 @@ class ExtManagedVirtualLinkSerializer(serializers.Serializer):
 
 
 class GrantLinksSerializer(serializers.Serializer):
-    self = LinkSerializer(
+    self = linkSerializer(
         help_text="URI of this resource.",
         required=True
     )
-    vnfLcmOpOcc = LinkSerializer(
+    vnfLcmOpOcc = linkSerializer(
         help_text="Related VNF lifecycle management operation occurrence.",
         required=True
     )
-    vnfInstance = LinkSerializer(
+    vnfInstance = linkSerializer(
         help_text="Related VNF instance.",
         required=True
     )
@@ -912,15 +913,15 @@ class ProblemDetailsSerializer(serializers.Serializer):
 
 
 class LccnLinksSerializer(serializers.Serializer):
-    vnfInstance = LinkSerializer(
+    vnfInstance = linkSerializer(
         help_text="Link to the resource representing the VNF instance to which the notified change applies.",
         required=True
     )
-    subscription = LinkSerializer(
+    subscription = linkSerializer(
         help_text="Link to the related subscription.",
         required=True
     )
-    vnfLcmOpOcc = LinkSerializer(
+    vnfLcmOpOcc = linkSerializer(
         help_text="Link to the VNF lifecycle management operation occurrence that this notification is related to.",
         required=False,
         allow_null=True
