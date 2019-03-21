@@ -12,20 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from django.conf.urls import url
+from lcm.ns.views.scale_ns_views import NSManualScaleView
+from lcm.ns.views.update_ns_view import NSUpdateView
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns.views.deprecated.create_ns_view import CreateNSView
 from lcm.ns.views.deprecated.get_del_ns_view import NSDetailView
+from lcm.ns.views.deprecated.inst_ns_post_deal_view import NSInstPostDealView
 from lcm.ns.views.deprecated.inst_ns_view import NSInstView
 from lcm.ns.views.deprecated.term_ns_view import TerminateNSView
+from lcm.ns.views.sol.heal_ns_view import NSHealView
+from lcm.ns.views.sol.lcm_op_occs_view import QueryMultiNsLcmOpOccs, QuerySingleNsLcmOpOcc
 from lcm.ns.views.sol.ns_instances_views import NSInstancesView, IndividualNsInstanceView
 from lcm.ns.views.sol.nslcm_op_views import InstantiateNsView, TerminateNsView
-from lcm.ns.views.heal_ns_view import NSHealView
-from lcm.ns.views.inst_ns_post_deal_view import NSInstPostDealView
-from lcm.ns.views.lcm_op_occs_view import QueryMultiNsLcmOpOccs, QuerySingleNsLcmOpOcc
-from lcm.ns.views.scale_ns_views import NSManualScaleView
-from lcm.ns.views.subscriptions_view import SubscriptionsView
-from lcm.ns.views.update_ns_view import NSUpdateView
+from lcm.ns.views.sol.subscriptions_view import SubscriptionsView
 
 urlpatterns = [
     # API will be deprecated in the future release
@@ -36,8 +36,6 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$', NSInstPostDealView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$', NSManualScaleView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', NSHealView.as_view()),
-    url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view()),
-    url(r'^api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)$', QuerySingleNsLcmOpOcc.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update$', NSUpdateView.as_view()),
 
     # SOL005 URL API definition
@@ -46,6 +44,8 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns_instances$/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNsView.as_view()),
     url(r'^api/nslcm/v1/ns_instances$/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', IndividualNsInstanceView.as_view()),
     url(r'^api/nslcm/v1/subscriptions$', SubscriptionsView.as_view()),
+    url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view()),
+    url(r'^api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)$', QuerySingleNsLcmOpOcc.as_view()),
 
 ]
 

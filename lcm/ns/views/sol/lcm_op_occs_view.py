@@ -16,14 +16,14 @@ import logging
 import traceback
 
 from drf_yasg.utils import swagger_auto_schema
+from lcm.ns.serializers.ns_lcm_op_occ import NSLCMOpOccSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.ns.biz.query_ns_lcm_op_occ import QueryNsLcmOpOcc
-from lcm.ns.serializers.response import ProblemDetailsSerializer
-from lcm.ns.serializers.ns_lcm_op_occ import NSLCMOpOccSerializer
-from lcm.ns.serializers.ns_lcm_op_occs import NSLCMOpOccsSerializer
+from lcm.ns.serializers.sol.ns_lcm_op_occs import NSLCMOpOccsSerializer
+from lcm.ns.serializers.sol.response import ProblemDetailsSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)

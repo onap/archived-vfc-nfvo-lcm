@@ -13,30 +13,29 @@
 # limitations under the License.
 import logging
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_instant import InstantNSService
-from lcm.ns.serializers.inst_ns_serializers import InstantNsReqSerializer
-from lcm.ns.serializers.pub_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _InstantNsReqSerializer,_NsOperateJobSerializer
 
 logger = logging.getLogger(__name__)
 
 
 class NSInstView(APIView):
     @swagger_auto_schema(
-        request_body=InstantNsReqSerializer(),
+        request_body=_InstantNsReqSerializer(),
         responses={
-            status.HTTP_200_OK: NsOperateJobSerializer(),
+            status.HTTP_200_OK: _NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
         logger.debug("request.data=%s", request.data)
-        req_serializer = InstantNsReqSerializer(data=request.data)
+        req_serializer = _InstantNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():
             logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
             return Response({'error': req_serializer.errors},
