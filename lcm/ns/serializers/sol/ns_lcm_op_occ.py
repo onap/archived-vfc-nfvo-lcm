@@ -15,16 +15,15 @@
 
 from rest_framework import serializers
 
-from affected_vnfs import AffectedVnfsSerializer
-from affected_pnfs import AffectedPnfsSerializer
-from affected_vls import AffectedVLsSerializer
-from affected_vnffgs import AffectedVnffgsSerializer
-from affected_nss import AffectedNssSerializer
-from affected_saps import AffectedSapsSerializer
-
-from link import linkSerializer
-from response import ProblemDetailsSerializer
 from lcm.ns import const
+from lcm.ns.serializers.sol.affected_nss import AffectedNssSerializer
+from lcm.ns.serializers.sol.affected_pnfs import AffectedPnfsSerializer
+from lcm.ns.serializers.sol.affected_saps import AffectedSapsSerializer
+from lcm.ns.serializers.sol.affected_vls import AffectedVLsSerializer
+from lcm.ns.serializers.sol.affected_vnffgs import AffectedVnffgsSerializer
+from lcm.ns.serializers.sol.affected_vnfs import AffectedVnfsSerializer
+from lcm.ns.serializers.sol.link import linkSerializer
+from lcm.ns.serializers.sol.response import ProblemDetailsSerializer
 
 
 class ResourceChangesSerializer(serializers.Serializer):

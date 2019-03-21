@@ -14,8 +14,8 @@
 
 from rest_framework import serializers
 
-from lccn_filter_data import LifeCycleChangeNotificationsFilter
-from subscription_auth_data import SubscriptionAuthenticationSerializer
+from lcm.ns.serializers.sol.lccn_filter_data import LifeCycleChangeNotificationsFilter
+from lcm.ns.serializers.sol.subscription_auth_data import SubscriptionAuthenticationSerializer
 
 
 class LccnSubscriptionRequestSerializer(serializers.Serializer):

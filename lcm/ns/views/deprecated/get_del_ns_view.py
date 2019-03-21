@@ -14,15 +14,15 @@
 import logging
 import traceback
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_yasg.utils import swagger_auto_schema
 
-from lcm.ns.biz.ns_get import GetNSInfoService
 from lcm.ns.biz.ns_delete import DeleteNsService
-from lcm.ns.serializers.pub_serializers import QueryNsRespSerializer
+from lcm.ns.biz.ns_get import GetNSInfoService
 from lcm.pub.exceptions import NSLCMException
+from lcm.ns.serializers.deprecated.ns_serializers import _QueryNsRespSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class NSDetailView(APIView):
     @swagger_auto_schema(
         request_body=None,
         responses={
-            status.HTTP_200_OK: QueryNsRespSerializer(help_text="NS instance", many=True),
+            status.HTTP_200_OK: _QueryNsRespSerializer(help_text="NS instance", many=True),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error",
             status.HTTP_404_NOT_FOUND: "Ns instance does not exist"
         }
@@ -44,7 +44,7 @@ class NSDetailView(APIView):
             if not ret:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             logger.debug("Leave NSDetailView::get::ret=%s", ret)
-            resp_serializer = QueryNsRespSerializer(data=ret[0])
+            resp_serializer = _QueryNsRespSerializer(data=ret[0])
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)

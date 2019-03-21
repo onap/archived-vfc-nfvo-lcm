@@ -14,22 +14,15 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.pub_serializers import Links, ipAddressesSerializer, CpProtocolDataSerializer
-from resource_handle import ResourceHandleSerializer
+from lcm.ns.serializers.sol.pub_serializers import Links, ipAddressesSerializer, CpProtocolDataSerializer
+from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
 
 
-class ContextSerializer(serializers.Serializer):
-    globalCustomerId = serializers.CharField(help_text="Global customer ID", required=False, allow_null=True)
-    serviceType = serializers.CharField(help_text="Service type", required=False, allow_null=True)
-
-
-class CreateNsReqSerializer(serializers.Serializer):
-    csarId = serializers.CharField(help_text="Package ID of NS", required=False, allow_null=True)
+class CreateNsRequestSerializer(serializers.Serializer):
     nsdId = serializers.CharField(help_text="Identifier of the NSD that defines the NS instance to be"
                                             "created.", required=True, allow_null=False)
     nsName = serializers.CharField(help_text="Name of NS", required=False, allow_null=True)
     nsDescription = serializers.CharField(help_text="Description of NS", required=False, allow_null=True)
-    context = ContextSerializer(help_text="Context of NS", required=False)
 
 
 class VnfInstanceSerializer(serializers.Serializer):
@@ -62,19 +55,6 @@ class PnfInfoSerializer(serializers.Serializer):
 
     cpInfo = PnfExtCpInfoSerializer(help_text="Information on the external CP of the PNF",
                                     required=True, many=True)
-
-
-# class ResourceHandleSerializer(serializers.Serializer):
-#     vimId = serializers.CharField(help_text="Identifier of the VIM under whose control this resource is"
-#                                             "placed.", required=False, allow_null=True)
-#     resourceProviderId = serializers.CharField(help_text="Identifier of the entity responsible for the"
-#                                                          "management of the resource", required=False,
-#                                                allow_null=True)
-#     resourceId = serializers.CharField(help_text="Identifier of the resource in the scope of the VIM or the "
-#                                                  "resource provider.", required=True)
-#     vimLevelResourceType = serializers.CharField(help_text="Type of the resource in the scope of the VIM or"
-#                                                            "the resource provider",
-#                                                  required=False, allow_null=True)
 
 
 class NsVirtualLinkInfoSerializer(serializers.Serializer):

@@ -13,9 +13,10 @@
 # limitations under the License.
 
 from rest_framework import serializers
-from lcm.ns.serializers.update_serializers import VnfInstanceDataSerializer
-from lcm.ns.serializers.create_ns_serializers import NsScaleInfoSerializer
-from lcm.ns.serializers.inst_ns_serializers import VnfLocationConstraintSerializer, ParamsForVnfSerializer
+
+from lcm.ns.serializers.sol.create_ns_serializers import NsScaleInfoSerializer
+from lcm.ns.serializers.sol.inst_ns_serializers import VnfLocationConstraintSerializer, ParamsForVnfSerializer
+from lcm.ns.serializers.sol.update_serializers import VnfInstanceDataSerializer
 
 
 # class VnfInstanceDataSerializer(serializers.Serializer):

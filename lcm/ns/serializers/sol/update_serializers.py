@@ -14,10 +14,10 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.pub_serializers import IpAddressSerialzier
-from lcm.ns.serializers.pub_serializers import CpProtocolDataSerializer
-from lcm.ns.serializers.create_ns_serializers import ResourceHandleSerializer, NsCpHandleSerializer, \
+from lcm.ns.serializers.sol.create_ns_serializers import ResourceHandleSerializer, NsCpHandleSerializer, \
     NfpRuleSerializer
+from lcm.ns.serializers.sol.pub_serializers import CpProtocolDataSerializer
+from lcm.ns.serializers.sol.pub_serializers import IpAddressSerialzier
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
