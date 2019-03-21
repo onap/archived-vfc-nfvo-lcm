@@ -14,15 +14,14 @@
 import logging
 import traceback
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.ns.biz.ns_get import GetNSInfoService
-from lcm.ns.serializers.create_ns_serializers import CreateNsReqSerializer, CreateNsRespSerializer
-from lcm.ns.serializers.pub_serializers import QueryNsRespSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _CreateNsReqSerializer, _CreateNsRespSerializer, _QueryNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.values import ignore_case_get
 
@@ -33,7 +32,7 @@ class CreateNSView(APIView):
     @swagger_auto_schema(
         request_body=None,
         responses={
-            status.HTTP_200_OK: QueryNsRespSerializer(help_text="NS instances", many=True),
+            status.HTTP_200_OK: _QueryNsRespSerializer(help_text="NS instances", many=True),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -42,7 +41,7 @@ class CreateNSView(APIView):
             logger.debug("CreateNSView::get")
             ret = GetNSInfoService().get_ns_info()
             logger.debug("CreateNSView::get::ret=%s", ret)
-            resp_serializer = QueryNsRespSerializer(data=ret, many=True)
+            resp_serializer = _QueryNsRespSerializer(data=ret, many=True)
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
@@ -52,16 +51,16 @@ class CreateNSView(APIView):
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
-        request_body=CreateNsReqSerializer(),
+        request_body=_CreateNsReqSerializer(),
         responses={
-            status.HTTP_201_CREATED: CreateNsRespSerializer(),
+            status.HTTP_201_CREATED: _CreateNsRespSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
     def post(self, request):
         logger.debug("Enter CreateNS: %s", request.data)
         try:
-            req_serializer = CreateNsReqSerializer(data=request.data)
+            req_serializer = _CreateNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
 
@@ -74,7 +73,7 @@ class CreateNSView(APIView):
             ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
 
             logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
-            resp_serializer = CreateNsRespSerializer(
+            resp_serializer = _CreateNsRespSerializer(
                 data={'nsInstanceId': ns_inst_id,
                       'nsInstanceName': 'nsInstanceName',
                       'nsInstanceDescription': 'nsInstanceDescription',

@@ -13,11 +13,13 @@
 # limitations under the License.
 
 from rest_framework import serializers
-from lcm.ns.serializers.resource_handle import ResourceHandleSerializer
-from lcm.ns.serializers.link import linkSerializer
-from lcm.ns.serializers.pub_serializers import AddressRangeSerializer
-from lcm.ns.serializers.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
-from lcm.ns.serializers.response import ProblemDetailsSerializer
+
+from lcm.ns.serializers.sol.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
+from lcm.ns.serializers.sol.link import linkSerializer
+from lcm.ns.serializers.sol.pub_serializers import AddressRangeSerializer
+from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
+from lcm.ns.serializers.sol.response import ProblemDetailsSerializer
+
 
 # class ResourceHandleSerializer(serializers.Serializer):
 #     vimConnectionId = serializers.CharField(

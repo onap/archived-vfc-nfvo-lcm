@@ -14,14 +14,14 @@
 import logging
 import traceback
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
-from lcm.ns.serializers.scale_ns_serializers import ManualScaleNsReqSerializer
-from lcm.ns.serializers.pub_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.sol.pub_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.sol.scale_ns_serializers import ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 

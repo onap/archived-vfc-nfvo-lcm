@@ -13,33 +13,32 @@
 # limitations under the License.
 import logging
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_yasg.utils import swagger_auto_schema
 
 from lcm.ns.biz.ns_terminate import TerminateNsService
-from lcm.ns.serializers.pub_serializers import NsOperateJobSerializer
-from lcm.ns.serializers.terminate_ns_serializer import TerminateNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
+from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializer,_NsOperateJobSerializer
 
 logger = logging.getLogger(__name__)
 
 
 class TerminateNSView(APIView):
     @swagger_auto_schema(
-        request_body=TerminateNsReqSerializer(),
+        request_body=_TerminateNsReqSerializer(),
         responses={
-            status.HTTP_202_ACCEPTED: NsOperateJobSerializer(),
+            status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
     def post(self, request, ns_instance_id):
         try:
             logger.debug("Enter TerminateNSView::post %s", request.data)
-            req_serializer = TerminateNsReqSerializer(data=request.data)
+            req_serializer = _TerminateNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
 
@@ -48,7 +47,7 @@ class TerminateNSView(APIView):
             job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
             TerminateNsService(ns_instance_id, termination_type, graceful_termination_timeout, job_id).start()
 
-            resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
+            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
             logger.debug("Leave TerminateNSView::post ret=%s", resp_serializer.data)

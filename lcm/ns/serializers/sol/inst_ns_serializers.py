@@ -14,8 +14,8 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer, SapDataSerializer
-from lcm.ns.serializers.create_ns_serializers import AffinityOrAntiAffinityRuleSerializer
+from lcm.ns.serializers.sol.create_ns_serializers import AffinityOrAntiAffinityRuleSerializer
+from lcm.ns.serializers.sol.update_serializers import AddPnfDataSerializer, VnfInstanceDataSerializer, SapDataSerializer
 
 
 class civicAddressElementSerializer(serializers.Serializer):

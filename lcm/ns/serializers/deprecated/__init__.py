@@ -11,39 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import logging
-from rest_framework.views import APIView
-
-logger = logging.getLogger(__name__)
-
-
-class InstantiateNsView(APIView):
-    def post(self, request, id):
-        # todo
-        return
-
-
-class HealNsView(APIView):
-
-    def post(self, request, id):
-        # todo
-        return
-
-
-class ScaleNsView(APIView):
-    def post(self, request, id):
-        # todo
-        return
-
-
-class UpdateNsView(APIView):
-    def post(self, request, id):
-        # todo
-        return
-
-
-class TerminateNsView(APIView):
-    def post(self, request, id):
-        # todo
-        return
