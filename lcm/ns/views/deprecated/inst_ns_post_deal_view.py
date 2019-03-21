@@ -11,16 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import json
 import logging
 import traceback
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_yasg.utils import swagger_auto_schema
 
-from lcm.ns.serializers.inst_ns_serializers import InstNsPostDealReqSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _InstNsPostDealReqSerializer
 from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.restcall import req_by_msb
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 class NSInstPostDealView(APIView):
     @swagger_auto_schema(
-        request_body=InstNsPostDealReqSerializer(help_text="NS instant post deal"),
+        request_body=_InstNsPostDealReqSerializer(help_text="NS instant post deal"),
         responses={
             status.HTTP_202_ACCEPTED: "NS instant post deal success",
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
@@ -43,7 +44,7 @@ class NSInstPostDealView(APIView):
         ns_status = 'ACTIVE' if ns_post_status == 'true' else 'FAILED'
         ns_opr_status = 'success' if ns_post_status == 'true' else 'failed'
         try:
-            req_serializer = InstNsPostDealReqSerializer(data=request.data)
+            req_serializer = _InstNsPostDealReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
             NSInstModel.objects.filter(id=ns_instance_id).update(status=ns_status)

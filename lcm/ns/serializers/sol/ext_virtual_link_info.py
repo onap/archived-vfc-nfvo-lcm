@@ -14,8 +14,8 @@
 
 from rest_framework import serializers
 
-from resource_handle import ResourceHandleSerializer
-from ext_link_port_info import ExtlinkPortInfoSerializer
+from lcm.ns.serializers.sol.ext_link_port_info import ExtlinkPortInfoSerializer
+from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
 
 
 class ExtVirtualLinkInfoSerializer(serializers.Serializer):

@@ -14,11 +14,10 @@
 
 
 from rest_framework import serializers
-from lcm.ns.serializers.update_serializers import ModifyVnfInfoDataSerializer
-from ext_virtual_link_info import ExtVirtualLinkInfoSerializer
 
 from lcm.ns.const import CHANGE_TYPES, CHANGE_RESULT
-
+from lcm.ns.serializers.sol.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
+from lcm.ns.serializers.sol.update_serializers import ModifyVnfInfoDataSerializer
 
 CHANGE_TYPE = [
     CHANGE_TYPES.ADD,

@@ -14,7 +14,7 @@
 
 from rest_framework import serializers
 
-from resource_handle import ResourceHandleSerializer
+from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
 
 
 class ExtlinkPortInfoSerializer(serializers.Serializer):
