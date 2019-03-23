@@ -20,7 +20,7 @@ from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.serializers.sol.heal_serializers import HealNsReqSerializer
-from lcm.ns.serializers.sol.pub_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
@@ -31,7 +31,7 @@ class NSHealView(APIView):
     @swagger_auto_schema(
         request_body=HealNsReqSerializer(),
         responses={
-            status.HTTP_202_ACCEPTED: NsOperateJobSerializer(),
+            status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -46,7 +46,7 @@ class NSHealView(APIView):
             job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
             NSHealService(ns_instance_id, request.data, job_id).start()
 
-            resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
+            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
 

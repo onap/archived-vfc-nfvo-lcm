@@ -19,12 +19,12 @@ logger = logging.getLogger(__name__)
 
 
 class InstantiateNsView(APIView):
-    def post(self, request, id):
+    def post(self, request, ns_instance_id):
         # todo
         return
 
 
 class TerminateNsView(APIView):
-    def post(self, request, id):
+    def post(self, request, ns_instance_id):
         # todo
         return
