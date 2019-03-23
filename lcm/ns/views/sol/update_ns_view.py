@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_update import NSUpdateService
-from lcm.ns.serializers.sol.pub_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.sol.update_serializers import UpdateNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
@@ -32,7 +32,7 @@ class NSUpdateView(APIView):
     @swagger_auto_schema(
         request_body=UpdateNsReqSerializer(),
         responses={
-            status.HTTP_202_ACCEPTED: NsOperateJobSerializer(),
+            status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -46,7 +46,7 @@ class NSUpdateView(APIView):
             job_id = JobUtil.create_job("NS", JOB_TYPE.UPDATE_NS, ns_instance_id)
             NSUpdateService(ns_instance_id, request.data, job_id).start()
 
-            resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
+            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
 

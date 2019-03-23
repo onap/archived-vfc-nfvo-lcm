@@ -22,8 +22,8 @@ from lcm.ns.serializers.sol.affected_saps import AffectedSapsSerializer
 from lcm.ns.serializers.sol.affected_vls import AffectedVLsSerializer
 from lcm.ns.serializers.sol.affected_vnffgs import AffectedVnffgsSerializer
 from lcm.ns.serializers.sol.affected_vnfs import AffectedVnfsSerializer
-from lcm.ns.serializers.sol.link import linkSerializer
-from lcm.ns.serializers.sol.response import ProblemDetailsSerializer
+from lcm.ns.serializers.sol.pub_serializers import LinkSerializer
+from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 
 
 class ResourceChangesSerializer(serializers.Serializer):
@@ -60,7 +60,7 @@ class ResourceChangesSerializer(serializers.Serializer):
 
 
 class LcmOpLinkSerializer(serializers.Serializer):
-    self = linkSerializer(
+    self = LinkSerializer(
         help_text="URI of this resource.",
         required=True,
         allow_null=False)
@@ -152,3 +152,7 @@ class NSLCMOpOccSerializer(serializers.Serializer):
     _links = LcmOpLinkSerializer(
         help_text="Links to resources related to this resource.",
         required=True)
+
+
+class NSLCMOpOccsSerializer(serializers.ListSerializer):
+    child = NSLCMOpOccSerializer()

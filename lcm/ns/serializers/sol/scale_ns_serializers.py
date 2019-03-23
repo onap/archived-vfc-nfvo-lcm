@@ -14,9 +14,9 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.sol.create_ns_serializers import NsScaleInfoSerializer
 from lcm.ns.serializers.sol.inst_ns_serializers import VnfLocationConstraintSerializer, ParamsForVnfSerializer
 from lcm.ns.serializers.sol.update_serializers import VnfInstanceDataSerializer
+from lcm.ns.serializers.sol.ns_instance import NsScaleInfoSerializer, VnfScaleInfoSerializer
 
 
 # class VnfInstanceDataSerializer(serializers.Serializer):
@@ -34,11 +34,6 @@ class ScaleNsByStepsDataSerializer(serializers.Serializer):
                                                "declared in the NSD. ", required=True)
     numberOfSteps = serializers.CharField(help_text="The number of scaling steps to be performed. Defaults "
                                                     "to 1. ", required=False, allow_null=True)
-
-
-# class NsScaleInfoSerializer(serializers.Serializer):
-#     nsScalingAspectId = serializers.CharField(help_text="Identifier of the NS scaling aspect.", required=True)
-#     nsScaleLevelId = serializers.CharField(help_text="Identifier of the NS scale level.", required=True)
 
 
 class ScaleNsToLevelDataSerializer(serializers.Serializer):
@@ -119,11 +114,6 @@ class ScaleNsDataSerializer(serializers.Serializer):
                                                               "be created according to a specific VNF "
                                                               "profile", required=True),
                                                 required=False, allow_null=True)
-
-
-class VnfScaleInfoSerializer(serializers.Serializer):
-    aspectlId = serializers.Serializer(help_text="The scaling aspect", required=True)
-    scaleLevel = serializers.Serializer(help_text="The scale level for that aspect", required=True)
 
 
 class ScaleToLevelDataSerializer(serializers.Serializer):
