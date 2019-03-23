@@ -26,6 +26,7 @@ from lcm.pub.exceptions import BadRequestException, NSLCMException
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.ns.biz.ns_get import GetNSInfoService
+from lcm.ns.biz.ns_delete import DeleteNsService
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ class NSInstancesView(APIView):
         logger.debug(request.query_params)
         try:
             logger.debug("CreateNSView::get")
-            ret = GetNSInfoService().get_ns_info()  # todo
+            ret = GetNSInfoService().get_ns_info(is_sol=True)  # todo
             logger.debug("CreateNSView::get::ret=%s", ret)
             resp_serializer = NsInstanceSerializer(data=ret, many=True)
             if not resp_serializer.is_valid():
@@ -51,7 +52,8 @@ class NSInstancesView(APIView):
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("Exception in GetNS: %s", e.message)
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         request_body=CreateNsRequestSerializer(),
@@ -82,7 +84,7 @@ class NSInstancesView(APIView):
             ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
             logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
             ns_filter = {"ns_inst_id": ns_inst_id}
-            nsInstance = GetNSInfoService(ns_filter).get_ns_info()[0]  # todo
+            nsInstance = GetNSInfoService(ns_filter).get_ns_info(is_sol=True)[0]  # todo
             resp_serializer = NsInstanceSerializer(data=nsInstance)
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
@@ -101,14 +103,28 @@ class IndividualNsInstanceView(APIView):
     @swagger_auto_schema(
         request_body=None,
         responses={
-            status.HTTP_200_OK: NsInstanceSerializer(help_text="NS instances", many=True),
+            status.HTTP_200_OK: NsInstanceSerializer(help_text="NS instances", many=False),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
     def get(self, request, ns_instance_id):
-        logger.debug("Enter IndividualNsInstanceView::get ns(%s)", ns_instance_id)
-        # todo
-        return Response(data={}, status=status.HTTP_200_OK)
+        try:
+            logger.debug("Enter NSDetailView::get ns(%s)", ns_instance_id)
+            ns_filter = {"ns_inst_id": ns_instance_id}
+            ret = GetNSInfoService(ns_filter).get_ns_info(is_sol=True)
+            if not ret:
+                data = {'status': status.HTTP_404_NOT_FOUND, 'detail': "NS Instance ID(%s) is not founded" % ns_instance_id}
+                return Response(data=data, status=status.HTTP_404_NOT_FOUND)
+            logger.debug("Leave NSDetailView::get::ret=%s", ret)
+            resp_serializer = NsInstanceSerializer(data=ret[0])
+            if not resp_serializer.is_valid():
+                raise NSLCMException(resp_serializer.errors)
+            return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error("Exception in GetNSDetail: %s", e.message)
+            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         request_body=None,
@@ -117,6 +133,12 @@ class IndividualNsInstanceView(APIView):
         }
     )
     def delete(self, request, ns_instance_id):
-        logger.debug("Enter IndividualNsInstanceView::DELETE ns_instance(%s)", ns_instance_id)
-        # todo
-        return Response(data={}, status=status.HTTP_204_NO_CONTENT)
+        try:
+            logger.debug("Enter NSDetailView::delete ns(%s)", ns_instance_id)
+            DeleteNsService(ns_instance_id).do_biz()
+            return Response(data={}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error("Exception in delete NS: %s", e.message)
+            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
