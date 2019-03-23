@@ -22,9 +22,3 @@ class InstantiateNsView(APIView):
     def post(self, request, ns_instance_id):
         # todo
         return
-
-
-class TerminateNsView(APIView):
-    def post(self, request, ns_instance_id):
-        # todo
-        return
