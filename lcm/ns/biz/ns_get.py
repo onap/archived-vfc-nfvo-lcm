@@ -25,39 +25,86 @@ class GetNSInfoService(object):
     def __init__(self, ns_filter=None):
         self.ns_filter = ns_filter
 
-    def get_ns_info(self):
+    def get_ns_info(self, is_sol=False):
         ns_insts = None
         if self.ns_filter and "ns_inst_id" in self.ns_filter:
             ns_inst_id = self.ns_filter["ns_inst_id"]
             ns_insts = NSInstModel.objects.filter(id=ns_inst_id)
         else:
             ns_insts = NSInstModel.objects.all()
+        return [self.get_single_ns_info(ns_inst, is_sol) for ns_inst in ns_insts]
 
-        return [self.get_single_ns_info(ns_inst) for ns_inst in ns_insts]
-
-    def get_single_ns_info(self, ns_inst):
+    def get_single_ns_info(self, ns_inst, is_sol=False):
+        if is_sol:
+            return {
+                'id': ns_inst.id,
+                'nsInstanceName': ns_inst.name,
+                'nsInstanceDescription': ns_inst.description,
+                'nsdId': ns_inst.nsd_id,
+                'nsdInvariantId': ns_inst.nsd_invariant_id,
+                'nsdInfoId': ns_inst.nspackage_id,
+                'flavourId': ns_inst.flavour_id,
+                'nsState': ns_inst.status,
+                # todo 'nsScaleStatus':{}
+                # todo  'additionalAffinityOrAntiAffinityRule':{}
+                'vnfInstance': self.get_vnf_infos(ns_inst.id, is_sol),
+                # todo 'pnfInfo': self.get_pnf_infos(ns_inst.id,is_sol),
+                'virtualLinkInfo': self.get_vl_infos(ns_inst.id, is_sol),
+                # todo 'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
+                # todo  'sapInfo':{},
+                # todo  nestedNsInstanceId
+            }
         return {
             'nsInstanceId': ns_inst.id,
             'nsName': ns_inst.name,
             'description': ns_inst.description,
             'nsdId': ns_inst.nsd_id,
             'nsdInvariantId': ns_inst.nsd_invariant_id,
-            'vnfInfo': self.get_vnf_infos(ns_inst.id),
+            'vnfInfo': self.get_vnf_infos(ns_inst.id, is_sol),
             'pnfInfo': self.get_pnf_infos(ns_inst.id),
-            'vlInfo': self.get_vl_infos(ns_inst.id),
-            'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
+            'vlInfo': self.get_vl_infos(ns_inst.id, is_sol),
+            'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model, is_sol),
             'nsState': ns_inst.status}
 
     @staticmethod
-    def get_vnf_infos(ns_inst_id):
+    def get_vnf_infos(ns_inst_id, is_sol):
         vnfs = NfInstModel.objects.filter(ns_inst_id=ns_inst_id)
+        if is_sol:
+            return [{
+                'id': vnf.nfinstid,
+                'vnfInstanceName': vnf.nf_name,
+                'vnfdId': vnf.template_id,
+                'vnfProvider': vnf.vendor,
+                'vnfSoftwareVersion': vnf.version,
+                'vnfProductName': vnf.nf_name,  # todo
+                'vnfdVersion': vnf.version,  # todo
+                'vnfPkgId': vnf.package_id,
+                'instantiationState': vnf.status
+            } for vnf in vnfs]
         return [{
             'vnfInstanceId': vnf.nfinstid,
             'vnfInstanceName': vnf.nf_name,
             'vnfProfileId': vnf.vnf_id} for vnf in vnfs]
 
-    def get_vl_infos(self, ns_inst_id):
+    def get_vl_infos(self, ns_inst_id, is_sol):
         vls = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=ns_inst_id)
+        if is_sol:
+            return [
+                {
+                    'id': vl.vlinstanceid,
+                    'nsVirtualLinkDescId': vl.vldid,
+                    'nsVirtualLinkProfileId': vl.vldid,
+                    'vlInstanceName': vl.vlinstancename,
+                    'resourceHandle': {
+                        'vimId': vl.vimId,
+                        'resourceId': vl.relatednetworkid,
+                        'vimLevelResourceType': vl.vltype
+                    },
+                    # todo 'linkPort': self.get_cp_infos(vl.vlinstanceid,is_sol),
+                    'networkId': vl.relatednetworkid,
+                    'subNetworkid': vl.relatedsubnetworkid
+                } for vl in vls]
+
         return [{
             'vlInstanceId': vl.vlinstanceid,
             'vlInstanceName': vl.vlinstancename,
@@ -72,7 +119,7 @@ class GetNSInfoService(object):
             'cpInstanceName': cp.cpname,
             'cpdId': cp.cpdid} for cp in cps]
 
-    def get_vnffg_infos(self, ns_inst_id, nsd_model):
+    def get_vnffg_infos(self, ns_inst_id, nsd_model, is_sol):
         vnffgs = VNFFGInstModel.objects.filter(nsinstid=ns_inst_id)
         return [{
             'vnffgInstanceId': vnffg.vnffginstid,
