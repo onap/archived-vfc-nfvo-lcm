@@ -14,10 +14,10 @@
 
 from rest_framework import serializers
 
-from lcm.ns.serializers.sol.create_ns_serializers import ResourceHandleSerializer, NsCpHandleSerializer, \
-    NfpRuleSerializer
-from lcm.ns.serializers.sol.pub_serializers import CpProtocolDataSerializer
-from lcm.ns.serializers.sol.pub_serializers import IpAddressSerialzier
+from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
+from lcm.ns.serializers.sol.ns_instance import NsCpHandleSerializer, NfpRuleSerializer
+from lcm.ns.serializers.sol.cp_serializers import CpProtocolDataSerializer
+from lcm.ns.serializers.sol.cp_serializers import IpAddressesDataSerialzier
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
@@ -41,8 +41,8 @@ class InstantiateVnfDataSerializer(serializers.Serializer):
 
 class IpOverEthernetAddressDataSerializer(serializers.Serializer):
     macAddress = serializers.CharField(help_text="Mac address", required=False, allow_null=True)
-    ipAddresses = IpAddressSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
-                                      required=False, allow_null=True, many=True)
+    ipAddresses = IpAddressesDataSerialzier(help_text="List of IP addresses to assign to the extCP instance.",
+                                            required=False, allow_null=True, many=True)
 
 
 class VnfExtCpConfigSerializer(serializers.Serializer):

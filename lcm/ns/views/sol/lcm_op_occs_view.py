@@ -22,8 +22,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.ns.biz.query_ns_lcm_op_occ import QueryNsLcmOpOcc
-from lcm.ns.serializers.sol.ns_lcm_op_occs import NSLCMOpOccsSerializer
-from lcm.ns.serializers.sol.response import ProblemDetailsSerializer
+from lcm.ns.serializers.sol.ns_lcm_op_occ import NSLCMOpOccsSerializer
+from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)

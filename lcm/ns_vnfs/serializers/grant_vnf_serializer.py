@@ -15,10 +15,9 @@
 from rest_framework import serializers
 
 from lcm.ns.serializers.sol.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
-from lcm.ns.serializers.sol.link import linkSerializer
-from lcm.ns.serializers.sol.pub_serializers import AddressRangeSerializer
+from lcm.ns.serializers.sol.cp_serializers import AddressRangeSerializer
 from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
-from lcm.ns.serializers.sol.response import ProblemDetailsSerializer
+from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer, LinkSerializer
 
 
 # class ResourceHandleSerializer(serializers.Serializer):
@@ -137,11 +136,11 @@ class VimConstraintSerializer(serializers.Serializer):
 
 
 class GrantRequestLinksSerializer(serializers.Serializer):
-    vnfLcmOpOcc = linkSerializer(
+    vnfLcmOpOcc = LinkSerializer(
         help_text="Related VNF lifecycle management operation occurrence.",
         required=True
     )
-    vnfInstance = linkSerializer(
+    vnfInstance = LinkSerializer(
         help_text="Related VNF instance.",
         required=True
     )
@@ -573,15 +572,15 @@ class ExtManagedVirtualLinkSerializer(serializers.Serializer):
 
 
 class GrantLinksSerializer(serializers.Serializer):
-    self = linkSerializer(
+    self = LinkSerializer(
         help_text="URI of this resource.",
         required=True
     )
-    vnfLcmOpOcc = linkSerializer(
+    vnfLcmOpOcc = LinkSerializer(
         help_text="Related VNF lifecycle management operation occurrence.",
         required=True
     )
-    vnfInstance = linkSerializer(
+    vnfInstance = LinkSerializer(
         help_text="Related VNF instance.",
         required=True
     )
@@ -918,15 +917,15 @@ class ExtLinkPortInfoSerializer(serializers.Serializer):
 
 
 class LccnLinksSerializer(serializers.Serializer):
-    vnfInstance = linkSerializer(
+    vnfInstance = LinkSerializer(
         help_text="Link to the resource representing the VNF instance to which the notified change applies.",
         required=True
     )
-    subscription = linkSerializer(
+    subscription = LinkSerializer(
         help_text="Link to the related subscription.",
         required=True
     )
-    vnfLcmOpOcc = linkSerializer(
+    vnfLcmOpOcc = LinkSerializer(
         help_text="Link to the VNF lifecycle management operation occurrence that this notification is related to.",
         required=False,
         allow_null=True

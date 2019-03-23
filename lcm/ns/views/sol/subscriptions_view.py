@@ -19,7 +19,7 @@ import traceback
 
 from drf_yasg.utils import swagger_auto_schema
 from lcm.ns.serializers.sol.lccn_subscription import LccnSubscriptionSerializer
-from lcm.ns.serializers.sol.lccn_subscriptions import LccnSubscriptionsSerializer
+from lcm.ns.serializers.sol.lccn_subscription import LccnSubscriptionsSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,7 +27,7 @@ from rest_framework.views import APIView
 from lcm.ns.biz.create_subscription import CreateSubscription
 from lcm.ns.biz.query_subscription import QuerySubscription
 from lcm.ns.serializers.sol.lccn_subscription_request import LccnSubscriptionRequestSerializer
-from lcm.ns.serializers.sol.response import ProblemDetailsSerializer
+from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)

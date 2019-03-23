@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
-from lcm.ns.serializers.sol.pub_serializers import NsOperateJobSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.sol.scale_ns_serializers import ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
@@ -32,7 +32,7 @@ class NSManualScaleView(APIView):
     @swagger_auto_schema(
         request_body=ManualScaleNsReqSerializer(help_text="NS manual scale"),
         responses={
-            status.HTTP_202_ACCEPTED: NsOperateJobSerializer(),
+            status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -46,7 +46,7 @@ class NSManualScaleView(APIView):
 
             NSManualScaleService(ns_instance_id, request.data, job_id).start()
 
-            resp_serializer = NsOperateJobSerializer(data={'jobId': job_id})
+            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
 
