@@ -1,10 +1,19 @@
 #/bin/bash
-######
-# by vfc-db test
-#####
-# echo "No service needs init."
-#MYSQL_USER=$1
-######
+#
+# Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License")
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+# http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 pip install PyMySQL==0.9.3
 mkdir -p /service/vfc/nfvo/lcm/resources/bin/logs
 mkdir -p /var/log/onap/vfc/nslcm/
@@ -19,7 +28,8 @@ if [ ! -f /var/log/onap/vfc/nslcm/runtime_nslcm.log ]; then
 else
     echo >/var/log/onap/vfc/nslcm/runtime_nslcm.log
 fi
-######
+
+
 MYSQL_IP=`echo $MYSQL_ADDR | cut -d: -f 1`
 MYSQL_PORT=`echo $MYSQL_ADDR | cut -d: -f 2`
 MYSQL_USER=`echo $MYSQL_AUTH | cut -d: -f 1`
