@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from lcm.pub.utils.enumutil import enum
+from lcm.pub.config.config import MSB_BASE_URL
 
 OWNER_TYPE = enum(VNF=0, VNFM=1, NS=2)
 
@@ -166,3 +167,5 @@ CHANGE_RESULT = [
     CHANGE_RESULTS.ROLLED_BACK,
     CHANGE_RESULTS.FAILED
 ]
+
+NS_INSTANCE_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_instances/%s'
