@@ -641,6 +641,7 @@ class NsInstanceSerializer(serializers.Serializer):
     nsScaleStatus = NsScaleInfoSerializer(
         help_text="Status of each NS scaling aspect declared in the applicable DF.",
         required=False,
+        allow_null=True,
         many=True)
     additionalAffinityOrAntiAffinityRule = AffinityOrAntiAffinityRuleSerializer(
         many=True,
