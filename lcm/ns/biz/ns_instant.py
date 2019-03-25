@@ -53,8 +53,9 @@ class InstantNSService(object):
         self.req_data = plan_content
 
     def do_biz(self):
+        job_id = JobUtil.create_job("NS", "NS_INST", self.ns_inst_id)
+
         try:
-            job_id = JobUtil.create_job("NS", "NS_INST", self.ns_inst_id)
             logger.debug('ns-instant(%s) workflow starting...' % self.ns_inst_id)
             logger.debug('req_data=%s' % self.req_data)
             ns_inst = NSInstModel.objects.get(id=self.ns_inst_id)
@@ -152,13 +153,13 @@ class InstantNSService(object):
                                    nsinstid=self.ns_inst_id,
                                    endpointnumber=0).save()
             else:
-                # TODO:
+                # TODO
                 pass
             logger.debug("workflow option: %s" % config.WORKFLOW_OPTION)
             if config.WORKFLOW_OPTION == "wso2":
                 return self.start_wso2_workflow(job_id, ns_inst, plan_input)
             elif config.WORKFLOW_OPTION == "activiti":
-                return self.start_activiti_workflow()
+                return self.start_activiti_workflow(job_id, plan_input)
             elif config.WORKFLOW_OPTION == "grapflow":
                 return self.start_buildin_grapflow(job_id, plan_input)
             else:

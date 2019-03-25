@@ -18,6 +18,7 @@ import traceback
 
 from lcm.pub.database.models import JobStatusModel, JobModel
 from lcm.pub.utils import idutil
+from functools import reduce
 
 logger = logging.getLogger(__name__)
 

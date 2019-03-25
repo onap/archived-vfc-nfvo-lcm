@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def ignore_case_get(args, key, def_val=""):
     if not key:
@@ -22,3 +26,22 @@ def ignore_case_get(args, key, def_val=""):
         if old_key.upper() == key.upper():
             return args[old_key]
     return def_val
+
+
+def update_value(origin_data, new_data):
+    logger.debug(origin_data)
+    if not isinstance(origin_data, dict):
+        str_data = origin_data.encode('utf-8')
+        logger.debug(str_data)
+        origin_data = eval(str_data)
+    logger.debug(isinstance(origin_data, dict))
+    logger.debug(new_data)
+    for k, v in new_data.iteritems():
+        if k not in origin_data:
+            origin_data[k] = v
+        else:
+            if isinstance(origin_data[k], list):
+                origin_data[k] = origin_data[k].extend(v)
+            else:
+                origin_data[k] = v
+    return origin_data
