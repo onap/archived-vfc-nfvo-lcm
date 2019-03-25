@@ -21,6 +21,7 @@ from lcm.pub.utils.syscomm import fun_name
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
 from lcm.pub.exceptions import NSLCMException
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ format of input_data
 """
 
 
-def run_ns_instantiate(input_data):
+def run_ns_instantiate(input_data, occ_id):
     logger.debug("Enter %s, input_data is %s", fun_name(), input_data)
     ns_instantiate_ok = False
     job_id = ignore_case_get(input_data, "jobId")
@@ -84,14 +85,17 @@ def run_ns_instantiate(input_data):
         post_deal(ns_inst_id, "true")
 
         update_job(job_id, 100, "true", "Create NS successfully.")
+        NsLcmOpOcc.update(occ_id, "COMPLETED")
         ns_instantiate_ok = True
     except NSLCMException as e:
         logger.error("Failded to Create NS: %s", e.message)
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
         post_deal(ns_inst_id, "false")
-    except:
+    except Exception as e:
         logger.error(traceback.format_exc())
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
         post_deal(ns_inst_id, "false")
     finally:
         g_jobs_status.pop(job_id)

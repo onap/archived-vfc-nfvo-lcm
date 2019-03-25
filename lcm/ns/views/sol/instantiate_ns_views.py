@@ -43,9 +43,9 @@ class InstantiateNsView(APIView):
                 logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
                 raise BadRequestException(req_serializer.errors)
             ack = InstantNSService(ns_instance_id, request.data).do_biz()
-            nsLcmOpOccId = ack['nsLcmOpOccId']
+            nsLcmOpOccId = ack['occ_id']
             response = Response(data={}, status=status.HTTP_202_ACCEPTED)
-            logger.debug("Location: %s" % ack['nsLcmOpOccId'])
+            logger.debug("Location: %s" % ack['occ_id'])
             response["Location"] = NS_OCC_BASE_URI % nsLcmOpOccId
             logger.debug("Leave NSInstView::post::ack=%s", ack)
             return response

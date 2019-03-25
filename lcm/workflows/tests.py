@@ -23,6 +23,7 @@ from rest_framework import status
 from lcm.pub.database.models import WFPlanModel
 from lcm.pub.utils import restcall
 from lcm.workflows import build_in
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 
 class WorkflowViewTest(unittest.TestCase):
@@ -135,8 +136,8 @@ class WorkflowViewTest(unittest.TestCase):
         def side_effect(*args):
             return mock_vals[args[4]]
         mock_call_req.side_effect = side_effect
-
-        self.assertTrue(build_in.run_ns_instantiate(wf_input))
+        occ_id = NsLcmOpOcc.create(ns_inst_id, "INSTANTIATE", "PROCESSING", False, wf_input)
+        self.assertTrue(build_in.run_ns_instantiate(wf_input, occ_id))
 
     @mock.patch.object(restcall, 'call_req')
     def test_buildin_workflow_when_create_vl_failed(self, mock_call_req):
@@ -169,8 +170,8 @@ class WorkflowViewTest(unittest.TestCase):
         def side_effect(*args):
             return mock_vals[args[4]]
         mock_call_req.side_effect = side_effect
-
-        self.assertFalse(build_in.run_ns_instantiate(wf_input))
+        occ_id = NsLcmOpOcc.create(ns_inst_id, "INSTANTIATE", "PROCESSING", False, wf_input)
+        self.assertFalse(build_in.run_ns_instantiate(wf_input, occ_id))
 
     @mock.patch.object(restcall, 'call_req')
     def test_buildin_workflow_when_create_vnf_failed(self, mock_call_req):
@@ -218,5 +219,5 @@ class WorkflowViewTest(unittest.TestCase):
         def side_effect(*args):
             return mock_vals[args[4]]
         mock_call_req.side_effect = side_effect
-
-        self.assertFalse(build_in.run_ns_instantiate(wf_input))
+        occ_id = NsLcmOpOcc.create(ns_inst_id, "INSTANTIATE", "PROCESSING", False, wf_input)
+        self.assertFalse(build_in.run_ns_instantiate(wf_input, occ_id))

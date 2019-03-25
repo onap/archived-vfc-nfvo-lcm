@@ -34,17 +34,19 @@ from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.workflows import build_in
 from lcm.ns.biz.ns_instantiate_flow import run_ns_instantiate
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 logger = logging.getLogger(__name__)
 
 
 class BuildInWorkflowThread(Thread):
-    def __init__(self, plan_input):
+    def __init__(self, plan_input, occ_id):
         Thread.__init__(self)
         self.plan_input = plan_input
+        self.occ_id = occ_id
 
     def run(self):
-        build_in.run_ns_instantiate(self.plan_input)
+        build_in.run_ns_instantiate(self.plan_input, self.occ_id)
 
 
 class InstantNSService(object):
@@ -54,6 +56,7 @@ class InstantNSService(object):
 
     def do_biz(self):
         job_id = JobUtil.create_job("NS", "NS_INST", self.ns_inst_id)
+        occ_id = NsLcmOpOcc.create(self.ns_inst_id, "INSTANTIATE", "PROCESSING", False, self.req_data)
 
         try:
             logger.debug('ns-instant(%s) workflow starting...' % self.ns_inst_id)
@@ -157,21 +160,23 @@ class InstantNSService(object):
                 pass
             logger.debug("workflow option: %s" % config.WORKFLOW_OPTION)
             if config.WORKFLOW_OPTION == "wso2":
-                return self.start_wso2_workflow(job_id, ns_inst, plan_input)
+                return self.start_wso2_workflow(job_id, ns_inst, plan_input, occ_id=occ_id)
             elif config.WORKFLOW_OPTION == "activiti":
-                return self.start_activiti_workflow(job_id, plan_input)
+                return self.start_activiti_workflow(job_id, plan_input, occ_id=occ_id)
             elif config.WORKFLOW_OPTION == "grapflow":
-                return self.start_buildin_grapflow(job_id, plan_input)
+                return self.start_buildin_grapflow(job_id, plan_input, occ_id=occ_id)
             else:
-                return self.start_buildin_workflow(job_id, plan_input)
+                return self.start_buildin_workflow(job_id, plan_input, occ_id=occ_id)
 
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("ns-instant(%s) workflow error:%s" % (self.ns_inst_id, e.message))
+            NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
             JobUtil.add_job_status(job_id, 255, 'NS instantiation failed')
             return dict(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def start_wso2_workflow(self, job_id, ns_inst, plan_input):
+    def start_wso2_workflow(self, job_id, ns_inst, plan_input, occ_id):
+        # todo occ_id
         servicetemplate_id = get_servicetemplate_id(ns_inst.nsd_id)
         process_id = get_process_id('init', servicetemplate_id)
         data = {"processId": process_id, "params": {"planInput": plan_input}}
@@ -185,7 +190,8 @@ class InstantNSService(object):
             return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
         return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def start_activiti_workflow(self, job_id, plan_input):
+    def start_activiti_workflow(self, job_id, plan_input, occ_id):
+        # todo occ_id
         plans = WFPlanModel.objects.filter()
         if not plans:
             raise NSLCMException("No plan is found, you should deploy plan first!")
@@ -198,18 +204,18 @@ class InstantNSService(object):
         JobUtil.add_job_status(job_id, 10, 'NS inst(%s) activiti workflow started: %s' % (
             self.ns_inst_id, ret.get('status')))
         if ret.get('status') == 1:
-            return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+            return dict(data={'jobId': job_id}, status=status.HTTP_200_OK, occ_id=occ_id)
         return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def start_buildin_workflow(self, job_id, plan_input):
+    def start_buildin_workflow(self, job_id, plan_input, occ_id):
         JobUtil.add_job_status(job_id, 10, 'NS inst(%s) buildin workflow started.' % self.ns_inst_id)
-        BuildInWorkflowThread(plan_input).start()
-        return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+        BuildInWorkflowThread(plan_input, occ_id).start()
+        return dict(data={'jobId': job_id}, status=status.HTTP_200_OK, occ_id=occ_id)
 
-    def start_buildin_grapflow(self, job_id, plan_input):
+    def start_buildin_grapflow(self, job_id, plan_input, occ_id):
         JobUtil.add_job_status(job_id, 10, 'NS inst(%s) buildin grap workflow started.' % self.ns_inst_id)
-        run_ns_instantiate(plan_input)
-        return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+        run_ns_instantiate(plan_input, occ_id)
+        return dict(data={'jobId': job_id}, status=status.HTTP_200_OK, occ_id=occ_id)
 
     @staticmethod
     def get_vnf_vim_id(vim_id, location_constraints, vnfdid):

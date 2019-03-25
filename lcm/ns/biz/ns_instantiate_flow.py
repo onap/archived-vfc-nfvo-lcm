@@ -22,6 +22,7 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
 from lcm.pub.exceptions import NSLCMException
 from lcm.workflows.graphflow.flow.flow import GraphFlow
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 logger = logging.getLogger(__name__)
 
@@ -36,15 +37,16 @@ config = {
 
 
 class NsInstantiateWorkflowThread(Thread):
-    def __init__(self, plan_input):
+    def __init__(self, plan_input, occ_id):
         Thread.__init__(self)
         self.plan_input = plan_input
+        self.occ_id = occ_id
 
     def run(self):
-        run_ns_instantiate(self.plan_input)
+        run_ns_instantiate(self.plan_input, self.occ_id)
 
 
-def run_ns_instantiate(input_data):
+def run_ns_instantiate(input_data, occ_id):
     """
     format of input_data
     {
@@ -78,14 +80,17 @@ def run_ns_instantiate(input_data):
             update_job(job_id, 90, "true", "Start to post deal")
             post_deal(ns_inst_id, "true")
             update_job(job_id, 100, "true", "Create NS successfully.")
+            NsLcmOpOcc.update(occ_id, "COMPLETED")
             ns_instantiate_ok = True
     except NSLCMException as e:
         logger.error("Failded to Create NS: %s", e.message)
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
         post_deal(ns_inst_id, "false")
-    except:
+    except Exception as e:
         logger.error(traceback.format_exc())
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
         post_deal(ns_inst_id, "false")
     return ns_instantiate_ok
 
