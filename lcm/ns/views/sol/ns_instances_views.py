@@ -69,10 +69,12 @@ class NSInstancesView(APIView):
             globalCustomerId = request.META.get("HTTP_GLOBALCUSTOMERID", None)
             if not globalCustomerId:
                 raise BadRequestException("Not found globalCustomerId in header")
+            serviceType = request.META.get("HTTP_SERVICETYPE", None)
+            if not serviceType:
+                serviceType = "NetworkService"
             req_serializer = CreateNsRequestSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise BadRequestException(req_serializer.errors)
-
             if ignore_case_get(request.data, 'test') == "test":
                 return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
             csar_id = ignore_case_get(request.data, 'nsdId')
@@ -80,7 +82,7 @@ class NSInstancesView(APIView):
             description = ignore_case_get(request.data, 'description')
             context = {
                 "globalCustomerId": globalCustomerId,
-                "serviceType": "NetworkService"
+                "serviceType": serviceType
             }
             ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
             logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
