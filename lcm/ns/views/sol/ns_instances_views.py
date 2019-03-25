@@ -27,6 +27,7 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.ns.biz.ns_get import GetNSInfoService
 from lcm.ns.biz.ns_delete import DeleteNsService
+from lcm.ns.const import NS_INSTANCE_BASE_URI
 
 logger = logging.getLogger(__name__)
 
@@ -84,11 +85,14 @@ class NSInstancesView(APIView):
             ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
             logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
             ns_filter = {"ns_inst_id": ns_inst_id}
-            nsInstance = GetNSInfoService(ns_filter).get_ns_info(is_sol=True)[0]  # todo
+            nsInstance = GetNSInfoService(ns_filter).get_ns_info(is_sol=True)[0]
             resp_serializer = NsInstanceSerializer(data=nsInstance)
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
-            return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
+            response = Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
+            response["Location"] = NS_INSTANCE_BASE_URI % nsInstance['id']
+            return response
+
         except BadRequestException as e:
             logger.error("Exception in CreateNS: %s", e.message)
             data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
