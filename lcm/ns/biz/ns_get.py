@@ -11,14 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import json
 import logging
 
 from lcm.ns.const import OWNER_TYPE
 from lcm.pub.utils import restcall
+from lcm.pub.config.config import MSB_BASE_URL
 from lcm.pub.database.models import NSInstModel, NfInstModel, VLInstModel, CPInstModel, VNFFGInstModel
 
 logger = logging.getLogger(__name__)
+NS_INSTANCE_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_instances/%s'
 
 
 class GetNSInfoService(object):
@@ -53,6 +56,14 @@ class GetNSInfoService(object):
                 # todo 'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
                 # todo  'sapInfo':{},
                 # todo  nestedNsInstanceId
+                '_links': {
+                    'self': {'href': NS_INSTANCE_BASE_URI % ns_inst.id},
+                    'instantiate': {'href': NS_INSTANCE_BASE_URI + '/instantiate' % ns_inst.id},
+                    'terminate': {'href': NS_INSTANCE_BASE_URI + '/terminate' % ns_inst.id},
+                    'update': {'href': NS_INSTANCE_BASE_URI + '/update' % ns_inst.id},
+                    'scale': {'href': NS_INSTANCE_BASE_URI + '/scale' % ns_inst.id},
+                    'heal': {'href': NS_INSTANCE_BASE_URI + '/heal' % ns_inst.id}
+                }
             }
         return {
             'nsInstanceId': ns_inst.id,
