@@ -25,6 +25,7 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
 from lcm.ns.const import OWNER_TYPE
 from lcm.pub.database.models import PNFInstModel
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 JOB_ERROR = 255
 
@@ -32,12 +33,13 @@ logger = logging.getLogger(__name__)
 
 
 class TerminateNsService(threading.Thread):
-    def __init__(self, ns_inst_id, terminate_type, terminate_timeout, job_id):
+    def __init__(self, ns_inst_id, job_id, request_data):
         threading.Thread.__init__(self)
-        self.ns_inst_id = ns_inst_id
-        self.terminate_type = terminate_type
-        self.terminate_timeout = terminate_timeout
+        self.terminate_type = request_data.get('terminationType', 'GRACEFUL')
+        self.terminate_timeout = request_data.get('gracefulTerminationTimeout', 600)
         self.job_id = job_id
+        self.ns_inst_id = ns_inst_id
+        self.occ_id = NsLcmOpOcc.create(ns_inst_id, "TERMINATE", "PROCESSING", False, request_data)
 
     def run(self):
         try:
@@ -53,12 +55,15 @@ class TerminateNsService(threading.Thread):
 
             NSInstModel.objects.filter(id=self.ns_inst_id).update(status='null')
             JobUtil.add_job_status(self.job_id, 100, "ns terminate ends.", '')
+            NsLcmOpOcc.update(self.occ_id, "COMPLETED")
         except NSLCMException as e:
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
-        except Exception as ex:
-            logger.error(ex.message)
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+        except Exception as e:
+            logger.error(e.message)
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_ERROR, "ns terminate fail.")
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
 
     def cancel_vl_list(self):
         array_vlinst = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=self.ns_inst_id)
