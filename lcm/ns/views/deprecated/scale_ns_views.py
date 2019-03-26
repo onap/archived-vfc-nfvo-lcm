@@ -1,4 +1,4 @@
-# Copyright 2016-2017 ZTE Corporation.
+# Copyright 2019 ZTE Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
-from lcm.ns.serializers.sol.scale_ns_serializers import ManualScaleNsReqSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
 logger = logging.getLogger(__name__)
 
 
-class ScaleNSView(APIView):
+class NSManualScaleView(APIView):
     @swagger_auto_schema(
-        request_body=ManualScaleNsReqSerializer(help_text="NS manual scale"),
+        request_body=_ManualScaleNsReqSerializer(help_text="NS manual scale"),
         responses={
             status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
@@ -40,7 +40,7 @@ class ScaleNSView(APIView):
         logger.debug("Enter NSManualScaleView::post %s, %s", request.data, ns_instance_id)
         job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_instance_id)
         try:
-            req_serializer = ManualScaleNsReqSerializer(data=request.data)
+            req_serializer = _ManualScaleNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
 

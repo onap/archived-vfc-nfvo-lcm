@@ -28,7 +28,7 @@ from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 logger = logging.getLogger(__name__)
 
 
-class NSUpdateView(APIView):
+class UpdateNSView(APIView):
     @swagger_auto_schema(
         request_body=UpdateNsReqSerializer(),
         responses={

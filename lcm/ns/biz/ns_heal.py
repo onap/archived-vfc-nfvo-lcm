@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import datetime
 import logging
 import threading
@@ -23,6 +24,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 JOB_ERROR = 255
 logger = logging.getLogger(__name__)
@@ -34,7 +36,7 @@ class NSHealService(threading.Thread):
         self.ns_instance_id = ns_instance_id
         self.request_data = request_data
         self.job_id = job_id
-
+        self.occ_id = NsLcmOpOcc.create(ns_instance_id, "TERMINATE", "PROCESSING", False, request_data)
         self.heal_vnf_data = ''
         self.heal_ns_data = ''
 
@@ -43,9 +45,11 @@ class NSHealService(threading.Thread):
             self.do_biz()
         except NSLCMException as e:
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
-        except:
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+        except Exception as e:
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_ERROR, 'ns heal fail')
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
 
     def do_biz(self):
         self.update_job(1, desc='ns heal start')
@@ -54,6 +58,7 @@ class NSHealService(threading.Thread):
         self.do_heal()
         self.update_ns_status(NS_INST_STATUS.ACTIVE)
         self.update_job(100, desc='ns heal success')
+        NsLcmOpOcc.update(self.occ_id, "COMPLETED")
 
     def get_and_check_params(self):
         ns_info = NSInstModel.objects.filter(id=self.ns_instance_id)

@@ -12,26 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.serializers.sol.heal_serializers import HealNsReqSerializer
-from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
-from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.ns.const import NS_OCC_BASE_URI
 
 logger = logging.getLogger(__name__)
 
 
-class NSHealView(APIView):
+class HealNSView(APIView):
     @swagger_auto_schema(
         request_body=HealNsReqSerializer(),
         responses={
-            status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
+            status.HTTP_202_ACCEPTED: None,
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -41,17 +39,20 @@ class NSHealView(APIView):
             logger.debug("Enter HealNSView:: %s", ns_instance_id)
             req_serializer = HealNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise NSLCMException(req_serializer.errors)
-
+                logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
             job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
-            NSHealService(ns_instance_id, request.data, job_id).start()
-
-            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
-
-            logger.debug("Leave HealNSView::post ret=%s", resp_serializer.data)
-            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+            nsHealService = NSHealService(ns_instance_id, request.data, job_id)
+            nsHealService.start()
+            response = Response(data={}, status=status.HTTP_202_ACCEPTED)
+            logger.debug("Location: %s" % nsHealService.occ_id)
+            response["Location"] = NS_OCC_BASE_URI % nsHealService.occ_id
+            logger.debug("Leave NSHealView")
+            return response
+        except BadRequestException as e:
+            logger.error("Exception in HealNS: %s", e.message)
+            data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error("Exception in HealNSView: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

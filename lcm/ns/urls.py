@@ -13,27 +13,33 @@
 # limitations under the License.
 
 from django.conf.urls import url
-from lcm.ns.views.sol.scale_ns_views import NSManualScaleView
-from lcm.ns.views.sol.update_ns_view import NSUpdateView
+
+
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns.views.deprecated.create_ns_view import CreateNSView
 from lcm.ns.views.deprecated.get_del_ns_view import NSDetailView
 from lcm.ns.views.deprecated.inst_ns_post_deal_view import NSInstPostDealView
 from lcm.ns.views.deprecated.inst_ns_view import NSInstView
-from lcm.ns.views.deprecated.term_ns_view import TerminateNSView
-from lcm.ns.views.sol.heal_ns_view import NSHealView
+from lcm.ns.views.deprecated.term_ns_view import NSTerminateView
+from lcm.ns.views.deprecated.heal_ns_view import NSHealView
+from lcm.ns.views.deprecated.scale_ns_views import NSManualScaleView
+from lcm.ns.views.deprecated.update_ns_view import NSUpdateView
+
 from lcm.ns.views.sol.lcm_op_occs_view import QueryMultiNsLcmOpOccs, QuerySingleNsLcmOpOcc
 from lcm.ns.views.sol.ns_instances_views import NSInstancesView, IndividualNsInstanceView
 from lcm.ns.views.sol.instantiate_ns_views import InstantiateNsView
 from lcm.ns.views.sol.terminate_ns_view import TerminateNsView
 from lcm.ns.views.sol.subscriptions_view import SubscriptionsView
+from lcm.ns.views.sol.update_ns_view import UpdateNSView
+from lcm.ns.views.sol.scale_ns_views import ScaleNSView
+from lcm.ns.views.sol.heal_ns_view import HealNSView
 
 urlpatterns = [
     # API will be deprecated in the future release
     url(r'^api/nslcm/v1/ns$', CreateNSView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$', NSInstView.as_view()),
-    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNSView.as_view()),
+    url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', NSTerminateView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', NSDetailView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal$', NSInstPostDealView.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$', NSManualScaleView.as_view()),
@@ -44,10 +50,13 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns_instances$', NSInstancesView.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$', InstantiateNsView.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNsView.as_view()),
+    url(r'^api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)$', QuerySingleNsLcmOpOcc.as_view()),
+    url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update$', UpdateNSView.as_view()),
+    url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$', ScaleNSView.as_view()),
+    url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', HealNSView.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', IndividualNsInstanceView.as_view()),
     url(r'^api/nslcm/v1/subscriptions$', SubscriptionsView.as_view()),
-    url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view()),
-    url(r'^api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)$', QuerySingleNsLcmOpOcc.as_view()),
+    url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view())
 
 ]
 

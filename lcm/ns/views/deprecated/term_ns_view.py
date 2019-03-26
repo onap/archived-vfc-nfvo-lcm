@@ -26,7 +26,7 @@ from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializ
 logger = logging.getLogger(__name__)
 
 
-class TerminateNSView(APIView):
+class NSTerminateView(APIView):
     @swagger_auto_schema(
         request_body=_TerminateNsReqSerializer(),
         responses={
