@@ -79,7 +79,7 @@ class NSInstancesView(APIView):
                 return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
             csar_id = ignore_case_get(request.data, 'nsdId')
             ns_name = ignore_case_get(request.data, 'nsName')
-            description = ignore_case_get(request.data, 'description')
+            description = ignore_case_get(request.data, 'nsDescription')
             context = {
                 "globalCustomerId": globalCustomerId,
                 "serviceType": serviceType
@@ -88,6 +88,7 @@ class NSInstancesView(APIView):
             logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
             ns_filter = {"ns_inst_id": ns_inst_id}
             nsInstance = GetNSInfoService(ns_filter).get_ns_info(is_sol=True)[0]
+            logger.debug("nsInstance: %s" % nsInstance)
             resp_serializer = NsInstanceSerializer(data=nsInstance)
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)

@@ -72,7 +72,7 @@ class CreateNSService(object):
                     nsd_id=self.nsd_id,
                     nsd_invariant_id=self.nsd_invariant_id,
                     description=self.description,
-                    status='empty',
+                    status='NOT_INSTANTIATED',  # 'empty',
                     lastuptime=now_time(),
                     global_customer_id=self.global_customer_id,
                     service_type=self.service_type).save()
