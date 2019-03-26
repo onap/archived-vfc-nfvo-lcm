@@ -1,4 +1,4 @@
-# Copyright 2016-2017 ZTE Corporation.
+# Copyright 2016 ZTE Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ from lcm.ns.serializers.sol.heal_serializers import HealNsReqSerializer
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.ns.const import NS_OCC_BASE_URI
+from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class HealNSView(APIView):
         request_body=HealNsReqSerializer(),
         responses={
             status.HTTP_202_ACCEPTED: None,
-            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+            status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
         }
     )
     def post(self, request, ns_instance_id):
