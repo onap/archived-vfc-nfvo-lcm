@@ -12,47 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-import traceback
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from lcm.ns.biz.ns_manual_scale import NSManualScaleService
+from lcm.ns.biz.ns_heal import NSHealService
+from lcm.ns.serializers.deprecated.ns_serializers import _HealNsReqSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
-from lcm.ns.serializers.sol.scale_ns_serializers import ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 
 logger = logging.getLogger(__name__)
 
 
-class ScaleNSView(APIView):
+class NSHealView(APIView):
     @swagger_auto_schema(
-        request_body=ManualScaleNsReqSerializer(help_text="NS manual scale"),
+        request_body=_HealNsReqSerializer(),
         responses={
             status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
     def post(self, request, ns_instance_id):
-        logger.debug("Enter NSManualScaleView::post %s, %s", request.data, ns_instance_id)
-        job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_instance_id)
         try:
-            req_serializer = ManualScaleNsReqSerializer(data=request.data)
+            logger.debug("Enter HealNSView::post %s", request.data)
+            logger.debug("Enter HealNSView:: %s", ns_instance_id)
+            req_serializer = _HealNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
 
-            NSManualScaleService(ns_instance_id, request.data, job_id).start()
+            job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
+            NSHealService(ns_instance_id, request.data, job_id).start()
 
             resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
 
+            logger.debug("Leave HealNSView::post ret=%s", resp_serializer.data)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
-            logger.error(traceback.format_exc())
-            JobUtil.add_job_status(job_id, 255, 'NS scale failed: %s' % e.message)
-            return Response(data={'error': 'NS scale failed: %s' % ns_instance_id},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error("Exception in HealNSView: %s", e.message)
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
