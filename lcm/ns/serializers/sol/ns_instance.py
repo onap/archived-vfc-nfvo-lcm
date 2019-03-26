@@ -19,8 +19,9 @@ from lcm.ns.serializers.sol.pub_serializers import LinkSerializer
 from lcm.ns.serializers.sol.cp_serializers import CpProtocolDataSerializer, CpProtocolInfoSerializer, VnfExtCpInfoSerializer
 from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
 from lcm.ns.serializers.sol.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
-from lcm.ns.serializers.sol.ext_managed_virtual_link_info import ExtManagedVirtualLinkInfo
+from lcm.ns.serializers.sol.ext_managed_virtual_link_info import ExtManagedVirtualLinkInfo, VnfLinkPortInfo
 from lcm.ns.serializers.sol.pub_serializers import AffinityOrAntiAffinityRuleSerializer
+
 
 INSTANTIATION_STATE = [
     "NOT_INSTANTIATED",
@@ -110,24 +111,24 @@ class VnfcResourceInfoSerializer(serializers.Serializer):
         allow_null=True)
 
 
-class VnfLinkPortInfo(serializers.Serializer):
-    id = serializers.CharField(
-        help_text="Identifier of this link port as provided by the entity that has created the link port.",
-        max_length=255,
-        required=True,
-        allow_null=False,
-        allow_blank=False)
-    resourceHandle = ResourceHandleSerializer(
-        help_text="Reference to the virtualised network resource realizing this link port.",
-        required=True,
-        allow_null=False)
-    cpInstanceId = serializers.CharField(
-        help_text="When the link port is used for external connectivity by the VNF, \
-        this attribute represents the identifier of the external CP of the VNF to be connected to this link port.",
-        max_length=255,
-        required=False,
-        allow_null=True,
-        allow_blank=True)
+# class VnfLinkPortInfo(serializers.Serializer):
+#     id = serializers.CharField(
+#         help_text="Identifier of this link port as provided by the entity that has created the link port.",
+#         max_length=255,
+#         required=True,
+#         allow_null=False,
+#         allow_blank=False)
+#     resourceHandle = ResourceHandleSerializer(
+#         help_text="Reference to the virtualised network resource realizing this link port.",
+#         required=True,
+#         allow_null=False)
+#     cpInstanceId = serializers.CharField(
+#         help_text="When the link port is used for external connectivity by the VNF, \
+#         this attribute represents the identifier of the external CP of the VNF to be connected to this link port.",
+#         max_length=255,
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True)
 
 
 class VnfVirtualLinkResourceInfoSerializer(serializers.Serializer):

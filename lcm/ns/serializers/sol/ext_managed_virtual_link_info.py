@@ -29,12 +29,16 @@ class VnfLinkPortInfo(serializers.Serializer):
         allow_null=False)
     cpInstanceId = serializers.CharField(
         help_text="When the link port is used for external connectivity by the VNF, \
-        this attribute represents the identifier of the external CP of the VNF to be connected to this link port.",
+        this attribute represents the identifier of the external CP of the VNF to be connected to this \
+        link port.",
         max_length=255,
         required=False,
         allow_null=True,
         allow_blank=True)
-    cpInstanceType = serializers.ChoiceField(required=False, choices=['VNFC_CP', 'EXT_CP'], help_text="Type of the CP instance that is identified by cpInstanceId."),
+    cpInstanceType = serializers.ChoiceField(
+        required=False,
+        choices=['VNFC_CP', 'EXT_CP'],
+        help_text="Type of the CP instance that is identified by cpInstanceId.")
 
 
 class ExtManagedVirtualLinkInfo(serializers.Serializer):
