@@ -24,6 +24,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 JOB_ERROR = 255
 SCALE_TYPE = ("SCALE_NS", "SCALE_VNF")
@@ -36,6 +37,7 @@ class NSManualScaleService(threading.Thread):
         self.ns_instance_id = ns_instance_id
         self.request_data = request_data
         self.job_id = job_id
+        self.occ_id = NsLcmOpOcc.create(ns_instance_id, "SCALE", "PROCESSING", False, request_data)
         self.scale_vnf_data = ''
 
     def run(self):
@@ -43,10 +45,12 @@ class NSManualScaleService(threading.Thread):
             self.do_biz()
         except NSLCMException as e:
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
-        except Exception as ex:
-            logger.error(ex.message)
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+        except Exception as e:
+            logger.error(e.message)
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_ERROR, 'ns scale fail')
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
         finally:
             self.update_ns_status(NS_INST_STATUS.ACTIVE)
 
@@ -56,6 +60,7 @@ class NSManualScaleService(threading.Thread):
         self.check_and_set_params()
         self.do_vnfs_scale()
         self.update_job(100, desc='ns scale success')
+        NsLcmOpOcc.update(self.occ_id, "COMPLETED")
 
     def check_and_set_params(self):
         scale_type = ignore_case_get(self.request_data, 'scaleType')

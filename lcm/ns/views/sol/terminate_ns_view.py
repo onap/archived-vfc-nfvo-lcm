@@ -39,6 +39,7 @@ class TerminateNsView(APIView):
         }
     )
     def post(self, request, ns_instance_id):
+        job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
         try:
             logger.debug("Enter TerminateNSView::post %s", request.data)
             req_serializer = TerminateNsReqSerializer(data=request.data)
@@ -48,7 +49,6 @@ class TerminateNsView(APIView):
             terminationTime = ignore_case_get(request.data, 'terminationTime')
             logger.debug("terminationTime is %s" % terminationTime)
             # todo terminationTime
-            job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
             terminateNsService = TerminateNsService(ns_instance_id, job_id, request.data)
             terminateNsService.start()
             logger.debug("Location: %s" % terminateNsService.occ_id)
@@ -57,9 +57,11 @@ class TerminateNsView(APIView):
             return response
         except BadRequestException as e:
             logger.error("Exception in CreateNS: %s", e.message)
+            JobUtil.add_job_status(job_id, 255, 'NS termination failed: %s' % e.message)
             data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
             return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error("Exception in CreateNS: %s", e.message)
+            JobUtil.add_job_status(job_id, 255, 'NS termination failed: %s' % e.message)
             data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
             return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

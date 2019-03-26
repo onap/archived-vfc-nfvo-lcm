@@ -34,6 +34,7 @@ class HealNSView(APIView):
         }
     )
     def post(self, request, ns_instance_id):
+        job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
         try:
             logger.debug("Enter HealNSView::post %s", request.data)
             logger.debug("Enter HealNSView:: %s", ns_instance_id)
@@ -41,7 +42,6 @@ class HealNSView(APIView):
             if not req_serializer.is_valid():
                 logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
                 raise BadRequestException(req_serializer.errors)
-            job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
             nsHealService = NSHealService(ns_instance_id, request.data, job_id)
             nsHealService.start()
             response = Response(data={}, status=status.HTTP_202_ACCEPTED)
@@ -51,8 +51,11 @@ class HealNSView(APIView):
             return response
         except BadRequestException as e:
             logger.error("Exception in HealNS: %s", e.message)
+            JobUtil.add_job_status(job_id, 255, 'NS heal failed: %s' % e.message)
             data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
             return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error("Exception in HealNSView: %s", e.message)
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            JobUtil.add_job_status(job_id, 255, 'NS heal failed: %s' % e.message)
+            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
