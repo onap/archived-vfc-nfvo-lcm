@@ -37,32 +37,46 @@ class GetNSInfoService(object):
 
     def get_single_ns_info(self, ns_inst, is_sol=False):
         if is_sol:
-            return {
-                'id': ns_inst.id,
-                'nsInstanceName': ns_inst.name,
-                'nsInstanceDescription': ns_inst.description,
-                'nsdId': ns_inst.nsd_id,
-                'nsdInvariantId': ns_inst.nsd_invariant_id,
-                'nsdInfoId': ns_inst.nspackage_id,
-                'flavourId': ns_inst.flavour_id,
-                'nsState': ns_inst.status,
+            nsInstance = {}
+            nsInstance['id'] = ns_inst.id
+            if ns_inst.name:
+                nsInstance['nsInstanceName'] = ns_inst.name
+            if ns_inst.description:
+                nsInstance['nsInstanceDescription'] = ns_inst.description
+            if ns_inst.nsd_id:
+                nsInstance['nsdId'] = ns_inst.nsd_id
+            if ns_inst.nsd_invariant_id:
+                nsInstance['nsdInvariantId'] = ns_inst.nsd_invariant_id
+            if ns_inst.nspackage_id:
+                nsInstance['nsdInfoId'] = ns_inst.nspackage_id
+            if ns_inst.flavour_id:
+                nsInstance['flavourId'] = ns_inst.flavour_id
+            if ns_inst.status:
+                nsInstance['nsState'] = ns_inst.status
                 # todo 'nsScaleStatus':{}
                 # todo  'additionalAffinityOrAntiAffinityRule':{}
-                'vnfInstance': self.get_vnf_infos(ns_inst.id, is_sol),
+            logger.debug(" test ")
+            vnf_instance_list = self.get_vnf_infos(ns_inst.id, is_sol)
+            if vnf_instance_list:
+                nsInstance['vnfInstance'] = vnf_instance_list
                 # todo 'pnfInfo': self.get_pnf_infos(ns_inst.id,is_sol),
-                'virtualLinkInfo': self.get_vl_infos(ns_inst.id, is_sol),
+            vl_list = self.get_vl_infos(ns_inst.id, is_sol)
+            if vl_list:
+                nsInstance['virtualLinkInfo'] = vl_list
                 # todo 'vnffgInfo': self.get_vnffg_infos(ns_inst.id, ns_inst.nsd_model),
                 # todo  'sapInfo':{},
                 # todo  nestedNsInstanceId
-                '_links': {
-                    'self': {'href': NS_INSTANCE_BASE_URI % ns_inst.id},
-                    'instantiate': {'href': NS_INSTANCE_BASE_URI + '/instantiate' % ns_inst.id},
-                    'terminate': {'href': NS_INSTANCE_BASE_URI + '/terminate' % ns_inst.id},
-                    'update': {'href': NS_INSTANCE_BASE_URI + '/update' % ns_inst.id},
-                    'scale': {'href': NS_INSTANCE_BASE_URI + '/scale' % ns_inst.id},
-                    'heal': {'href': NS_INSTANCE_BASE_URI + '/heal' % ns_inst.id}
-                }
+            logger.debug(" test ")
+            nsInstance['_links'] = {
+                'self': {'href': NS_INSTANCE_BASE_URI % ns_inst.id},
+                'instantiate': {'href': NS_INSTANCE_BASE_URI % ns_inst.id + '/instantiate'},
+                'terminate': {'href': NS_INSTANCE_BASE_URI % ns_inst.id + '/terminate'},
+                'update': {'href': NS_INSTANCE_BASE_URI % ns_inst.id + '/update'},
+                'scale': {'href': NS_INSTANCE_BASE_URI % ns_inst.id + '/scale'},
+                'heal': {'href': NS_INSTANCE_BASE_URI % ns_inst.id + '/heal'}
             }
+            logger.debug(" test ")
+            return nsInstance
         return {
             'nsInstanceId': ns_inst.id,
             'nsName': ns_inst.name,
