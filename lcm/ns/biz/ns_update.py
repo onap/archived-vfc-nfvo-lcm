@@ -24,6 +24,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.enumutil import enum
+from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
 JOB_ERROR = 255
 logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ class NSUpdateService(threading.Thread):
         self.ns_instance_id = ns_instance_id
         self.request_data = request_data
         self.job_id = job_id
-
+        self.occ_id = NsLcmOpOcc.create(ns_instance_id, "SCALE", "PROCESSING", False, request_data)
         self.update_type = ''
         self.operate_vnf_data = ''
 
@@ -47,9 +48,11 @@ class NSUpdateService(threading.Thread):
         except NSLCMException as e:
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
-        except:
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+        except Exception as e:
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_ERROR, 'ns update fail')
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
 
     def do_biz(self):
         self.update_job(1, desc='ns update start')
@@ -58,6 +61,7 @@ class NSUpdateService(threading.Thread):
         self.do_update()
         self.update_ns_status(NS_INST_STATUS.ACTIVE)
         self.update_job(100, desc='ns update success')
+        NsLcmOpOcc.update(self.occ_id, "COMPLETED")
 
     def get_and_check_params(self):
         ns_info = NSInstModel.objects.filter(id=self.ns_instance_id)

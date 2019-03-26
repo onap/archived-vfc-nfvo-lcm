@@ -22,6 +22,7 @@ from lcm.ns.biz.ns_instant import InstantNSService
 from lcm.ns.serializers.sol.inst_ns_serializers import InstantNsReqSerializer
 from lcm.pub.exceptions import BadRequestException
 from lcm.ns.const import NS_OCC_BASE_URI
+from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +32,11 @@ class InstantiateNsView(APIView):
         request_body=InstantNsReqSerializer(),
         responses={
             status.HTTP_202_ACCEPTED: None,
-            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+            status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
         }
     )
     def post(self, request, ns_instance_id):
-        logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
+        logger.debug("Enter InstantiateNsView::post::ns_instance_id=%s", ns_instance_id)
         logger.debug("request.data=%s", request.data)
         try:
             req_serializer = InstantNsReqSerializer(data=request.data)
@@ -47,13 +48,13 @@ class InstantiateNsView(APIView):
             response = Response(data={}, status=status.HTTP_202_ACCEPTED)
             logger.debug("Location: %s" % ack['occ_id'])
             response["Location"] = NS_OCC_BASE_URI % nsLcmOpOccId
-            logger.debug("Leave NSInstView::post::ack=%s", ack)
+            logger.debug("Leave InstantiateNsView::post::ack=%s", ack)
             return response
         except BadRequestException as e:
-            logger.error("Exception in CreateNS: %s", e.message)
+            logger.error("Exception in InstantiateNsView: %s", e.message)
             data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
             return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            logger.error("Exception in CreateNS: %s", e.message)
+            logger.error("Exception in InstantiateNsView: %s", e.message)
             data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
             return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
