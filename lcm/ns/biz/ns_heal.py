@@ -36,7 +36,7 @@ class NSHealService(threading.Thread):
         self.ns_instance_id = ns_instance_id
         self.request_data = request_data
         self.job_id = job_id
-        self.occ_id = NsLcmOpOcc.create(ns_instance_id, "TERMINATE", "PROCESSING", False, request_data)
+        self.occ_id = NsLcmOpOcc.create(ns_instance_id, "HEAL", "PROCESSING", False, request_data)
         self.heal_vnf_data = ''
         self.heal_ns_data = ''
 

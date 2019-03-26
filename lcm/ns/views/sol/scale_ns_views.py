@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-import traceback
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
-from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.sol.scale_ns_serializers import ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.ns.const import NS_OCC_BASE_URI
+from lcm.pub.exceptions import BadRequestException
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ class ScaleNSView(APIView):
     @swagger_auto_schema(
         request_body=ManualScaleNsReqSerializer(help_text="NS manual scale"),
         responses={
-            status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
+            status.HTTP_202_ACCEPTED: None,
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -43,16 +42,20 @@ class ScaleNSView(APIView):
             req_serializer = ManualScaleNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
-
-            NSManualScaleService(ns_instance_id, request.data, job_id).start()
-
-            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
-
-            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
-        except Exception as e:
-            logger.error(traceback.format_exc())
+            nsManualScaleService = NSManualScaleService(ns_instance_id, request.data, job_id)
+            nsManualScaleService.start()
+            response = Response(data={}, status=status.HTTP_202_ACCEPTED)
+            logger.debug("Location: %s" % nsManualScaleService.occ_id)
+            response["Location"] = NS_OCC_BASE_URI % nsManualScaleService.occ_id
+            logger.debug("Leave NSHealView")
+            return response
+        except BadRequestException as e:
+            logger.error("Exception in HealNS: %s", e.message)
             JobUtil.add_job_status(job_id, 255, 'NS scale failed: %s' % e.message)
-            return Response(data={'error': 'NS scale failed: %s' % ns_instance_id},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error("Exception in HealNSView: %s", e.message)
+            JobUtil.add_job_status(job_id, 255, 'NS scale failed: %s' % e.message)
+            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
