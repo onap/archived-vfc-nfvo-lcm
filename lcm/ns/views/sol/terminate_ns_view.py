@@ -13,12 +13,53 @@
 # limitations under the License.
 
 import logging
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from lcm.ns.biz.ns_terminate import TerminateNsService
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.utils.jobutil import JOB_TYPE
+from lcm.pub.utils.values import ignore_case_get
+from lcm.ns.serializers.sol.terminate_ns_serializers import TerminateNsReqSerializer
+from lcm.pub.exceptions import BadRequestException
+from lcm.ns.const import NS_OCC_BASE_URI
 
 logger = logging.getLogger(__name__)
 
 
 class TerminateNsView(APIView):
+
+    @swagger_auto_schema(
+        request_body=TerminateNsReqSerializer(),
+        responses={
+            status.HTTP_202_ACCEPTED: None,
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
+        }
+    )
     def post(self, request, ns_instance_id):
-        # todo
-        return
+        try:
+            logger.debug("Enter TerminateNSView::post %s", request.data)
+            req_serializer = TerminateNsReqSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
+            terminationTime = ignore_case_get(request.data, 'terminationTime')
+            logger.debug("terminationTime is %s" % terminationTime)
+            # todo terminationTime
+            job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
+            terminateNsService = TerminateNsService(ns_instance_id, job_id, request.data)
+            terminateNsService.start()
+            logger.debug("Location: %s" % terminateNsService.occ_id)
+            response = Response(data={}, status=status.HTTP_202_ACCEPTED)
+            response["Location"] = NS_OCC_BASE_URI % terminateNsService.occ_id
+            return response
+        except BadRequestException as e:
+            logger.error("Exception in CreateNS: %s", e.message)
+            data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error("Exception in CreateNS: %s", e.message)
+            data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

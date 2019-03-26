@@ -21,7 +21,6 @@ from rest_framework.views import APIView
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
-from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializer, _NsOperateJobSerializer
 
 logger = logging.getLogger(__name__)
@@ -42,10 +41,8 @@ class TerminateNSView(APIView):
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
 
-            termination_type = ignore_case_get(request.data, 'terminationType')
-            graceful_termination_timeout = ignore_case_get(request.data, 'gracefulTerminationTimeout')
             job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
-            TerminateNsService(ns_instance_id, termination_type, graceful_termination_timeout, job_id).start()
+            TerminateNsService(ns_instance_id, job_id, request.data).start()
 
             resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
             if not resp_serializer.is_valid():
