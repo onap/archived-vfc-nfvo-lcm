@@ -224,7 +224,7 @@ nsd = json.dumps({
 vnfminfo = {"vnfmId": "1"}
 
 
-class TestInstantiateNs(TestCase):
+class TestInstantiateNsApi(TestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -305,8 +305,9 @@ class TestInstantiateNs(TestCase):
             [0, self.vnfms, '200'],
             [0, self.vnfm, '200']
         ]
-        resp = self.client.post(self.url % '2', data=self.req_data, format='json')
-        self.assertEqual(status.HTTP_202_ACCEPTED, resp.status_code)
+        response = self.client.post(self.url % '2', data=self.req_data, format='json')
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertIsNotNone(response['Location'])
 
     @mock.patch.object(InstantNSService, 'do_biz')
     def test_ns_instantiate_normal(self, mock_do_biz):
@@ -354,3 +355,14 @@ class TestInstantiateNs(TestCase):
         }
         response = self.client.post(self.url % '1', data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertIsNotNone(response['Location'])
+
+    def test_method_not_allowed(self):
+        response = self.client.put(self.url % '1', data=self.req_data, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.client.patch(self.url % '1', data=self.req_data, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.client.delete(self.url % '1', data=self.req_data, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.client.get(self.url % '1', data=self.req_data, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)

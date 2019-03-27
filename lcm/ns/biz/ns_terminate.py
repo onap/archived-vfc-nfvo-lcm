@@ -45,6 +45,7 @@ class TerminateNsService(threading.Thread):
         try:
             if not NSInstModel.objects.filter(id=self.ns_inst_id):
                 JobUtil.add_job_status(self.job_id, 100, "Need not terminate.", '')
+                NsLcmOpOcc.update(self.occ_id, "COMPLETED")
                 return
             JobUtil.add_job_status(self.job_id, 10, "Starting terminate...", '')
 

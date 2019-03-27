@@ -21,7 +21,7 @@ from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.database.models import NfInstModel, NSInstModel
 
 
-class TestTerminateNsViews(TestCase):
+class TestTerminateNsApi(TestCase):
     def setUp(self):
         self.client = Client()
         self.url = "/api/nslcm/v1/ns_instances/%s/terminate"
@@ -56,8 +56,19 @@ class TestTerminateNsViews(TestCase):
         NfInstModel.objects.all().delete()
 
     @mock.patch.object(TerminateNsService, 'run')
-    def test_terminate_vnf_url(self, mock_run):
+    def test_terminate_vnf(self, mock_run):
         mock_run.re.return_value = "1"
         req_data = {}
         response = self.client.post(self.url % self.ns_inst_id, data=req_data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertIsNotNone(response['Location'])
+
+    def test_method_not_allowed(self):
+        response = self.client.put(self.url % '1', data={}, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.client.patch(self.url % '1', data={}, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.client.delete(self.url % '1', data={}, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.client.get(self.url % '1', data={}, format='json')
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
