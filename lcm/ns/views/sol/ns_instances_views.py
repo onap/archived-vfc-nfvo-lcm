@@ -95,7 +95,6 @@ class NSInstancesView(APIView):
             response = Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
             response["Location"] = NS_INSTANCE_BASE_URI % nsInstance['id']
             return response
-
         except BadRequestException as e:
             logger.error("Exception in CreateNS: %s", e.message)
             data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
