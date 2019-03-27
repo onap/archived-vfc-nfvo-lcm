@@ -43,6 +43,17 @@ class InstantiateNsView(APIView):
             if not req_serializer.is_valid():
                 logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
                 raise BadRequestException(req_serializer.errors)
+
+            InstantNsReq = request.data
+            if "additionalParamsForVnf" in InstantNsReq:
+                InstantNsReq['locationConstraints'] = []
+                for additionalParamsForVnf in InstantNsReq["additionalParamsForVnf"]:
+                    vnf = {}
+                    vnf['vnfProfileId'] = additionalParamsForVnf['vnfProfileId']
+                    vnf['locationConstraints'] = {'vimId': additionalParamsForVnf['additionalParams']['vimId']}
+                    vnf['additionalParams'] = additionalParamsForVnf['additionalParams']
+                    InstantNsReq['locationConstraints'].append(vnf)
+
             ack = InstantNSService(ns_instance_id, request.data).do_biz()
             nsLcmOpOccId = ack['occ_id']
             response = Response(data={}, status=status.HTTP_202_ACCEPTED)
