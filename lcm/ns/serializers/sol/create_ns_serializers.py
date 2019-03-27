@@ -17,5 +17,5 @@ from rest_framework import serializers
 
 class CreateNsRequestSerializer(serializers.Serializer):
     nsdId = serializers.CharField(help_text="Identifier of the NSD that defines the NS instance to be created.", required=True, allow_null=False)
-    nsName = serializers.CharField(help_text="Name of NS", required=False, allow_null=True)
-    nsDescription = serializers.CharField(help_text="Description of NS", required=False, allow_null=True)
+    nsName = serializers.CharField(help_text="Name of NS", required=True, allow_null=True)
+    nsDescription = serializers.CharField(help_text="Description of NS", required=True, allow_null=True)

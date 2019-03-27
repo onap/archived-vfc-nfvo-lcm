@@ -21,6 +21,8 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.utils import restcall
+from lcm.ns.biz.ns_create import CreateNSService
+from lcm.pub.exceptions import NSLCMException
 
 
 class TestNsInstanceApi(TestCase):
@@ -61,6 +63,82 @@ class TestNsInstanceApi(TestCase):
         response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
         return response.data['id']
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_create_ns_when_ns_name_exist(self, mock_call_req):
+        NSInstModel.objects.all().delete()
+        NSInstModel(id="1", name="ns").save()
+        nspackage_info = json.JSONEncoder().encode({
+            "csarId": self.ns_package_id,
+            "packageInfo": {}
+        })
+        mock_call_req.return_value = [0, nspackage_info, '200']
+        header = {
+            'HTTP_GLOBALCUSTOMERID': 'global-customer-id-test1',
+            'HTTP_SERVICETYPE': 'service-type-test1'
+        }
+
+        data = {
+            "nsdId": self.nsd_id,
+            "nsName": "ns",
+            "nsDescription": "description"
+        }
+        response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @mock.patch.object(CreateNSService, "do_biz")
+    def test_create_ns_empty_data(self, mock_do_biz):
+        mock_do_biz.side_effect = Exception("Exception in CreateNS.")
+        data = {
+            'nsdId': 'nsdId'
+        }
+        header = {
+            'HTTP_GLOBALCUSTOMERID': 'global-customer-id-test1',
+            'HTTP_SERVICETYPE': 'service-type-test1'
+        }
+        response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @mock.patch.object(CreateNSService, "do_biz")
+    def test_create_ns_no_header(self, mock_do_biz):
+        mock_do_biz.side_effect = Exception("Exception in CreateNS.")
+        data = {
+            "nsdId": self.nsd_id,
+            "nsName": "ns",
+            "nsDescription": "description"
+        }
+        response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @mock.patch.object(CreateNSService, "do_biz")
+    def test_create_ns_non_existing_nsd(self, mock_do_biz):
+        mock_do_biz.side_effect = NSLCMException("nsd not exists.")
+        data = {
+            "nsdId": self.nsd_id,
+            "nsName": "ns",
+            "nsDescription": "description"
+        }
+        header = {
+            'HTTP_GLOBALCUSTOMERID': 'global-customer-id-test1',
+            'HTTP_SERVICETYPE': 'service-type-test1'
+        }
+        response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_create_ns_when_fail_to_get_nsd(self, mock_call_req):
+        mock_call_req.return_value = [1, "Failed to get nsd.", '500']
+        data = {
+            "nsdId": self.nsd_id,
+            "nsName": "ns",
+            "nsDescription": "description"
+        }
+        header = {
+            'HTTP_GLOBALCUSTOMERID': 'global-customer-id-test1',
+            'HTTP_SERVICETYPE': 'service-type-test1'
+        }
+        response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def test_ns_instances_method_not_allowed(self):
         header = {
