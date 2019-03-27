@@ -24,6 +24,7 @@ from lcm.pub.utils import restcall
 
 
 class TestNsInstanceApi(TestCase):
+
     def setUp(self):
         self.apiClient = APIClient()
         self.format = 'json'
@@ -59,6 +60,44 @@ class TestNsInstanceApi(TestCase):
         }
         response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
+        return response.data['id']
+
+    def test_ns_instances_method_not_allowed(self):
+        header = {
+            'HTTP_GLOBALCUSTOMERID': 'global-customer-id-test1',
+            'HTTP_SERVICETYPE': 'service-type-test1'
+        }
+
+        data = {
+            "nsdId": self.nsd_id,
+            "nsName": "ns",
+            "nsDescription": "description"
+        }
+        response = self.apiClient.delete(self.ns_instances_url, data=data, format=self.format, **header)
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.apiClient.put(self.ns_instances_url, data=data, format=self.format, **header)
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.apiClient.patch(self.ns_instances_url, data=data, format=self.format, **header)
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+
+    def test_invidual_ns_instance_method_not_allowed(self):
+        header = {
+            'HTTP_GLOBALCUSTOMERID': 'global-customer-id-test1',
+            'HTTP_SERVICETYPE': 'service-type-test1'
+        }
+
+        data = {
+            "nsdId": self.nsd_id,
+            "nsName": "ns",
+            "nsDescription": "description"
+        }
+        url = self.ns_instances_url + '/1'
+        response = self.apiClient.post(url, data=data, format=self.format, **header)
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.apiClient.put(url, data=data, format=self.format, **header)
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        response = self.apiClient.patch(url, data=data, format=self.format, **header)
+        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
     def test_query_ns(self):
         NSInstModel.objects.all().delete()
@@ -70,6 +109,17 @@ class TestNsInstanceApi(TestCase):
         self.assertEquals(self.nsd_id, response.data[0]['nsdId'])
         self.assertEquals('ns', response.data[0]['nsInstanceName'])
         self.assertEquals('NOT_INSTANTIATED', response.data[0]['nsState'])
+
+    def test_query_one_ns(self):
+        NSInstModel.objects.all().delete()
+        id = self.test_create_ns()
+        url = self.ns_instances_url + '/' + id
+        response = self.apiClient.get(url)
+        self.failUnlessEqual(status.HTTP_200_OK, response.status_code, response.data)
+        self.assertIsNotNone(response.data)
+        self.assertEquals(self.nsd_id, response.data['nsdId'])
+        self.assertEquals('ns', response.data['nsInstanceName'])
+        self.assertEquals('NOT_INSTANTIATED', response.data['nsState'])
 
     @mock.patch.object(restcall, 'call_req')
     def test_delete_ns(self, mock_call_req):
