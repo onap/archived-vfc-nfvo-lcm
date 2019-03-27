@@ -11,11 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import json
 import uuid
 
 import mock
-from django.test import TestCase, Client
+from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 from lcm.pub.database.models import NSInstModel
@@ -24,7 +25,6 @@ from lcm.pub.utils import restcall
 
 class TestNsInstanceApi(TestCase):
     def setUp(self):
-        self.client = Client()
         self.apiClient = APIClient()
         self.format = 'json'
         self.ns_instances_url = '/api/nslcm/v1/ns_instances'
@@ -58,5 +58,32 @@ class TestNsInstanceApi(TestCase):
             "nsDescription": "description"
         }
         response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
-
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
+
+    def test_query_ns(self):
+        NSInstModel.objects.all().delete()
+        self.test_create_ns()
+        response = self.apiClient.get(self.ns_instances_url)
+        self.failUnlessEqual(status.HTTP_200_OK, response.status_code, response.data)
+        self.assertIsNotNone(response.data)
+        self.assertEqual(1, len(response.data))
+        self.assertEquals(self.nsd_id, response.data[0]['nsdId'])
+        self.assertEquals('ns', response.data[0]['nsInstanceName'])
+        self.assertEquals('NOT_INSTANTIATED', response.data[0]['nsState'])
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_delete_ns(self, mock_call_req):
+        NSInstModel(id="1", nspackage_id="7", nsd_id="2").save()
+        ns_info = {
+            "service-instance-id": "service-instance-id-9b9348f2-f75d-4559-823d-db7ac138ed34",
+            "service-instance-name": "service-instance-name-9b9348f2-f75d-4559-823d-db7ac138ed34",
+            "service-type": "service-type-9b9348f2-f75d-4559-823d-db7ac138ed34",
+            "service-role": "service-role-9b9348f2-f75d-4559-823d-db7ac138ed34",
+            "resource-version": "1505350720009"
+        }
+        r1_query_ns_to_aai = [0, json.JSONEncoder().encode(ns_info), '200']
+        r2_delete_ns_to_aai = [0, json.JSONEncoder().encode({}), '200']
+        mock_call_req.side_effect = [r1_query_ns_to_aai, r2_delete_ns_to_aai]
+        url = self.ns_instances_url + '/1'
+        response = self.apiClient.delete(url)
+        self.failUnlessEqual(status.HTTP_204_NO_CONTENT, response.status_code)
