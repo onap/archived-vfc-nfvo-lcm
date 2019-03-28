@@ -46,7 +46,8 @@ class QueryNsLcmOpOcc:
         else:
             lcm_ops = NSLcmOpOccModel.objects.all()
         if not lcm_ops.exists():
-            raise NSLCMException('LCM Operation Occurances do not exist')
+            return []
+            # raise NSLCMException('LCM Operation Occurances do not exist')
         return [self.fill_resp_data(lcm_op) for lcm_op in lcm_ops]
 
     def fill_resp_data(self, lcm_op):
