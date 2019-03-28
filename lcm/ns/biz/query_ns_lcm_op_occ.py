@@ -17,6 +17,7 @@ import logging
 
 from lcm.pub.database.models import NSLcmOpOccModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.ns.const import NS_OCC_BASE_URI, NS_INSTANCE_BASE_URI
 
 logger = logging.getLogger(__name__)
 FILTERS = {
@@ -51,6 +52,7 @@ class QueryNsLcmOpOcc:
         return [self.fill_resp_data(lcm_op) for lcm_op in lcm_ops]
 
     def fill_resp_data(self, lcm_op):
+        NS_LCM_OP_OCC_URI = NS_OCC_BASE_URI % lcm_op.id
         resp_data = {
             'id': lcm_op.id,
             'operationState': lcm_op.operation_state,
@@ -64,7 +66,15 @@ class QueryNsLcmOpOcc:
             'cancelMode': lcm_op.cancel_mode,
             'error': None if not lcm_op.error else json.loads(lcm_op.error),
             'resourceChanges': None if not lcm_op.resource_changes else json.loads(lcm_op.resource_changes),
-            '_links': json.loads(lcm_op.links)
+            '_links': {
+                'self': {'href': NS_LCM_OP_OCC_URI},
+                'nsInstance': {'href': NS_INSTANCE_BASE_URI % lcm_op.ns_instance_id},
+                'retry': {'href': NS_LCM_OP_OCC_URI + '/retry'},
+                'rollback': {'href': NS_LCM_OP_OCC_URI + '/rollback'},
+                'continue': {'href': NS_LCM_OP_OCC_URI + '/continue'},
+                'fail': {'href': NS_LCM_OP_OCC_URI + '/fail'},
+                'cancel': {'href': NS_LCM_OP_OCC_URI + '/cancel'}
+            }  # json.loads(lcm_op.links)
         }
         return resp_data
 
