@@ -366,3 +366,119 @@ class TestInstantiateNsApi(TestCase):
         self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.get(self.url % '1', data=self.req_data, format='json')
         self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+
+    @mock.patch.object(restcall, 'call_req')
+    @mock.patch('lcm.pub.msapi.sdc_run_catalog.parse_nsd', MagicMock(return_value=nsd_model))
+    @mock.patch.object(BuildInWorkflowThread, 'run')
+    def test_ns_instantiate_when_succeed_to_enter_workflow(self, mock_run, mock_call_req):
+        config.WORKFLOW_OPTION = "buildin"
+        vcpe_nsd_model = json.dumps({
+            "model": json.dumps({
+                "vnfs": [{
+                    "vnf_id": "b1bb0ce7-2222-4fa7-95ed-4840d70a1101",
+                    "properties": {
+                        "id": "vnfd0",
+                        "nf_type": "test"
+                    },
+                    "dependencies": [{
+                        "vl_id": "5"
+                    }]
+                },
+                    {
+                        "vnf_id": "0408f076-e6c0-4c82-9940-272fddbb82de",
+                        "properties": {
+                            "id": "vnfd1",
+                            "nf_type": "test"
+                        },
+                        "dependencies": [{
+                            "vl_id": "5"
+                        }]
+                },
+                    {
+                        "vnf_id": "b1bb0ce7-2222-4fa7-95ed-4840d70a1100",
+                        "properties": {
+                            "id": "vnfd2",
+                            "nf_type": "test"
+                        },
+                        "dependencies": [{
+                            "vl_id": "5"
+                        }]
+                },
+                    {
+                        "vnf_id": "b1bb0ce7-2222-4fa7-95ed-4840d70a1102",
+                        "properties": {
+                            "id": "vnfd3",
+                            "nf_type": "test"
+                        },
+                        "dependencies": [{
+                            "vl_id": "5"
+                        }]
+                },
+                    {
+                        "vnf_id": "3fca3543-07f5-492f-812c-ed462e4f94f4",
+                        "properties": {
+                            "id": "vnfd4",
+                            "nf_type": "test"
+                        },
+                        "dependencies": [{
+                            "vl_id": "5"
+                        }]
+                },
+                ],
+                "vls": [{
+                    "vl_id": "5",
+                    "properties": {}
+                }]
+            })
+        })
+        mock_call_req.side_effect = [
+            [0, vcpe_nsd_model, '200'],
+            [0, self.vnfms, '200'],
+            [0, self.vnfm, '200']
+        ]
+        req_data = {
+            "aditionalParamsForNs": {
+                "nfvo": "vfc",
+                "nf_naming": "true",
+                "multi_stage_design": "false",
+                "availability_zone_max_count": "1",
+                "xyz": "123",
+                "nsd0_providing_service_invariant_uuid": "12204a12-7da2-4ddf-8c2f-992a1a1acebf",
+                "nsd0_providing_service_uuid": "5791dbeb-19d4-43e8-bf44-5b327ccf6bca"
+            },
+            "additionalParamsForVnf": [
+                {
+                    "vnfProfileId": "b1bb0ce7-2222-4fa7-95ed-4840d70a1101",
+                    "additionalParams": {
+                        "vimId": "CloudOwner_regionOne"
+                    }
+                },
+                {
+                    "vnfProfileId": "0408f076-e6c0-4c82-9940-272fddbb82de",
+                    "additionalParams": {
+                        "vimId": "CloudOwner_regionOne"
+                    }
+                },
+                {
+                    "vnfProfileId": "b1bb0ce7-2222-4fa7-95ed-4840d70a1100",
+                    "additionalParams": {
+                        "vimId": "CloudOwner_regionOne"
+                    }
+                },
+                {
+                    "vnfProfileId": "b1bb0ce7-2222-4fa7-95ed-4840d70a1102",
+                    "additionalParams": {
+                        "vimId": "CloudOwner_regionOne"
+                    }
+                },
+                {
+                    "vnfProfileId": "3fca3543-07f5-492f-812c-ed462e4f94f4",
+                    "additionalParams": {
+                        "vimId": "CloudOwner_regionOne"
+                    }
+                }
+            ]
+        }
+        response = self.client.post(self.url % '2', data=req_data, format='json')
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertIsNotNone(response['Location'])
