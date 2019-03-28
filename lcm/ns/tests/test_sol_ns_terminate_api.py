@@ -58,7 +58,7 @@ class TestTerminateNsApi(TestCase):
     @mock.patch.object(TerminateNsService, 'run')
     def test_terminate_vnf(self, mock_run):
         mock_run.re.return_value = "1"
-        req_data = {}
+        req_data = {"terminationTime": "2019-03-25T09:10:35.610"}
         response = self.client.post(self.url % self.ns_inst_id, data=req_data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertIsNotNone(response['Location'])
