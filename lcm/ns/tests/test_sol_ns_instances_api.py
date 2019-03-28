@@ -65,6 +65,32 @@ class TestNsInstanceApi(TestCase):
         return response.data['id']
 
     @mock.patch.object(restcall, 'call_req')
+    def test_create_ns_cpe(self, mock_call_req):
+        nspackage_info = {
+            "csarId": "c9f0a95e-dea0-4698-96e5-5a79bc5a233d",
+            "packageInfo": {
+                "nsPackageId": "c9f0a95e-dea0-4698-96e5-5a79bc5a233d",
+                "nsdId": "c9f0a95e-dea0-4698-96e5-5a79bc5a233d"
+            }
+        }
+        r1_query_nspackage_from_catalog = [0, json.JSONEncoder().encode(nspackage_info), '201']
+        r2_create_ns_to_aai = [0, json.JSONEncoder().encode({}), '201']
+        mock_call_req.side_effect = [r1_query_nspackage_from_catalog, r2_create_ns_to_aai]
+
+        header = {
+            'HTTP_GLOBALCUSTOMERID': 'global-customer-id-test1',
+            'HTTP_SERVICETYPE': 'service-type-test1'
+        }
+
+        data = {
+            "nsdId": "c9f0a95e-dea0-4698-96e5-5a79bc5a233d",
+            "nsName": "vcpe_e2e_vnf_test2",
+            "nsDescription": "null"
+        }
+        response = self.apiClient.post(self.ns_instances_url, data=data, format=self.format, **header)
+        self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
+
+    @mock.patch.object(restcall, 'call_req')
     def test_create_ns_when_ns_name_exist(self, mock_call_req):
         NSInstModel.objects.all().delete()
         NSInstModel(id="1", name="ns").save()
