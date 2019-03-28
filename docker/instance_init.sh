@@ -40,7 +40,7 @@ function create_database {
 	echo $tab1
 	echo "============"
         echo "TABLE NOT EXISTS, START MIGRATE"
-        python $man_path/manage.py makemigrations && python $man_path/manage.py migrate &
+        python $man_path/manage.py makemigrations database && python $man_path/manage.py migrate &
         wait
         tab2=`mysql -u${MYSQL_USER} -p${MYSQL_ROOT_PASSWORD} -P${MYSQL_PORT} -h${MYSQL_IP} -e "SELECT count(TABLE_NAME) FROM information_schema.TABLES WHERE TABLE_SCHEMA='vfcnfvolcm';"`
 	tab3=`echo $tab2|awk '{print $2}'`
