@@ -58,6 +58,8 @@ class QueryMultiNsLcmOpOccs(APIView):
                 problem_details_serializer = get_problem_details_serializer(status.HTTP_400_BAD_REQUEST, "Not a valid filter")
                 return Response(data=problem_details_serializer.data, status=status.HTTP_400_BAD_REQUEST)
             resp_data = QueryNsLcmOpOcc(request.query_params).query_multi_ns_lcm_op_occ()
+            if len(resp_data) == 0:
+                return Response(data=[], status=status.HTTP_200_OK)
 
             ns_lcm_op_occs_serializer = NSLCMOpOccsSerializer(data=resp_data)
             if not ns_lcm_op_occs_serializer.is_valid():
