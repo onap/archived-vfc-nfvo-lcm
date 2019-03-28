@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright (c) 2019, ZTE
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -64,20 +65,20 @@ class LcmOpLinkSerializer(serializers.Serializer):
         help_text="URI of this resource.",
         required=True,
         allow_null=False)
-    nsInstance = serializers.CharField(
+    nsInstance = LinkSerializer(
         help_text="Link to the NS instance that the operation applies to.",
         required=True)
-    cancel = serializers.CharField(
+    cancel = LinkSerializer(
         help_text="Link to the task resource that represents the 'cancel' operation for this LCM operation occurrence.",
         required=False)
-    retry = serializers.CharField(
+    retry = LinkSerializer(
         help_text="Link to the task resource that represents the 'retry' operation for this LCM operation occurrence, "
                   "if retrying is currently allowed",
         required=False)
-    rollback = serializers.CharField(
+    rollback = LinkSerializer(
         help_text="Link to the task resource that represents the 'cancel' operation for this LCM operation occurrence.",
         required=False)
-    fail = serializers.CharField(
+    fail = LinkSerializer(
         help_text="Link to the task resource that represents the 'fail' operation for this LCM operation occurrence.",
         required=False)
 
