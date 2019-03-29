@@ -94,8 +94,10 @@ class TestSubscription(TestCase):
         }
         mock_requests.return_value.status_code = 204
         mock_requests.get.return_value.status_code = 204
+
         expected_data = {
-            'error': 'Auth type should be BASIC'
+            'status': 500,
+            'detail': 'Auth type should be BASIC'
         }
         response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
         self.assertEqual(500, response.status_code)
@@ -118,8 +120,9 @@ class TestSubscription(TestCase):
         mock_requests.return_value.status_code = 204
         mock_requests.get.return_value.status_code = 204
         expected_data = {
-            'error': 'If you are setting operationTypes,then notificationTypes must be '
-                     'NsLcmOperationOccurrenceNotification'
+            'status': 500,
+            'detail': 'If you are setting operationTypes,then notificationTypes must be '
+            'NsLcmOperationOccurrenceNotification'
         }
         response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
         self.assertEqual(500, response.status_code)
@@ -151,6 +154,7 @@ class TestSubscription(TestCase):
         response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
         self.assertEqual(303, response.status_code)
         expected_data = {
-            "error": "Already Subscription exists with the same callbackUri and filter"
+            'status': 303,
+            'detail': 'Already Subscription exists with the same callbackUri and filter'
         }
         self.assertEqual(expected_data, response.data)

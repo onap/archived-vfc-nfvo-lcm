@@ -29,6 +29,7 @@ from lcm.ns.biz.query_subscription import QuerySubscription
 from lcm.ns.serializers.sol.lccn_subscription_request import LccnSubscriptionRequestSerializer
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException
 
 logger = logging.getLogger(__name__)
 VALID_FILTERS = ["operationTypes", "operationStates", "notificationTypes", "nsInstanceId",
@@ -61,7 +62,7 @@ class SubscriptionsView(APIView):
             lccn_subscription_request_serializer = LccnSubscriptionRequestSerializer(
                 data=request.data)
             if not lccn_subscription_request_serializer.is_valid():
-                raise NSLCMException(
+                raise BadRequestException(
                     lccn_subscription_request_serializer.errors)
             subscription = CreateSubscription(
                 lccn_subscription_request_serializer.data).do_biz()
@@ -87,15 +88,22 @@ class SubscriptionsView(APIView):
             if not sub_resp_serializer.is_valid():
                 raise NSLCMException(sub_resp_serializer.errors)
             return Response(data=sub_resp_serializer.data, status=status.HTTP_201_CREATED)
+        except BadRequestException as e:
+            logger.error("Exception in InstantiateNsView: %s", e.message)
+            data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         except NSLCMException as e:
             logger.error(e.message)
             if "exists" in e.message:
-                return Response(data={'error': '%s' % e.message}, status=status.HTTP_303_SEE_OTHER)
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                data = {'status': status.HTTP_303_SEE_OTHER, 'detail': e.message}
+                return Response(data=data, status=status.HTTP_303_SEE_OTHER)
+            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             logger.error(e.message)
             logger.error(traceback.format_exc())
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         responses={
