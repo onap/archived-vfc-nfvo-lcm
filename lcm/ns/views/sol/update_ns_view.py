@@ -33,7 +33,7 @@ class UpdateNSView(APIView):
     @swagger_auto_schema(
         request_body=UpdateNsReqSerializer(),
         responses={
-            status.HTTP_202_ACCEPTED: None,
+            status.HTTP_202_ACCEPTED: "HTTP_202_ACCEPTED",
             status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
         }
     )

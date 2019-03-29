@@ -135,7 +135,7 @@ class IndividualNsInstanceView(APIView):
     @swagger_auto_schema(
         request_body=None,
         responses={
-            status.HTTP_204_NO_CONTENT: None
+            status.HTTP_204_NO_CONTENT: "HTTP_204_NO_CONTENT"
         }
     )
     def delete(self, request, ns_instance_id):
