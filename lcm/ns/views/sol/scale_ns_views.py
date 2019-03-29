@@ -32,7 +32,7 @@ class ScaleNSView(APIView):
     @swagger_auto_schema(
         request_body=ManualScaleNsReqSerializer(help_text="NS Scale"),
         responses={
-            status.HTTP_202_ACCEPTED: None,
+            status.HTTP_202_ACCEPTED: "HTTP_202_ACCEPTED",
             status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
         }
     )

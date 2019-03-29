@@ -8,20 +8,22 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# import json
+from django.test import TestCase
 
-import unittest
-
-from django.test import Client
+from rest_framework.test import APIClient
 # from rest_framework import status
 
 
-class SwaggerViewTest(unittest.TestCase):
+class SwaggerViewTest(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = APIClient()
 
     def tearDown(self):
         pass
 
-    # test_swagger(self):
-    # response = self.client.get("/api/nslcm/v1/swagger.json")
-    # self.assertEqual(status.HTTP_200_OK, response.status_code, response.content)
+    # def test_swagger(self):
+    #  response = self.client.get("/api/nslcm/v1/swagger.json")
+    #  self.assertEqual(status.HTTP_200_OK, response.status_code, response.content)
+    #  with open('vfc.json', 'w') as swagger_file:
+    #      swagger_file.write(json.dumps(response.data))
