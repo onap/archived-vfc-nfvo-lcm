@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 import traceback
 
@@ -37,7 +38,7 @@ class DeleteVls(object):
                 logger.info("vl inst id(%s) is not exist or has been already deleted" % self.vl_inst_id)
                 return {"result": 0, "detail": "vl is not exist or has been already deleted"}
             self.ns_inst_id = vl_inst_info[0].ownerid
-            vim_id = vl_inst_info[0].vimid
+            vim_id = json.JSONDecoder().decode(vl_inst_info[0].vimid)
             subnetwork_id_list = vl_inst_info[0].relatedsubnetworkid.split(",")
             network_id = vl_inst_info[0].relatednetworkid
             self.delete_vl_from_vim(vim_id, subnetwork_id_list, network_id)

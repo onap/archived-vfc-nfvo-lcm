@@ -139,13 +139,15 @@ class CreateVls(object):
         return vl_ret[1]
 
     def create_vl_to_resmgr(self):
+        self.vim_id = json.JSONDecoder().decode(self.vim_id) if isinstance(self.vim_id, (str, unicode)) else self.vim_id
+        vim_id = self.vim_id['cloud_owner'] + self.vim_id['cloud_regionid']
         req_param = {
             "vlInstanceId": self.vl_inst_id,
             "name": self.vl_profile.get("networkName", ""),
             "backendId": str(self.related_network_id),
             "isPublic": "True",
             "dcName": "",
-            "vimId": str(self.vim_id),
+            "vimId": str(vim_id),
             "vimName": self.vim_name,
             "physicialNet": self.vl_profile.get("physicalNetwork", ""),
             "nsId": self.owner_id,
@@ -190,9 +192,10 @@ class CreateVls(object):
                         vllist=vl_inst_id_str)
 
     def save_vl_to_db(self):
+        vim_id = json.JSONEncoder().encode(self.vim_id)
         VLInstModel(vlinstanceid=self.vl_inst_id, vldid=self.vld_id, vlinstancename=self.vl_inst_name,
                     ownertype=self.owner_type, ownerid=self.owner_id, relatednetworkid=self.related_network_id,
-                    relatedsubnetworkid=self.related_subnetwork_id, vimid=self.vim_id, tenant=self.tenant).save()
+                    relatedsubnetworkid=self.related_subnetwork_id, vimid=vim_id, tenant=self.tenant).save()
         # do_biz_with_share_lock("create-vllist-in-vnffg-%s" % self.owner_id, self.create_vl_inst_id_in_vnffg)
         self.create_vl_inst_id_in_vnffg()
 
