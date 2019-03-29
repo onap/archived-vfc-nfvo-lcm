@@ -38,10 +38,27 @@ def get_vims():
     return vims_info
 
 
-def get_vim_by_id(vim_id):
-    cloud_owner, cloud_region = split_vim_to_owner_region(vim_id)
+def get_vim_by_id_tem(cloudowner, cloudregionid):
+    cloud_owner = cloudowner
+    cloud_regionid = cloudregionid
     ret = call_aai("/cloud-infrastructure/cloud-regions/cloud-region/%s/%s?depth=all"
-                   % (cloud_owner, cloud_region), "GET")
+                   % (cloud_owner, cloud_regionid), "GET")
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Failed to query vim(%s__%s) from extsys." % (cloudowner, cloudregionid))
+    # convert vim_info_aai to internal vim_info
+    vim_info_aai = json.JSONDecoder().decode(ret[1])
+    vim_info = convert_vim_info(vim_info_aai)
+    logger.debug("cloud_owner=%s, cloud_regionid=%s, vim_info=%s", cloudowner, cloudregionid, vim_info)
+    return vim_info
+
+
+def get_vim_by_id(vim_id):
+    vim_id = json.JSONDecoder().decode(vim_id) if isinstance(vim_id, (str, unicode)) else vim_id
+    cloud_owner = vim_id['cloud_owner']
+    cloud_regionid = vim_id['cloud_regionid']
+    ret = call_aai("/cloud-infrastructure/cloud-regions/cloud-region/%s/%s?depth=all"
+                   % (cloud_owner, cloud_regionid), "GET")
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query vim(%s) from extsys." % vim_id)
@@ -55,8 +72,8 @@ def get_vim_by_id(vim_id):
 def split_vim_to_owner_region(vim_id):
     split_vim = vim_id.split('_')
     cloud_owner = split_vim[0]
-    cloud_region = "".join(split_vim[1:])
-    return cloud_owner, cloud_region
+    cloud_regionid = "".join(split_vim[1:])
+    return cloud_owner, cloud_regionid
 
 
 def convert_vim_info(vim_info_aai):
@@ -170,6 +187,7 @@ def select_vnfm(vnfm_type, vim_id):
         vnfm_info = get_vnfm_by_id(vnfm.get("vnfm-id"))
         vnfmtype = ignore_case_get(vnfm_info, "type")
         vimid = ignore_case_get(vnfm_info, "vimId")
+        vimid = json.loads(vimid)
         if vnfmtype == vnfm_type and vimid == vim_id:
             return vnfm_info
     raise NSLCMException('No vnfm found with %s in vim(%s)' % (vnfm_type, vim_id))

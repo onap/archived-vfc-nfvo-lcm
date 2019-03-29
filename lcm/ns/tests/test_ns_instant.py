@@ -25,22 +25,21 @@ from lcm.pub.utils import restcall
 from lcm.pub.config import config
 
 nsd_model = json.dumps({
-    "model": json.dumps({
-        "vnfs": [{
-            "vnf_id": "vnf1",
-            "properties": {
-                "id": "vnfd1",
-                "nf_type": "xgw"
-            },
-            "dependencies": [{
-                "vl_id": "5"
-            }]
-        }],
-        "vls": [{
-            "vl_id": "5",
-            "properties": {}
+    "vnfs": [{
+        "vnf_id": "vnf1",
+        "properties": {
+            "id": "vnfd1",
+            "nf_type": "xgw",
+            "vnfm_info": "xgw"
+        },
+        "dependencies": [{
+            "vl_id": "5"
         }]
-    })
+    }],
+    "vls": [{
+        "vl_id": "5",
+        "properties": {}
+    }]
 })
 
 
@@ -50,21 +49,34 @@ class TestNsInstant(TestCase):
         self.client = APIClient()
         NSInstModel.objects.filter().delete()
         self.url = "/api/nslcm/v1/ns/2/instantiate"
+        # self.req_data = {
+        #     "additionalParamForNs": {
+        #         "sdnControllerId": "2"
+        #     },
+        #     "nsFlavourId": 12345,
+        #     "localizationLanguage": [{
+        #         "vnfProfileId": "vnfd1",
+        #         "locationConstraints": {
+        #             "countryCode": "countryCode",
+        #             # "vimId": '{"vimId": "CPE-DC_RegionOne"}',
+        #             "civicAddressElement": [
+        #                 {"caType": "type1",
+        #                  "caValue": 1
+        #                  }
+        #             ]
+        #         }
+        #     }]
+        # }
         self.req_data = {
             "additionalParamForNs": {
                 "sdnControllerId": "2"
             },
             "nsFlavourId": 12345,
-            "localizationLanguage": [{
+            "locationConstraints": [{
                 "vnfProfileId": "vnfd1",
                 "locationConstraints": {
-                    "countryCode": "countryCode",
-                    # "vimId": "3",
-                    "civicAddressElement": [
-                        {"caType": "type1",
-                         "caValue": 1
-                         }
-                    ]
+                    "cloudOwner": "CPE-DC",
+                    "cloudRegionId": "RegionOne"
                 }
             }]
         }
@@ -96,7 +108,7 @@ class TestNsInstant(TestCase):
         })
         self.vnfm = json.dumps({
             "type": "xgw",
-            "vim-id": "3",
+            "vim-id": '{"cloud_owner": "CPE-DC", "cloud_regionid": "RegionOne"}',
             "vnfm-id": "4",
             "certificate-url": "http://127.0.0.0/ztevnfm/v1/auth",
             "esr-system-info-list": {
@@ -121,9 +133,9 @@ class TestNsInstant(TestCase):
     def test_ns_instantiate_when_succeed_to_enter_workflow(self, mock_run, mock_call_req):
         config.WORKFLOW_OPTION = "buildin"
         mock_call_req.side_effect = [
-            [0, self.nsd_model, '200'],
             [0, self.vnfms, '200'],
-            [0, self.vnfm, '200']
+            [0, self.vnfm, '200'],
+            [0, self.nsd_model, '200'],
         ]
         resp = self.client.post(self.url, data=self.req_data, format='json')
         self.assertEqual(status.HTTP_200_OK, resp.status_code)
@@ -162,11 +174,11 @@ class TestNsInstant(TestCase):
             },
             "locationConstraints": [{
                 "vnfProfileId": "zte_ran_cucp_0001",
-                "locationConstraints": {"vimId": "3"}
+                "locationConstraints": {"vimId": "CPE-DC_RegionOne"}
             },
                 {
                     "vnfProfileId": "zte_ran_cuup_0001",
-                    "locationConstraints": {"vimId": "3"}
+                    "locationConstraints": {"vimId": "CPE-DC_RegionOne"}
             }
             ],
             "addpnfData": [{

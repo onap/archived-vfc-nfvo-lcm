@@ -279,6 +279,8 @@ class NotifyLcm(object):
         logger.debug("NotifyLcm::create_vserver_in_aai::report vserver instance to aai.")
         try:
             cloud_owner, cloud_region_id = split_vim_to_owner_region(vim_id)
+            # cloud_owner = vim_id['cloud_owner']
+            # cloud_region_id =vim_id['cloud_region_id']
 
             # query vim_info from aai
             vim_info = get_vim_by_id(vim_id)
