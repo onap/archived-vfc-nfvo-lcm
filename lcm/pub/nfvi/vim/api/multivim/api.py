@@ -26,10 +26,14 @@ VIM_DRIVER_BASE_URL = "api/multicloud/v0"
 def call(vim_id, tenant_id, res, method, data=''):
     if data and not isinstance(data, (str, unicode)):
         data = json.JSONEncoder().encode(data)
-    url = "{base_url}/{vim_id}{tenant_id}/{res}".format(
+    vim_id = json.JSONDecoder().decode(vim_id) if isinstance(vim_id, (str, unicode)) else vim_id
+    cloud_owner = vim_id['cloud_owner']
+    cloud_regionid = vim_id['cloud_regionid']
+    url = "{base_url}/{cloud_owner}/{cloud_regionid}/{tenant_id}/{res}".format(
         base_url=VIM_DRIVER_BASE_URL,
-        vim_id=vim_id,
-        tenant_id="/" + tenant_id if tenant_id else "",
+        cloud_owner=cloud_owner,
+        cloud_region=cloud_regionid,
+        tenant_id=tenant_id if tenant_id else "",
         res=res)
     ret = req_by_msb(url, method, data)
     if ret[0] > 0:

@@ -16,6 +16,7 @@ import json
 import uuid
 
 import mock
+import logging
 from django.test import TestCase, Client
 from rest_framework import status
 
@@ -23,6 +24,7 @@ from lcm.pub.database.models import VLInstModel, NSInstModel, VNFFGInstModel
 from lcm.pub.nfvi.vim import vimadaptor
 from lcm.pub.utils import restcall
 from lcm.ns_vnfs.tests.tests import vim_info
+logger = logging.getLogger(__name__)
 
 
 class TestVlViews(TestCase):
@@ -32,7 +34,7 @@ class TestVlViews(TestCase):
         self.vnffg_id = str(uuid.uuid4())
         self.vl_id_1 = 1
         self.vl_id_2 = 1
-        self.vim_id = str(uuid.uuid4())
+        self.vim_id = {"cloud_owner": "VCPE", "cloud_regionid": "TEST"}
         self.tenant = "tenantname"
         properties = {"network_type": "vlan", "name": "externalMNetworkName", "dhcp_enabled": False,
                       "location_info": {"host": True, "vimid": self.vim_id, "region": True, "tenant": self.tenant},
@@ -85,9 +87,9 @@ class TestVlViews(TestCase):
     def create_vl(self, vl_id):
         req_data = {
             "nsInstanceId": self.ns_inst_id,
-            "context": json.JSONEncoder().encode(self.context),
-            "vlIndex": vl_id}
-        response = self.client.post("/api/nslcm/v1/ns/ns_vls", data=req_data)
+            "context": json.JSONEncoder().encode(self.context)
+        }
+        response = self.client.post("/api/nslcm/v1/ns/vls", data=req_data)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual(0, response.data["result"], response.data)
 
@@ -117,7 +119,7 @@ class TestVlDetailViews(TestCase):
         self.ns_inst_id = str(uuid.uuid4())
         VLInstModel(vlinstanceid=self.vl_inst_id, vldid="", vlinstancename=self.vl_name, ownertype=1,
                     ownerid=self.ns_inst_id, relatednetworkid="network1", relatedsubnetworkid="subnet1,subnet2",
-                    vimid="",
+                    vimid='{"cloud_owner": "VCPE", "cloud_regionid": "TEST"}',
                     tenant="").save()
         VNFFGInstModel(vnffgdid="", vnffginstid="", nsinstid=self.ns_inst_id,
                        vllist="test1," + self.vl_inst_id + ",test2,test3", endpointnumber=0, cplist="", vnflist="",
