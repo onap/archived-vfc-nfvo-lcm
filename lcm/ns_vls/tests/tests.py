@@ -117,7 +117,7 @@ class TestVlDetailViews(TestCase):
         self.ns_inst_id = str(uuid.uuid4())
         VLInstModel(vlinstanceid=self.vl_inst_id, vldid="", vlinstancename=self.vl_name, ownertype=1,
                     ownerid=self.ns_inst_id, relatednetworkid="network1", relatedsubnetworkid="subnet1,subnet2",
-                    vimid="",
+                    vimid='{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}',
                     tenant="").save()
         VNFFGInstModel(vnffgdid="", vnffginstid="", nsinstid=self.ns_inst_id,
                        vllist="test1," + self.vl_inst_id + ",test2,test3", endpointnumber=0, cplist="", vnflist="",

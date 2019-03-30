@@ -339,11 +339,11 @@ class TestInstantiateNsApi(TestCase):
             "additionalParamsForVnf": [
                 {
                     "vnfProfileId": "zte_ran_cucp_0001",
-                    "additionalParams": {"vimId": "3"}
+                    "additionalParams": {"vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'}
                 },
                 {
                     "vnfProfileId": "zte_ran_cuup_0001",
-                    "additionalParams": {"vimId": "3"}
+                    "additionalParams": {"vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'}
                 }
             ],
             "addpnfData": [{

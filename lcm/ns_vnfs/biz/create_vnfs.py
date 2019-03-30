@@ -161,13 +161,15 @@ class CreateVnfs(Thread):
                     'subnetwork_name': subnet_name,
                     'vl_instance_id': vl_instance_id
                 })
+                vim_id = json.JSONDecoder().decode(vl_instance.vimid) if isinstance(vl_instance.vimid, (str, unicode)) \
+                    else vl_instance.vimid
                 ext_virtual_link.append({
                     "vlInstanceId": vl_instance_id,
                     "resourceId": vl_instance.relatednetworkid,
                     "resourceSubnetId": vl_instance.relatedsubnetworkid,
                     "cpdId": self.get_cpd_id_of_vl(network_info['key_name']),
                     "vim": {
-                        "vimid": vl_instance.vimid
+                        "vimid": vim_id
                     },
                     # SOL 003 align
                     "id": vl_instance_id,
@@ -250,10 +252,13 @@ class CreateVnfs(Thread):
         }
 
         if self.vim_id:
-            vim_info = self.vim_id.split("_")
+            # vim_info = self.vim_id.split("_")
+            # identifiers = list()
+            # identifiers.append(vim_info[1])
+            # cloudOwner = vim_info[0]
             identifiers = list()
-            identifiers.append(vim_info[1])
-            cloudOwner = vim_info[0]
+            identifiers.append(self.vim_id['cloud_regionid'])
+            cloudOwner = self.vim_id['cloud_owner']
             required_candidate = [
                 {
                     "identifierType": "vimId",
