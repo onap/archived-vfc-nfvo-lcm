@@ -36,7 +36,7 @@ class NsLcmOpOcc(object):
             ns_instance_id=nsInstanceId,
             operation=lcmOperationType,
             is_automatic_invocation=isAutomaticInvocation,
-            operation_params=operationParams,
+            operation_params=str(operationParams),
             is_cancel_pending=False
         )
         logger.debug("lcm_op_occ(%s) create successfully." % lcm_op_occ.id)

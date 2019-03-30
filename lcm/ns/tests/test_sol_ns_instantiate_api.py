@@ -14,6 +14,7 @@
 
 import json
 import mock
+import uuid
 from mock import MagicMock
 from django.test import TestCase
 from rest_framework import status
@@ -290,7 +291,8 @@ class TestInstantiateNsApi(TestCase):
                 }]
             }
         })
-        NSInstModel(id="2", nspackage_id="7", nsd_id="2", status="active").save()
+        self.nsInstanceId = str(uuid.uuid4())
+        NSInstModel(id=self.nsInstanceId, nspackage_id="7", nsd_id="2", status="active").save()
 
     def tearDown(self):
         pass
@@ -305,20 +307,22 @@ class TestInstantiateNsApi(TestCase):
             [0, self.vnfms, '200'],
             [0, self.vnfm, '200']
         ]
-        response = self.client.post(self.url % '2', data=self.req_data, format='json')
+        response = self.client.post(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertIsNotNone(response['Location'])
+        response = self.client.get(response['Location'], format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @mock.patch.object(InstantNSService, 'do_biz')
     def test_ns_instantiate_normal(self, mock_do_biz):
         mock_do_biz.return_value = {'occ_id': "1"}
-        resp = self.client.post(self.url % '2', data=self.req_data, format='json')
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, resp.status_code)
+        response = self.client.post(self.url % self.nsInstanceId, data=self.req_data, format='json')
+        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
     def test_ns_instantiate_when_fail_to_parse_nsd(self, mock_call_req):
         mock_call_req.return_value = [1, "Failed to parse nsd", '500']
-        resp = self.client.post(self.url % '2', data=self.req_data, format='json')
+        resp = self.client.post(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @mock.patch('lcm.ns.biz.ns_instantiate_flow.post_deal')
@@ -328,7 +332,8 @@ class TestInstantiateNsApi(TestCase):
     @mock.patch('lcm.pub.msapi.extsys.select_vnfm', MagicMock(return_value=vnfminfo))
     def test_ns_instantiate_with_pnf(self, mock_updata_job, mock_call_req, mock_post_deal):
         config.WORKFLOW_OPTION = "grapflow"
-        NSInstModel(id="1", name="test_ns", nspackage_id="1", status="created").save()
+        nsInstanceId = str(uuid.uuid4())
+        NSInstModel(id=nsInstanceId, name="test_ns", nspackage_id="1", status="created").save()
         ret = [0, json.JSONEncoder().encode({'jobId': "1", "responseDescriptor": {"progress": 100}}), '200']
         mock_call_req.side_effect = [ret for i in range(1, 20)]
         data = {
@@ -353,18 +358,20 @@ class TestInstantiateNsApi(TestCase):
                 "pnfProfileId": "du"
             }]
         }
-        response = self.client.post(self.url % '1', data=data, format='json')
+        response = self.client.post(self.url % nsInstanceId, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertIsNotNone(response['Location'])
+        response = self.client.get(response['Location'], format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_method_not_allowed(self):
-        response = self.client.put(self.url % '1', data=self.req_data, format='json')
+        response = self.client.put(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
-        response = self.client.patch(self.url % '1', data=self.req_data, format='json')
+        response = self.client.patch(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
-        response = self.client.delete(self.url % '1', data=self.req_data, format='json')
+        response = self.client.delete(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
-        response = self.client.get(self.url % '1', data=self.req_data, format='json')
+        response = self.client.get(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
@@ -480,6 +487,8 @@ class TestInstantiateNsApi(TestCase):
                 }
             ]
         }
-        response = self.client.post(self.url % '2', data=req_data, format='json')
+        response = self.client.post(self.url % self.nsInstanceId, data=req_data, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertIsNotNone(response['Location'])
+        response = self.client.get(response['Location'], format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

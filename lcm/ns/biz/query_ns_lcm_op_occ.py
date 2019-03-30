@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -61,7 +62,7 @@ class QueryNsLcmOpOcc:
             'nsInstanceId': lcm_op.ns_instance_id,
             'operation': lcm_op.operation,
             'isAutomaticInvocation': lcm_op.is_automatic_invocation,
-            'operationParams': json.loads(lcm_op.operation_params),
+            'operationParams': eval(lcm_op.operation_params),
             'isCancelPending': lcm_op.is_cancel_pending,
             'cancelMode': lcm_op.cancel_mode,
             'error': None if not lcm_op.error else json.loads(lcm_op.error),
