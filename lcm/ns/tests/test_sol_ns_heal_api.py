@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+import uuid
 
 import mock
 from django.test import Client
@@ -28,7 +29,7 @@ from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 class TestHealNsApi(TestCase):
     def setUp(self):
         self.url = "/api/nslcm/v1/ns_instances/%s/heal"
-        self.ns_inst_id = '1'
+        self.ns_inst_id = str(uuid.uuid4())
         self.nf_inst_id = '1'
         self.nf_uuid = '1-1-1'
 
@@ -93,6 +94,8 @@ class TestHealNsApi(TestCase):
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
         self.assertIsNotNone(response.data)
         self.assertIsNotNone(response['Location'])
+        response = self.client.get(response['Location'], format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # add healNsData
 
@@ -117,6 +120,8 @@ class TestHealNsApi(TestCase):
         response = self.client.post(self.url % self.ns_inst_id, data=data)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
         self.assertIsNotNone(response['Location'])
+        response = self.client.get(response['Location'], format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @mock.patch.object(NSHealService, "start")
     def test_heal_vnf_non_existing_ns(self, mock_start):
