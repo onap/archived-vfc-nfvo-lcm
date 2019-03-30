@@ -25,7 +25,7 @@ class TestTerminateNsApi(TestCase):
     def setUp(self):
         self.client = Client()
         self.url = "/api/nslcm/v1/ns_instances/%s/terminate"
-        self.ns_inst_id = '1'
+        self.ns_inst_id = str(uuid.uuid4())
         self.nf_inst_id = '1'
         self.vnffg_id = str(uuid.uuid4())
         self.vim_id = str(uuid.uuid4())
@@ -62,6 +62,8 @@ class TestTerminateNsApi(TestCase):
         response = self.client.post(self.url % self.ns_inst_id, data=req_data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertIsNotNone(response['Location'])
+        response = self.client.get(response['Location'], format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_method_not_allowed(self):
         response = self.client.put(self.url % '1', data={}, format='json')
