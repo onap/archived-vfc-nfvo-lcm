@@ -32,6 +32,7 @@
                 <include>**/*.xsd</include>
                 <include>**/*.bpel</include>
                 <include>**/*.yml</include>
+		<include>**/*.sh</include>
             </includes>
         </fileSet>
         <fileSet>
