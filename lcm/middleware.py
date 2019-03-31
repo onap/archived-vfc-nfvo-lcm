@@ -41,10 +41,10 @@ class LogContextMiddleware(object):
 
     def process_request(self, request):
         # Fetch TRANSACTIONID Id and pass to plugin server
-        ReqeustID = request.META.get("HTTP_X_TRANSACTIONID", None)
+        ReqeustID = request.META.get("HTTP_X_ONAP-RequestID", None)
         if ReqeustID is None:
             ReqeustID = uuid.uuid3(uuid.NAMESPACE_URL, SERVICE_NAME)
-            request.META["HTTP_X_TRANSACTIONID"] = ReqeustID
+            request.META["HTTP_X_ONAP-RequestID"] = ReqeustID
         MDC.put("requestID", ReqeustID)
         # generate the unique  id
         InovocationID = uuid.uuid3(uuid.NAMESPACE_DNS, SERVICE_NAME)
