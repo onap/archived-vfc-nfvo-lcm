@@ -50,7 +50,7 @@ class AffectedPnfsSerializer(serializers.Serializer):
         choices=CHANGE_TYPE
     )
     changeResult = serializers.ChoiceField(
-        help_text="Signals the type of change",
+        help_text="Signals the result of change identified by the 'changeType' attribute.",
         required=True,
         choices=CHANGE_RESULT
     )
