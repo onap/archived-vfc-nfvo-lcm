@@ -22,10 +22,11 @@ from lcm.ns import const
 CHANGE_TYPE = [
     const.CHANGE_TYPES.ADD,
     const.CHANGE_TYPES.REMOVE,
-    const.CHANGE_TYPES.TERMINATE,
+    const.CHANGE_TYPES.INSTANTIATE,
     const.CHANGE_TYPES.SCALE,
     const.CHANGE_TYPES.UPDATE,
-    const.CHANGE_TYPES.HEAL
+    const.CHANGE_TYPES.HEAL,
+    const.CHANGE_TYPES.TERMINATE
 ]
 
 CHANGE_RESULT = [
