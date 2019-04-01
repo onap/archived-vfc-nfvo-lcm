@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright 2019 ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,7 +38,8 @@ class ChangedInfoSerializer(serializers.Serializer):
     changedVnfInfo = ModifyVnfInfoDataSerializer(
         help_text="Information about the changed VNF instance information, including configurable properties",
         required=False)
-    changedExtConnectivity = ExtVirtualLinkInfoSerializer(
+    changedExtConnectivity = serializers.ListField(
+        child=ExtVirtualLinkInfoSerializer(),
         help_text="Link to the task resource that represents the 'fail' Information about changed external "
                   "connectivity, if applicable.",
         required=False)
@@ -49,7 +51,7 @@ class AffectedVnfsSerializer(serializers.Serializer):
         required=True
     )
     vnfdId = serializers.UUIDField(
-        help_text="Identifier of the VNFD of the VNF Instance..",
+        help_text="Identifier of the VNFD of the VNF Instance.",
         required=True
     )
     vnfProfileId = serializers.UUIDField(
@@ -65,10 +67,10 @@ class AffectedVnfsSerializer(serializers.Serializer):
         choices=CHANGE_TYPE
     )
     changeResult = serializers.ChoiceField(
-        help_text="Signals the type of change",
+        help_text="Signals the result of change identified by the 'changeType' attribute.",
         required=True,
         choices=CHANGE_RESULT
     )
     changedInfo = ChangedInfoSerializer(
-        help_text="Links to resources related to this resource.",
+        help_text="Information about the changed VNF instance information, including VNF configurable properties, if applicable.",
         required=False)
