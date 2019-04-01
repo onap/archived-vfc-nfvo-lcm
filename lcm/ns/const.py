@@ -101,6 +101,10 @@ CHANGE_RESULTS = enum(
     PARTIALLY_COMPLETED='PARTIALLY_COMPLETED'
 )
 
+IPADDRESSES_TYPES = enum(
+    IPV4='IPV4',
+    IPV6='IPV6'
+)
 
 ROOT_URI = "api/nslcm/v1/subscriptions/"
 
@@ -167,6 +171,7 @@ CHANGE_RESULT = [
     CHANGE_RESULTS.ROLLED_BACK,
     CHANGE_RESULTS.FAILED
 ]
+
 
 NS_INSTANCE_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_instances/%s'
 NS_OCC_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_lcm_op_occs/%s'
