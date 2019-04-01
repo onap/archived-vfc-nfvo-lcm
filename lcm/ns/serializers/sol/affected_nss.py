@@ -52,7 +52,7 @@ class AffectedNssSerializer(serializers.Serializer):
         choices=CHANGE_TYPE
     )
     changeResult = serializers.ChoiceField(
-        help_text="Signals the result of change identified by the changeType attribute.",
+        help_text="Signals the result of change identified by the 'changeType' attribute.",
         required=True,
         choices=CHANGE_RESULT
     )
