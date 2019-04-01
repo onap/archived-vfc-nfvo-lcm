@@ -162,11 +162,11 @@ class TestNsInstant(TestCase):
             },
             "locationConstraints": [{
                 "vnfProfileId": "zte_ran_cucp_0001",
-                "locationConstraints": {"vimId": "3"}
+                "locationConstraints": {"vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'}
             },
                 {
                     "vnfProfileId": "zte_ran_cuup_0001",
-                    "locationConstraints": {"vimId": "3"}
+                    "locationConstraints": {"vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'}
             }
             ],
             "addpnfData": [{

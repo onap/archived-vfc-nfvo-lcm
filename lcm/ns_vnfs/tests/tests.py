@@ -74,7 +74,8 @@ class TestCreateVnfViews(TestCase):
                             "vnf_param2": "22"
                         }),
                         "vnfminstanceid": "1",
-                        "vimId": "zte_test"
+                        # "vimId": "zte_test"
+                        "vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'
                     }
                 }
             ],
@@ -239,7 +240,8 @@ class TestTerminateVnfViews(TestCase):
                                    package_id='pkg1',
                                    vnfd_model=self.vnfd_model)
         VmInstModel.objects.create(vmid="1",
-                                   vimid="zte_test",
+                                   # vimid="zte_test",
+                                   vimid='{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}',
                                    resouceid="1",
                                    insttype=INST_TYPE.VNF,
                                    instid=self.nf_inst_id,
@@ -694,7 +696,7 @@ class TestGetVnfmInfoViews(TestCase):
 class TestGetVimInfoViews(TestCase):
     def setUp(self):
         self.client = Client()
-        self.vim_id = "zte_test"
+        self.vim_id = {"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}
 
     def tearDown(self):
         pass
@@ -720,7 +722,8 @@ class TestGetVimInfoViews(TestCase):
             "createTime": ""
         }
 
-        response = self.client.get("/api/nslcm/v1/vims/%s" % self.vim_id)
+        # response = self.client.get("/api/nslcm/v1/vims/%s" % self.vim_id)
+        response = self.client.get("/api/nslcm/v1/vims/%s/%s" % (self.vim_id['cloud_owner'], self.vim_id['cloud_regionid']))
         self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
         context = json.loads(response.content)
         self.assertEqual(expect_data["url"], context["url"])
