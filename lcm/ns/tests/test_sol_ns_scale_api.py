@@ -198,8 +198,6 @@ class TestScaleNsApi(TestCase):
         response = self.client.post(self.url % self.ns_inst_id, data=data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertIsNotNone(response['Location'])
-        response = self.client.get(response['Location'], format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_empty_data(self, mock_start):

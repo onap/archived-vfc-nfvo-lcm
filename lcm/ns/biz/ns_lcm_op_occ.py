@@ -15,7 +15,6 @@
 import logging
 import datetime
 import uuid
-import json
 
 from lcm.pub.database.models import NSLcmOpOccModel
 from lcm.pub.utils.values import update_value
@@ -37,7 +36,7 @@ class NsLcmOpOcc(object):
             ns_instance_id=nsInstanceId,
             operation=lcmOperationType,
             is_automatic_invocation=isAutomaticInvocation,
-            operation_params=json.dumps(operationParams),
+            operation_params=operationParams,
             is_cancel_pending=False
         )
         logger.debug("lcm_op_occ(%s) create successfully." % lcm_op_occ.id)

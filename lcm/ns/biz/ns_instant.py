@@ -62,14 +62,27 @@ class InstantNSService(object):
             logger.debug('ns-instant(%s) workflow starting...' % self.ns_inst_id)
             logger.debug('req_data=%s' % self.req_data)
             ns_inst = NSInstModel.objects.get(id=self.ns_inst_id)
-            vim_id = ''
+            vim_id = {}
 
+            # input_parameters = []
+            # if 'additionalParamForNs' in self.req_data:
+            #     for key, val in self.req_data['additionalParamForNs'].items():
+            #         input_parameters.append({"key": key, "value": val})
+            #     if 'location' in self.req_data['additionalParamForNs']:
+            #         vim_id = self.req_data['additionalParamForNs']['location']
+            #     params_json = json.JSONEncoder().encode(self.req_data["additionalParamForNs"])
+            # else:
+            #     params_json = json.JSONEncoder().encode({})
             input_parameters = []
             if 'additionalParamForNs' in self.req_data:
                 for key, val in self.req_data['additionalParamForNs'].items():
                     input_parameters.append({"key": key, "value": val})
+
                 if 'location' in self.req_data['additionalParamForNs']:
-                    vim_id = self.req_data['additionalParamForNs']['location']
+                    cloud_owner = self.req_data['additionalParamForNs']['location'].split('_')[0]
+                    cloud_regionid = self.req_data["additionalParamForNs"]["location"].split('_')[1]
+                    vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
+                    logger.info('vim_id::::::::::::%s', type(vim_id))
                 params_json = json.JSONEncoder().encode(self.req_data["additionalParamForNs"])
             else:
                 params_json = json.JSONEncoder().encode({})
@@ -217,11 +230,27 @@ class InstantNSService(object):
         run_ns_instantiate(plan_input, occ_id)
         return dict(data={'jobId': job_id}, status=status.HTTP_200_OK, occ_id=occ_id)
 
+    # @staticmethod
+    # def get_vnf_vim_id(vim_id, location_constraints, vnfdid):
+    #     for location in location_constraints:
+    #         if "vnfProfileId" in location and vnfdid == location["vnfProfileId"]:
+    #             return location["locationConstraints"]["vimId"]
+    #     if vim_id:
+    #         return vim_id
+    #     raise NSLCMException("No Vim info is found for vnf(%s)." % vnfdid)
     @staticmethod
     def get_vnf_vim_id(vim_id, location_constraints, vnfdid):
         for location in location_constraints:
             if "vnfProfileId" in location and vnfdid == location["vnfProfileId"]:
-                return location["locationConstraints"]["vimId"]
+                if 'vimId' in location['locationConstraints']:
+                    cloud_owner = location['locationConstraints']["vimId"].split('_')[0]
+                    cloud_regionid = location['locationConstraints']["vimId"].split('_')[1]
+                    vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
+                else:
+                    cloud_owner = location['locationConstraints']["cloudOwner"]
+                    cloud_regionid = location['locationConstraints']["cloudRegionId"]
+                    vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
+                return vim_id
         if vim_id:
             return vim_id
         raise NSLCMException("No Vim info is found for vnf(%s)." % vnfdid)
@@ -237,10 +266,23 @@ class InstantNSService(object):
                 for depend in vnf["dependencies"]:
                     vl_vnf[depend["vl_id"]] = vnf['properties']['id']
         vnf_vim = {}
+        # for location in location_constraints:
+        #     if "vnfProfileId" in location:
+        #         vnfd_id = location["vnfProfileId"]
+        #         vnf_vim[vnfd_id] = location["locationConstraints"]["vimId"]
         for location in location_constraints:
             if "vnfProfileId" in location:
                 vnfd_id = location["vnfProfileId"]
-                vnf_vim[vnfd_id] = location["locationConstraints"]["vimId"]
+                if 'vimId' in location["locationConstraints"]:
+                    cloud_owner = location["locationConstraints"]["vimId"].split('_')[0]
+                    cloud_regionid = location["locationConstraints"]["vimId"].split('_')[1]
+                    vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
+                    vnf_vim[vnfd_id] = vim_id
+                else:
+                    cloud_owner = location["locationConstraints"]["cloudOwner"]
+                    cloud_regionid = location["locationConstraints"]["cloudRegionId"]
+                    vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
+                    vnf_vim[vnfd_id] = vim_id
         for vl in plan_dict["vls"]:
             vnfdid = ignore_case_get(vl_vnf, vl["vl_id"])
             vimid = ignore_case_get(vnf_vim, vnfdid)

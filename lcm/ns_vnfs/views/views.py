@@ -21,7 +21,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id
+from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id_vim_info
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
@@ -318,10 +318,12 @@ class NfVimInfoView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
-    def get(self, request, vimid):
-        logger.debug("NfVimInfoView--get::> %s" % vimid)
+    # def get(self, request, vimid):
+    def get(self, request, cloudowner, cloudregionid):
+        logger.debug("NfVimInfoView--get::> %s,%s" % (cloudowner, cloudregionid))
         try:
-            vim_info = get_vim_by_id(vimid)
+            # vim_info = get_vim_by_id(vimid)
+            vim_info = get_vim_by_id_vim_info(cloudowner, cloudregionid)
 
             resp_serializer = VimInfoRespSerializer(data=vim_info)
             if not resp_serializer.is_valid():
