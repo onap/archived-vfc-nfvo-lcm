@@ -1,5 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
-
+# Copyright 2019 ZTE Corporation.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -40,9 +40,10 @@ class AffectedPnfsSerializer(serializers.Serializer):
     pnfName = serializers.CharField(
         help_text="Name of the PNF.",
         required=True)
-    cpInstanceId = serializers.UUIDField(
-        help_text="Identifier of the NS profile of the NSD.",
-        required=True
+    cpInstanceId = serializers.ListField(
+        help_text="Identifier of the CP in the scope of the PNF.",
+        required=True,
+        child=serializers.UUIDField()
     )
     changeType = serializers.ChoiceField(
         help_text="Signals the type of change",
@@ -50,7 +51,7 @@ class AffectedPnfsSerializer(serializers.Serializer):
         choices=CHANGE_TYPE
     )
     changeResult = serializers.ChoiceField(
-        help_text="Signals the type of change",
+        help_text="result of change identified by the changeType attribute",
         required=True,
         choices=CHANGE_RESULT
     )

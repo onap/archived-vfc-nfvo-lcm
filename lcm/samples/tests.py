@@ -12,21 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-import json
-from django.test import Client
-from rest_framework import status
+# import unittest
+
+from django.test import TestCase
+from rest_framework.test import APIClient
 
 
-class SampleViewTest(unittest.TestCase):
+class SampleViewTest(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = APIClient()
 
     def tearDown(self):
         pass
 
-    def test_sample(self):
-        response = self.client.get("/samples/")
-        self.assertEqual(status.HTTP_200_OK, response.status_code, response.content)
-        resp_data = json.loads(response.content)
-        self.assertEqual({"status": "active"}, resp_data)
+    # def test_sample(self):
+    #     response = self.client.get("/samples/")
+    #     self.assertEqual(status.HTTP_200_OK, response.status_code, response.content)
+    #     resp_data = json.loads(response.content)
+    #     self.assertEqual({"status": "active"}, resp_data)

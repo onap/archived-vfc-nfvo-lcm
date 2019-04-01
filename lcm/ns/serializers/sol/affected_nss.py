@@ -1,5 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
-
+# Copyright 2019 ZTE Corporation.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -46,12 +46,12 @@ class AffectedNssSerializer(serializers.Serializer):
         required=True
     )
     changeType = serializers.ChoiceField(
-        help_text="Signals the type of change",
+        help_text="Signals the type of lifecycle change",
         required=True,
         choices=CHANGE_TYPE
     )
     changeResult = serializers.ChoiceField(
-        help_text="Signals the type of change",
+        help_text="Signals the result of change identified by the changeType attribute",
         required=True,
         choices=CHANGE_RESULT
     )
