@@ -7,11 +7,11 @@ MR_IP=`echo $MR_ADDR | cut -d: -f 1`
 MR_PORT=`echo $MR_ADDR | cut -d: -f 2`
 
 if [ $MSB_IP ]; then
-    sed -i "s|MSB_SERVICE_IP.*|MSB_SERVICE_IP = '$MSB_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
+    sed -i "s|MSB_SERVICE_IP = .*|MSB_SERVICE_IP = '$MSB_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 fi
 
 if [ $MSB_PORT ]; then
-    sed -i "s|MSB_SERVICE_PORT.*|MSB_SERVICE_PORT = '$MSB_PORT'|" vfc/nfvo/lcm/lcm/pub/config/config.py
+    sed -i "s|MSB_SERVICE_PORT = .*|MSB_SERVICE_PORT = '$MSB_PORT'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 fi
 
 if [ $MR_IP ]; then
