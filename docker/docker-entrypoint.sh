@@ -1,5 +1,7 @@
 #!/bin/bash
 
+find  /service -name '*.sh'|xargs chmod a+x
+
 if [ -z "$SERVICE_IP" ]; then
     export SERVICE_IP=`hostname -i`
 fi
