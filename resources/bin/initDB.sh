@@ -15,10 +15,6 @@
 # limitations under the License.
 #
 
-######
-#test for vfc-db
-######
-
 DIRNAME=`dirname $0`
 HOME=`cd $DIRNAME/; pwd`
 MYSQL_USER=$1

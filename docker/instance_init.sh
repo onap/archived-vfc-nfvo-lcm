@@ -1,6 +1,5 @@
 #/bin/bash
 
-pip install PyMySQL==0.9.3
 mkdir -p /service/vfc/nfvo/lcm/resources/bin/logs
 mkdir -p /var/log/onap/vfc/nslcm/
 
