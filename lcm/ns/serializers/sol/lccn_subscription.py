@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright 2019 ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,20 +29,18 @@ class LccnSubscriptionLinkSerializer(serializers.Serializer):
 class LccnSubscriptionSerializer(serializers.Serializer):
     id = serializers.CharField(
         help_text="Identifier of this subscription resource.",
-        max_length=255,
-        required=True,
-        allow_null=False)
-    callbackUri = serializers.CharField(
-        help_text="The URI of the endpoint to send the notification to.",
-        max_length=255,
         required=True,
         allow_null=False)
     filter = LifeCycleChangeNotificationsFilter(
-        help_text="Filter settings for this subscription, to define the of all notifications this "
-                  "subscription relates to A particular notification is sent to the subscriber if the filter"
-                  " matches, or if there is no filter.", required=False)
+        help_text="Filter settings for this subscription, to define the of all notifications this subscription relates to.",
+        required=False)
+    callbackUri = serializers.CharField(
+        help_text="The URI of the endpoint to send the notification to.",
+        required=True,
+        allow_null=False)
     _links = LccnSubscriptionLinkSerializer(
-        help_text="Links to resources related to this resource.", required=True)
+        help_text="Links to resources related to this resource.",
+        required=True)
 
 
 class LccnSubscriptionsSerializer(serializers.ListSerializer):
