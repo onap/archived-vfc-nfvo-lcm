@@ -34,6 +34,7 @@ from lcm.ns.views.sol.subscriptions_view import SubscriptionsView
 from lcm.ns.views.sol.update_ns_view import UpdateNSView
 from lcm.ns.views.sol.scale_ns_views import ScaleNSView
 from lcm.ns.views.sol.heal_ns_view import HealNSView
+from lcm.ns.views.sol.health_check import HealthCheckView
 
 urlpatterns = [
     # API will be deprecated in the future release
@@ -56,7 +57,10 @@ urlpatterns = [
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', HealNSView.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', IndividualNsInstanceView.as_view()),
     url(r'^api/nslcm/v1/subscriptions$', SubscriptionsView.as_view()),
-    url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view())
+    url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view()),
+
+    # health check
+    url(r'^api/nslcm/v1/health_check$', HealthCheckView.as_view())
 
 ]
 
