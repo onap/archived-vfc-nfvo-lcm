@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72286a85_3c3d2d04",
+        "filename": "resources/bin/initDB.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-04-03T03:33:14Z",
+      "side": 1,
+      "message": "SHould be changed to else",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 32
+      },
+      "revId": "efa3cfd2208347e878aa41a19d793c0838d7b7f0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "de35affc_f324f010",
+        "filename": "resources/dbscripts/mysql/vfc-nfvo-lcm-createdb.sql",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-04-03T03:33:14Z",
+      "side": 1,
+      "message": "Need change this comments",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 73
+      },
+      "revId": "efa3cfd2208347e878aa41a19d793c0838d7b7f0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
