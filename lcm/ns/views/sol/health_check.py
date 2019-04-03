@@ -14,11 +14,17 @@
 
 import logging
 
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
 from rest_framework.views import APIView
 
 logger = logging.getLogger(__name__)
 
 
 class HealthCheckView(APIView):
-    logger.debug("Health check.")
-    pass
+    @swagger_auto_schema(
+        responses={
+            status.HTTP_200_OK: 'Active'})
+    def get(self, request, format=None):
+        logger.debug("Health check.")
+        return Response({"status": "active"})
