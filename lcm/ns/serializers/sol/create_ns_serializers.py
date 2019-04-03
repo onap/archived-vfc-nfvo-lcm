@@ -1,4 +1,5 @@
 # Copyright (c) 2018, CMCC Technologies Co., Ltd.
+# Copyright 2019 ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +17,15 @@ from rest_framework import serializers
 
 
 class CreateNsRequestSerializer(serializers.Serializer):
-    nsdId = serializers.CharField(help_text="Identifier of the NSD that defines the NS instance to be created.", required=True, allow_null=False)
-    nsName = serializers.CharField(help_text="Name of NS", required=True, allow_null=True)
-    nsDescription = serializers.CharField(help_text="Description of NS", required=True, allow_null=True)
+    nsdId = serializers.CharField(
+        help_text="Identifier of the NSD that defines the NS instance to be created.",
+        required=True,
+        allow_null=False)
+    nsName = serializers.CharField(
+        help_text="Name of NS",
+        required=True,
+        allow_null=True)
+    nsDescription = serializers.CharField(
+        help_text="Description of NS",
+        required=True,
+        allow_null=True)

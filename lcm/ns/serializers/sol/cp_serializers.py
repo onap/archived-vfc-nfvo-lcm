@@ -13,12 +13,9 @@
 # limitations under the License.
 
 from rest_framework import serializers
-from lcm.ns.const import IPADDRESSES_TYPES
+from lcm.ns.const import IPADDRESSES_TYPE_LIST
 
-IPADDRESSES_TYPE = [
-    IPADDRESSES_TYPES.IPV4,
-    IPADDRESSES_TYPES.IPV6
-]
+
 LAYER_PROTOCOL = [
     "IP_OVER_ETHERNET"
 ]
@@ -37,7 +34,7 @@ class IpAddressesDataSerialzier(serializers.Serializer):
     type = serializers.ChoiceField(
         help_text="The type of the IP addresses.",
         required=True,
-        choices=IPADDRESSES_TYPE)
+        choices=IPADDRESSES_TYPE_LIST)
     fixedAddresses = serializers.ListField(
         child=serializers.CharField(
             help_text="Fixed addresses to assign.",
@@ -60,7 +57,7 @@ class IpAddressesInfoSerialzier(serializers.Serializer):
     type = serializers.ChoiceField(
         help_text="The type of the IP addresses.",
         required=True,
-        choices=IPADDRESSES_TYPE)
+        choices=IPADDRESSES_TYPE_LIST)
     addresses = serializers.ListField(
         help_text="An IPV4 or IPV6 address",
         required=False,
