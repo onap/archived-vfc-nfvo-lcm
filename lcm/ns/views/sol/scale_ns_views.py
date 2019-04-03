@@ -18,7 +18,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
-from lcm.ns.serializers.sol.scale_ns_serializers import ManualScaleNsReqSerializer
+from lcm.ns.serializers.sol.scale_ns_serializers import ScaleNsRequestSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.ns.const import NS_OCC_BASE_URI
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 class ScaleNSView(APIView):
     @swagger_auto_schema(
-        request_body=ManualScaleNsReqSerializer(help_text="NS Scale"),
+        request_body=ScaleNsRequestSerializer(help_text="NS Scale"),
         responses={
             status.HTTP_202_ACCEPTED: "HTTP_202_ACCEPTED",
             status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
@@ -40,7 +40,7 @@ class ScaleNSView(APIView):
         logger.debug("Enter ScaleNSView::post %s, %s", request.data, ns_instance_id)
         job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_instance_id)
         try:
-            req_serializer = ManualScaleNsReqSerializer(data=request.data)
+            req_serializer = ScaleNsRequestSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
             nsManualScaleService = NSManualScaleService(ns_instance_id, request.data, job_id)

@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 import traceback
-
+import json
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -43,8 +43,12 @@ class NSManualScaleView(APIView):
             req_serializer = _ManualScaleNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
-
-            NSManualScaleService(ns_instance_id, request.data, job_id).start()
+            req = request.data
+            scale_data = {}
+            scale_data['scaleType'] = req['scaleType']
+            scaleNsData = req['scaleNsData'][0]
+            scale_data['scaleNsData'] = {"scaleNsByStepsData": scaleNsData['scaleNsByStepsData'][0]}
+            NSManualScaleService(ns_instance_id, scale_data, job_id).start()
 
             resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
             if not resp_serializer.is_valid():
