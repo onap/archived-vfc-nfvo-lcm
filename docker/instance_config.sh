@@ -29,14 +29,16 @@ fi
 # Configure MYSQL
 MYSQL_IP=`echo $MYSQL_ADDR | cut -d: -f 1`
 MYSQL_PORT=`echo $MYSQL_ADDR | cut -d: -f 2`
-MYSQL_USER=`echo $MYSQL_AUTH | cut -d: -f 1`
-MYSQL_ROOT_PASSWORD=`echo $MYSQL_AUTH | cut -d: -f 2
-
 echo "MYSQL_ADDR=$MYSQL_ADDR"
+
+if [ $REDIS_ADDR ]; then
+    REDIS_IP=`echo $REDIS_ADDR | cut -d: -f 1`
+else
+    REDIS_IP="$MYSQL_ADDR"
+fi
+
 sed -i "s|DB_IP.*|DB_IP = '$MYSQL_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 sed -i "s|DB_PORT.*|DB_PORT = $MYSQL_PORT|" vfc/nfvo/lcm/lcm/pub/config/config.py
 sed -i "s|REDIS_HOST.*|REDIS_HOST = '$MYSQL_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
-sed -i "s|DB_USER.*|DB_USER = '$MYSQL_USER'|" vfc/nfvo/lcm/lcm/pub/config/config.py
-sed -i "s|DB_PASSWD.*|DB_PASSWD = '$MYSQL_ROOT_PASSWORD'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 
 cat vfc/nfvo/lcm/lcm/pub/config/config.py
