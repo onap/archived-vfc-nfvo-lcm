@@ -26,9 +26,9 @@ function migrate_database {
 }
 
 
-cd /service
-if [ ! -f dbexist.txt ]; then
-    echo 1 > dbexist.txt
+GET_NSLCM_DB="show databases like 'vfcnfvolcm';"
+NSLCM_DB=`mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD -P$MYSQL_PORT -h$MYSQL_IP -e "GET_NSLCM_DB"`
+if [[ "$NSLCM_DB" == "" ]]; then
     create_database
     migrate_database
 fi

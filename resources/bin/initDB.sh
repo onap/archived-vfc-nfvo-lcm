@@ -26,10 +26,10 @@ sql_path=$HOME/../
 mysql -u$MYSQL_USER -p$MYSQL_PASSWORD -P$MYSQL_PORT -h$MYSQL_IP <$sql_path/dbscripts/mysql/vfc-nfvo-lcm-createdb.sql
 sql_result=$?
 if [ $sql_result -ne 0 ] ; then
-    echo "failed to create vfcnfvolcm database"
+    echo "Failed to create vfcnfvolcm database"
     exit 1
-elif [ $sql_result -eq 0 ]; then
-    echo "create vfcnfvolcm database successfully"
+else
+    echo "Create vfcnfvolcm database successfully"
     exit 0
 fi
 

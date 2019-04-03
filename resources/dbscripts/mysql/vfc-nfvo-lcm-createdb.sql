@@ -14,14 +14,10 @@
 -- limitations under the License.
 --
 
-/******************drop old database and user***************************/
+/******************create database and user***************************/
 use mysql;
-drop database IF  EXISTS vfcnfvolcm;
-delete from user where User='vfcnfvolcm';
-FLUSH PRIVILEGES;
+create database if not exists vfcnfvolcm CHARACTER SET utf8;
 
-/******************create new database and user***************************/
-create database vfcnfvolcm CHARACTER SET utf8;
 
 GRANT ALL PRIVILEGES ON vfcnfvolcm.* TO 'vfcnfvolcm'@'%' IDENTIFIED BY 'vfcnfvolcm' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON mysql.* TO 'vfcnfvolcm'@'%' IDENTIFIED BY 'vfcnfvolcm' WITH GRANT OPTION;
