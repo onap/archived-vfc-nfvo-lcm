@@ -49,13 +49,13 @@ urlpatterns = [
 
     # SOL005 URL API definition
     url(r'^api/nslcm/v1/ns_instances$', NSInstancesView.as_view()),
+    url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', IndividualNsInstanceView.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate$', InstantiateNsView.as_view()),
-    url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNsView.as_view()),
-    url(r'^api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)$', QuerySingleNsLcmOpOcc.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update$', UpdateNSView.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale$', ScaleNSView.as_view()),
     url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal$', HealNSView.as_view()),
-    url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)$', IndividualNsInstanceView.as_view()),
+    url(r'^api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate$', TerminateNsView.as_view()),
+    url(r'^api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)$', QuerySingleNsLcmOpOcc.as_view()),
     url(r'^api/nslcm/v1/subscriptions$', SubscriptionsView.as_view()),
     url(r'^api/nslcm/v1/ns_lcm_op_occs$', QueryMultiNsLcmOpOccs.as_view()),
 

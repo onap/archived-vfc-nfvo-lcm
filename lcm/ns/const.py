@@ -106,8 +106,6 @@ IPADDRESSES_TYPES = enum(
     IPV6='IPV6'
 )
 
-ROOT_URI = "api/nslcm/v1/subscriptions/"
-
 LCCNNOTIFICATION = "NsLcmOperationOccurrenceNotification"
 
 NOTIFICATION_TYPES = [
@@ -175,3 +173,4 @@ CHANGE_RESULT = [
 
 NS_INSTANCE_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_instances/%s'
 NS_OCC_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_lcm_op_occs/%s'
+SUBSCRIPTION_ROOT_URI = MSB_BASE_URL + "/api/nslcm/v1/subscriptions/%s"

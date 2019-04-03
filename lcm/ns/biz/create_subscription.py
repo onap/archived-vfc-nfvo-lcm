@@ -135,7 +135,7 @@ class CreateSubscription:
                      "%s to the database" % self.subscription_id)
         links = {
             "self": {
-                "href": const.ROOT_URI + self.subscription_id
+                "href": const.SUBSCRIPTION_ROOT_URI % self.subscription_id
             }
         }
         SubscriptionModel.objects.create(subscription_id=self.subscription_id,
