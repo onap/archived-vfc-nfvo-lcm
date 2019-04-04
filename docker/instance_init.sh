@@ -22,6 +22,7 @@ function create_database {
 function migrate_database {
     cd /service/vfc/nfvo/lcm
     python manage.py makemigrations database
+    python manage.py migrate --fake
     python manage.py migrate
 }
 
