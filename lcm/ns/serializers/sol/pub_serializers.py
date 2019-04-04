@@ -51,7 +51,10 @@ class ProblemDetailsSerializer(serializers.Serializer):
 
 class LinkSerializer(serializers.Serializer):
     href = serializers.CharField(
-        help_text="URI of the referenced resource.", required=True, allow_null=False, allow_blank=False)
+        help_text="URI of the referenced resource.",
+        required=True,
+        allow_null=False,
+        allow_blank=False)
 
 
 class AffinityOrAntiAffinityRuleSerializer(serializers.Serializer):

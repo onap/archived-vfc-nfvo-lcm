@@ -17,6 +17,7 @@ import uuid
 
 import mock
 from django.test import Client
+from rest_framework.test import APIClient
 from django.test import TestCase
 from lcm.ns.biz.scaleaspect import get_json_data
 from rest_framework import status
@@ -114,6 +115,7 @@ class TestNsManualScale(TestCase):
             "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
         self.package_id = "7"
         self.client = Client()
+        self.apiClient = APIClient()
         NSInstModel(
             id=self.ns_inst_id,
             name="abc",
@@ -179,17 +181,19 @@ class TestNsManualScale(TestCase):
     def test_ns_manual_scale(self, mock_run):
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsData": [{
-                "scaleNsByStepsData": [{
-                    "aspectId": "1",
-                    "numberOfSteps": 1,
-                    "scalingDirection": "0"
-                }]
-            }]
+            "scaleNsData": [
+                {
+                    "scaleNsByStepsData": [{
+                        "aspectId": "1",
+                        "numberOfSteps": 1,
+                        "scalingDirection": "0"
+                    }]
+                }
+            ]
         }
-        response = self.client.post(
+        response = self.apiClient.post(
             "/api/nslcm/v1/ns/%s/scale" %
-            self.ns_inst_id, data=data)
+            self.ns_inst_id, data=data, format='json')
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     def test_ns_manual_scale_error_scaletype(self):

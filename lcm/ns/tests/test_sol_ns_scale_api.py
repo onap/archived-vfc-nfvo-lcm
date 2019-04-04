@@ -187,13 +187,13 @@ class TestScaleNsApi(TestCase):
     def test_ns_scale(self, mock_run):
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsData": [{
-                "scaleNsByStepsData": [{
+            "scaleNsData": {
+                "scaleNsByStepsData": {
                     "aspectId": "1",
                     "numberOfSteps": 1,
                     "scalingDirection": "0"
-                }]
-            }]
+                }
+            }
         }
         response = self.client.post(self.url % self.ns_inst_id, data=data)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
@@ -216,13 +216,13 @@ class TestScaleNsApi(TestCase):
         mock_start.side_effect = NSLCMException("NS scale failed.")
         data = {
             "scaleType": "SCALE_NS",
-            "scaleNsData": [{
-                "scaleNsByStepsData": [{
+            "scaleNsData": {
+                "scaleNsByStepsData": {
                     "aspectId": "1",
                     "numberOfSteps": 1,
                     "scalingDirection": "0"
-                }]
-            }]
+                }
+            }
         }
         response = self.client.post(self.url % '11', data=data)
         self.assertEqual(
