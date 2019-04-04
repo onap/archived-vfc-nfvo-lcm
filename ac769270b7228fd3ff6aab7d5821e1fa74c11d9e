@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "050e00e0_a62862cf",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-04-04T02:30:52Z",
+      "side": 1,
+      "message": "need add \u0026\u0026 \\ at the end of this line",
+      "revId": "ac769270b7228fd3ff6aab7d5821e1fa74c11d9e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a843e548_8846e4bf",
+        "filename": "uwsgi-requirements.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-04-04T02:30:52Z",
+      "side": 1,
+      "message": "this file can be merged to requirements.txt",
+      "revId": "ac769270b7228fd3ff6aab7d5821e1fa74c11d9e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
