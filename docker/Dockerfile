@@ -35,6 +35,7 @@ RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/m
 WORKDIR /service/vfc/nfvo/lcm
 RUN pip install --upgrade setuptools pip && \
     pip install --pre -r requirements.txt
+    pip install --pre -r uwsgi-requirements.txt
 
 EXPOSE 8403
 
