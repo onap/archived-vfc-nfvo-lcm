@@ -199,12 +199,3 @@ class ScaleNsRequestSerializer(serializers.Serializer):
         help_text="Timestamp indicating the scale time of the NS",
         required=False,
         allow_null=True)
-
-
-# class ManualScaleNsReqSerializer(serializers.Serializer):
-#    scaleType = serializers.CharField(
-#        help_text="Type of NS Scale",
-#        required=True)
-#    scaleNsData = ScaleNsDataSerializer(
-#        help_text="Scale NS data",
-#        many=True)
