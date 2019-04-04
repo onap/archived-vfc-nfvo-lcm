@@ -16,4 +16,6 @@ from rest_framework import serializers
 
 
 class TerminateNsReqSerializer(serializers.Serializer):
-    terminationTime = serializers.CharField(help_text="Timestamp indicating the end time of the NS.", required=False)
+    terminationTime = serializers.CharField(
+        help_text="Timestamp indicating the end time of the NS.",
+        required=False)
