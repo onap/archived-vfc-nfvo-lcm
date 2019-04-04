@@ -13,7 +13,7 @@ architecuture, the APIs and the installation steps, etc. as well as the release
 notes of VF-C in this document.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    platform/index.rst
    release-notes.rst
