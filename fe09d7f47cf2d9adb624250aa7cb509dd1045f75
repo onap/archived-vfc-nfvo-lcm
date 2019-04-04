@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ad9e41d_07c11725",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-04-04T03:12:33Z",
+      "side": 1,
+      "message": "need delete this",
+      "range": {
+        "startLine": 37,
+        "startChar": 41,
+        "endLine": 37,
+        "endChar": 46
+      },
+      "revId": "fe09d7f47cf2d9adb624250aa7cb509dd1045f75",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9faaf79_f2acb126",
+        "filename": "run.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-04-04T03:12:33Z",
+      "side": 1,
+      "message": "need a space after #",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 6
+      },
+      "revId": "fe09d7f47cf2d9adb624250aa7cb509dd1045f75",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "164e8ef4_c943586d",
+        "filename": "stop.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-04-04T03:12:33Z",
+      "side": 1,
+      "message": "need a space after #",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 3
+      },
+      "revId": "fe09d7f47cf2d9adb624250aa7cb509dd1045f75",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
