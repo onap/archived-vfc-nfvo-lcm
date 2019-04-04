@@ -40,12 +40,12 @@ VF-C as one controller in ONAP includes two components NFV-O and GVNFM.
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    architecture.rst
    APIs/index
    consumedapis.rst
    delivery.rst
    logging.rst
-   installation.rst
+   installation/index
    administration.rst

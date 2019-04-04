@@ -3,4 +3,4 @@
 
 NSLCM API
 ---------
-.. swaggerv2doc:: NSLCM_API_Specification_v0.1.json
+.. swaggerv2doc:: NSLCM_API_Specification_v1.json
