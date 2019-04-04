@@ -169,19 +169,22 @@ class NotifyLcmReqSerializer(serializers.Serializer):
 
 
 class ScaleVnfDataSerializer(serializers.Serializer):
-    type = serializers.ChoiceField(
-        help_text="Direction of the scaling",
-        choices=["SCALE_IN", "SCALE_OUT"],
-        required=True
-    )
-    aspectId = serializers.CharField(help_text="Aspect ID of the VNF that is requested to be scaled", required=False, allow_null=True, allow_blank=True)
-    numberOfSteps = serializers.CharField(help_text="Number of scaling steps to be executed as part of this ScaleVnf operation", required=False, allow_null=True, allow_blank=True)
-    additionalParam = serializers.DictField(
-        help_text="Additional parameters passed by the NFVO as input to the scaling process, specific to the VNF being scaled",
-        child=serializers.CharField(help_text="Additional parameters", allow_blank=True),
-        required=False,
-        allow_null=True
-    )
+    vnfInstanceid = serializers.CharField(
+        help_text="Identifier of the VNF instance being scaled.",
+        required=True)
+
+    scaleVnfType = serializers.ChoiceField(
+        help_text="Type of the scale VNF operation requested.",
+        choices=["SCALE_OUT", "SCALE_IN", "SCALE_TO_INSTANTIATION_LEVEL", "SCALE_TO_SCALE_LEVEL(S)"],
+        required=True)
+
+    scaleToLevelData = ScaleToLevelDataSerializer(
+        help_text="The information used for scaling to a given level.",
+        required=False)
+
+    scaleByStepData = ScaleByStepDataSerializer(
+        help_text="The information used for scaling by steps.",
+        required=False)
 
 
 class ScaleVnfReqSerializer(serializers.Serializer):

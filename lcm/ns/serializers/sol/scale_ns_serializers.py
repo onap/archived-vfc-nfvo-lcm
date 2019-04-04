@@ -17,15 +17,7 @@ from rest_framework import serializers
 from lcm.ns.serializers.sol.inst_ns_serializers import VnfLocationConstraintSerializer, ParamsForVnfSerializer
 from lcm.ns.serializers.sol.update_serializers import VnfInstanceDataSerializer
 from lcm.ns.serializers.sol.ns_instance import NsScaleInfoSerializer, VnfScaleInfoSerializer
-
-
-# class VnfInstanceDataSerializer(serializers.Serializer):
-#     vnfInstanceId = serializers.CharField(help_text="Identifier of the existing VNF instance to be used in"
-#                                                     "the NS. ", required=True)
-#     vnfProfileId = serializers.CharField(help_text="Identifier of (Reference to) a vnfProfile defined in the "
-#                                                    "NSD which the existing VNF instance shall be matched "
-#                                                    "with. If not present", required=False, allow_null=True)
-
+from lcm.ns_vnfs.serializers.serializers import ScaleVnfDataSerializer
 
 class ScaleNsByStepsDataSerializer(serializers.Serializer):
     scalingDirection = serializers.ChoiceField(
@@ -55,34 +47,6 @@ class ScaleNsToLevelDataSerializer(serializers.Serializer):
             required=True),
         required=False,
         allow_null=True)
-
-
-# class ParamsForVnfSerializer(serializers.Serializer):
-#     vnfProfileId = serializers.CharField(help_text="Identifier of (reference to) a vnfProfile to which the "
-#                                                    "additional parameters apply.", required=True)
-#     additionalParams = serializers.DictField(help_text="Additional parameters that are applied for the VNF "
-#                                                        "instance to be created.",
-#                                              child=serializers.CharField(help_text="KeyValue Pairs",
-#                                                                          allow_blank=True),
-#                                              required=False, allow_null=True)
-
-
-# class LocationConstraintsSerializer(serializers.Serializer):
-#     countryCode = serializers.CharField(help_text="The two-letter ISO 3166 [29] country code in capital "
-#                                                   "letters", required=True)
-#     civicAddressElement = serializers.ListField(help_text="Zero or more elements comprising the civic "
-#                                                           "address.", required=False, allow_null=True)
-
-
-# class VnfLocationConstraintSerializer(serializers.Serializer):
-#     vnfProfileId = serializers.CharField(help_text="Identifier (reference to) of a VnfProfile in the NSD used "
-#                                                    "to manage the lifecycle of the VNF instance.",
-#                                          required=True)
-#
-#     locationConstraints = LocationConstraintsSerializer(help_text="This type represents location constraints "
-#                                                                   "for a VNF to be instantiated. The location"
-#                                                                   " constraints shall be presented as a "
-#                                                                   "country code", required=True)
 
 
 class ScaleNsDataSerializer(serializers.Serializer):
@@ -158,25 +122,6 @@ class ScaleByStepDataSerializer(serializers.Serializer):
         help_text="Additional parameters passed by the NFVO as input to the scaling process.",
         required=False,
         allow_null=True)
-
-
-class ScaleVnfDataSerializer(serializers.Serializer):
-    vnfInstanceid = serializers.CharField(
-        help_text="Identifier of the VNF instance being scaled.",
-        required=True)
-
-    scaleVnfType = serializers.ChoiceField(
-        help_text="Type of the scale VNF operation requested.",
-        choices=["SCALE_OUT", "SCALE_IN", "SCALE_TO_INSTANTIATION_LEVEL", "SCALE_TO_SCALE_LEVEL(S)"],
-        required=True)
-
-    scaleToLevelData = ScaleToLevelDataSerializer(
-        help_text="The information used for scaling to a given level.",
-        required=False)
-
-    scaleByStepData = ScaleByStepDataSerializer(
-        help_text="The information used for scaling by steps.",
-        required=False)
 
 
 class ScaleNsRequestSerializer(serializers.Serializer):
