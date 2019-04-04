@@ -4,7 +4,13 @@
 
 VF-C Offered APIs
 ==================
-List VF-C APIs offered.
+
+.. contents::
+   :depth: 2
+
+Now VF-C provides the NS life cycle management APIs to UUI,SO,Policy and package management APIs to UUI.
+For VNFM vendor, VF-C also provides the VNFM integration APIs, they can reference these APIs to implmemet their VNFMDriver to integrate with VF-C and ONAP.
+
 
 
 VFC Northbound API
@@ -12,6 +18,36 @@ VFC Northbound API
 
 Network services lifecycle management APIs
 
+In Dublin release, VF-C provides SOL005 compliant APIs as follows
+
+::
+
+    api/nslcm/v1/ns_instances
+    api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)
+    api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate
+    api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update
+    api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale
+    api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal
+    api/nslcm/v1/ns_instances/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate
+    api/nslcm/v1/ns_lcm_op_occs/(?P<lcmopoccid>[0-9a-zA-Z_-]+)
+    api/nslcm/v1/subscriptions
+    api/nslcm/v1/ns_lcm_op_occs
+
+But for the previous APIs, we still keep in Dublin, but the following APIs will be deprecated in the future release
+
+::
+
+	api/nslcm/v1/ns
+    api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/instantiate
+    api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/terminate
+    api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)
+    api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/postdeal
+    api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/scale
+    api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/heal
+    api/nslcm/v1/ns/(?P<ns_instance_id>[0-9a-zA-Z_-]+)/update
+	
+
+More APIs defination and reference can be found in the following page:
 
 .. toctree::
    :maxdepth: 1
@@ -22,7 +58,11 @@ Network services lifecycle management APIs
 VNFM Integration APIs 
 ---------------------
 
-VNFM Driver Integration Related APIs
+VNFM Driver Integration Related APIs, these APIs are mainly provided for Vendor, if you want to integrate with VF-C and ONAP, you can reference these APIs to implement your VNFMDriver
+These integration APIs includ two part:
+
+* The VNF life cycle management APIs for the VNFMDriver should be implemented
+* The NFVO APIs for the VNFMDri1 will be request, like grant APIs 
 
 .. toctree:: 
    :maxdepth: 1
@@ -33,6 +73,10 @@ VNFM Driver Integration Related APIs
 
 GVNFM Northbound & Southbound APIs
 ----------------------------------
+
+VF-C provides the Generic VFNM , it can be as the GVNFM reference implementaton.
+Now the Northbound APIs of GVNFM has been compli1t with SOL003 and it now can be integrate with VF-C NFVO.
+In tosca-based vCPE use case, the GVNFM founction have been verified in Casablanca release.
 
 GVNFM Northbound & Southbound APIs for VNF Integration
 
@@ -50,5 +94,4 @@ CATALOG APIs for VNF Integration
 .. toctree::
    :maxdepth: 1
 
-   CATALOG_API/index
-
+   CATALOG_API/index   
