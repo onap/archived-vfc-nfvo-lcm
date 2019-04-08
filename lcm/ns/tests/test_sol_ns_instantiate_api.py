@@ -373,14 +373,6 @@ class TestInstantiateNsApi(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_method_not_allowed(self):
-        # response = self.client.put(self.url % '1', data=self.req_data, format='json')
-        # self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
-        # response = self.client.patch(self.url % '1', data=self.req_data, format='json')
-        # self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
-        # response = self.client.delete(self.url % '1', data=self.req_data, format='json')
-        # self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
-        # response = self.client.get(self.url % '1', data=self.req_data, format='json')
-        # self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.put(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.patch(self.url % self.nsInstanceId, data=self.req_data, format='json')

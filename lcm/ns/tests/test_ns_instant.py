@@ -158,15 +158,16 @@ class TestNsInstant(TestCase):
         mock_call_req.side_effect = [ret for i in range(1, 20)]
         data = {
             "additionalParamForNs": {
-                "sdnControllerId": "2"
+                "sdnControllerId": "2",
+                "location": "CPE-DC_Region"
             },
             "locationConstraints": [{
                 "vnfProfileId": "zte_ran_cucp_0001",
-                "locationConstraints": {"vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'}
+                "locationConstraints": {}
             },
                 {
                     "vnfProfileId": "zte_ran_cuup_0001",
-                    "locationConstraints": {"vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'}
+                    "locationConstraints": {}
             }
             ],
             "addpnfData": [{
@@ -177,5 +178,71 @@ class TestNsInstant(TestCase):
             }]
         }
         # response = self.client.post("/api/nslcm/v1/ns/1/instantiate", data=data, format='json')
+        ack = InstantNSService(1, data).do_biz()
+        self.assertEqual(ack['status'], status.HTTP_200_OK)
+
+    @mock.patch.object(restcall, 'call_req')
+    @mock.patch('lcm.pub.msapi.sdc_run_catalog.parse_nsd', MagicMock(return_value=nsd))
+    @mock.patch('lcm.pub.msapi.extsys.select_vnfm', MagicMock(return_value=vnfminfo))
+    def test_ns_instantiate_with_vimid_1(self, mock_call_req):
+        config.WORKFLOW_OPTION = "grapflow"
+        NSInstModel(id="1", name="test_ns", nspackage_id="1", status="created").save()
+        ret = [0, json.JSONEncoder().encode({'jobId': "1", "responseDescriptor": {"progress": 100}}), '200']
+        mock_call_req.side_effect = [ret for i in range(1, 20)]
+        data = {
+            "additionalParamForNs": {
+                "sdnControllerId": "2"
+            },
+            "locationConstraints": [{
+                "vnfProfileId": "zte_ran_cucp_0001",
+                "locationConstraints": {
+                    "cloudOwner": "CPE-DC",
+                    "cloudRegionId": "RegionOne"}
+            },
+                {
+                    "vnfProfileId": "zte_ran_cuup_0001",
+                    "locationConstraints": {
+                        "cloudOwner": "CPE-DC",
+                        "cloudRegionId": "RegionOne"}
+            }
+            ],
+            "addpnfData": [{
+                "pnfId": 1,
+                "pnfName": "test_pnf",
+                "pnfdId": "zte_ran_du_0001",
+                "pnfProfileId": "du"
+            }]
+        }
+        ack = InstantNSService(1, data).do_biz()
+        self.assertEqual(ack['status'], status.HTTP_200_OK)
+
+    @mock.patch.object(restcall, 'call_req')
+    @mock.patch('lcm.pub.msapi.sdc_run_catalog.parse_nsd', MagicMock(return_value=nsd))
+    @mock.patch('lcm.pub.msapi.extsys.select_vnfm', MagicMock(return_value=vnfminfo))
+    def test_ns_instantiate_with_different_vimid_2(self, mock_call_req):
+        config.WORKFLOW_OPTION = "grapflow"
+        NSInstModel(id="1", name="test_ns", nspackage_id="1", status="created").save()
+        ret = [0, json.JSONEncoder().encode({'jobId': "1", "responseDescriptor": {"progress": 100}}), '200']
+        mock_call_req.side_effect = [ret for i in range(1, 20)]
+        data = {
+            "additionalParamForNs": {
+                "sdnControllerId": "2"
+            },
+            "locationConstraints": [{
+                "vnfProfileId": "zte_ran_cucp_0001",
+                "locationConstraints": {"vimId": "CPE-DC_RegionOne"}
+            },
+                {
+                    "vnfProfileId": "zte_ran_cuup_0001",
+                    "locationConstraints": {"vimId": "CPE-DC_RegionOne"}
+            }
+            ],
+            "addpnfData": [{
+                "pnfId": 1,
+                "pnfName": "test_pnf",
+                "pnfdId": "zte_ran_du_0001",
+                "pnfProfileId": "du"
+            }]
+        }
         ack = InstantNSService(1, data).do_biz()
         self.assertEqual(ack['status'], status.HTTP_200_OK)
