@@ -10,6 +10,7 @@ RUN sed -i "s|set compatible|set nocompatible|" /etc/vim/vimrc.tiny
 RUN echo "set backspace=2" >> /etc/vim/vimrc.tiny
 
 RUN apt-get update && \
+    apt-get install -y wget unzip gcc libssl-dev && \
     apt-get install -y python-virtualenv && \
     apt-get install -y python-setuptools && \
     apt-get install -y python-dev && \
@@ -21,7 +22,7 @@ RUN apt-get update && \
     apt-get install -y unzip && \
     apt-get install -y curl && \
     apt-get install -y build-essential && \
-    apt-get install -y libssl-dev && \
+#    apt-get install -y libssl-dev && \
     apt-get install -y libffi-dev
 
 ADD . /service
@@ -35,6 +36,8 @@ RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/m
 WORKDIR /service/vfc/nfvo/lcm
 RUN pip install --upgrade setuptools pip && \
     pip install --pre -r requirements.txt
+
+RUN apt-get --purge remove -y wget unzip gcc libssl-dev
 
 EXPOSE 8403
 
