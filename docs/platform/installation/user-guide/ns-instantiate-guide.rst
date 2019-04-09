@@ -8,6 +8,7 @@ VF-C supports vCPE use case in R3, all VNFs are deployed through VF-C GVNFM .
 This page describes how to use VF-C to instantiate NS
 
 Before you try, please prepare two csar file: 
+
 * VNF csar
 * NS csar
 
@@ -77,6 +78,7 @@ ESR Registration
 
 
 Before we instantiate a service, we need to register vim and vnfm which is used to deploy vnfs.
+
   1.VIM Registration
 
   |image1|
@@ -97,9 +99,10 @@ Before we instantiate a service, we need to register vim and vnfm which is used 
    :height: 600px
 
 
-Note: type should be gvnfmdriver which is the same with gvnfmdriver microservice
-url is the msb-iag NodeIp:port 
-vim corresponds to cloudowner_cloudregionid which registered in step1
+Note: 
+  a. type should be gvnfmdriver which is the same with gvnfmdriver microservice.
+  b. url is the msb-iag NodeIp:port.
+  c. vim corresponds to cloudowner_cloudregionid which registered in step1.
 
 Package Onboarding
 ++++++++++++++++++
@@ -140,8 +143,8 @@ Note:
   -F 'file=@C:\ONAP\Integration\R3\vCPE\vnf-vsn.csar'
 
 Note:
-  a.38037a12-a0d4-4aa4-ac50-cd6b05ce0b24  is the vnf_pkg_id which we get from the first step.
-  b.-F is used to specify the local vnf package file
+  a. 38037a12-a0d4-4aa4-ac50-cd6b05ce0b24 is the vnf_pkg_id which we get from the first step.
+  b. -F is used to specify the local vnf package file
 
 3. Create NS package record in catalog DB
 

@@ -8,13 +8,13 @@ VF-C Installation and User Guide
    :depth: 2
 
 
-VFC Insta1llation over OOM
+VFC Installation over OOM
 --------------------------
 
 .. toctree:: 
    :maxdepth: 1
    
-    installation/index
+   installation/index
 
 
 

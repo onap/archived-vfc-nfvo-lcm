@@ -11,7 +11,38 @@ VF-C Offered APIs
 Now VF-C provides the NS life cycle management APIs to UUI,SO,Policy and package management APIs to UUI.
 For VNFM vendor, VF-C also provides the VNFM integration APIs, they can reference these APIs to implmemet their VNFMDriver to integrate with VF-C and ONAP.
 
+  |image0|
 
+  .. |image0| image:: nfvo-api.png
+   :width: 1000px
+   :height: 600px
+
+NFVO provided interfaces:
+
+* Network Service LCM interface
+
+  Provides Network Service LCM interface(NS instantiate/scale/heal/terminate/query/…) 
+  
+* VNF Operation Granting interface
+
+  Provides VNF Operation Granting interface and make granting decision
+  
+* NS package management interface
+
+  Provides runtime NS package management interface
+  
+* VNF package management interface
+
+  Provides runtime VNF package management interface
+
+
+GVNFM provided interfaces:
+
+* VNF LCM interface
+
+  Provides the VNF LCM interface(VNF instantiate/terminate/query/…)
+
+More interface defination can be found in the following part.
 
 VFC Northbound API
 ------------------

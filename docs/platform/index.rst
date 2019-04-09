@@ -6,6 +6,12 @@
 ONAP VF-C
 =========
 
+|image0|
+
+.. |image0| image:: onap-arc.png
+   :width: 3.97047in
+   :height: 2.63208in
+
 As part of the integration between OpenECOMP and OPEN-O, VF-C leverages ETSI NFV MANO architecture and information model as a reference, and implements life cycle management and FCAPS of VNF and NS.
 
 * support NS and VNF lifecycle management based on the ONAP tosca and yang data model and workflow
@@ -15,9 +21,9 @@ As part of the integration between OpenECOMP and OPEN-O, VF-C leverages ETSI NFV
 * support microservice architecture and model driven resource orchestration and management
 
 
-|image0|
+|image1|
 
-.. |image0| image:: vfc-component.png
+.. |image1| image:: vfc-component.png
    :width: 3.97047in
    :height: 2.63208in
    
