@@ -13,7 +13,7 @@ For VNFM vendor, VF-C also provides the VNFM integration APIs, they can referenc
 
   |image0|
 
-  .. |image0| image:: nfvo-api.png
+  .. |image0| image:: vfc-api.png
    :width: 1000px
    :height: 600px
 
