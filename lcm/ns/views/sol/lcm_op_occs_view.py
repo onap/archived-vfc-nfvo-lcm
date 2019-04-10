@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import logging
-import traceback
 
 from drf_yasg.utils import swagger_auto_schema
 from lcm.ns.serializers.sol.ns_lcm_op_occ import NSLCMOpOccSerializer
@@ -25,12 +24,25 @@ from lcm.ns.biz.query_ns_lcm_op_occ import QueryNsLcmOpOcc
 from lcm.ns.serializers.sol.ns_lcm_op_occ import NSLCMOpOccsSerializer
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 from lcm.pub.exceptions import NSLCMException
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
-EXCLUDE_DEFAULT = ['operationParams', 'error', 'resourceChanges']
-VALID_FILTERS = ["fields", "exclude_fields", "exclude_default",
-                 "id", "operationState", "stateEnteredTime", "startTime",
-                 "nsInstanceId", "operation"]
+EXCLUDE_DEFAULT = [
+    'operationParams',
+    'error',
+    'resourceChanges'
+]
+VALID_FILTERS = [
+    "fields",
+    "exclude_fields",
+    "exclude_default",
+    "id",
+    "operationState",
+    "stateEnteredTime",
+    "startTime",
+    "nsInstanceId",
+    "operation"
+]
 
 
 def get_problem_details_serializer(status_code, error_message):
@@ -51,36 +63,27 @@ class QueryMultiNsLcmOpOccs(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def get(self, request):
         logger.debug("QueryMultiNsLcmOpOccs--get::> %s" % request.query_params)
-        try:
-            if request.query_params and not set(request.query_params).issubset(set(VALID_FILTERS)):
-                problem_details_serializer = get_problem_details_serializer(status.HTTP_400_BAD_REQUEST, "Not a valid filter")
-                return Response(data=problem_details_serializer.data, status=status.HTTP_400_BAD_REQUEST)
-            resp_data = QueryNsLcmOpOcc(request.query_params).query_multi_ns_lcm_op_occ()
-            if len(resp_data) == 0:
-                return Response(data=[], status=status.HTTP_200_OK)
 
-            ns_lcm_op_occs_serializer = NSLCMOpOccsSerializer(data=resp_data)
-            if not ns_lcm_op_occs_serializer.is_valid():
-                raise NSLCMException(ns_lcm_op_occs_serializer.errors)
+        if request.query_params and not set(request.query_params).issubset(set(VALID_FILTERS)):
+            problem_details_serializer = get_problem_details_serializer(status.HTTP_400_BAD_REQUEST, "Not a valid filter")
+            return Response(data=problem_details_serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        resp_data = QueryNsLcmOpOcc(request.query_params).query_multi_ns_lcm_op_occ()
+        if len(resp_data) == 0:
+            return Response(data=[], status=status.HTTP_200_OK)
 
-            logger.debug("QueryMultiNsLcmOpOccs--get::> Remove default fields if exclude_default is specified")
-            if 'exclude_default' in request.query_params.keys():
-                for field in EXCLUDE_DEFAULT:
-                    for lcm_op in ns_lcm_op_occs_serializer.data:
-                        del lcm_op[field]
-            return Response(data=ns_lcm_op_occs_serializer.data, status=status.HTTP_200_OK)
-        except NSLCMException as e:
-            logger.error(e.message)
-            problem_details_serializer = get_problem_details_serializer(status.HTTP_500_INTERNAL_SERVER_ERROR, e.message)
-            return Response(data=problem_details_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        ns_lcm_op_occs_serializer = NSLCMOpOccsSerializer(data=resp_data)
+        if not ns_lcm_op_occs_serializer.is_valid():
+            raise NSLCMException(ns_lcm_op_occs_serializer.errors)
 
-        except Exception as e:
-            logger.error(e.message)
-            logger.error(traceback.format_exc())
-            problem_details_serializer = get_problem_details_serializer(status.HTTP_500_INTERNAL_SERVER_ERROR, e.message)
-            return Response(data=problem_details_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.debug("QueryMultiNsLcmOpOccs--get::> Remove default fields if exclude_default is specified")
+        if 'exclude_default' in request.query_params.keys():
+            for field in EXCLUDE_DEFAULT:
+                for lcm_op in ns_lcm_op_occs_serializer.data:
+                    del lcm_op[field]
+        return Response(data=ns_lcm_op_occs_serializer.data, status=status.HTTP_200_OK)
 
 
 class QuerySingleNsLcmOpOcc(APIView):
@@ -90,22 +93,15 @@ class QuerySingleNsLcmOpOcc(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def get(self, request, lcmopoccid):
         logger.debug("QuerySingleNsLcmOpOcc--get::> %s" % request.query_params)
-        try:
-            resp_data = QueryNsLcmOpOcc(request.query_params, lcm_op_occ_id=lcmopoccid).query_single_ns_lcm_op_occ()
 
-            ns_lcm_op_occ_serializer = NSLCMOpOccSerializer(data=resp_data)
-            if not ns_lcm_op_occ_serializer.is_valid():
-                raise NSLCMException(ns_lcm_op_occ_serializer.errors)
+        resp_data = QueryNsLcmOpOcc(request.query_params,
+                                    lcm_op_occ_id=lcmopoccid).query_single_ns_lcm_op_occ()
 
-            return Response(data=ns_lcm_op_occ_serializer.data, status=status.HTTP_200_OK)
-        except NSLCMException as e:
-            logger.error(e.message)
-            problem_details_serializer = get_problem_details_serializer(status.HTTP_500_INTERNAL_SERVER_ERROR, e.message)
-            return Response(data=problem_details_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except Exception as e:
-            logger.error(e.message)
-            logger.error(traceback.format_exc())
-            problem_details_serializer = get_problem_details_serializer(status.HTTP_500_INTERNAL_SERVER_ERROR, e.message)
-            return Response(data=problem_details_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        ns_lcm_op_occ_serializer = NSLCMOpOccSerializer(data=resp_data)
+        if not ns_lcm_op_occ_serializer.is_valid():
+            raise NSLCMException(ns_lcm_op_occ_serializer.errors)
+
+        return Response(data=ns_lcm_op_occ_serializer.data, status=status.HTTP_200_OK)
