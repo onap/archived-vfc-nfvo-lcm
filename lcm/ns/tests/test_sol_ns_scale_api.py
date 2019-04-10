@@ -209,7 +209,7 @@ class TestScaleNsApi(TestCase):
             self.ns_inst_id, data={})
         self.assertEqual(
             response.status_code,
-            status.HTTP_500_INTERNAL_SERVER_ERROR)
+            status.HTTP_400_BAD_REQUEST)
 
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_when_ns_not_exist(self, mock_start):
