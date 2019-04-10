@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Huang Haibin <haibin.huang@intel.com>
+Code-Review+2: Fu Jinhua <fu.jinhua@zte.com.cn>
+Submitted-by: Fu Jinhua <fu.jinhua@zte.com.cn>
+Submitted-at: Wed, 10 Apr 2019 00:18:40 +0000
+Reviewed-on: https://gerrit.onap.org/r/84655
+Project: vfc/nfvo/lcm
+Branch: refs/heads/master
