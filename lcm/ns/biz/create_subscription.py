@@ -25,6 +25,7 @@ from rest_framework import status
 from lcm.ns import const
 from lcm.pub.database.models import SubscriptionModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import SeeOtherException
 from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
@@ -127,7 +128,7 @@ class CreateSubscription:
             return True
         for subscription in subscriptions:
             if self.check_filter_exists(subscription):
-                raise NSLCMException("Already Subscription exists with the same callbackUri and filter")
+                raise SeeOtherException("Already Subscription exists with the same callbackUri and filter")
         return False
 
     def save_db(self):
