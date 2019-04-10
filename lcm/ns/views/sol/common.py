@@ -20,6 +20,7 @@ from rest_framework.response import Response
 
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import SeeOtherException
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,12 @@ def view_safe_call_with_log(logger):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
+            except SeeOtherException as e:
+                logger.error(e.message)
+                return make_error_resp(
+                    detail=e.message,
+                    status=status.HTTP_303_SEE_OTHER
+                )
             except BadRequestException as e:
                 logger.error(e.message)
                 return make_error_resp(

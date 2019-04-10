@@ -19,3 +19,7 @@ class NSLCMException(Exception):
 
 class BadRequestException(Exception):
     pass
+
+
+class SeeOtherException(Exception):
+    pass
