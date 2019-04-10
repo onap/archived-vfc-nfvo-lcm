@@ -25,6 +25,7 @@ from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.ns.const import NS_OCC_BASE_URI
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
 
@@ -37,28 +38,19 @@ class UpdateNSView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: ProblemDetailsSerializer()
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
         job_id = JobUtil.create_job("NS", JOB_TYPE.UPDATE_NS, ns_instance_id)
-        try:
-            logger.debug("Enter UpdateNSView::post %s, %s", request.data, ns_instance_id)
-            req_serializer = UpdateNsReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
-                raise BadRequestException(req_serializer.errors)
-            nsUpdateService = NSUpdateService(ns_instance_id, request.data, job_id)
-            nsUpdateService.start()
-            response = Response(data={}, status=status.HTTP_202_ACCEPTED)
-            logger.debug("Location: %s" % nsUpdateService.occ_id)
-            response["Location"] = NS_OCC_BASE_URI % nsUpdateService.occ_id
-            logger.debug("Leave UpdateNSView")
-            return response
-        except BadRequestException as e:
-            logger.error("Exception in UpdateNSView: %s", e.message)
-            JobUtil.add_job_status(job_id, 255, 'NS update failed: %s' % e.message)
-            data = {'status': status.HTTP_400_BAD_REQUEST, 'detail': e.message}
-            return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error("Exception in UpdateNSView: %s", e.message)
-            JobUtil.add_job_status(job_id, 255, 'NS update failed: %s' % e.message)
-            data = {'status': status.HTTP_500_INTERNAL_SERVER_ERROR, 'detail': e.message}
-            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        logger.debug("Enter UpdateNSView::post %s, %s", request.data, ns_instance_id)
+        req_serializer = UpdateNsReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
+            raise BadRequestException(req_serializer.errors)
+        nsUpdateService = NSUpdateService(ns_instance_id, request.data, job_id)
+        nsUpdateService.start()
+        response = Response(data={}, status=status.HTTP_202_ACCEPTED)
+        logger.debug("Location: %s" % nsUpdateService.occ_id)
+        response["Location"] = NS_OCC_BASE_URI % nsUpdateService.occ_id
+        logger.debug("Leave UpdateNSView")
+        return response
