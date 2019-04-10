@@ -1,0 +1,5708 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: ONAP VFC Network Service Lifecycle Management API
+  description: VFC Network Service Lifecycle Management Rest API.
+  contact:
+    name: ONAP VFC team
+    email: onap-discuss@lists.onap.org
+    url: 'https://gerrit.onap.org/r/#/admin/projects/vfc/nfvo/lcm'
+basePath: /
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/api/nslcm/v1/jobs/{job_id}':
+    get:
+      operationId: api_nslcm_v1_jobs_read
+      description: Query job
+      parameters:
+        - name: job_id
+          in: query
+          description: job id
+          type: string
+        - name: responseId
+          in: query
+          description: response id
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/JobQueryResp'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    post:
+      operationId: api_nslcm_v1_jobs_create
+      description: Update job
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/JobUpdReq'
+        - name: job_id
+          in: query
+          description: job id
+          type: string
+      responses:
+        '202':
+          description: ''
+          schema:
+            $ref: '#/definitions/JobUpdResp'
+      tags:
+        - api
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/mandb/{modelName}':
+    get:
+      operationId: api_nslcm_v1_mandb_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/RecordCount'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    delete:
+      operationId: api_nslcm_v1_mandb_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: successful
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: modelName
+        in: path
+        required: true
+        type: string
+  /api/nslcm/v1/ns:
+    get:
+      operationId: api_nslcm_v1_ns_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            description: NS instances
+            type: array
+            items:
+              $ref: '#/definitions/_QueryNsResp'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    post:
+      operationId: api_nslcm_v1_ns_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_CreateNsReq'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/_CreateNsResp'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters: []
+  /api/nslcm/v1/ns/create_flow_classifier:
+    post:
+      operationId: api_nslcm_v1_ns_create_flow_classifier_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateFlowCla'
+      responses:
+        '200':
+          description: successful
+      tags:
+        - api
+    parameters: []
+  /api/nslcm/v1/ns/create_port_chain:
+    post:
+      operationId: api_nslcm_v1_ns_create_port_chain_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreatePortChain'
+      responses:
+        '200':
+          description: successful
+      tags:
+        - api
+    parameters: []
+  /api/nslcm/v1/ns/create_port_pair_group:
+    post:
+      operationId: api_nslcm_v1_ns_create_port_pair_group_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreatePortPairGp'
+      responses:
+        '200':
+          description: successful
+      tags:
+        - api
+    parameters: []
+  /api/nslcm/v1/ns/grantvnf:
+    post:
+      operationId: api_nslcm_v1_ns_grantvnf_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GrantVnfReq'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/GrantVnfResp'
+        '409':
+          description: Inner error
+      tags:
+        - api
+    parameters: []
+  '/api/nslcm/v1/ns/{ns_instance_id}':
+    get:
+      operationId: api_nslcm_v1_ns_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            description: NS instance
+            type: array
+            items:
+              $ref: '#/definitions/_QueryNsResp'
+        '404':
+          description: Ns instance does not exist
+        '500':
+          description: Inner error
+      tags:
+        - api
+    delete:
+      operationId: api_nslcm_v1_ns_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: successful
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: ns_instance_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/ns/{ns_instance_id}/heal':
+    post:
+      operationId: api_nslcm_v1_ns_heal_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_HealNsReq'
+      responses:
+        '202':
+          description: ''
+          schema:
+            $ref: '#/definitions/_NsOperateJob'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: ns_instance_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/ns/{ns_instance_id}/instantiate':
+    post:
+      operationId: api_nslcm_v1_ns_instantiate_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_InstantNsReq'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/_NsOperateJob'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: ns_instance_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/ns/{ns_instance_id}/postdeal':
+    post:
+      operationId: api_nslcm_v1_ns_postdeal_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_InstNsPostDealReq'
+      responses:
+        '202':
+          description: NS instant post deal success
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: ns_instance_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/ns/{ns_instance_id}/scale':
+    post:
+      operationId: api_nslcm_v1_ns_scale_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_ManualScaleNsReq'
+      responses:
+        '202':
+          description: ''
+          schema:
+            $ref: '#/definitions/_NsOperateJob'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: ns_instance_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/ns/{ns_instance_id}/terminate':
+    post:
+      operationId: api_nslcm_v1_ns_terminate_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/_TerminateNsReq'
+      responses:
+        '202':
+          description: ''
+          schema:
+            $ref: '#/definitions/_NsOperateJob'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: ns_instance_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/ns/{ns_instance_id}/update':
+    post:
+      operationId: api_nslcm_v1_ns_update_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateNsReq'
+      responses:
+        '202':
+          description: ''
+          schema:
+            $ref: '#/definitions/_NsOperateJob'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: ns_instance_id
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/ns/{vnfmid}/vnfs/{vnfInstanceId}/Notify':
+    post:
+      operationId: api_nslcm_v1_ns_vnfs_Notify_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotifyLcmReq'
+      responses:
+        '201':
+          description: successful
+        '409':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: vnfInstanceId
+        in: path
+        required: true
+        type: string
+      - name: vnfmid
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/vims/(P{vimid}[0-9a-zA-Z_-]+)':
+    get:
+      operationId: api_nslcm_v1_vims_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/VimInfoResp'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: vimid
+        in: path
+        required: true
+        type: string
+  '/api/nslcm/v1/vnfms/(P{vnfmid}[0-9a-zA-Z_-]+)':
+    get:
+      operationId: api_nslcm_v1_vnfms_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/VnfmInfoResp'
+        '500':
+          description: Inner error
+      tags:
+        - api
+    parameters:
+      - name: vnfmid
+        in: path
+        required: true
+        type: string
+  /api/nslcm/v1/vnfonboarding:
+    post:
+      operationId: api_nslcm_v1_vnfonboarding_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/VerifyVnfReq'
+      responses:
+        '202':
+          description: ''
+          schema:
+            $ref: '#/definitions/VerifyVnfResp'
+        '409':
+          description: Inner error
+      tags:
+        - api
+    parameters: []
+  /api/nslcm/v1/workflow:
+    post:
+      operationId: api_nslcm_v1_workflow_create
+      description: ''
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - api
+    parameters: []
+  /samples/:
+    get:
+      operationId: samples_list
+      description: List all samples.
+      parameters: []
+      responses:
+        '200':
+          description: Status is active
+      tags:
+        - samples
+    parameters: []
+definitions:
+  JobHistory:
+    description: History of job
+    required:
+      - status
+      - progress
+      - responseId
+    type: object
+    properties:
+      status:
+        title: Status
+        description: Status of job
+        type: string
+      progress:
+        title: Progress
+        description: Progress of job
+        type: string
+      statusDescription:
+        title: Statusdescription
+        description: Description of job
+        type: string
+      errorCode:
+        title: Errorcode
+        description: Error code of job
+        type: string
+      responseId:
+        title: Responseid
+        description: Response index of job
+        type: string
+  JobDescriptor:
+    title: Responsedescriptor
+    description: Descriptor of job
+    required:
+      - status
+      - progress
+      - responseId
+      - responseHistoryList
+    type: object
+    properties:
+      status:
+        title: Status
+        description: Status of job
+        type: string
+      progress:
+        title: Progress
+        description: Progress of job
+        type: integer
+      statusDescription:
+        title: Statusdescription
+        description: Description of job
+        type: string
+      errorCode:
+        title: Errorcode
+        description: Error code of job
+        type: string
+      responseId:
+        title: Responseid
+        description: Response index of job
+        type: string
+      responseHistoryList:
+        description: History of job
+        type: array
+        items:
+          $ref: '#/definitions/JobHistory'
+  JobQueryResp:
+    required:
+      - jobId
+    type: object
+    properties:
+      jobId:
+        title: Jobid
+        description: UUID of job
+        type: string
+      responseDescriptor:
+        $ref: '#/definitions/JobDescriptor'
+  JobUpdReq:
+    required:
+      - progress
+    type: object
+    properties:
+      progress:
+        title: Progress
+        description: Progress of job
+        type: string
+      desc:
+        title: Desc
+        description: Desc of job
+        type: string
+      errcode:
+        title: Errcode
+        description: Error code of job
+        type: string
+  JobUpdResp:
+    required:
+      - result
+    type: object
+    properties:
+      result:
+        title: Result
+        description: Result of job update
+        type: string
+      msg:
+        title: Msg
+        description: Detail of job update
+        type: string
+  RecordCount:
+    required:
+      - count
+    type: object
+    properties:
+      count:
+        title: Count
+        description: Count of record
+        type: string
+  _VnfInst:
+    description: VNF instances
+    required:
+      - vnfInstanceId
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: ID of VNF instance
+        type: string
+      vnfInstanceName:
+        title: Vnfinstancename
+        description: Name of VNF instance
+        type: string
+      vnfdId:
+        title: Vnfdid
+        description: ID of VNFD
+        type: string
+  PnfInstance:
+    description: PNF instances
+    required:
+      - pnfId
+      - pnfName
+      - pnfdId
+      - pnfProfileId
+    type: object
+    properties:
+      pnfId:
+        title: Pnfid
+        description: Identifier of the PNF.
+        type: string
+      pnfName:
+        title: Pnfname
+        description: Name of the PNF.
+        type: string
+      pnfdId:
+        title: Pnfdid
+        description: Identifier of the PNFD on which the PNF is based.
+        type: string
+      pnfdInfoId:
+        title: Pnfdinfoid
+        description: Identifier of the PNFD information object related to this PNF.
+        type: string
+      pnfProfileId:
+        title: Pnfprofileid
+        description: Identifier of the related PnfProfile in the NSD on which the PNF is based.
+        type: string
+      cpInfo:
+        title: Cpinfo
+        description: Information on the external CP of the PNF.
+        type: string
+  _CpInstInfo:
+    description: Related CP instances
+    required:
+      - cpInstanceId
+    type: object
+    properties:
+      cpInstanceId:
+        title: Cpinstanceid
+        description: ID of CP instance
+        type: string
+      cpInstanceName:
+        title: Cpinstancename
+        description: Name of CP instance
+        type: string
+      cpdId:
+        title: Cpdid
+        description: ID of CPD
+        type: string
+  _VlInst:
+    description: VL instances
+    required:
+      - vlInstanceId
+      - relatedCpInstanceId
+    type: object
+    properties:
+      vlInstanceId:
+        title: Vlinstanceid
+        description: ID of VL instance
+        type: string
+      vlInstanceName:
+        title: Vlinstancename
+        description: Name of VL instance
+        type: string
+      vldId:
+        title: Vldid
+        description: ID of VLD
+        type: string
+      relatedCpInstanceId:
+        description: Related CP instances
+        type: array
+        items:
+          $ref: '#/definitions/_CpInstInfo'
+  _VnffgInst:
+    description: VNFFG instances
+    required:
+      - vnffgInstanceId
+    type: object
+    properties:
+      vnffgInstanceId:
+        title: Vnffginstanceid
+        description: ID of VNFFG instance
+        type: string
+      vnfdId:
+        title: Vnfdid
+        description: ID of VNFD
+        type: string
+      pnfId:
+        title: Pnfid
+        description: ID of PNF
+        type: string
+      virtualLinkId:
+        title: Virtuallinkid
+        description: ID of virtual link
+        type: string
+      cpdId:
+        title: Cpdid
+        description: ID of CPD
+        type: string
+      nfp:
+        title: Nfp
+        description: nfp
+        type: string
+  _QueryNsResp:
+    description: NS instances
+    required:
+      - nsInstanceId
+      - nsdId
+    type: object
+    properties:
+      nsInstanceId:
+        title: Nsinstanceid
+        description: ID of NS instance
+        type: string
+      nsName:
+        title: Nsname
+        description: Name of NS instance
+        type: string
+      description:
+        title: Description
+        description: Description of NS instance
+        type: string
+      nsdId:
+        title: Nsdid
+        description: ID of NSD
+        type: string
+      vnfInfo:
+        description: VNF instances
+        type: array
+        items:
+          $ref: '#/definitions/_VnfInst'
+      pnfInfo:
+        description: PNF instances
+        type: array
+        items:
+          $ref: '#/definitions/PnfInstance'
+      vlInfo:
+        description: VL instances
+        type: array
+        items:
+          $ref: '#/definitions/_VlInst'
+      vnffgInfo:
+        description: VNFFG instances
+        type: array
+        items:
+          $ref: '#/definitions/_VnffgInst'
+      nsState:
+        title: Nsstate
+        description: State of NS instance
+        type: string
+  _Context:
+    title: Context
+    description: Context of NS
+    type: object
+    properties:
+      globalCustomerId:
+        title: Globalcustomerid
+        description: Global customer ID
+        type: string
+      serviceType:
+        title: Servicetype
+        description: Service type
+        type: string
+  _CreateNsReq:
+    type: object
+    properties:
+      csarId:
+        title: Csarid
+        description: Package ID of NS
+        type: string
+      nsName:
+        title: Nsname
+        description: Name of NS
+        type: string
+      description:
+        title: Description
+        description: Description of NS
+        type: string
+      context:
+        $ref: '#/definitions/_Context'
+  _CreateNsResp:
+    required:
+      - nsInstanceId
+    type: object
+    properties:
+      nsInstanceId:
+        title: Nsinstanceid
+        description: ID of NS instance
+        type: string
+  CreateFlowCla:
+    type: object
+    properties:
+      fpinstid:
+        title: Fpinstid
+        description: ID of FP instance
+        type: string
+      context:
+        title: Context
+        description: Context of NS instance
+        type: string
+  CreatePortChain:
+    type: object
+    properties:
+      fpinstid:
+        title: Fpinstid
+        description: ID of FP instance
+        type: string
+      context:
+        title: Context
+        description: Context of NS instance
+        type: string
+  CreatePortPairGp:
+    type: object
+    properties:
+      fpinstid:
+        title: Fpinstid
+        description: ID of FP instance
+        type: string
+      context:
+        title: Context
+        description: Context of NS instance
+        type: string
+      nsinstanceid:
+        title: Nsinstanceid
+        description: ID of NS instance
+        type: string
+  ResourceChange:
+    description: Add resources
+    required:
+      - type
+    type: object
+    properties:
+      type:
+        title: Type
+        description: Change Type
+        type: string
+        enum:
+          - VDU
+      resourceDefinitionId:
+        title: Resourcedefinitionid
+        description: Identifier of resource
+        type: string
+      vdu:
+        title: Vdu
+        description: Identifier identifier of VDU
+        type: string
+  GrantVnfReq:
+    required:
+      - vnfInstanceId
+      - lifecycleOperation
+      - addResource
+      - removeResource
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: ID of VNF instance
+        type: string
+      vnfDescriptorId:
+        title: Vnfdescriptorid
+        description: ID of VNF Descriptor
+        type: string
+      lifecycleOperation:
+        title: Lifecycleoperation
+        description: Lifecycle Operation
+        type: string
+        enum:
+          - Terminate
+          - Instantiate
+          - Scalein
+          - Scaleout
+          - Scaledown
+          - Scaleup
+          - Heal
+      jobId:
+        title: Jobid
+        description: ID of Job
+        type: string
+      addResource:
+        description: Add resources
+        type: array
+        items:
+          $ref: '#/definitions/ResourceChange'
+      removeResource:
+        description: Remove resources
+        type: array
+        items:
+          $ref: '#/definitions/ResourceChange'
+      additionalParam:
+        title: Additionalparam
+        description: 'Additional parameters passed to the NFVO, specific to the VNF and the LCM operation. The currently interpreted keys are the following: vimId'
+        type: object
+        additionalProperties:
+          description: Additional parameters
+          type: string
+  Accessinfo:
+    title: Accessinfo
+    description: Access Info
+    required:
+      - tenant
+    type: object
+    properties:
+      tenant:
+        title: Tenant
+        description: Name of tenant
+        type: string
+  Vim:
+    title: Vim
+    description: VIM Info
+    required:
+      - vimid
+    type: object
+    properties:
+      vimid:
+        title: Vimid
+        description: ID of VIM
+        type: string
+      accessinfo:
+        $ref: '#/definitions/Accessinfo'
+      accessInfo:
+        $ref: '#/definitions/Accessinfo'
+  GrantVnfResp:
+    required:
+      - vim
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: ID of VNF instance
+        type: string
+      vim:
+        $ref: '#/definitions/Vim'
+  ScaleVnfData:
+    title: Scalevnfdata
+    description: Scale data
+    required:
+      - type
+    type: object
+    properties:
+      type:
+        title: Type
+        description: Direction of the scaling
+        type: string
+        enum:
+          - SCALE_IN
+          - SCALE_OUT
+      aspectId:
+        title: Aspectid
+        description: Aspect ID of the VNF that is requested to be scaled
+        type: string
+      numberOfSteps:
+        title: Numberofsteps
+        description: Number of scaling steps to be executed as part of this ScaleVnf operation
+        type: string
+      additionalParam:
+        title: Additionalparam
+        description: 'Additional parameters passed by the NFVO as input to the scaling process, specific to the VNF being scaled'
+        type: object
+        additionalProperties:
+          description: Additional parameters
+          type: string
+  ScaleVnfReq:
+    required:
+      - scaleVnfData
+    type: object
+    properties:
+      scaleVnfData:
+        $ref: '#/definitions/ScaleVnfData'
+  ScaleVnfResp:
+    required:
+      - jobId
+    type: object
+    properties:
+      jobId:
+        title: Jobid
+        description: ID of Job
+        type: string
+  Candidate:
+    title: Solution
+    description: The Placement Solution
+    required:
+      - identifierType
+      - identifiers
+    type: object
+    properties:
+      identifierType:
+        title: Identifiertype
+        description: The type of a candidate
+        type: string
+        enum:
+          - serviceInstanceId
+          - vnfName
+          - cloudRegionId
+          - vimId
+      identifiers:
+        description: A list of identifiers
+        type: array
+        items:
+          description: One identifier
+          type: string
+      cloudOwner:
+        title: Cloudowner
+        description: The name of a cloud owner. Only required if identifier Type is cloudRegionId
+        type: string
+  AssignmentInfo:
+    description: Additonal information related to a candidate
+    required:
+      - key
+      - value
+    type: object
+    properties:
+      key:
+        title: Key
+        description: Any attribute Key needed
+        type: string
+      value:
+        title: Value
+        description: Attribute value for that key
+        type: string
+  PlacementSolution:
+    description: A list of placement solutions
+    required:
+      - resourceModuleName
+      - serviceResourceId
+      - solution
+    type: object
+    properties:
+      resourceModuleName:
+        title: Resourcemodulename
+        description: Name of Resource as defined in the Service Model
+        type: string
+      serviceResourceId:
+        title: Serviceresourceid
+        description: Resource Id defined in the Service Model
+        type: string
+      solution:
+        $ref: '#/definitions/Candidate'
+      assignmentInfo:
+        description: Additonal information related to a candidate
+        type: array
+        items:
+          $ref: '#/definitions/AssignmentInfo'
+  LicenseSolution:
+    description: A list of License Solutions
+    required:
+      - resourceModuleName
+      - serviceResourceId
+      - entitlementPoolUUID
+      - licenseKeyGroupUUID
+      - entitlementPoolInvariantUUID
+      - licenseKeyGroupInvariantUUID
+    type: object
+    properties:
+      resourceModuleName:
+        title: Resourcemodulename
+        description: Name of Resource as defined in the Service Model
+        type: string
+      serviceResourceId:
+        title: Serviceresourceid
+        description: Resource Id defined in the Service Model
+        type: string
+      entitlementPoolUUID:
+        description: A list of entitlementPoolUUIDs
+        type: array
+        items:
+          description: entitlementPoolUUID
+          type: string
+      licenseKeyGroupUUID:
+        description: A list of licenseKeyGroupUUID
+        type: array
+        items:
+          description: licenseKeyGroupUUID
+          type: string
+      entitlementPoolInvariantUUID:
+        description: A list of entitlementPoolInvariantUUIDs
+        type: array
+        items:
+          description: entitlementPoolInvariantUUID
+          type: string
+      licenseKeyGroupInvariantUUID:
+        description: A list of licenseKeyGroupInvariantUUID
+        type: array
+        items:
+          description: licenseKeyGroupInvariantUUID
+          type: string
+  Solution:
+    title: Solutions
+    description: Request Solutions
+    required:
+      - placementSolutions
+    type: object
+    properties:
+      placementSolutions:
+        description: A list of Placement Solutions
+        type: array
+        items:
+          description: A list of Placement Solutions
+          type: array
+          items:
+            $ref: '#/definitions/PlacementSolution'
+      licenseSolutions:
+        description: A list of License Solutions
+        type: array
+        items:
+          $ref: '#/definitions/LicenseSolution'
+  PlaceVnfReq:
+    required:
+      - requestId
+      - transactionId
+      - requestStatus
+      - solutions
+    type: object
+    properties:
+      requestId:
+        title: Requestid
+        description: ID of Homing Request
+        type: string
+      transactionId:
+        title: Transactionid
+        description: ID of Homing Transaction
+        type: string
+      statusMessage:
+        title: Statusmessage
+        description: Status Message of Request
+        type: string
+      requestStatus:
+        title: Requeststatus
+        description: The Status of a Request
+        type: string
+        enum:
+          - completed
+          - failed
+          - pending
+      solutions:
+        $ref: '#/definitions/Solution'
+  CreateSfcInstReq:
+    required:
+      - fpindex
+    type: object
+    properties:
+      fpindex:
+        title: Fpindex
+        description: Index of FP
+        type: string
+      nsInstanceId:
+        title: Nsinstanceid
+        description: ID of NS instance
+        type: string
+      context:
+        title: Context
+        description: Context of NS instance
+        type: string
+      sdnControllerId:
+        title: Sdncontrollerid
+        description: ID of SDN controller
+        type: string
+  CreateSfcInstResp:
+    required:
+      - fpinstid
+    type: object
+    properties:
+      fpinstid:
+        title: Fpinstid
+        description: ID of FP instance
+        type: string
+  CreateSfcReq:
+    required:
+      - fpindex
+    type: object
+    properties:
+      fpindex:
+        title: Fpindex
+        description: Index of FP
+        type: string
+      nsInstanceId:
+        title: Nsinstanceid
+        description: ID of NS instance
+        type: string
+      context:
+        title: Context
+        description: Context of NS instance
+        type: string
+      sdnControllerId:
+        title: Sdncontrollerid
+        description: ID of SDN controller
+        type: string
+  CreateSfcResp:
+    required:
+      - jobId
+      - sfcInstId
+    type: object
+    properties:
+      jobId:
+        title: Jobid
+        description: ID of job
+        type: string
+      sfcInstId:
+        title: Sfcinstid
+        description: ID of SFC instance
+        type: string
+  GetSfcResp:
+    required:
+      - sfcInstId
+      - sfcName
+      - sfcStatus
+    type: object
+    properties:
+      sfcInstId:
+        title: Sfcinstid
+        description: ID of SFC instance
+        type: string
+      sfcName:
+        title: Sfcname
+        description: Name of SFC instance
+        type: string
+      sfcStatus:
+        title: Sfcstatus
+        description: Status of SFC instance
+        type: string
+  DeleteSfcResp:
+    required:
+      - result
+    type: object
+    properties:
+      result:
+        title: Result
+        description: 'Delete SFC result(0: success, 1: failed)'
+        type: string
+      detail:
+        title: Detail
+        description: Result detail
+        type: string
+  TerminateVnfReq:
+    type: object
+    properties:
+      terminationType:
+        title: Terminationtype
+        description: Termination Type
+        type: string
+      gracefulTerminationTimeout:
+        title: Gracefulterminationtimeout
+        description: Graceful Termination Timeout
+        type: string
+  TerminateVnfResp:
+    required:
+      - jobId
+    type: object
+    properties:
+      jobId:
+        title: Jobid
+        description: ID of Job
+        type: string
+  CreateVlReq:
+    required:
+      - vlIndex
+    type: object
+    properties:
+      vlIndex:
+        title: Vlindex
+        description: Index of VL instance
+        type: string
+      nsInstanceId:
+        title: Nsinstanceid
+        description: ID of NS instance
+        type: string
+      context:
+        title: Context
+        description: Context of VL instance
+        type: string
+      additionalParamForNs:
+        title: Additionalparamforns
+        description: Additional param for NS
+        type: string
+  CreateVlResp:
+    required:
+      - result
+      - vlId
+    type: object
+    properties:
+      result:
+        title: Result
+        description: 'VL create result(0: success, 1: failed)'
+        type: integer
+      detail:
+        title: Detail
+        description: Detail of result
+        type: string
+      vlId:
+        title: Vlid
+        description: ID of VL instance
+        type: string
+  GetVlResp:
+    type: object
+    properties:
+      vlId:
+        title: Vlid
+        description: ID of VL instance
+        type: string
+      vlName:
+        title: Vlname
+        description: Name of VL instance
+        type: string
+      vlStatus:
+        title: Vlstatus
+        description: Status of VL instance
+        type: string
+  DeleteVlResp:
+    required:
+      - result
+    type: object
+    properties:
+      result:
+        title: Result
+        description: 'VL delete result(0: success)'
+        type: integer
+      detail:
+        title: Detail
+        description: Detail of result
+        type: string
+  InstVnfReq:
+    required:
+      - vnfIndex
+      - nsInstanceId
+    type: object
+    properties:
+      vnfIndex:
+        title: Vnfindex
+        description: Index of VNF
+        type: string
+      nsInstanceId:
+        title: Nsinstanceid
+        description: ID of NS instance
+        type: string
+      additionalParamForVnf:
+        title: Additionalparamforvnf
+        description: Additional param for VNF
+        type: string
+  InstVnfResp:
+    required:
+      - vnfInstId
+      - jobId
+    type: object
+    properties:
+      vnfInstId:
+        title: Vnfinstid
+        description: ID of VNF instance
+        type: string
+      jobId:
+        title: Jobid
+        description: ID of Job
+        type: string
+  VnfVms:
+    description: VMs of VNF
+    required:
+      - vmID
+    type: object
+    properties:
+      vmID:
+        title: Vmid
+        description: ID of VM
+        type: string
+      vmName:
+        title: Vmname
+        description: Name of VM
+        type: string
+  GetVnfResp:
+    required:
+      - vnfInstId
+      - vnfName
+      - vnfStatus
+      - vnfVms
+    type: object
+    properties:
+      vnfInstId:
+        title: Vnfinstid
+        description: ID of VNF instance
+        type: string
+      vnfName:
+        title: Vnfname
+        description: Name of VNF instance
+        type: string
+      vnfStatus:
+        title: Vnfstatus
+        description: Status of VNF instance
+        type: string
+      vnfVms:
+        description: VMs of VNF
+        type: array
+        items:
+          $ref: '#/definitions/VnfVms'
+  _ActionVm:
+    title: Actionvminfo
+    description: VM info of action
+    type: object
+    properties:
+      vmid:
+        title: Vmid
+        description: ID of VM
+        type: string
+      vduid:
+        title: Vduid
+        description: ID of vdu
+        type: string
+      vmname:
+        title: Vmname
+        description: Name of VM
+        type: string
+  _HealNsAdditionalParams:
+    title: Additionalparams
+    description: Additional params of NS heal
+    type: object
+    properties:
+      action:
+        title: Action
+        description: Action of NS heal
+        type: string
+      actionvminfo:
+        $ref: '#/definitions/_ActionVm'
+  _HealVnfData:
+    title: Healvnfdata
+    description: Data of heal VNF
+    required:
+      - vnfInstanceId
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: ID of VNF Instance
+        type: string
+      cause:
+        title: Cause
+        description: Cause of NS heal
+        type: string
+      additionalParams:
+        $ref: '#/definitions/_HealNsAdditionalParams'
+  _HealNsData:
+    title: Healnsdata
+    description: Data of heal NS
+    required:
+      - degreeHealing
+    type: object
+    properties:
+      degreeHealing:
+        title: Degreehealing
+        description: degree of healing
+        type: string
+        enum:
+          - HEAL_RESTORE
+          - HEAL_QOS
+          - HEAL_RESET
+          - PARTIAL_HEALING
+      actionsHealing:
+        description: A list of actions
+        type: array
+        items:
+          description: One action
+          type: string
+      healScript:
+        title: Healscript
+        description: script of NS heal
+        type: string
+      additionalParamsforNs:
+        title: Additionalparamsforns
+        description: Addition params of NS heal
+        type: string
+  _HealNsReq:
+    type: object
+    properties:
+      healVnfData:
+        $ref: '#/definitions/_HealVnfData'
+      healNsData:
+        $ref: '#/definitions/_HealNsData'
+  _NsOperateJob:
+    required:
+      - jobId
+    type: object
+    properties:
+      jobId:
+        title: Jobid
+        description: ID of NS operate job
+        type: string
+  _VnfLocation:
+    title: Locationconstraints
+    description: Location constraint
+    type: object
+    properties:
+      vimId:
+        title: Vimid
+        description: ID of VIM
+        type: string
+  _LocationConstraint:
+    description: Location constraints
+    type: object
+    properties:
+      vnfProfileId:
+        title: Vnfprofileid
+        description: ID of VNF profile
+        type: string
+      locationConstraints:
+        $ref: '#/definitions/_VnfLocation'
+  _AddressRange:
+    title: Addressrange
+    description: An IP address range to be used.
+    required:
+      - minAddress
+      - maxAddress
+    type: object
+    properties:
+      minAddress:
+        title: Minaddress
+        description: Lowest IP address belonging to the range.
+        type: string
+      maxAddress:
+        title: Maxaddress
+        description: Highest IP address belonging to the range.
+        type: string
+  _IpAddress:
+    description: List of IP addresses to assign to the extCP instance.
+    required:
+      - type
+    type: object
+    properties:
+      type:
+        title: Type
+        description: The type of the IP addresses.
+        type: string
+        enum:
+          - IPV4
+          - IPV6
+      fixedAddresses:
+        type: array
+        items:
+          description: Fixed addresses to assign.
+          type: string
+      numDynamicAddresses:
+        title: Numdynamicaddresses
+        description: Number of dynamic addresses to assign.
+        type: integer
+      addressRange:
+        $ref: '#/definitions/_AddressRange'
+      subnetId:
+        title: Subnetid
+        description: Subnet defined by the identifier of the subnet resource in the VIM.
+        type: string
+  _IpOverEthernet:
+    title: Ipoverethernet
+    description: IP addresses over Ethernet to assign to the extCP instance.
+    type: object
+    properties:
+      macAddress:
+        title: Macaddress
+        description: MAC address.
+        type: string
+      ipAddresses:
+        description: List of IP addresses to assign to the extCP instance.
+        type: array
+        items:
+          $ref: '#/definitions/_IpAddress'
+  _CpProtocolInfo:
+    description: Address assigned for this CP
+    required:
+      - layerProtocol
+    type: object
+    properties:
+      layerProtocol:
+        title: Layerprotocol
+        description: The identifier of layer(s) and protocol(s) associated to the network address information.
+        type: string
+        enum:
+          - IP_OVER_ETHERNET
+      ipOverEthernet:
+        $ref: '#/definitions/_IpOverEthernet'
+  _PnfExtCpData:
+    description: Address assigned for the PNF external CP
+    required:
+      - cpProtocolData
+    type: object
+    properties:
+      cpInstanceId:
+        title: Cpinstanceid
+        description: Identifier of the CP
+        type: string
+      cpdId:
+        title: Cpdid
+        description: Identifier of the Connection Point Descriptor
+        type: string
+      cpProtocolData:
+        description: Address assigned for this CP
+        type: array
+        items:
+          $ref: '#/definitions/_CpProtocolInfo'
+  _AddPnfData:
+    description: Information on the PNF
+    required:
+      - pnfId
+      - pnfName
+      - pnfdId
+      - pnfProfileId
+    type: object
+    properties:
+      pnfId:
+        title: Pnfid
+        description: Identifier of the PNF
+        type: string
+      pnfName:
+        title: Pnfname
+        description: Name of the PNF
+        type: string
+      pnfdId:
+        title: Pnfdid
+        description: Identifier of the PNFD
+        type: string
+      pnfProfileId:
+        title: Pnfprofileid
+        description: Identifier of related PnfProfile in the NSD
+        type: string
+      cpData:
+        description: Address assigned for the PNF external CP
+        type: array
+        items:
+          $ref: '#/definitions/_PnfExtCpData'
+  _InstantNsReq:
+    type: object
+    properties:
+      locationConstraints:
+        description: Location constraints
+        type: array
+        items:
+          $ref: '#/definitions/_LocationConstraint'
+      additionalParamForNs:
+        title: Additionalparamforns
+        description: Additional param for NS
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      addpnfData:
+        description: Information on the PNF
+        type: array
+        items:
+          $ref: '#/definitions/_AddPnfData'
+  _InstNsPostDealReq:
+    description: NS instant post deal
+    required:
+      - status
+    type: object
+    properties:
+      status:
+        title: Status
+        description: Status of NS Inst
+        type: string
+  _ScaleNsBySteps:
+    description: Scale NS by steps data
+    required:
+      - aspectId
+      - numberOfSteps
+      - scalingDirection
+    type: object
+    properties:
+      aspectId:
+        title: Aspectid
+        description: ID of aspect
+        type: string
+      numberOfSteps:
+        title: Numberofsteps
+        description: Number of steps
+        type: string
+      scalingDirection:
+        title: Scalingdirection
+        description: Scaling direction
+        type: string
+  _ScaleNsData:
+    description: Scale NS data
+    required:
+      - scaleNsByStepsData
+    type: object
+    properties:
+      scaleNsByStepsData:
+        description: Scale NS by steps data
+        type: array
+        items:
+          $ref: '#/definitions/_ScaleNsBySteps'
+  _ManualScaleNsReq:
+    description: NS manual scale
+    required:
+      - scaleType
+      - scaleNsData
+    type: object
+    properties:
+      scaleType:
+        title: Scaletype
+        description: Type of NS Scale
+        type: string
+      scaleNsData:
+        description: Scale NS data
+        type: array
+        items:
+          $ref: '#/definitions/_ScaleNsData'
+  _TerminateNsReq:
+    type: object
+    properties:
+      terminationType:
+        title: Terminationtype
+        description: Type of NS termination
+        type: string
+      gracefulTerminationTimeout:
+        title: Gracefulterminationtimeout
+        description: Timeout of NS graceful termination
+        type: string
+  VnfInstanceData:
+    description: Data of vnf instance
+    required:
+      - vnfInstanceId
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Specify the target NS instance where the VNF instances are moved to
+        type: string
+      vnfProfileId:
+        title: Vnfprofileid
+        description: Specify the VNF instance that is moved.
+        type: string
+  InstantiateVnfData:
+    description: Data of vnf instance
+    required:
+      - vnfdId
+      - vnfFlavourId
+    type: object
+    properties:
+      vnfdId:
+        title: Vnfdid
+        description: 'Information sufficient to identify the VNFD which defines the VNF to be instantiated. '
+        type: string
+      vnfFlavourId:
+        title: Vnfflavourid
+        description: Identifier of the VNF deployment flavour to be instantiated.
+        type: string
+      vnfInstantiationLevelId:
+        title: Vnfinstantiationlevelid
+        description: 'Identifier of the instantiation level of the deployment flavour to be instantiated. '
+        type: string
+      vnfInstanceName:
+        title: Vnfinstancename
+        description: Human-readable name of the VNF instance to be created.
+        type: string
+  AddressRange:
+    title: Addressrange
+    description: An IP address range to be used.
+    required:
+      - minAddress
+      - maxAddress
+    type: object
+    properties:
+      minAddress:
+        title: Minaddress
+        description: Lowest IP address belonging to the range.
+        type: string
+      maxAddress:
+        title: Maxaddress
+        description: Highest IP address belonging to the range.
+        type: string
+  IpAddressesDataSerialzier:
+    description: List of IP addresses to assign to the extCP instance.
+    required:
+      - type
+      - fixedAddresses
+    type: object
+    properties:
+      type:
+        title: Type
+        description: The type of the IP addresses.
+        type: string
+        enum:
+          - IPV4
+          - IPV6
+      fixedAddresses:
+        type: array
+        items:
+          description: Fixed addresses to assign.
+          type: string
+      numDynamicAddresses:
+        title: Numdynamicaddresses
+        description: Number of dynamic addresses to assign.
+        type: integer
+      addressRange:
+        $ref: '#/definitions/AddressRange'
+      subnetId:
+        title: Subnetid
+        description: Subnet defined by the identifier of the subnet resource in the VIM.
+        type: string
+  IpOverEthernetAddressData:
+    title: Ipoverethernet
+    description: Network address data for IP over Ethernetto assign to the extCP instance.
+    type: object
+    properties:
+      macAddress:
+        title: Macaddress
+        description: Mac address
+        type: string
+      ipAddresses:
+        description: List of IP addresses to assign to the extCP instance.
+        type: array
+        items:
+          $ref: '#/definitions/IpAddressesDataSerialzier'
+  CpProtocolData:
+    description: This type represents network protocol data.
+    required:
+      - layerProtocol
+    type: object
+    properties:
+      layerProtocol:
+        title: Layerprotocol
+        description: Identifier of layer(s) and protocol(s)
+        type: string
+        enum:
+          - IP_OVER_ETHERNET
+      ipOverEthernet:
+        $ref: '#/definitions/IpOverEthernetAddressData'
+  VnfExtCpConfig:
+    description: Config of vnf ext cp
+    type: object
+    properties:
+      cpInstanceId:
+        title: Cpinstanceid
+        description: Identifier of the external CP instance to which this set of configuration parameters is requested to be applied.
+        type: string
+      linkPortId:
+        title: Linkportid
+        description: Identifier of a pre-conFigured link port to which the external CP will be associated.
+        type: string
+      cpProtocolData:
+        description: Parameters for configuring the network protocols on the link port that connects the CP to a VL
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolData'
+  VnfExtCpData:
+    description: External CPs of the VNF to be connected to this external VL.
+    required:
+      - cpdId
+    type: object
+    properties:
+      cpdId:
+        title: Cpdid
+        description: The identifier of the CPD in the VNFD.
+        type: string
+      cpConfig:
+        description: List of instance data that need to be conFigured on the CP instances created from the respective CPD.
+        type: array
+        items:
+          $ref: '#/definitions/VnfExtCpConfig'
+  ResourceHandle:
+    title: Resourcehandle
+    description: Identifier(s) of the virtualised network resource(s) realizing the VL instance
+    required:
+      - resourceId
+    type: object
+    properties:
+      vimConnectionId:
+        title: Vimconnectionid
+        description: Identifier of the VIM connection to manage the resource.
+        type: string
+        maxLength: 255
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifier of the entity responsible for the management of the resource.
+        type: string
+        maxLength: 255
+      resourceId:
+        title: Resourceid
+        description: Identifier of the resource in the scope of the VIM or the resource provider.
+        type: string
+        maxLength: 255
+      vimLevelResourceType:
+        title: Vimlevelresourcetype
+        description: 'String, type of the resource in the scope of the VIM or the resource provider.'
+        type: string
+        maxLength: 255
+  ExtLinkPortData:
+    description: This type represents an externallyprovided link port to be used to connect a VNF external connection point to an external VL
+    required:
+      - id
+      - resourceHandle
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Provided by the entity that has created the link port
+        type: string
+      resourceHandle:
+        $ref: '#/definitions/ResourceHandle'
+  ExtVirtualLinkData:
+    description: This type represents an external VL
+    required:
+      - resourceId
+    type: object
+    properties:
+      extVirtualLinkId:
+        title: Extvirtuallinkid
+        description: 'The identifier of the external VL instance, if provided. '
+        type: string
+      vimId:
+        title: Vimid
+        description: Identifier of the VIM that manages this resource.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management of this resource.
+        type: string
+      resourceId:
+        title: Resourceid
+        description: The identifier of the resource in the scope of the VIM or the resource provider.
+        type: string
+      extCps:
+        type: array
+        items:
+          $ref: '#/definitions/VnfExtCpData'
+      extLinkPorts:
+        description: 'Externally provided link ports to be used to connect external connection points to this external VL. '
+        type: array
+        items:
+          $ref: '#/definitions/ExtLinkPortData'
+  ExtManagedVirtualLinkData:
+    description: This type represents an externally-managed internalVL.
+    required:
+      - virtualLinkDescId
+      - resourceId
+    type: object
+    properties:
+      extManagedVirtualLinkId:
+        title: Extmanagedvirtuallinkid
+        description: 'The identifier of the externally-managed internal VL instance,if provided.'
+        type: string
+      virtualLinkDescId:
+        title: Virtuallinkdescid
+        description: The identifier of the VLD in the VNFD for this VL.
+        type: string
+      vimId:
+        title: Vimid
+        description: Identifier of the VIMthat manage this resource.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management ofthis resource.
+        type: string
+      resourceId:
+        title: Resourceid
+        description: The identifier of the resource in the scope of the VIM orthe resource provider.
+        type: string
+  ChangeVnfFlavourDataSerizlizer:
+    description: The type represents the information that is requested to be changed deployment flavour for an existing VNF instance.
+    required:
+      - vnfInstanceId
+      - newFlavourId
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the VNF instance to be modified.
+        type: string
+      newFlavourId:
+        title: Newflavourid
+        description: Identifier of the VNF deployment flavour to be instantiated.
+        type: string
+      instantiationLevelId:
+        title: Instantiationlevelid
+        description: Identifier of the instantiation level of the deployment flavour to be instantiated.
+        type: string
+      extVirtualLinks:
+        description: Information about external VLs to connect the VNF to.
+        type: array
+        items:
+          $ref: '#/definitions/ExtVirtualLinkData'
+      extManagedVirtualLinks:
+        description: Information about internal VLs that are managed by NFVO
+        type: array
+        items:
+          $ref: '#/definitions/ExtManagedVirtualLinkData'
+      additionalParams:
+        title: Additionalparams
+        description: Additional input parameters for the flavour change process
+        type: string
+  OperationalStates:
+    title: Changestateto
+    description: The desired operational state to change the VNF to.
+    required:
+      - OperationalStates
+    type: object
+    properties:
+      OperationalStates:
+        title: Operationalstates
+        description: State of operation
+        type: string
+        enum:
+          - STARTED
+          - STOPPED
+  StopType:
+    title: Stoptype
+    description: It signals whether forceful or graceful stop is requested.
+    required:
+      - StopType
+    type: object
+    properties:
+      StopType:
+        title: Stoptype
+        description: Type of stop
+        type: string
+        enum:
+          - FORCEFUL
+          - GRACEFUL
+  OperateVnfData:
+    description: This type represents a VNF instance for which the operational state needs to be changed and the requested new state
+    required:
+      - vnfInstanceId
+      - changeStateTo
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the VNF instance.
+        type: string
+      changeStateTo:
+        $ref: '#/definitions/OperationalStates'
+      stopType:
+        $ref: '#/definitions/StopType'
+      gracefulStopTimeout:
+        title: Gracefulstoptimeout
+        description: The time interval to wait for the VNF to be taken out ofservice during graceful stop.
+        type: string
+  ModifyVnfInfoData:
+    description: 'This type represents the information that is requested to be modified for a VNF instance. '
+    required:
+      - vnfInstanceId
+      - vnfPkgId
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the VNF instance.
+        type: string
+        format: uuid
+      vnfInstanceName:
+        title: Vnfinstancename
+        description: 'New value of the ''vnfInstanceName'' attribute in ''VnfInstance'', or ''null'' to remove the attribute.'
+        type: string
+        maxLength: 255
+      vnfInstanceDescription:
+        title: Vnfinstancedescription
+        description: 'If present, this attribute signals modifications of the ''vnfInstanceDescription'' attribute in ''VnfInstance'''
+        type: string
+      vnfPkgId:
+        title: Vnfpkgid
+        description: New value of the 'vnfPkgId' attribute in 'VnfInstance' The value 'null' is not permitted..
+        type: string
+        format: uuid
+      vnfConfigurableProperties:
+        title: Vnfconfigurableproperties
+        description: 'Modifications to entries in the ''vnfConfigurableProperties'' list, as defined below this Table.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      metaData:
+        title: Metadata
+        description: 'If present, this attribute signals modifications of certain ''metadata'' attribute in ''vnfInstance''.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      extensions:
+        title: Extensions
+        description: 'If present,this attribute signals modifications of certain ''extensions'' attribute in ''vnfInstance''.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+  ChangeExtVnfConnectivityData:
+    description: This type describes the information invoked bythe NFVO to change the external VNF connectivity information maintained by the VNFM.
+    required:
+      - vnfInstanceId
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the VNF instance.
+        type: string
+      extVirtualLinks:
+        description: Information about external VLs to change
+        type: array
+        items:
+          $ref: '#/definitions/ExtVirtualLinkData'
+      additionalParams:
+        title: Additionalparams
+        description: Additional parameters passed by the OSS as input to the external connectivity change process
+        type: string
+  SapData:
+    description: This type represents the information related to a SAP of a NS
+    required:
+      - sapdId
+      - sapName
+      - description
+    type: object
+    properties:
+      sapdId:
+        title: Sapdid
+        description: Reference to the SAPD for this SAP.
+        type: string
+      sapName:
+        title: Sapname
+        description: Human readable name for the SAP.
+        type: string
+      description:
+        title: Description
+        description: 'Human readable description for the SAP. '
+        type: string
+      sapProtocolData:
+        description: Parameters for configuring the network protocols on the SAP.
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolData'
+  AssocNewNsdVersionData:
+    title: Assocnewnsdversiondata
+    description: Specify the new NSD to be used for the NS instance.
+    required:
+      - newNsdId
+    type: object
+    properties:
+      newNsdId:
+        title: Newnsdid
+        description: 'Identifier of the new NSD version that is to be associated to the NS instance. '
+        type: string
+  MoveVnfInstanceData:
+    required:
+      - targetNsInstanceId
+    type: object
+    properties:
+      targetNsInstanceId:
+        title: Targetnsinstanceid
+        description: Specify the target NS instance where the VNF instances are moved to.
+        type: string
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Specify the VNF instance that is moved.
+        type: string
+  NsCpHandle:
+    description: This type represents an identifier of the CP or SAP instance.
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the VNF instance associated to the CPinstance.
+        type: string
+      vnfExtCpInstanceId:
+        title: Vnfextcpinstanceid
+        description: Identifier of the VNF external CP instance in thescope of the VNF instance.
+        type: string
+      pnfInfoId:
+        title: Pnfinfoid
+        description: Identifier of the PNF instance associated to the CPinstance.
+        type: string
+      pnfExtCpInstanceId:
+        title: Pnfextcpinstanceid
+        description: Identifier of the PNF external CP instance in thescope of the PNF.
+        type: string
+      nsInstanceId:
+        title: Nsinstanceid
+        description: Identifier of the NS instance associated to the SAPinstance
+        type: string
+      nsSapInstanceId:
+        title: Nssapinstanceid
+        description: Identifier of the SAP instance in the scope of the NSinstance.
+        type: string
+  Mask:
+    description: Indicates values of specific bits in a frame
+    required:
+      - startingPoint
+      - length
+      - value
+    type: object
+    properties:
+      startingPoint:
+        title: Startingpoint
+        description: Indicates the offset between the last bit of the sourcemac address and the first bit of the sequence of bitsto be matched.
+        type: string
+      length:
+        title: Length
+        description: Indicates the number of bits to be matched
+        type: string
+      value:
+        title: Value
+        description: Provide the sequence of bit values to be matched.
+        type: string
+  NfpRule:
+    title: Nfprule
+    description: NFP classification and selection rule.
+    type: object
+    properties:
+      etherDestinationAddress:
+        title: Etherdestinationaddress
+        description: Indicates a destination Mac address
+        type: string
+      etherSourceAddress:
+        title: Ethersourceaddress
+        description: Indicates a source Mac address
+        type: string
+      etherType:
+        title: Ethertype
+        description: Indicates the protocol carried over the Ethernet layer
+        type: string
+        enum:
+          - IPV4
+          - IPV6
+      vlanTag:
+        description: ndicates a VLAN identifier in an IEEE 802.1Q-2014 tag
+        type: array
+        items:
+          type: string
+      protocol:
+        title: Protocol
+        description: 'Indicates the L4 protocol, For IPv4 [7] this corresponds tothe field called Protocol to identifythe next level protocol'
+        type: string
+        enum:
+          - TCP
+          - UDP
+          - ICMP
+      dscp:
+        title: Dscp
+        description: 'For IPv4 [7] a string of 0 and 1 digits that corresponds to the6-bit Differentiated Services Code Point (DSCP) field of theIP header.'
+        type: string
+      sourcePortRange:
+        title: Sourceportrange
+        description: Indicates a range of source ports
+        type: string
+      destinationPortRange:
+        title: Destinationportrange
+        description: Indicates a range of destination ports
+        type: string
+      sourceIpAddressPrefix:
+        title: Sourceipaddressprefix
+        description: Indicates the source IP address range in CIDRformat.
+        type: string
+      destinationIpAddressPrefix:
+        title: Destinationipaddressprefix
+        description: Indicates the destination IP address rangein CIDRformat.
+        type: string
+      extendedCriteria:
+        description: Indicates values of specific bits in a frame
+        type: array
+        items:
+          $ref: '#/definitions/Mask'
+  NfpData:
+    description: 'This type contains information used to create or modify NFP instance parameters for the updateof an existing VNFFG instance. '
+    type: object
+    properties:
+      nfpInfoId:
+        title: Nfpinfoid
+        description: Identifier of the NFP to be modified.
+        type: string
+      nfpName:
+        title: Nfpname
+        description: Human readable name for the NFP.
+        type: string
+      description:
+        title: Description
+        description: Human readable description for the NFP
+        type: string
+      nsCpHandle:
+        description: HanIdentifier(s) of the CPs and SAPs which the NFP passes by.
+        type: array
+        items:
+          $ref: '#/definitions/NsCpHandle'
+      nfpRule:
+        $ref: '#/definitions/NfpRule'
+  UpdateVnffgData:
+    description: This type specifies the parameters used for the update of an existing VNFFG instance.
+    required:
+      - vnffgInfoId
+    type: object
+    properties:
+      vnffgInfoId:
+        title: Vnffginfoid
+        description: Identifier of an existing VNFFG to be updated for the NS Instance.
+        type: string
+      nfp:
+        description: nfp
+        type: array
+        items:
+          $ref: '#/definitions/NfpData'
+      nfpInfoId:
+        description: Identifier(s) of the NFP to be deleted from a given VNFFG.
+        type: array
+        items:
+          type: string
+  ChangeNsFlavourData:
+    title: Changensflavourdata
+    description: Specifies the new DF to be applied to the NS instance
+    required:
+      - newNsFlavourId
+    type: object
+    properties:
+      newNsFlavourId:
+        title: Newnsflavourid
+        description: Identifier of the new NS DF to apply to this NS instance.
+        type: string
+      instantiationLevelId:
+        title: Instantiationlevelid
+        description: Identifier of the instantiation level of the deployment flavour to be instantiated.
+        type: string
+  IdentifierInPnf:
+    title: Cpinstancei16
+    description: Identifier of the CP. Shall be present for existing CP.
+    required:
+      - IdentifierInPnf
+    type: object
+    properties:
+      IdentifierInPnf:
+        description: An Identifier that is unique within respect to a PNF.
+        type: object
+        properties: {}
+  IdentifierInNsd:
+    title: Cpdid
+    description: Identifier of the Connection Point Descriptor (CPD) for this CP
+    required:
+      - IdentifierInNsd
+    type: object
+    properties:
+      IdentifierInNsd:
+        description: An identifier that is unique within a NS descriptor
+        type: object
+        properties: {}
+  PnfExtCpData:
+    description: 'Address assigned for the PNF external CP(s). '
+    type: object
+    properties:
+      cpInstanceI16:
+        $ref: '#/definitions/IdentifierInPnf'
+      cpdId:
+        $ref: '#/definitions/IdentifierInNsd'
+      cpProtocolData:
+        description: Address assigned for this CP.
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolData'
+  AddPnfData:
+    description: Serializer data of add pnf
+    required:
+      - pnfId
+      - pnfName
+      - pnfdId
+      - pnfProfileId
+    type: object
+    properties:
+      pnfId:
+        title: Pnfid
+        description: Identifier of the PNF.
+        type: string
+      pnfName:
+        title: Pnfname
+        description: Name of the PNF.
+        type: string
+      pnfdId:
+        title: Pnfdid
+        description: Identifier of the PNFD on which the PNF is based.
+        type: string
+      pnfProfileId:
+        title: Pnfprofileid
+        description: Identifier of related PnfProfile in the NSD on which the PNF is based.
+        type: string
+      cpData:
+        description: 'Address assigned for the PNF external CP(s). '
+        type: array
+        items:
+          $ref: '#/definitions/PnfExtCpData'
+  ModifyPnfData:
+    description: This type specifies an PNF to be modified in the NS instance.
+    required:
+      - pnfId
+    type: object
+    properties:
+      pnfId:
+        title: Pnfid
+        description: Identifier of the PNF.
+        type: string
+      pnfName:
+        title: Pnfname
+        description: Name of the PNF
+        type: string
+      cpData:
+        description: Address assigned for the PNF external CP(s).
+        type: array
+        items:
+          $ref: '#/definitions/PnfExtCpData'
+  DateTime:
+    title: Updatetime
+    description: Timestamp indicating the update time of the NS
+    required:
+      - DateTime
+    type: object
+    properties:
+      DateTime:
+        description: Date-time stamp.
+        type: object
+        properties: {}
+  UpdateNsReq:
+    required:
+      - updateType
+    type: object
+    properties:
+      updateType:
+        title: Updatetype
+        description: The type of update.
+        type: string
+        enum:
+          - ADD_VNF
+          - REMOVE_VNF
+          - INSTANTIATE_VNF
+          - CHANGE_VNF_DF
+          - OPERATE_VNF
+          - MODIFY_VNF_INFORMATION
+          - CHANGE_EXTERNAL_VNF_CONNECTIVITY
+          - REMOVE_SAP
+          - ADD_NESTED_NS
+          - REMOVE_NESTED_NS
+          - ASSOC_NEW_NSD_VERSION
+          - MOVE_VNF
+          - ADD_VNFFG
+          - REMOVE_VNFFG
+          - UPDATE_VNFFG
+          - CHANGE_NS_DF
+          - ADD_PNF
+          - MODIFY_PNF
+          - REMOVE_PNF
+      addVnfInstance:
+        description: Identifies an existing VNF instance to be added to the NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/VnfInstanceData'
+      removeVnfInstanceId:
+        description: Identifies an existing VNF instance to be removed from the NS instance.
+        type: array
+        items:
+          type: string
+      instantiateVnfData:
+        description: Identifies the new VNF to be instantiated.
+        type: array
+        items:
+          $ref: '#/definitions/InstantiateVnfData'
+      changeVnfFlavourData:
+        description: Identifies the new DF of the VNF instance to be changed to.
+        type: array
+        items:
+          $ref: '#/definitions/ChangeVnfFlavourDataSerizlizer'
+      operateVnfData:
+        description: This type represents a VNF instance for which the operational state needs to be changed and the requested new state.
+        type: array
+        items:
+          $ref: '#/definitions/OperateVnfData'
+      modifyVnfInfoData:
+        description: 'This type represents the information that is requested to be modified for a VNF instance. '
+        type: array
+        items:
+          $ref: '#/definitions/ModifyVnfInfoData'
+      changeExtVnfConnectivityData:
+        description: Specifies the new external connectivity data of theVNF instance to be changed
+        type: array
+        items:
+          $ref: '#/definitions/ChangeExtVnfConnectivityData'
+      addSap:
+        description: Identifies a new SAP to be added to the NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/SapData'
+      removeSapId:
+        description: The identifier an existing SAP to be removed from the NS instance
+        type: array
+        items:
+          type: string
+      addNestedNsId:
+        description: The identifier of an existing nested NS instance to be added to the NS instance
+        type: array
+        items:
+          type: string
+      removeNestedNsId:
+        description: The identifier of an existing nested NS instance to be removed from the NS instance.
+        type: array
+        items:
+          type: string
+      assocNewNsdVersionData:
+        $ref: '#/definitions/AssocNewNsdVersionData'
+      moveVnfInstanceData:
+        description: Specify existing VNF instance to be moved from one NS instance to another NS instance
+        type: array
+        items:
+          $ref: '#/definitions/MoveVnfInstanceData'
+      addVnffg:
+        description: The identifier of an existing nested NS instance to be added to the NS instance.
+        type: array
+        items:
+          type: string
+      removeVnffgId:
+        description: The identifier of an existing nested NS instance to be removed from the NS instance
+        type: array
+        items:
+          type: string
+      updateVnffg:
+        description: Specify the new VNFFG Information data to be updated for a VNFFG of the NS Instance
+        type: array
+        items:
+          $ref: '#/definitions/UpdateVnffgData'
+      changeNsFlavourData:
+        $ref: '#/definitions/ChangeNsFlavourData'
+      addPnfData:
+        description: Specifies the PNF to be added into the NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/AddPnfData'
+      modifyPnfData:
+        description: Specifies the PNF to be modified in the NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/ModifyPnfData'
+      removePnfId:
+        description: Identifier of the PNF to be deleted from the NS instance.
+        type: array
+        items:
+          type: string
+      updateTime:
+        $ref: '#/definitions/DateTime'
+  AffectedVnfcLcm:
+    description: Affected VNFC
+    required:
+      - changeType
+    type: object
+    properties:
+      vnfcInstanceId:
+        title: Vnfcinstanceid
+        description: ID of VNFC instance
+        type: string
+      vduId:
+        title: Vduid
+        description: ID of VDU in VNFD
+        type: string
+      changeType:
+        title: Changetype
+        description: Type of Change
+        type: string
+        enum:
+          - added
+          - removed
+          - modified
+      vimId:
+        title: Vimid
+        description: ID of VIM
+        type: string
+      vmId:
+        title: Vmid
+        description: ID of virtual machine
+        type: string
+      vmName:
+        title: Vmname
+        description: Name of virtual machine
+        type: string
+  NetworkResource:
+    title: Networkresource
+    description: Network Resource
+    required:
+      - resourceType
+    type: object
+    properties:
+      resourceType:
+        title: Resourcetype
+        description: Type of Resource
+        type: string
+        enum:
+          - network
+          - port
+      resourceId:
+        title: Resourceid
+        description: ID of network resource
+        type: string
+      resourceName:
+        title: Resourcename
+        description: Name of network resource
+        type: string
+  AffectedVirtualLinkLcm:
+    description: Affected VL
+    required:
+      - changeType
+    type: object
+    properties:
+      vlInstanceId:
+        title: Vlinstanceid
+        description: ID of VL instance
+        type: string
+      vldId:
+        title: Vldid
+        description: ID of VLD in VNFD
+        type: string
+      changeType:
+        title: Changetype
+        description: Type of Change
+        type: string
+        enum:
+          - added
+          - removed
+          - modified
+      networkResource:
+        $ref: '#/definitions/NetworkResource'
+  PortResource:
+    title: Portresource
+    description: Port Resource
+    type: object
+    properties:
+      vimId:
+        title: Vimid
+        description: ID of VIM
+        type: string
+      resourceId:
+        title: Resourceid
+        description: ID of Resource
+        type: string
+      resourceName:
+        title: Resourcename
+        description: Name of Resource
+        type: string
+      tenant:
+        title: Tenant
+        description: ID of Tenant
+        type: string
+      ipAddress:
+        title: Ipaddress
+        description: IP address of port
+        type: string
+      macAddress:
+        title: Macaddress
+        description: MAC address of port
+        type: string
+      instId:
+        title: Instid
+        description: Instance id of server to which the port is attached to
+        type: string
+  AffectedCp:
+    description: Affected CP
+    required:
+      - changeType
+    type: object
+    properties:
+      changeType:
+        title: Changetype
+        description: Type of Change
+        type: string
+        enum:
+          - added
+          - removed
+          - modified
+      virtualLinkInstanceId:
+        title: Virtuallinkinstanceid
+        description: ID of VL instance
+        type: string
+      cpInstanceId:
+        title: Cpinstanceid
+        description: ID of CP instance
+        type: string
+      cpdId:
+        title: Cpdid
+        description: ID of CPD in VNFD
+        type: string
+      ownerType:
+        title: Ownertype
+        description: Type of Owner
+        type: string
+      ownerId:
+        title: Ownerid
+        description: ID of Owner
+        type: string
+      portResource:
+        $ref: '#/definitions/PortResource'
+  AffectedVirtualStorageLcm:
+    description: Affected Virtual Storage(Not supported)
+    type: object
+    properties: {}
+  NotifyLcmReq:
+    required:
+      - status
+      - operation
+      - affectedVnfc
+      - affectedVl
+      - affectedCp
+      - affectedVirtualStorage
+    type: object
+    properties:
+      status:
+        title: Status
+        description: Status of operation
+        type: string
+        enum:
+          - result
+          - start
+      operation:
+        title: Operation
+        description: Lifecycle Operation
+        type: string
+        enum:
+          - Terminate
+          - Instantiate
+          - Scalein
+          - Scaleout
+          - Scaledown
+          - Scaleup
+          - Heal
+      jobId:
+        title: Jobid
+        description: ID of Job
+        type: string
+      vnfdmodule:
+        title: Vnfdmodule
+        description: VNFD Module
+        type: string
+      affectedVnfc:
+        description: Affected VNFC
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVnfcLcm'
+      affectedVl:
+        description: Affected VL
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVirtualLinkLcm'
+      affectedCp:
+        description: Affected CP
+        type: array
+        items:
+          $ref: '#/definitions/AffectedCp'
+      affectedVirtualStorage:
+        description: Affected Virtual Storage(Not supported)
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVirtualStorageLcm'
+  VnfScaleInfo:
+    description: 'Scale status of the VNF, one entry per aspect. Represents for every scaling aspect how big the VNF has been scaled w.r.t. that aspect.'
+    required:
+      - aspectlId
+      - scaleLevel
+    type: object
+    properties:
+      aspectlId:
+        description: The scaling aspect
+        type: object
+        properties: {}
+      scaleLevel:
+        description: The scale level for that aspect
+        type: object
+        properties: {}
+  IpAddressesInfoSerialzier:
+    description: List of IP addresses to assign to the extCP instance.
+    required:
+      - type
+    type: object
+    properties:
+      type:
+        title: Type
+        description: The type of the IP addresses.
+        type: string
+        enum:
+          - IPV4
+          - IPV6
+      addresses:
+        description: An IPV4 or IPV6 address
+        type: array
+        items:
+          type: string
+      isDynamic:
+        title: Isdynamic
+        description: 'Indicates whether this set of addresses was assigned dynamically (true) or based on address information provided as input from the API consumer (false). '
+        type: boolean
+      addressRange:
+        $ref: '#/definitions/AddressRange'
+      subnetId:
+        title: Subnetid
+        description: 'Subnet defined by the identifier of the subnet resource in the VIM. '
+        type: string
+  IpOverEthernetAddressInfo:
+    title: Ipoverethernet
+    description: Network address data for IP over Ethernetto assign to the extCP instance.
+    type: object
+    properties:
+      macAddress:
+        title: Macaddress
+        description: Mac address
+        type: string
+      ipAddresses:
+        description: List of IP addresses to assign to the extCP instance.
+        type: array
+        items:
+          $ref: '#/definitions/IpAddressesInfoSerialzier'
+  CpProtocolInfo:
+    description: Network protocol information for this CP.
+    required:
+      - layerProtocol
+    type: object
+    properties:
+      layerProtocol:
+        title: Layerprotocol
+        description: Identifier of layer(s) and protocol(s)
+        type: string
+        enum:
+          - IP_OVER_ETHERNET
+      ipOverEthernet:
+        $ref: '#/definitions/IpOverEthernetAddressInfo'
+  VnfExtCpInfo:
+    description: Information about the external CPs exposed by the VNF instance.
+    required:
+      - id
+      - cpdId
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the external CP instance and the related information instance.
+        type: string
+        maxLength: 255
+      cpdId:
+        title: Cpdid
+        description: 'Identifier of the external CPD, VnfExtCpd, in the VNFD.'
+        type: string
+        maxLength: 255
+      cpProtocolInfo:
+        description: Network protocol information for this CP.
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolInfo'
+      extLinkPortId:
+        title: Extlinkportid
+        description: Identifier of the extLinkPortInfo structure inside the extVirtualLinkInfo structure.
+        type: string
+        maxLength: 255
+  ExtlinkPortInfo:
+    description: Link ports of this VL.
+    required:
+      - id
+      - resourceHandle
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this link port as provided by the entity that has created the link port.
+        type: string
+        maxLength: 255
+      resourceHandle:
+        $ref: '#/definitions/ResourceHandle'
+      cpInstanceId:
+        title: Cpinstanceid
+        description: Identifier of the external CP of the VNFconnected to this link port.
+        type: string
+        maxLength: 255
+  ExtVirtualLinkInfo:
+    description: Information about the external VLs the VNF instance is connected to.
+    required:
+      - id
+      - resourceHandle
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the external VL and the related external VL information instance.
+        type: string
+        maxLength: 255
+      resourceHandle:
+        $ref: '#/definitions/ResourceHandle'
+      extlinkPorts:
+        description: Link ports of this VL.
+        type: array
+        items:
+          $ref: '#/definitions/ExtlinkPortInfo'
+  VnfLinkPortInfo:
+    description: 'VnfLinkPortInfo, Link ports of this VL.'
+    required:
+      - id
+      - resourceHandle
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this link port as provided by the entity that has created the link port.
+        type: string
+        maxLength: 255
+      resourceHandle:
+        $ref: '#/definitions/ResourceHandle'
+      cpInstanceId:
+        title: Cpinstanceid
+        description: 'When the link port is used for external connectivity by the VNF, this attribute represents the identifier of the external CP of the VNF to be connected to this link port.'
+        type: string
+        maxLength: 255
+      cpInstanceType:
+        title: Cpinstancetype
+        description: Type of the CP instance that is identified by cpInstanceId.
+        type: string
+        enum:
+          - VNFC_CP
+          - EXT_CP
+  ExtManagedVirtualLinkInfo:
+    description: Information about the externally-managed inner VLs of the VNF instance.
+    required:
+      - id
+      - vnfVirtualLinkDescId
+      - networkResource
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the externally-managed inner VL and the related externally-managed VL information instance.
+        type: string
+        maxLength: 255
+      vnfVirtualLinkDescId:
+        title: Vnfvirtuallinkdescid
+        description: Identifier of the VNF Virtual Link Descriptor (VLD) in the VNFD.
+        type: string
+        maxLength: 255
+      networkResource:
+        $ref: '#/definitions/ResourceHandle'
+      vnfLinkPorts:
+        description: 'VnfLinkPortInfo, Link ports of this VL.'
+        type: array
+        items:
+          $ref: '#/definitions/VnfLinkPortInfo'
+  VnfcCpInfo:
+    description: CPs of the VNFC instance. Shall be present when that particular CP of the VNFC instance is associated to an external CP of the VNF instance.
+    required:
+      - id
+      - cpdId
+      - vnfLinkPortId
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the external CP instance and the related information instance.
+        type: string
+        maxLength: 255
+      cpdId:
+        title: Cpdid
+        description: 'Identifier of the external CPD, VnfExtCpd, in the VNFD.'
+        type: string
+        maxLength: 255
+      vnfExtCpId:
+        title: Vnfextcpid
+        description: 'When the VNFC CP is exposed as external CP of the VNF, the identifier of this external VNF CP.'
+        type: string
+        maxLength: 255
+      cpProtocolInfo:
+        description: Network protocol information for this CP.
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolInfo'
+      vnfLinkPortId:
+        title: Vnflinkportid
+        description: Identifier of the vnfLinkPorts structure in the vnfVirtualLinkResourceInfo structure.
+        type: string
+        maxLength: 255
+  VnfcResourceInfo:
+    description: Information about the virtualised compute and storage resources used by the VNFCs of the VNF instance.
+    required:
+      - computeResource
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this VnfcResourceInfo instance.
+        type: string
+        maxLength: 255
+      vduId:
+        title: Vduid
+        description: Reference to the applicable VDU in the VNFD.
+        type: string
+        maxLength: 255
+      computeResource:
+        $ref: '#/definitions/ResourceHandle'
+      storageResourceIds:
+        description: References to the VirtualStorage resources. The value refers to a VirtualStorageResourceInfo item in the VnfInstance.
+        type: array
+        items:
+          description: Identifier In Vnf
+          type: string
+      reservationId:
+        title: Reservationid
+        description: The reservation identifier applicable to the resource.
+        type: string
+        maxLength: 255
+      vnfcCpInfo:
+        description: CPs of the VNFC instance. Shall be present when that particular CP of the VNFC instance is associated to an external CP of the VNF instance.
+        type: array
+        items:
+          $ref: '#/definitions/VnfcCpInfo'
+      metadata:
+        title: Metadata
+        description: Metadata about this resource.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+  VnfVirtualLinkResourceInfo:
+    description: Information about the virtualised network resources used by the VLs of the VNF instance.
+    required:
+      - id
+      - virtualLinkDescId
+      - networkResource
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this VnfVirtualLinkResourceInfo instance.
+        type: string
+        maxLength: 255
+      virtualLinkDescId:
+        title: Virtuallinkdescid
+        description: Identifier of the VNF Virtual Link Descriptor (VLD) in the VNFD.
+        type: string
+        maxLength: 255
+      networkResource:
+        $ref: '#/definitions/ResourceHandle'
+      reservationId:
+        title: Reservationid
+        description: The reservation identifier applicable to the resource.
+        type: string
+        maxLength: 255
+      vnfLinkPorts:
+        description: Links ports of this VL. Shall be present when the linkPort is used for external connectivity by the VNF
+        type: array
+        items:
+          $ref: '#/definitions/VnfLinkPortInfo'
+      metadata:
+        title: Metadata
+        description: Metadata about this resource.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+  VirtualStorageResourceInfo:
+    description: Information about the virtualised storage resources used as storage for the VNF instance.
+    required:
+      - id
+      - storageResource
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this VirtualStorageResourceInfo instance.
+        type: string
+        maxLength: 255
+      virtualStorageDescId:
+        title: Virtualstoragedescid
+        description: Identifier of the VirtualStorageDesc in the VNFD.
+        type: string
+        maxLength: 255
+      storageResource:
+        $ref: '#/definitions/ResourceHandle'
+      reservationId:
+        title: Reservationid
+        description: The reservation identifier applicable to the resource.
+        type: string
+        maxLength: 255
+      metadata:
+        title: Metadata
+        description: Metadata about this resource.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+  InstantiatedVnfInfo:
+    title: Instantiatedvnfinfo
+    description: Information specific to an instantiated VNF instance. This attribute shall be present if the instantiateState attribute value is INSTANTIATED
+    required:
+      - flavourId
+      - vnfState
+      - extCpInfo
+    type: object
+    properties:
+      flavourId:
+        title: Flavourid
+        description: Identifier of the VNF deployment flavour applied to this VNF instance.
+        type: string
+        maxLength: 255
+      vnfState:
+        title: Vnfstate
+        description: State of the VNF instance.
+        type: string
+        enum:
+          - STARTED
+          - STOPPED
+      scaleStatus:
+        description: 'Scale status of the VNF, one entry per aspect. Represents for every scaling aspect how big the VNF has been scaled w.r.t. that aspect.'
+        type: array
+        items:
+          $ref: '#/definitions/VnfScaleInfo'
+      extCpInfo:
+        description: Information about the external CPs exposed by the VNF instance.
+        type: array
+        items:
+          $ref: '#/definitions/VnfExtCpInfo'
+      extVirtualLinkInfo:
+        description: Information about the external VLs the VNF instance is connected to.
+        type: array
+        items:
+          $ref: '#/definitions/ExtVirtualLinkInfo'
+      extManagedVirtualLinkInfo:
+        description: Information about the externally-managed inner VLs of the VNF instance.
+        type: array
+        items:
+          $ref: '#/definitions/ExtManagedVirtualLinkInfo'
+      monitoringParameters:
+        title: Monitoringparameters
+        description: Active monitoring parameters.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      localizationLanguage:
+        title: Localizationlanguage
+        description: Information about localization language of the VNF.
+        type: string
+        maxLength: 255
+      vnfcResourceInfo:
+        description: Information about the virtualised compute and storage resources used by the VNFCs of the VNF instance.
+        type: array
+        items:
+          $ref: '#/definitions/VnfcResourceInfo'
+      vnfVirtualLinkResourceInfo:
+        description: Information about the virtualised network resources used by the VLs of the VNF instance.
+        type: array
+        items:
+          $ref: '#/definitions/VnfVirtualLinkResourceInfo'
+      virtualStorageResourceInfo:
+        description: Information about the virtualised storage resources used as storage for the VNF instance.
+        type: array
+        items:
+          $ref: '#/definitions/VirtualStorageResourceInfo'
+  Link:
+    title: Href
+    description: URI of this resource.
+    required:
+      - href
+    type: object
+    properties:
+      href:
+        title: Href
+        description: URI of the referenced resource.
+        type: string
+  VnfInstanceLinks:
+    title: ' links'
+    description: Links to resources related to this resource.
+    required:
+      - href
+    type: object
+    properties:
+      href:
+        $ref: '#/definitions/Link'
+      indicators:
+        $ref: '#/definitions/Link'
+      instantiate:
+        $ref: '#/definitions/Link'
+      termiante:
+        $ref: '#/definitions/Link'
+      scale:
+        $ref: '#/definitions/Link'
+      scaleToLevel:
+        $ref: '#/definitions/Link'
+      changeFlavour:
+        $ref: '#/definitions/Link'
+      heal:
+        $ref: '#/definitions/Link'
+      operate:
+        $ref: '#/definitions/Link'
+      changeExtConn:
+        $ref: '#/definitions/Link'
+  VnfInstance:
+    description: Information on constituent VNF(s) of the NS instance.
+    required:
+      - id
+      - vnfProvider
+      - vnfdVersion
+      - vnfPkgId
+      - instantiationState
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the VNF instance.
+        type: string
+        maxLength: 255
+      vnfInstanceName:
+        title: Vnfinstancename
+        description: Name of the VNF instance.
+        type: string
+        maxLength: 255
+      vnfInstanceDescription:
+        title: Vnfinstancedescription
+        description: Human-readable description of the VNF instance.
+        type: string
+      vnfdId:
+        title: Vnfdid
+        description: Identifier of the VNFD on which the VNF instance is based.
+        type: string
+        maxLength: 255
+      vnfProvider:
+        title: Vnfprovider
+        description: Provider of the VNF and the VNFD.
+        type: string
+        maxLength: 255
+      vnfProductName:
+        title: Vnfproductname
+        description: Name to identify the VNF Product.
+        type: string
+        maxLength: 255
+      vnfSoftwareVersion:
+        title: Vnfsoftwareversion
+        description: Software version of the VNF.
+        type: string
+        maxLength: 255
+      vnfdVersion:
+        title: Vnfdversion
+        description: Identifies the version of the VNFD.
+        type: string
+        maxLength: 255
+      vnfPkgId:
+        title: Vnfpkgid
+        description: Identifier of information held by the NFVO about the specific VNF package on which the VNF is based. This attribute can be modified with the PATCH method.
+        type: string
+        maxLength: 255
+      vnfConfigurableProperties:
+        title: Vnfconfigurableproperties
+        description: Current values of the configurable properties of the VNF instance. Configurable properties referred in this attribute are declared in the VNFD
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      vimId:
+        description: Identifier set of a VIM that manages resources for the VNF instance.
+        type: array
+        items:
+          description: Identifier of a VIM that manages resources for the VNF instance.
+          type: string
+      instantiationState:
+        title: Instantiationstate
+        description: The instantiation state of the VNF.
+        type: string
+        enum:
+          - NOT_INSTANTIATED
+          - INSTANTIATED
+      instantiatedVnfInfo:
+        $ref: '#/definitions/InstantiatedVnfInfo'
+      metadata:
+        title: Metadata
+        description: Additional VNF-specific metadata describing the VNF instance. This attribute can be modified with the PATCH method.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      extensions:
+        title: Extensions
+        description: 'VNF-specific attributes that affect the lifecycle management of this VNF instance by the VNFM, or the lifecycle management scripts. This attribute can be modified with the PATCH method.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      _links:
+        $ref: '#/definitions/VnfInstanceLinks'
+  PnfExtCpInfo:
+    description: Information on the external CP of the PNF
+    required:
+      - cpInstanceId
+      - cpdId
+      - cpProtocolData
+    type: object
+    properties:
+      cpInstanceId:
+        title: Cpinstanceid
+        description: Identifier of the CP in the scope of the PNF.
+        type: string
+      cpdId:
+        title: Cpdid
+        description: Identifier of (reference to) the Connection Point Descriptor(CPD) for this CP.
+        type: string
+      cpProtocolData:
+        description: Parameters for configuring the network protocols onthe CP.
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolData'
+  PnfInfo:
+    description: Information on constituent PNF(s) of the NS instance.
+    required:
+      - pnfId
+      - pnfName
+      - pnfdId
+      - pnfdInfoId
+      - pnfProfileId
+      - cpInfo
+    type: object
+    properties:
+      pnfId:
+        title: Pnfid
+        description: Identifier of the PNF.
+        type: string
+      pnfName:
+        title: Pnfname
+        description: Name of the PNF.
+        type: string
+      pnfdId:
+        title: Pnfdid
+        description: Identifier of the PNFD on which the PNF is based.
+        type: string
+      pnfdInfoId:
+        title: Pnfdinfoid
+        description: Identifier of the PNFD information onject related to this PNF.
+        type: string
+      pnfProfileId:
+        title: Pnfprofileid
+        description: Identifier of the related PnfProfile in the NSD on which the PNF is based.
+        type: string
+      cpInfo:
+        description: Information on the external CP of the PNF
+        type: array
+        items:
+          $ref: '#/definitions/PnfExtCpInfo'
+  NsLinkPortInfo:
+    description: Link ports of this VL.
+    required:
+      - id
+      - resourceHandle
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this link port as provided by the entity that has created the link port.
+        type: string
+        maxLength: 255
+      resourceHandle:
+        $ref: '#/definitions/ResourceHandle'
+      cpInstanceId:
+        title: Cpinstanceid
+        description: Identifier of the external CP of the VNF connected to this link port. There shall be at most one link port associated with any external connection point instance.
+        type: string
+        maxLength: 255
+  NsVirtualLinkInfo:
+    description: Information on the VL(s) of the NS instance.
+    required:
+      - id
+      - nsVirtualLinkDescId
+      - nsVirtualLinkProfileId
+      - resourceHandle
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the VL instance.
+        type: string
+      nsVirtualLinkDescId:
+        title: Nsvirtuallinkdescid
+        description: Identifier of the VLD in the NSD.
+        type: string
+      nsVirtualLinkProfileId:
+        title: Nsvirtuallinkprofileid
+        description: Identifier of the VL profile in the NSD.
+        type: string
+      resourceHandle:
+        description: Identifier(s) of the virtualised network resource(s) realizing the VL instance
+        type: array
+        items:
+          $ref: '#/definitions/ResourceHandle'
+      linkPort:
+        description: Link ports of this VL.
+        type: array
+        items:
+          $ref: '#/definitions/NsLinkPortInfo'
+  NfpInfo:
+    description: Information on the NFP instances.
+    required:
+      - id
+      - description
+      - nscpHandle
+      - nfpRule
+      - nfpState
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this NFP instance.
+        type: string
+      nfpdId:
+        title: Nfpdid
+        description: Identifier of the NFPD used to instantiate this NFPinstance.
+        type: string
+      nfpName:
+        title: Nfpname
+        description: Human readable name for the NFP instance.
+        type: string
+      description:
+        title: Description
+        description: Human readable description for the NFP instance.
+        type: string
+      nscpHandle:
+        description: Identifier(s) of the CPs and/or SAPs which the NFP passes by
+        type: array
+        items:
+          $ref: '#/definitions/NsCpHandle'
+      totalCp:
+        title: Totalcp
+        description: Total number of CP and SAP instances in this NFPinstance.
+        type: string
+      nfpRule:
+        $ref: '#/definitions/NfpRule'
+      nfpState:
+        title: Nfpstate
+        description: The state of the NFP instance.
+        type: string
+        enum:
+          - ENABLED
+          - DISABLED
+  VnffgInfo:
+    description: VNF Forward Graph Information.
+    required:
+      - id
+      - vnffgdId
+      - vnfInstanceId
+      - nsVirtualLinkInfoId
+      - nsCpHandle
+      - nfpInfo
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this VNFFG instance.
+        type: string
+      vnffgdId:
+        title: Vnffgdid
+        description: Identifier of the VNFFGD in the NSD.
+        type: string
+      vnfInstanceId:
+        description: Identifier(s) of the constituent VNF instance(s) of thisVNFFG instance.
+        type: array
+        items:
+          description: ID of vnf instance
+          type: string
+      pnfInfoId:
+        description: Identifier(s) of the constituent PNF instance(s) of thisVNFFG instance
+        type: array
+        items:
+          description: ID of pnf info
+          type: string
+      nsVirtualLinkInfoId:
+        description: Identifier(s) of the constituent VL instance(s) ofthisVNFFG instance.
+        type: array
+        items:
+          description: ID of ns virtual link info
+          type: string
+      nsCpHandle:
+        description: Identifiers of the CP instances attached to the constituent VNFs and PNFs or the SAP instances of the VNFFG.
+        type: array
+        items:
+          $ref: '#/definitions/NsCpHandle'
+      nfpInfo:
+        description: Information on the NFP instances.
+        type: array
+        items:
+          $ref: '#/definitions/NfpInfo'
+  SapInfo:
+    description: Create data concerning the SAPs.
+    required:
+      - id
+      - sapdId
+      - sapName
+      - description
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the SAP instance.
+        type: string
+      sapdId:
+        title: Sapdid
+        description: Reference to the SAPD for this SAP.
+        type: string
+      sapName:
+        title: Sapname
+        description: Human readable name for the SAP.
+        type: string
+      description:
+        title: Description
+        description: 'Human readable description for the SAP. '
+        type: string
+      sapProtocolInfo:
+        description: Parameters for configuring the network protocols on the SAP.
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolInfo'
+  NsScaleInfo:
+    description: Status of each NS scaling aspect declared in the applicable DF.
+    required:
+      - nsScalingAspectId
+      - nsScaleLevelId
+    type: object
+    properties:
+      nsScalingAspectId:
+        title: Nsscalingaspectid
+        description: Identifier of the NS scaling aspect.
+        type: string
+      nsScaleLevelId:
+        title: Nsscalelevelid
+        description: Identifier of the NS scale level.
+        type: string
+  AffinityOrAntiAffinityRule:
+    description: Specifies additional affinity or anti-affinity constraint for the VNF instances to be instantiated as part of the NS instantiation.
+    required:
+      - vnfInstanceId
+      - affinityOrAntiAffiinty
+      - scope
+    type: object
+    properties:
+      vnfdId:
+        description: Identifier of the VNFD on which the VNF instance is based.
+        type: array
+        items:
+          type: string
+      vnfProfileId:
+        description: Identifier of (Reference to) a vnfProfile defined in the NSD which the existing VNF instance shall be matched with.
+        type: array
+        items:
+          type: string
+      vnfInstanceId:
+        description: Identifier of the existing VNF instance to be used in the NS.
+        type: array
+        items:
+          type: string
+      affinityOrAntiAffiinty:
+        title: Affinityorantiaffiinty
+        description: The type of the constraint.
+        type: string
+        enum:
+          - AFFINITY
+          - ANTI_AFFINITY
+      scope:
+        title: Scope
+        description: Specifies the scope of the rule where the placement constraint applies.
+        type: string
+        enum:
+          - NFVI_POP
+          - ZONE
+          - ZONE_GROUP
+          - NFVI_NODE
+  NsLink:
+    title: ' links'
+    description: The links of the NS instance.
+    required:
+      - self
+    type: object
+    properties:
+      self:
+        $ref: '#/definitions/Link'
+      nestedNsInstances:
+        description: Links to the nested NS instances of the present NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/Link'
+      instantiate:
+        $ref: '#/definitions/Link'
+      terminate:
+        $ref: '#/definitions/Link'
+      update:
+        $ref: '#/definitions/Link'
+      scale:
+        $ref: '#/definitions/Link'
+      heal:
+        $ref: '#/definitions/Link'
+  NsInstance:
+    description: NS instances
+    required:
+      - id
+      - nsInstanceName
+      - nsInstanceDescription
+      - nsdId
+      - nsdInfoId
+      - nsState
+      - _links
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the NS instance.
+        type: string
+      nsInstanceName:
+        title: Nsinstancename
+        description: Human readable name of the NS instance.
+        type: string
+      nsInstanceDescription:
+        title: Nsinstancedescription
+        description: Human readable description of the NS instance.
+        type: string
+      nsdId:
+        title: Nsdid
+        description: Identifier of the NSD on which the NS instance is based.
+        type: string
+      nsdInfoId:
+        title: Nsdinfoid
+        description: Identifier of the NSD information object on which the NS instance is based.
+        type: string
+      flavourId:
+        title: Flavourid
+        description: Identifier of the NS deployment flavour applied to the NS instance.
+        type: string
+      vnfInstance:
+        description: Information on constituent VNF(s) of the NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/VnfInstance'
+      pnfInfo:
+        description: Information on constituent PNF(s) of the NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/PnfInfo'
+      virtualLinkInfo:
+        description: Information on the VL(s) of the NS instance.
+        type: array
+        items:
+          $ref: '#/definitions/NsVirtualLinkInfo'
+      vnffgInfo:
+        description: VNF Forward Graph Information.
+        type: array
+        items:
+          $ref: '#/definitions/VnffgInfo'
+      sapInfo:
+        description: Create data concerning the SAPs.
+        type: array
+        items:
+          $ref: '#/definitions/SapInfo'
+      nestedNsInstanceId:
+        description: Identifier of the nested NS(s) of the NS instance.
+        type: array
+        items:
+          type: string
+      nsState:
+        title: Nsstate
+        description: The state of the NS instance.
+        type: string
+        enum:
+          - NOT_INSTANTIATED
+          - INSTANTIATED
+      nsScaleStatus:
+        description: Status of each NS scaling aspect declared in the applicable DF.
+        type: array
+        items:
+          $ref: '#/definitions/NsScaleInfo'
+      additionalAffinityOrAntiAffinityRule:
+        description: Specifies additional affinity or anti-affinity constraint for the VNF instances to be instantiated as part of the NS instantiation.
+        type: array
+        items:
+          $ref: '#/definitions/AffinityOrAntiAffinityRule'
+      _links:
+        $ref: '#/definitions/NsLink'
+  CreateNsRequest:
+    required:
+      - nsdId
+      - nsName
+      - nsDescription
+    type: object
+    properties:
+      nsdId:
+        title: Nsdid
+        description: Identifier of the NSD that defines the NS instance to be created.
+        type: string
+      nsName:
+        title: Nsname
+        description: Name of NS
+        type: string
+      nsDescription:
+        title: Nsdescription
+        description: Description of NS
+        type: string
+  ActionVm:
+    title: Actionvminfo
+    description: VM info of action
+    type: object
+    properties:
+      vmid:
+        title: Vmid
+        description: ID of VM
+        type: string
+      vduid:
+        title: Vduid
+        description: ID of vdu
+        type: string
+      vmname:
+        title: Vmname
+        description: Name of VM
+        type: string
+  HealNsAdditionalParams:
+    description: KeyValue Pairs
+    type: object
+    properties:
+      action:
+        title: Action
+        description: Action of NS heal
+        type: string
+      actionvminfo:
+        $ref: '#/definitions/ActionVm'
+  HealVnfData:
+    description: Data of heal VNF
+    required:
+      - vnfInstanceId
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: 'Identifies the VNF instance,'
+        type: string
+      cause:
+        title: Cause
+        description: Indicates the reason why a healing procedure is required
+        type: string
+      additionalParams:
+        title: Additionalparams
+        description: Additional parameters passed by the NFVO as input to the healing process
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/HealNsAdditionalParams'
+  HealNsData:
+    title: Healnsdata
+    description: Provides the information needed to heal an NS
+    required:
+      - degreeHealing
+    type: object
+    properties:
+      degreeHealing:
+        title: Degreehealing
+        description: degree of healing
+        type: string
+        enum:
+          - HEAL_RESTORE
+          - HEAL_QOS
+          - HEAL_RESET
+          - PARTIAL_HEALING
+      actionsHealing:
+        description: A list of actions
+        type: array
+        items:
+          description: One action
+          type: string
+      healScript:
+        title: Healscript
+        description: script of NS heal
+        type: string
+      additionalParamsforNs:
+        title: Additionalparamsforns
+        description: Addition params of NS heal
+        type: string
+  HealNsReq:
+    type: object
+    properties:
+      healVnfData:
+        description: Data of heal VNF
+        type: array
+        items:
+          $ref: '#/definitions/HealVnfData'
+      healNsData:
+        $ref: '#/definitions/HealNsData'
+  ProblemDetails:
+    required:
+      - status
+      - detail
+    type: object
+    properties:
+      type:
+        title: Type
+        description: 'A URI reference according to IETF RFC 3986 [5] that identifies the problem type.'
+        type: string
+      title:
+        title: Title
+        description: 'A short, human-readable summary of the problem type.'
+        type: string
+      status:
+        title: Status
+        description: The HTTP status code for this occurrence of the problem.
+        type: integer
+      detail:
+        title: Detail
+        description: A human-readable explanation specific to this occurrence of the problem.
+        type: string
+      instance:
+        title: Instance
+        description: A URI reference that identifies the specific occurrence of the problem.
+        type: string
+      additional_details:
+        description: 'Any number of additional attributes, as defined in a specification or by an implementation.'
+        type: array
+        items:
+          type: string
+  civicAddressElement:
+    description: Zero or more elements comprising the civicaddress.
+    required:
+      - caType
+      - caValue
+    type: object
+    properties:
+      caType:
+        title: Catype
+        description: Describe the content type of caValue.
+        type: string
+      caValue:
+        title: Cavalue
+        description: Content of civic address element corresponding to theaType.
+        type: string
+  LocationConstraints:
+    title: Locationconstraints
+    description: Defines the location constraints for theVNF instance to be created based on theVNF profile.
+    required:
+      - countryCode
+    type: object
+    properties:
+      countryCode:
+        title: Countrycode
+        description: 'The two-letter ISO 3166 [29] country code in capitalletters.'
+        type: string
+      civicAddressElement:
+        description: Zero or more elements comprising the civicaddress.
+        type: array
+        items:
+          $ref: '#/definitions/civicAddressElement'
+  VnfLocationConstraint:
+    description: Defines the location constraints for the VNF to be instantiated as part of the NS instantiation.
+    type: object
+    properties:
+      vnfProfileId:
+        title: Vnfprofileid
+        description: ID of VNF profile
+        type: string
+      locationConstraints:
+        $ref: '#/definitions/LocationConstraints'
+  ParamsForVnf:
+    description: Allows the OSS/BSS to provide additional parameter(s)per VNF instance
+    required:
+      - vnfProfileId
+    type: object
+    properties:
+      vnfProfileId:
+        title: Vnfprofileid
+        description: Identifier of (reference to) a vnfProfile to which theadditional parameters apply
+        type: string
+      additionalParams:
+        title: Additionalparams
+        description: Content of civic address element corresponding to thecaType
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+  InstantNsReq:
+    required:
+      - nsFlavourId
+    type: object
+    properties:
+      nsFlavourId:
+        title: Nsflavourid
+        description: Identifier of the NS deployment flavour to beinstantiated.
+        type: string
+      sapData:
+        description: Create data concerning the SAPs of this NS
+        type: array
+        items:
+          $ref: '#/definitions/SapData'
+      addpnfData:
+        description: Information on the PNF(s) that are part of this NS.
+        type: array
+        items:
+          $ref: '#/definitions/AddPnfData'
+      vnfInstanceData:
+        description: Specify an existing VNF instance to be used in the NS.
+        type: array
+        items:
+          $ref: '#/definitions/VnfInstanceData'
+      nestedNsInstanceId:
+        description: Specify an existing NS instance to be used as a nested NS within the NS
+        type: array
+        items:
+          type: string
+      localizationLanguage:
+        description: Defines the location constraints for the VNF to be instantiated as part of the NS instantiation.
+        type: array
+        items:
+          $ref: '#/definitions/VnfLocationConstraint'
+      additionalParamForNs:
+        title: Additionalparamforns
+        description: 'Allows the OSS/BSS to provide additional parameters at the NS level '
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      additionalParamsForVnf:
+        description: Allows the OSS/BSS to provide additional parameter(s)per VNF instance
+        type: array
+        items:
+          $ref: '#/definitions/ParamsForVnf'
+      startTime:
+        title: Starttime
+        description: Timestamp indicating the earliest time to instantiatethe NS.
+        type: string
+        format: date-time
+      nsInstantiationLevelId:
+        title: Nsinstantiationlevelid
+        description: Identifies one of the NS instantiation levelsdeclared in the DF applicable to this NS instance
+        type: string
+      additionalAffinityOrAntiAffiniityRule:
+        description: Specifies additional affinity or anti-affinity constraint for the VNF instances to be instantiated as part of the NS instantiation.
+        type: array
+        items:
+          $ref: '#/definitions/AffinityOrAntiAffinityRule'
+  ScaleNsByStepsData:
+    title: Scalensbystepsdata
+    description: The information used to scale an NS instance by one or more scaling steps
+    required:
+      - scalingDirection
+      - aspectId
+    type: object
+    properties:
+      scalingDirection:
+        title: Scalingdirection
+        description: The scaling direction
+        type: string
+        enum:
+          - SCALE_IN
+          - SCALE_OUT
+      aspectId:
+        title: Aspectid
+        description: 'The aspect of the NS that is requested to be scaled, as declared in the NSD. '
+        type: string
+      numberOfSteps:
+        title: Numberofsteps
+        description: 'The number of scaling steps to be performed. Defaults to 1. '
+        type: string
+  ScaleNsToLevelData:
+    title: Scalenstoleveldata
+    description: 'The information used to scale an NS instance to a target size. '
+    type: object
+    properties:
+      nsInstantiationLevel:
+        title: Nsinstantiationlevel
+        description: Identifier of the target NS instantiation level of the current DF to which the NS instance is requested to be scaled.
+        type: string
+      nsScaleInfo:
+        description: For each NS scaling aspect of the current DF
+        type: array
+        items:
+          $ref: '#/definitions/NsScaleInfo'
+  ScaleNsData:
+    description: Scale NS data
+    type: object
+    properties:
+      vnfInstanceToBeAdded:
+        description: 'An existing VNF instance to be added to the NS instance as part of the scaling operation. '
+        type: array
+        items:
+          $ref: '#/definitions/VnfInstanceData'
+      vnfInstanceToBeRemoved:
+        description: The VNF instance to be removed from the NS instance as part of the scaling operation
+        type: array
+        items:
+          type: string
+      scaleNsByStepsData:
+        $ref: '#/definitions/ScaleNsByStepsData'
+      scaleNsToLevelData:
+        $ref: '#/definitions/ScaleNsToLevelData'
+      additionalParamsForNs:
+        title: Additionalparamsforns
+        description: 'Allows the OSS/BSS to provide additional parameter(s) at the NS level necessary for the NS scaling '
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      additionalParamsForVnf:
+        description: Allows the OSS/BSS to provide additional parameter(s) per VNF instance
+        type: array
+        items:
+          $ref: '#/definitions/ParamsForVnf'
+      locationConstraints:
+        description: The location constraints for the VNF to be instantiated as part of the NS scaling.
+        type: array
+        items:
+          $ref: '#/definitions/VnfLocationConstraint'
+  ManualScaleNsReq:
+    description: NS Scale
+    required:
+      - scaleType
+      - scaleNsData
+    type: object
+    properties:
+      scaleType:
+        title: Scaletype
+        description: Type of NS Scale
+        type: string
+      scaleNsData:
+        description: Scale NS data
+        type: array
+        items:
+          $ref: '#/definitions/ScaleNsData'
+  TerminateNsReq:
+    type: object
+    properties:
+      terminationTime:
+        title: Terminationtime
+        description: Timestamp indicating the end time of the NS.
+        type: string
+  ChangedInfo:
+    title: Changedinfo
+    description: Links to resources related to this resource.
+    type: object
+    properties:
+      changedVnfInfo:
+        $ref: '#/definitions/ModifyVnfInfoData'
+      changedExtConnectivity:
+        $ref: '#/definitions/ExtVirtualLinkInfo'
+  AffectedVnfs:
+    description: Information about VNFC instances that were affected during the lifecycle operation.
+    required:
+      - vnfInstanceId
+      - vnfdId
+      - vnfProfileId
+      - vnfName
+      - changeType
+      - changeResult
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the VNF instance.
+        type: string
+        format: uuid
+      vnfdId:
+        title: Vnfdid
+        description: Identifier of the VNFD of the VNF Instance..
+        type: string
+        format: uuid
+      vnfProfileId:
+        title: Vnfprofileid
+        description: Identifier of the VNF profile of the NSD.
+        type: string
+        format: uuid
+      vnfName:
+        title: Vnfname
+        description: Name of the VNF Instance.
+        type: string
+      changeType:
+        title: Changetype
+        description: Signals the type of change
+        type: string
+        enum:
+          - ADD
+          - REMOVE
+          - INSTANTIATE
+          - TERMINATE
+          - SCALE
+          - CHANGE_FLAVOUR
+          - HEAL
+          - OPERATE
+          - MODIFY_INFORMATION
+          - CHANGE_EXTERNAL_VNF_CONNECTIVITY
+      changeResult:
+        title: Changeresult
+        description: Signals the type of change
+        type: string
+        enum:
+          - COMPLETED
+          - ROLLED_BACK
+          - FAILED
+      changedInfo:
+        $ref: '#/definitions/ChangedInfo'
+  AffectedPnfs:
+    description: Information about the PNF instances that were affected during the lifecycle operation.
+    required:
+      - pnfId
+      - pnfdId
+      - pnfProfileId
+      - pnfName
+      - cpInstanceId
+      - changeType
+      - changeResult
+    type: object
+    properties:
+      pnfId:
+        title: Pnfid
+        description: 'Identifier of the affected PNF. This identifier is allocated by the OSS/BSS. '
+        type: string
+        format: uuid
+      pnfdId:
+        title: Pnfdid
+        description: Identifier of the PNFD on which the PNF is based.
+        type: string
+        format: uuid
+      pnfProfileId:
+        title: Pnfprofileid
+        description: Identifier of the VNF profile of the NSD.
+        type: string
+        format: uuid
+      pnfName:
+        title: Pnfname
+        description: Name of the PNF.
+        type: string
+      cpInstanceId:
+        title: Cpinstanceid
+        description: Identifier of the NS profile of the NSD.
+        type: string
+        format: uuid
+      changeType:
+        title: Changetype
+        description: Signals the type of change
+        type: string
+        enum:
+          - ADD
+          - REMOVE
+          - MODIFY
+      changeResult:
+        title: Changeresult
+        description: Signals the type of change
+        type: string
+        enum:
+          - COMPLETED
+          - ROLLED_BACK
+          - FAILED
+  AffectedVLs:
+    description: Information about the VL instances that were affected during the lifecycle operation
+    required:
+      - id
+      - virtualLinkDescId
+      - changeType
+      - changeResult
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the VL Instance.
+        type: string
+        format: uuid
+      virtualLinkDescId:
+        title: Virtuallinkdescid
+        description: Identifier of the VLD in the NSD for this VL.
+        type: string
+        format: uuid
+      changeType:
+        title: Changetype
+        description: Signals the type of change
+        type: string
+        enum:
+          - ADD
+          - DELETE
+          - MODIFY
+          - ADD_LINK_PORT
+          - REMOVE_LINK_PORT
+      changeResult:
+        title: Changeresult
+        description: Signals the result of change identified by the 'changeType' attribute.
+        type: string
+        enum:
+          - COMPLETED
+          - ROLLED_BACK
+          - FAILED
+  AffectedVnffgs:
+    description: Information about the VNFFG instances that were affected during the lifecycle operation.
+    required:
+      - vnffgInstanceId
+      - vnffgdId
+      - changeType
+      - changeResult
+    type: object
+    properties:
+      vnffgInstanceId:
+        title: Vnffginstanceid
+        description: Identifier of the VNFFG instance.
+        type: string
+        format: uuid
+      vnffgdId:
+        title: Vnffgdid
+        description: Identifier of the VNFFGD of the VNFFG instance.
+        type: string
+        format: uuid
+      changeType:
+        title: Changetype
+        description: Signals the type of change
+        type: string
+        enum:
+          - ADD
+          - REMOVE
+          - MODIFY
+      changeResult:
+        title: Changeresult
+        description: Signals the type of change
+        type: string
+        enum:
+          - COMPLETED
+          - ROLLED_BACK
+          - FAILED
+  AffectedNss:
+    description: Information about the nested NS instances that were affected during the lifecycle operation.
+    required:
+      - nsInstanceId
+      - nsdId
+      - changeType
+      - changeResult
+    type: object
+    properties:
+      nsInstanceId:
+        title: Nsinstanceid
+        description: Identifier of the nested NS instance.
+        type: string
+        format: uuid
+      nsdId:
+        title: Nsdid
+        description: Identifier of the NSD of the nested NS instance.
+        type: string
+        format: uuid
+      changeType:
+        title: Changetype
+        description: Signals the type of change
+        type: string
+        enum:
+          - ADD
+          - REMOVE
+          - TERMINATE
+          - SCALE
+          - UPDATE
+          - HEAL
+      changeResult:
+        title: Changeresult
+        description: Signals the type of change
+        type: string
+        enum:
+          - COMPLETED
+          - ROLLED_BACK
+          - FAILED
+          - PARTIALLY_COMPLETED
+  AffectedSaps:
+    description: Information about the SAP instances that were affected during the lifecycle operation.
+    required:
+      - sapInstanceId
+      - sapdId
+      - sapName
+      - changeType
+      - changeResult
+    type: object
+    properties:
+      sapInstanceId:
+        title: Sapinstanceid
+        description: Identifier of the SAP instance.
+        type: string
+        format: uuid
+      sapdId:
+        title: Sapdid
+        description: Identifier of the SAPD for this SAP.
+        type: string
+        format: uuid
+      sapName:
+        title: Sapname
+        description: Human readable name for the SAP.
+        type: string
+      changeType:
+        title: Changetype
+        description: Signals the type of change
+        type: string
+        enum:
+          - ADD
+          - REMOVE
+          - MODIFY
+      changeResult:
+        title: Changeresult
+        description: Signals the type of change
+        type: string
+        enum:
+          - COMPLETED
+          - ROLLED_BACK
+          - FAILED
+  ResourceChanges:
+    title: Resourcechanges
+    description: 'It contains information about the cumulative changes to virtualised resources that were performed so far by the LCM operation since its start, if applicable.'
+    type: object
+    properties:
+      affectedVnfs:
+        description: Information about VNFC instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVnfs'
+      affectedPnfs:
+        description: Information about the PNF instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedPnfs'
+      affectedVls:
+        description: Information about the VL instances that were affected during the lifecycle operation
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVLs'
+      affectedVnffgs:
+        description: Information about the VNFFG instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVnffgs'
+      affectedNss:
+        description: Information about the nested NS instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedNss'
+      affectedSaps:
+        description: Information about the SAP instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedSaps'
+  LcmOpLink:
+    title: ' links'
+    description: Links to resources related to this resource.
+    required:
+      - self
+      - nsInstance
+    type: object
+    properties:
+      self:
+        $ref: '#/definitions/Link'
+      nsInstance:
+        $ref: '#/definitions/Link'
+      cancel:
+        $ref: '#/definitions/Link'
+      retry:
+        $ref: '#/definitions/Link'
+      rollback:
+        $ref: '#/definitions/Link'
+      fail:
+        $ref: '#/definitions/Link'
+  NSLCMOpOcc:
+    required:
+      - id
+      - operationState
+      - stateEnteredTime
+      - startTime
+      - nsInstanceId
+      - operation
+      - operationParams
+      - isCancelPending
+      - _links
+    type: object
+    properties:
+      id:
+        title: Id
+        description: 'Identifier of this NS lifecycle management operation occurrence,'
+        type: string
+        maxLength: 255
+      operationState:
+        title: Operationstate
+        description: 'The state of the VNF LCM operation occurrence. '
+        type: string
+        enum:
+          - STARTING
+          - PROCESSING
+          - COMPLETED
+          - FAILED_TEMP
+          - FAILED
+          - ROLLING_BACK
+          - ROLLED_BACK
+      stateEnteredTime:
+        title: Stateenteredtime
+        description: Date-time when the current state was entered.
+        type: string
+        maxLength: 50
+      startTime:
+        title: Starttime
+        description: Date-time of the start of the operation.
+        type: string
+        maxLength: 50
+      nsInstanceId:
+        title: Nsinstanceid
+        description: Identifier of the ns instance to which the operation applies
+        type: string
+        format: uuid
+      operation:
+        title: Operation
+        description: The lifecycle management operation
+        type: string
+        enum:
+          - INSTANTIATE
+          - SCALE
+          - TERMINATE
+          - HEAL
+          - UPDATE
+      isAutomaticInvocation:
+        title: Isautomaticinvocation
+        description: Set to true if this NS LCM operation occurrence has been automatically triggered by the NFVO.
+        type: boolean
+        default: false
+      operationParams:
+        title: Operationparams
+        description: 'Input parameters of the LCM operation. This attribute shall be formatted according to the request data type of the related LCM operation. The following mapping between operationType and the data type of this attribute shall apply: 1. INSTANTIATE: InstantiateVnfRequest 2. SCALE: ScaleVnfRequest 3. CHANGE_FLAVOUR: ChangeVnfFlavourRequest4. HEAL: HealVnfRequest 5. TERMINATE: TerminateVnfRequest '
+        type: object
+        additionalProperties:
+          type: string
+      isCancelPending:
+        title: Iscancelpending
+        description: 'If the NS LCM operation occurrence is in ''STARTING'' or ''PROCESSING'' or ''ROLLING_BACK'' state and the operation is being cancelled, this attribute shall be set to True. Otherwise, it shall be set to False.'
+        type: boolean
+      cancelMode:
+        title: Cancelmode
+        description: 'The mode of an ongoing cancellation. Shall be present when isCancelPending=true, and shall be None otherwise.'
+        type: string
+      error:
+        $ref: '#/definitions/ProblemDetails'
+      resourceChanges:
+        $ref: '#/definitions/ResourceChanges'
+      _links:
+        $ref: '#/definitions/LcmOpLink'
+  NsInstanceSubscriptionFilter:
+    title: Nsinstancesubscriptionfilter
+    description: Filter criteria to select NS instances about which to notify.
+    type: object
+    properties:
+      nsdIds:
+        description: 'If present, match NS instances that were created based on a NSD identified by one of the nsdId values listed in this attribute.'
+        type: array
+        items:
+          type: string
+          format: uuid
+      vnfdIds:
+        description: 'If present, match NS instances that contain VNF instances that were created based on identified by one of the vnfdId values listed in this attribute.'
+        type: array
+        items:
+          type: string
+          format: uuid
+      pnfdIds:
+        description: 'If present, match NS instances that contain PNFs that are represented by a PNFD identified by one of the pnfdId values listed in this attribute'
+        type: array
+        items:
+          type: string
+          format: uuid
+      nsInstanceIds:
+        description: 'If present, match NS instances with an instance identifier listed in this attribute'
+        type: array
+        items:
+          type: string
+          format: uuid
+      nsInstanceNames:
+        description: 'If present, match NS instances with a NS Instance Name listed in this attribute.'
+        type: array
+        items:
+          type: string
+          maxLength: 255
+  LifeCycleChangeNotificationsFilter:
+    title: Filter
+    description: 'Filter settings for this subscription, to define the of all notifications this subscription relates to A particular notification is sent to the subscriber if the filter matches, or if there is no filter.'
+    type: object
+    properties:
+      nsInstanceSubscriptionFilter:
+        $ref: '#/definitions/NsInstanceSubscriptionFilter'
+      notificationTypes:
+        description: Match particular notification types
+        type: array
+        items:
+          type: string
+          enum:
+            - NsLcmOperationOccurrenceNotification
+            - NsIdentifierCreationNotification
+            - NsIdentifierDeletionNotification
+            - NsChangeNotification
+      operationTypes:
+        description: Match particular NS lifecycle operation types for the notification of type NsLcmOperationOccurrenceNotification.
+        type: array
+        items:
+          type: string
+          enum:
+            - INSTANTIATE
+            - SCALE
+            - TERMINATE
+            - HEAL
+            - UPDATE
+      operationStates:
+        description: Match particular LCM operation state values as reported in notifications of type NsLcmOperationOccurrenceNotification.
+        type: array
+        items:
+          type: string
+          enum:
+            - STARTING
+            - PROCESSING
+            - COMPLETED
+            - FAILED_TEMP
+            - FAILED
+            - ROLLING_BACK
+            - ROLLED_BACK
+      nsComponentTypes:
+        description: 'Match particular NS component types for the notification of type NsChangeNotification. '
+        type: array
+        items:
+          type: string
+          enum:
+            - VNF
+            - PNF
+            - NS
+      lcmOpNameImpactingNsComponent:
+        description: 'Match particular LCM operation names for the notification of type NsChangeNotification. '
+        type: array
+        items:
+          type: string
+          enum:
+            - VNF_INSTANTIATE
+            - VNF_SCALE
+            - VNF_SCALE_TO_LEVEL
+            - VNF_CHANGE_FLAVOUR
+            - VNF_TERMINATE
+            - VNF_HEAL
+            - VNF_OPERATE
+            - VNF_CHANGE_EXT_CONN
+            - VNF_MODIFY_INFO
+            - NS_INSTANTIATE
+            - NS_SCALE
+            - NS_UPDATE
+            - NS_TERMINATE
+            - NS_HEAL
+      lcmOpOccStatusImpactingNsComponent:
+        description: Match particular LCM operation status values as reported in notifications of type NsChangeNotification.
+        type: array
+        items:
+          type: string
+          enum:
+            - START
+            - 'COMPLETED '
+            - PARTIALLY_COMPLETED
+            - FAILED
+            - ROLLED_BACK
+  LccnSubscriptionLink:
+    title: ' links'
+    description: Links to resources related to this resource.
+    required:
+      - self
+    type: object
+    properties:
+      self:
+        $ref: '#/definitions/Link'
+  LccnSubscription:
+    required:
+      - id
+      - callbackUri
+      - _links
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this subscription resource.
+        type: string
+        maxLength: 255
+      callbackUri:
+        title: Callbackuri
+        description: The URI of the endpoint to send the notification to.
+        type: string
+        maxLength: 255
+      filter:
+        $ref: '#/definitions/LifeCycleChangeNotificationsFilter'
+      _links:
+        $ref: '#/definitions/LccnSubscriptionLink'
+  BasicAuth:
+    title: Paramsbasic
+    description: Parameters for authentication/authorization using BASIC.
+    type: object
+    properties:
+      userName:
+        title: Username
+        description: Username to be used in HTTP Basic authentication.
+        type: string
+        maxLength: 255
+      password:
+        title: Password
+        description: Password to be used in HTTP Basic authentication.
+        type: string
+        maxLength: 255
+  OAuthCredentials:
+    title: Paramsoauth2clientcredentials
+    description: Parameters for authentication/authorization using OAUTH2_CLIENT_CREDENTIALS.
+    type: object
+    properties:
+      clientId:
+        title: Clientid
+        description: Client identifier to be used in the access token request of the OAuth 2.0 client credentials grant type.
+        type: string
+        maxLength: 255
+      clientPassword:
+        title: Clientpassword
+        description: Client password to be used in the access token request of the OAuth 2.0 client credentials grant type.
+        type: string
+        maxLength: 255
+      tokenEndpoint:
+        title: Tokenendpoint
+        description: The token endpoint from which the access token can be obtained.
+        type: string
+        maxLength: 255
+  SubscriptionAuthentication:
+    title: Authentication
+    description: 'Authentication parameters to conFigure the use of Authorization when sending notifications corresponding to this subscription, as defined in clause 4.5.3 This attribute shall only be present if the subscriber requires authorization of notifications.'
+    required:
+      - authType
+    type: object
+    properties:
+      authType:
+        description: Defines the types of Authentication / Authorization which the API consumer is willing to accept when receiving a notification.
+        type: array
+        items:
+          type: string
+          enum:
+            - BASIC
+            - OAUTH2_CLIENT_CREDENTIALS
+            - TLS_CERT
+      paramsBasic:
+        $ref: '#/definitions/BasicAuth'
+      paramsOauth2ClientCredentials:
+        $ref: '#/definitions/OAuthCredentials'
+  LccnSubscriptionRequest:
+    required:
+      - callbackUri
+    type: object
+    properties:
+      callbackUri:
+        title: Callbackuri
+        description: The URI of the endpoint to send the notification to.
+        type: string
+      filter:
+        $ref: '#/definitions/LifeCycleChangeNotificationsFilter'
+      authentication:
+        $ref: '#/definitions/SubscriptionAuthentication'
+  VimInfoResp:
+    required:
+      - vimId
+      - name
+      - url
+      - userName
+      - password
+      - type
+    type: object
+    properties:
+      vimId:
+        title: Vimid
+        description: ID of VIM
+        type: string
+      name:
+        title: Name
+        description: Name of VIM
+        type: string
+      url:
+        title: Url
+        description: Url of VIM
+        type: string
+      userName:
+        title: Username
+        description: User Name of VIM
+        type: string
+      password:
+        title: Password
+        description: Password of VIM
+        type: string
+      tenantId:
+        title: Tenantid
+        description: Tenant ID of VIM
+        type: string
+      tenant:
+        title: Tenant
+        description: Default Tenant of VIM
+        type: string
+      vendor:
+        title: Vendor
+        description: Vendor of VIM
+        type: string
+      version:
+        title: Version
+        description: Version of VIM
+        type: string
+      description:
+        title: Description
+        description: Description of VIM
+        type: string
+      domain:
+        title: Domain
+        description: Domain of VIM
+        type: string
+      type:
+        title: Type
+        description: Type of VIM
+        type: string
+      createTime:
+        title: Createtime
+        description: Create Time of VIM
+        type: string
+      sslCacert:
+        title: Sslcacert
+        description: SSL Cacert of VIM
+        type: string
+      sslInsecure:
+        title: Sslinsecure
+        description: SSL Insecure of VIM
+        type: string
+      status:
+        title: Status
+        description: Status of VIM
+        type: string
+  VnfmInfoResp:
+    required:
+      - vnfmId
+      - name
+      - type
+      - vimId
+    type: object
+    properties:
+      vnfmId:
+        title: Vnfmid
+        description: ID of VNFM
+        type: string
+      name:
+        title: Name
+        description: Name of VNFM
+        type: string
+      type:
+        title: Type
+        description: Type of VNFM
+        type: string
+      vimId:
+        title: Vimid
+        description: ID of VIM
+        type: string
+      vendor:
+        title: Vendor
+        description: Vendor of VNFM
+        type: string
+      version:
+        title: Version
+        description: Version of VNFM
+        type: string
+      description:
+        title: Description
+        description: Description of VNFM
+        type: string
+      certificateUrl:
+        title: Certificateurl
+        description: Certificate PEM of VNFM
+        type: string
+      url:
+        title: Url
+        description: url of VNFM
+        type: string
+      userName:
+        title: Username
+        description: User Name of VNFM
+        type: string
+      password:
+        title: Password
+        description: Password of VNFM
+        type: string
+      createTime:
+        title: Createtime
+        description: Create Time of VNFM
+        type: string
+  VerifyVnfReq:
+    required:
+      - PackageID
+    type: object
+    properties:
+      PackageID:
+        title: Packageid
+        description: ID of Package
+        type: string
+  VerifyVnfResp:
+    required:
+      - jobId
+    type: object
+    properties:
+      jobId:
+        title: Jobid
+        description: ID of Job
+        type: string
+  ResourceDefinition:
+    description: List of resource definitions in the VNFD for resources to be added by the LCM operation.
+    required:
+      - id
+      - type
+    type: object
+    properties:
+      id:
+        title: Id
+        description: 'Identifier of this ResourceDefinition, unique at least within the scope of the GrantRequest.'
+        type: string
+      type:
+        title: Type
+        description: Type of the resource definition referenced.
+        type: string
+        enum:
+          - COMPUTE
+          - VL
+          - STORAGE
+          - LINKPORT
+      vduId:
+        title: Vduid
+        description: Reference to the related VDU in the VNFD applicable to this resource.
+        type: string
+      resourceTemplateId:
+        title: Resourcetemplateid
+        description: Reference to a resource template(such as VnfVirtualLinkDesc) in the VNFD.
+        type: string
+      resource:
+        $ref: '#/definitions/ResourceHandle'
+  ConstraintResourceRef:
+    description: References to resources in the constraint rule.
+    required:
+      - idType
+      - resourceId
+    type: object
+    properties:
+      idType:
+        title: Idtype
+        description: The type of the identifier.
+        type: string
+        enum:
+          - RES_MGMT
+          - GRANT
+      resourceId:
+        title: Resourceid
+        description: 'An actual resource-management-level identifier(idType=RES_MGMT), or an identifier that references a ResourceDefinition(idType=GRANT).'
+        type: string
+      vimConnectionId:
+        title: Vimconnectionid
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifier of the resource provider. It shall only be present when idType = RES_MGMT.
+        type: string
+  PlacementConstraint:
+    description: Placement constraints that the VNFM may send to the NFVO in order to influence the resource placement decision.
+    required:
+      - affinityOrAntiAffinity
+      - scope
+    type: object
+    properties:
+      affinityOrAntiAffinity:
+        title: Affinityorantiaffinity
+        description: The type of the constraint.
+        type: string
+        enum:
+          - AFFINITY
+          - ANTI_AFFINITY
+      scope:
+        title: Scope
+        description: The scope of the placement constraint indicating the category of the place where the constraint applies.
+        type: string
+        enum:
+          - NFVI_POP
+          - ZONE
+          - ZONE_GROUP
+          - NFVI_NODE
+      resource:
+        description: References to resources in the constraint rule.
+        type: array
+        items:
+          $ref: '#/definitions/ConstraintResourceRef'
+  VimConstraint:
+    description: Used by the VNFM to require that multiple resources are managed through the same VIM connection.
+    type: object
+    properties:
+      sameResourceGroup:
+        title: Sameresourcegroup
+        description: 'Set to true when the constraint applies not only to the same VIM connection, but also to the same infrastructure resource group.'
+        type: boolean
+      resource:
+        description: References to resources in the constraint rule.
+        type: array
+        items:
+          $ref: '#/definitions/ConstraintResourceRef'
+  GrantRequestLinks:
+    title: ' links'
+    description: Links to resources related to this request.
+    required:
+      - vnfLcmOpOcc
+      - vnfInstance
+    type: object
+    properties:
+      vnfLcmOpOcc:
+        $ref: '#/definitions/Link'
+      vnfInstance:
+        $ref: '#/definitions/Link'
+  GrantRequest:
+    required:
+      - vnfInstanceId
+      - operation
+      - isAutomaticInvocation
+    type: object
+    properties:
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the VNF instance which this grant request is related to.
+        type: string
+      vnfLcmOpOccId:
+        title: Vnflcmopoccid
+        description: The identifier of the VNF lifecycle management operation occurrence associated to the GrantRequest.
+        type: string
+      vnfdId:
+        title: Vnfdid
+        description: Identifier of the VNFD that defines the VNF for which the LCM operation is to be granted.
+        type: string
+      flavourId:
+        title: Flavourid
+        description: Identifier of the VNF deployment flavour of the VNFD that defines the VNF for which the LCM operation is to be granted.
+        type: string
+      operation:
+        title: Operation
+        description: The lifecycle management operation for which granting is requested.
+        type: string
+        enum:
+          - INSTANTIATE
+          - SCALE
+          - SCALE_TO_LEVEL
+          - CHANGE_FLAVOUR
+          - TERMINATE
+          - HEAL
+          - OPERATE
+          - CHANGE_EXT_CONN
+          - MODIFY_INFO
+      isAutomaticInvocation:
+        title: Isautomaticinvocation
+        description: 'Set to true if this VNF LCM operation occurrence has been triggered by an automated procedure inside the VNFM, set to false otherwise.'
+        type: boolean
+      instantiationLevelId:
+        title: Instantiationlevelid
+        description: 'If operation=INSTANTIATE, the identifier of the instantiation level may be provided as an alternative way to define the resources to be added.'
+        type: string
+      addResources:
+        description: List of resource definitions in the VNFD for resources to be added by the LCM operation.
+        type: array
+        items:
+          $ref: '#/definitions/ResourceDefinition'
+      tempResources:
+        description: List of resource definitions in the VNFD for resources to be temporarily instantiated during the runtime of the LCM operation.
+        type: array
+        items:
+          $ref: '#/definitions/ResourceDefinition'
+      removeResources:
+        description: Provides the definitions of resources to be removed by the LCM operation.
+        type: array
+        items:
+          $ref: '#/definitions/ResourceDefinition'
+      updateResources:
+        description: Provides the definitions of resources to be modified by the LCM operation.
+        type: array
+        items:
+          $ref: '#/definitions/ResourceDefinition'
+      placementConstraints:
+        description: Placement constraints that the VNFM may send to the NFVO in order to influence the resource placement decision.
+        type: array
+        items:
+          $ref: '#/definitions/PlacementConstraint'
+      vimConstraints:
+        description: Used by the VNFM to require that multiple resources are managed through the same VIM connection.
+        type: array
+        items:
+          $ref: '#/definitions/VimConstraint'
+      additionalParams:
+        title: Additionalparams
+        description: Additional parameters passed by the VNFM.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      _links:
+        $ref: '#/definitions/GrantRequestLinks'
+  VimConnectionInfo:
+    description: Provides information regarding VIM connections that are approved to be used by the VNFM to allocate resources.
+    required:
+      - id
+    type: object
+    properties:
+      id:
+        title: Id
+        description: The identifier of the VIM Connection. This identifier is managed by the NFVO.
+        type: string
+      vimId:
+        title: Vimid
+        description: The identifier of the VIM instance. This identifier is managed by the NFVO.
+        type: string
+      vimType:
+        title: Vimtype
+        description: Discriminator for the different types of the VIM information.
+        type: string
+      interfaceInfo:
+        title: Interfaceinfo
+        description: Information about the interface or interfaces to the VIM.
+        type: object
+        additionalProperties:
+          description: Interface Info
+          type: string
+      accessInfo:
+        title: Accessinfo
+        description: Authentication credentials for accessing the VIM.
+        type: object
+        additionalProperties:
+          description: Access Info
+          type: string
+      extra:
+        title: Extra
+        description: VIM type specific additional information.
+        type: object
+        additionalProperties:
+          description: Extra
+          type: string
+  ZoneInfo:
+    description: Identifies resource zones where the resources are approved to be allocated by the VNFM.
+    required:
+      - id
+    type: object
+    properties:
+      id:
+        title: Id
+        description: 'The identifier of this ZoneInfo instance, for the purpose of referencing it from other structures in the Grant structure.'
+        type: string
+      zoneId:
+        title: Zoneid
+        description: 'The identifier of the resource zone, as managed by the resource management layer(typically, the VIM).'
+        type: string
+      vimConnectionId:
+        title: Vimconnectionid
+        description: Identifier of the connection to the VIM that manages the resource zone.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management the resource zone.
+        type: string
+  ZoneGroupInfo:
+    description: Information about groups of resource zones.
+    type: object
+    properties:
+      zoneId:
+        description: References of identifiers of ZoneInfo structures.
+        type: array
+        items:
+          description: IdentifierLocal
+          type: string
+  GrantInfo:
+    description: List of resources that are approved to be added.
+    required:
+      - resourceDefinitionId
+    type: object
+    properties:
+      resourceDefinitionId:
+        title: Resourcedefinitionid
+        description: Identifier of the related ResourceDefinition from the related GrantRequest.
+        type: string
+      reservationId:
+        title: Reservationid
+        description: The reservation identifier applicable to the VNFC/VirtualLink/VirtualStorage.
+        type: string
+      vimConnectionId:
+        title: Vimconnectionid
+        description: Identifier of the VIM connection to be used to manage this resource.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management of the virtualised resource.
+        type: string
+      zoneId:
+        title: Zoneid
+        description: Reference to the identifier of the ZoneInfo in the Grant.
+        type: string
+      resourceGroupId:
+        title: Resourcegroupid
+        description: Identifier of the infrastructure resource group.
+        type: string
+  VimComputeResourceFlavour:
+    description: Mappings between virtual compute descriptors defined in the VNFD and compute resource flavours managed in the VIM.
+    type: object
+    properties:
+      vimConnectionId:
+        title: Vimconnectionid
+        description: Identifier of the VIM connection to access the flavour referenced in this structure.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management of the virtualised resource.
+        type: string
+      vnfdVirtualComputeDescId:
+        title: Vnfdvirtualcomputedescid
+        description: Identifier which references the virtual compute descriptor in the VNFD that maps to this flavour.
+        type: string
+      vimFlavourId:
+        title: Vimflavourid
+        description: Identifier of the compute resource flavour in the resource management layer (i.e. VIM).
+        type: string
+  VimSoftwareImage:
+    description: Mappings between software images defined in the VNFD and software images managed in the VIM.
+    type: object
+    properties:
+      vimConnectionId:
+        title: Vimconnectionid
+        description: Identifier of the VIM connection to access the flavour referenced in this structure.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management of the virtualised resource.
+        type: string
+      vnfdSoftwareImageId:
+        title: Vnfdsoftwareimageid
+        description: Identifier which references the software image descriptor in the VNFD.
+        type: string
+      vimSoftwareImageId:
+        title: Vimsoftwareimageid
+        description: Identifier of the software image in the resource management layer (i.e. VIM).
+        type: string
+  VimAssets:
+    title: Vimassets
+    description: Information about assets for the VNF that are managed by the NFVO in the VIM.
+    type: object
+    properties:
+      computeResourceFlavours:
+        description: Mappings between virtual compute descriptors defined in the VNFD and compute resource flavours managed in the VIM.
+        type: array
+        items:
+          $ref: '#/definitions/VimComputeResourceFlavour'
+      softwareImages:
+        description: Mappings between software images defined in the VNFD and software images managed in the VIM.
+        type: array
+        items:
+          $ref: '#/definitions/VimSoftwareImage'
+  IpAddresse:
+    description: List of IP addresses to assign to the CP instance.
+    required:
+      - type
+      - numDynamicAddresses
+    type: object
+    properties:
+      type:
+        title: Type
+        description: The type of the IP addresses.
+        type: string
+        enum:
+          - IPV4
+          - IPV6
+      fixedAddresses:
+        description: Fixed addresses to assign.
+        type: array
+        items:
+          description: IpAddress
+          type: string
+      numDynamicAddresses:
+        title: Numdynamicaddresses
+        description: Number of dynamic addresses to assign.
+        type: integer
+      addressRange:
+        $ref: '#/definitions/AddressRange'
+      subnetId:
+        title: Subnetid
+        description: Subnet defined by the identifier of the subnet resource in the VIM.
+        type: string
+  IpOverEthernetAddress:
+    title: Ipoverethernet
+    description: Network address data for IP over Ethernet to assign to the extCP instance.
+    type: object
+    properties:
+      macAddress:
+        title: Macaddress
+        description: MAC address.
+        type: string
+      ipAddresses:
+        description: List of IP addresses to assign to the CP instance.
+        type: array
+        items:
+          $ref: '#/definitions/IpAddresse'
+  CpProtocolDataConfig:
+    description: Parameters for configuring the network protocols on the link port that connects the CP to a VL.
+    required:
+      - layerProtocol
+    type: object
+    properties:
+      layerProtocol:
+        title: Layerprotocol
+        description: Identifier of layer(s) and protocol(s).
+        type: string
+        enum:
+          - IP_OVER_ETHERNET
+      ipOverEthernet:
+        $ref: '#/definitions/IpOverEthernetAddress'
+  VnfExtCpConfigData:
+    description: List of instance data that need to be configured on the CP instances created from the respective CPD.
+    type: object
+    properties:
+      cpInstanceId:
+        title: Cpinstanceid
+        description: Identifier of the external CP instance to which this set of configuration parameters is requested to be applied.
+        type: string
+      linkPortId:
+        title: Linkportid
+        description: Identifier of a pre-configured link port to which the external CP will be associated.
+        type: string
+      cpProtocolData:
+        description: Parameters for configuring the network protocols on the link port that connects the CP to a VL.
+        type: array
+        items:
+          $ref: '#/definitions/CpProtocolDataConfig'
+  VnfExtCp:
+    description: External CPs of the VNF to be connected to this external VL.
+    required:
+      - cpdId
+    type: object
+    properties:
+      cpdId:
+        title: Cpdid
+        description: The identifier of the CPD in the VNFD.
+        type: string
+      cpConfig:
+        description: List of instance data that need to be configured on the CP instances created from the respective CPD.
+        type: array
+        items:
+          $ref: '#/definitions/VnfExtCpConfigData'
+  ExtLinkPort:
+    description: Externally provided link ports to be used to connect external connection points to this external VL.
+    required:
+      - id
+      - resourceHandle
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this link port as provided by the entity that has created the link port.
+        type: string
+      resourceHandle:
+        title: Resourcehandle
+        description: Reference to the virtualised resource realizing this link port.
+        type: string
+  ExtVirtualLink:
+    description: Information about external VLs to connect the VNF to.
+    required:
+      - id
+      - resourceId
+    type: object
+    properties:
+      id:
+        title: Id
+        description: The identifier of the external VL instance.
+        type: string
+      vimConnectionId:
+        title: Vimconnectionid
+        description: Identifier of the VIM connection to manage this resource.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management of this resource.
+        type: string
+      resourceId:
+        title: Resourceid
+        description: The identifier of the resource in the scope of the VIM or the resource provider.
+        type: string
+      extCps:
+        description: External CPs of the VNF to be connected to this external VL.
+        type: array
+        items:
+          $ref: '#/definitions/VnfExtCp'
+      extLinkPorts:
+        description: Externally provided link ports to be used to connect external connection points to this external VL.
+        type: array
+        items:
+          $ref: '#/definitions/ExtLinkPort'
+  ExtManagedVirtualLink:
+    description: Information about internal VLs that are managed by other entities than the VNFM.
+    required:
+      - id
+      - virtualLinkDescId
+      - resourceId
+    type: object
+    properties:
+      id:
+        title: Id
+        description: The identifier of the externally-managed internal VL instance.
+        type: string
+      virtualLinkDescId:
+        title: Virtuallinkdescid
+        description: The identifier of the VLD in the VNFD for this VL.
+        type: string
+      vimConnectionId:
+        title: Vimconnectionid
+        description: Identifier of the VIM connection to manage this resource.
+        type: string
+      resourceProviderId:
+        title: Resourceproviderid
+        description: Identifies the entity responsible for the management of this resource.
+        type: string
+      resourceId:
+        title: Resourceid
+        description: The identifier of the resource in the scope of the VIM or the resource provider.
+        type: string
+  GrantLinks:
+    title: ' links'
+    description: Links to resources related to this resource.
+    required:
+      - self
+      - vnfLcmOpOcc
+      - vnfInstance
+    type: object
+    properties:
+      self:
+        $ref: '#/definitions/Link'
+      vnfLcmOpOcc:
+        $ref: '#/definitions/Link'
+      vnfInstance:
+        $ref: '#/definitions/Link'
+  Grant:
+    description: The grant was created successfully (synchronous mode).
+    required:
+      - id
+      - vnfInstanceId
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the grant.
+        type: string
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: Identifier of the related VNF instance.
+        type: string
+      vnfLcmOpOccId:
+        title: Vnflcmopoccid
+        description: Identifier of the related VNF lifecycle management operation occurrence.
+        type: string
+      vimConnections:
+        description: Provides information regarding VIM connections that are approved to be used by the VNFM to allocate resources.
+        type: array
+        items:
+          $ref: '#/definitions/VimConnectionInfo'
+      zones:
+        description: Identifies resource zones where the resources are approved to be allocated by the VNFM.
+        type: array
+        items:
+          $ref: '#/definitions/ZoneInfo'
+      zoneGroups:
+        description: Information about groups of resource zones.
+        type: array
+        items:
+          $ref: '#/definitions/ZoneGroupInfo'
+      computeReservationId:
+        title: Computereservationid
+        description: Information that identifies a reservation applicable to the compute resource requirements.
+        type: string
+      networkReservationId:
+        title: Networkreservationid
+        description: Information that identifies a reservation applicable to the network resource requirements.
+        type: string
+      storageReservationId:
+        title: Storagereservationid
+        description: Information that identifies a reservation applicable to the storage resource requirements.
+        type: string
+      addResources:
+        description: List of resources that are approved to be added.
+        type: array
+        items:
+          $ref: '#/definitions/GrantInfo'
+      tempResources:
+        description: List of resources that are approved to be temporarily instantiated during the runtime of the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/GrantInfo'
+      removeResources:
+        description: List of resources that are approved to be removed.
+        type: array
+        items:
+          $ref: '#/definitions/GrantInfo'
+      updateResources:
+        description: List of resources that are approved to be modified.
+        type: array
+        items:
+          $ref: '#/definitions/GrantInfo'
+      vimAssets:
+        $ref: '#/definitions/VimAssets'
+      extVirtualLinks:
+        description: Information about external VLs to connect the VNF to.
+        type: array
+        items:
+          $ref: '#/definitions/ExtVirtualLink'
+      extManagedVirtualLinks:
+        description: Information about internal VLs that are managed by other entities than the VNFM.
+        type: array
+        items:
+          $ref: '#/definitions/ExtManagedVirtualLink'
+      additionalParams:
+        title: Additionalparams
+        description: 'Additional parameters passed by the NFVO, specific to the VNF and the LCM operation.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      _links:
+        $ref: '#/definitions/GrantLinks'
+  AffectedVnfc:
+    description: Information about VNFC instances that were affected during the lifecycle operation.
+    required:
+      - id
+      - vduId
+      - changeType
+      - computeResource
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the Vnfc instance.
+        type: string
+      vduId:
+        title: Vduid
+        description: Identifier of the related VDU in the VNFD.
+        type: string
+      changeType:
+        title: Changetype
+        description: Signals the type of change.
+        type: string
+        enum:
+          - ADDED
+          - REMOVED
+          - MODIFIED
+          - TEMPORARY
+      computeResource:
+        $ref: '#/definitions/ResourceHandle'
+      metadata:
+        title: Metadata
+        description: Metadata about this resource.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      affectedVnfcCpIds:
+        description: Identifiers of CP(s) of the VNFC instance that were affected by the change.
+        type: array
+        items:
+          description: Identifier In Vnf
+          type: string
+      addedStorageResourceIds:
+        description: References to VirtualStorage resources that have been added.
+        type: array
+        items:
+          description: Identifier In Vnf
+          type: string
+      removedStorageResourceIds:
+        description: References to VirtualStorage resources that have been removed.
+        type: array
+        items:
+          description: Identifier In Vnf
+          type: string
+  AffectedVirtualLink:
+    description: Information about VL instances that were affected during the lifecycle operation.
+    required:
+      - id
+      - virtualLinkDescId
+      - changeType
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the virtual link instance.
+        type: string
+      virtualLinkDescId:
+        title: Virtuallinkdescid
+        description: Identifier of the related VLD in the VNFD.
+        type: string
+      changeType:
+        title: Changetype
+        description: Signals the type of change.
+        type: string
+        enum:
+          - ADDED
+          - REMOVED
+          - MODIFIED
+          - TEMPORARY
+          - LINK_PORT_ADDED
+          - LINK_PORT_REMOVED
+      networkResource:
+        $ref: '#/definitions/ResourceHandle'
+      metadata:
+        title: Metadata
+        description: Metadata about this resource.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+  AffectedVirtualStorage:
+    description: Information about virtualised storage instances that were affected during the lifecycle operation.
+    required:
+      - id
+      - virtualStorageDescId
+      - changeType
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of the storage instance.
+        type: string
+      virtualStorageDescId:
+        title: Virtualstoragedescid
+        description: Identifier of the related VirtualStorage descriptor in the VNFD.
+        type: string
+      changeType:
+        title: Changetype
+        description: Signals the type of change.
+        type: string
+        enum:
+          - ADDED
+          - REMOVED
+          - MODIFIED
+          - TEMPORARY
+      storageResource:
+        $ref: '#/definitions/ResourceHandle'
+      metadata:
+        title: Metadata
+        description: Metadata about this resource.
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+  VnfInfoModifications:
+    title: Changedinfo
+    description: 'Information about the changed VNF instance information, including changed VNF configurable properties.'
+    type: object
+    properties:
+      vnfInstanceName:
+        title: Vnfinstancename
+        description: 'If present, this attribute signals modifications of the vnfInstanceName attribute in VnfInstance.'
+        type: string
+      vnfInstanceDescription:
+        title: Vnfinstancedescription
+        description: 'If present, this attribute signals modifications of the vnfInstanceDescription attribute in VnfInstance.'
+        type: string
+      vnfConfigurableProperties:
+        title: Vnfconfigurableproperties
+        description: 'If present, this attribute signals modifications of the vnfConfigurableProperties attribute in VnfInstance.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      metadata:
+        title: Metadata
+        description: 'If present, this attribute signals modifications of the metadata attribute in VnfInstance.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      extensions:
+        title: Extensions
+        description: 'If present, this attribute signals modifications of the extensions attribute in VnfInstance.'
+        type: object
+        additionalProperties:
+          description: KeyValue Pairs
+          type: string
+      vimConnectionInfo:
+        description: 'If present, this attribute signals modifications of the vimConnectionInfo attribute in VnfInstance.'
+        type: array
+        items:
+          $ref: '#/definitions/VimConnectionInfo'
+      vnfPkgId:
+        title: Vnfpkgid
+        description: 'If present, this attribute signals modifications of the vnfPkgId attribute in VnfInstance.'
+        type: string
+      vnfdId:
+        title: Vnfdid
+        description: 'If present, this attribute signals modifications of the vnfdId attribute in VnfInstance.'
+        type: string
+      vnfProvider:
+        title: Vnfprovider
+        description: 'If present, this attribute signals modifications of the vnfProvider attribute in VnfInstance.'
+        type: string
+      vnfProductName:
+        title: Vnfproductname
+        description: 'If present, this attribute signals modifications of the vnfProductName attribute in VnfInstance.'
+        type: string
+      vnfSoftwareVersion:
+        title: Vnfsoftwareversion
+        description: 'If present, this attribute signals modifications of the vnfSoftwareVersion attribute in VnfInstance.'
+        type: string
+      vnfdVersion:
+        title: Vnfdversion
+        description: 'If present, this attribute signals modifications of the vnfdVersion attribute in VnfInstance.'
+        type: string
+  LccnLinks:
+    title: ' links'
+    description: Links to resources related to this notification.
+    required:
+      - vnfInstance
+      - subscription
+    type: object
+    properties:
+      vnfInstance:
+        $ref: '#/definitions/Link'
+      subscription:
+        $ref: '#/definitions/Link'
+      vnfLcmOpOcc:
+        $ref: '#/definitions/Link'
+  VnfLcmOperationOccurrenceNotification:
+    description: A notification about lifecycle changes triggered by a VNF LCM operation occurrence.
+    required:
+      - id
+      - notificationType
+      - subscriptionId
+      - timeStamp
+      - notificationStatus
+      - operationState
+      - vnfInstanceId
+      - operation
+      - isAutomaticInvocation
+      - vnfLcmOpOccId
+    type: object
+    properties:
+      id:
+        title: Id
+        description: Identifier of this notification.
+        type: string
+      notificationType:
+        title: Notificationtype
+        description: Discriminator for the different notification types.
+        type: string
+        enum:
+          - VnfLcmOperationOccurrenceNotification
+          - VnfIdentifierCreationNotification
+          - VnfIdentifierDeletionNotification
+      subscriptionId:
+        title: Subscriptionid
+        description: Identifier of the subscription that this notification relates to.
+        type: string
+      timeStamp:
+        title: Timestamp
+        description: Date-time of the generation of the notification.
+        type: string
+      notificationStatus:
+        title: Notificationstatus
+        description: Indicates whether this notification reports about the start of a lifecycle operation or the result of a lifecycle operation.
+        type: string
+        enum:
+          - START
+          - RESULT
+      operationState:
+        title: Operationstate
+        description: The state of the VNF LCM operation occurrence.
+        type: string
+        enum:
+          - STARTING
+          - PROCESSING
+          - COMPLETED
+          - FAILED_TEMP
+          - FAILED
+          - ROLLING_BACK
+          - ROLLED_BACK
+      vnfInstanceId:
+        title: Vnfinstanceid
+        description: The identifier of the VNF instance affected.
+        type: string
+      operation:
+        title: Operation
+        description: The lifecycle management operation.
+        type: string
+        enum:
+          - INSTANTIATE
+          - SCALE
+          - SCALE_TO_LEVEL
+          - CHANGE_FLAVOUR
+          - TERMINATE
+          - HEAL
+          - OPERATE
+          - CHANGE_EXT_CONN
+          - MODIFY_INFO
+      isAutomaticInvocation:
+        title: Isautomaticinvocation
+        description: Set to true if this VNF LCM operation occurrence has been triggered by an automated procedure inside the VNFM.
+        type: boolean
+      vnfLcmOpOccId:
+        title: Vnflcmopoccid
+        description: The identifier of the VNF lifecycle management operation occurrence associated to the notification.
+        type: string
+      affectedVnfcs:
+        description: Information about VNFC instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVnfc'
+      affectedVirtualLinks:
+        description: Information about VL instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVirtualLink'
+      affectedVirtualStorages:
+        description: Information about virtualised storage instances that were affected during the lifecycle operation.
+        type: array
+        items:
+          $ref: '#/definitions/AffectedVirtualStorage'
+      changedInfo:
+        $ref: '#/definitions/VnfInfoModifications'
+      changedExtConnectivity:
+        description: Information about changed external connectivity.
+        type: array
+        items:
+          $ref: '#/definitions/ExtVirtualLinkInfo'
+      error:
+        $ref: '#/definitions/ProblemDetails'
+      _links:
+        $ref: '#/definitions/LccnLinks'

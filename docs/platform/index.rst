@@ -9,8 +9,8 @@ ONAP VF-C
 |image0|
 
 .. |image0| image:: onap-arc.png
-   :width: 3.97047in
-   :height: 2.63208in
+   :width: 5.97047in
+   :height: 3.63208in
 
 As part of the integration between OpenECOMP and OPEN-O, VF-C leverages ETSI NFV MANO architecture and information model as a reference, and implements life cycle management and FCAPS of VNF and NS.
 
