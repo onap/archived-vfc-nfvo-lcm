@@ -1,4 +1,4 @@
-VFC Insta1llation over OOM
+VFC Installation over OOM
 --------------------------
 
 .. toctree::

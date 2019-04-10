@@ -5,12 +5,29 @@ Consumed APIs
 =============
 References to APIs offered by other components
 
- - A&AI: Use A&AI API to operate the instance data stored in A&AI, this opration includes CURL
- - SDC:  Use Catalog external API to query csar package
- - DCAE: Use DCAE Ves collector API to report FCAPS data to DCAE
- - MSB:  Use MSB to register and find microservice
- - Modeling: Use nfvparser API to parse tosca template
- - Multicloud: Use Multicloud API to CRUD virtual resource
+NFVO consumed interfaces:
+
+ - VNF LCM Interface, from: Generic VNFM controller, SVNFM 
+ - Inventory Service Interface, from: Available and Active Inventory
+ - Catalog Synchronization Interface, from: SDC
+ - Generic VIM Interface, From: Multi-cloud
+ - Data report Interface, From: DCAE
+ - Tosca parser Interface, From: Modeling
+ - Service registration and discovery, From: MSB
+ - Homing Request Interface, from: Optimization Framework
+ 
+ 
+GVNFM consumed interfaces:
+
+ - Catalog and notification Interface, from: NFVO
+ - Inventory Interface, from: A&AI
+ - Tosca parser Interface, From: Modeling
+ - Generic VIM Interface, From: Multi-cloud
+ - Service registration and discovery, From: MSB
+
+ 
+ 
+ 
 
 
 

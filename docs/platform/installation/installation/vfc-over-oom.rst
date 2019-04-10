@@ -2,7 +2,7 @@
    :depth: 3
 ..
 
-   **VFC Insta1llation over OOM**
+   **VFC Installation over OOM**
    **V0.1**
 
 **1 Scope**
