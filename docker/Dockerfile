@@ -36,7 +36,7 @@ WORKDIR /service
 RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.lcm&a=vfc-nfvo-lcm&v=LATEST&e=zip' && \
     unzip vfc-nfvo-lcm.zip && \
     rm -rf vfc-nfvo-lcm.zip && \
-    chown onap:onap /service -R
+    chown onap:onap -R /service /var/log
 
 WORKDIR /service/vfc/nfvo/lcm
 RUN pip install --upgrade setuptools pip && \
