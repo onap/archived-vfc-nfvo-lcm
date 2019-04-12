@@ -200,8 +200,62 @@ You will see all the pod is runing
 	dev-vfc-vfc-zte-sdnc-driver-6554df5856-ctjxh                  1/1       Running            7          79d
 	dev-vfc-vfc-zte-vnfm-driver-7dbd4f887-thvvg                   2/2       Running            8          79d
 
+**3 VF-C health check **
+======================================
 
-**3 Debug and Testing in running Pod**
+When VF-C pod is up, if you want to check the service status, you can visit the following APIs in K8S cluster to check.
+These swagger API will also show the APIs VF-C provided.
+
++--------------------------+---------------------------------------------------------------------------+
+|     **Component Name**   |     health check API                                                      |
++==========================+===========================================================================+
+|     vfc/nfvo/lcm         |     http://ClusterIP:8403/api/nslcm/v1/swagger.yaml                       |
++--------------------------+---------------------------------------------------------------------------+
+|vfc/nfvo/catalog          |     http://ClusterIP:8806/api/catalog/v1/swagger.yaml                     |
++--------------------------+---------------------------------------------------------------------------+
+|vfc/gvnfm/vnflcm          |     http://ClusterIP:8801/api/vnflcm/v1/swagger.yaml                      |
++--------------------------+---------------------------------------------------------------------------+
+|vfc/gvnfm/vnfmgr          |     http://ClusterIP:8803/api/vnfmgr/v1/swagger.yaml                      |
++--------------------------+---------------------------------------------------------------------------+
+|vfc/gvnfm/vnfres          |     http://ClusterIP:8802/api/vnfres/v1/swagger.yaml                      |
++--------------------------+---------------------------------------------------------------------------+
+
+Here are only a few componnets as an example.
+
+Take vnflcm as an example, you can visit the api as follow:
+
+::
+
+    ubuntu@oom-mr01-rancher:~$ kubectl -n onap get svc|grep vnflcm
+	vfc-vnflcm                         ClusterIP      10.43.71.4      <none>                                 8801/TCP                                                      87d
+	ubuntu@oom-mr01-rancher:~$ curl http://10.43.71.4:8801/api/vnflcm/v1/swagger.json
+	{"swagger": "2.0", "info": {"title": "vnflcm API", "description": "\n\nThe `swagger-ui` view can be found [here](/api/vnflcm/v1/swagger).\n
+	The `ReDoc` view can be found [here](/api/vnflcm/v1/redoc).\nThe swagger YAML document can be found [here](/api/vnflcm/v1/swagger.yaml).\n
+	The swagger JSON document can be found [here](/api/vnflcm/v1/swagger.json)."........
+	
+	
+Because VF-C expose service by ClusterIP, so that you can only visit the APIs in K8S cluster. 
+If you want to visit VF-C APIs outside of K8S cluster, you can visit these APIs via MSB, because all VF-C APIs have been registered to MSB.
+You can execute the following steps:
+
+::
+
+	ubuntu@oom-mr01-rancher:~$ kubectl -n onap get pod -o wide|grep msb-iag
+	dev-msb-msb-iag-6fbb5b4dbd-pxs8z                              2/2       Running            4          28d       10.42.72.222    mr01-node1   <none>
+	ubuntu@oom-mr01-rancher:~$ cat /etc/hosts |grep mr01-node1
+	172.60.2.39   mr01-node1
+	ubuntu@oom-mr01-rancher:~$ kubectl -n onap get svc|grep msb-iag
+	msb-iag                            NodePort       10.43.213.250   <none>                                 80:30280/TCP,443:30283/TCP                                    87d
+	ubuntu@oom-mr01-rancher:~$ curl http://172.60.2.39:30280/api/vnflcm/v1/swagger.json
+	{"swagger": "2.0", "info": {"title": "vnflcm API", "description": "\n\nThe `swagger-ui` view can be found [here](/api/vnflcm/v1/swagger).\n
+	The `ReDoc` view can be found [here](/api/vnflcm/v1/redoc).\nThe swagger YAML document can be found [here](/api/vnflcm/v1/swagger.yaml).\n
+	The swagger JSON document can be found [here](/api/vnflcm/v1/swagger.json)."........
+
+
+You can visit the http://172.60.2.39:30280/api/vnflcm/v1/swagger.json in the browser
+
+
+**4 Debug and Testing in running Pod**
 ======================================
 When you are doing the testing and would like to replace some new file like binary or some script and want to check the new resut.
 Before you replace the file to the running pod,you need to close the pod livenessProbe and readinessProbe first to avoid the pod restart.
@@ -209,6 +263,7 @@ Before you replace the file to the running pod,you need to close the pod livenes
 Take vfc-catalog pod as an example:
 
 ::
+
     kubectl -n onap edit deployment dev-vfc-vfc-catalog 
 
     spec:
@@ -245,7 +300,7 @@ Take vfc-catalog pod as an example:
 Then you can replace the file into the pod. 
 
 
-**4 Kubectl basic command**
+**5 Kubectl basic command**
 ======================================
 
 Basic operation of kubernests cluster(Take the namespace of onap in linux client as an example)
