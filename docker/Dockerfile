@@ -22,7 +22,6 @@ RUN apt-get update && \
     apt-get install -y unzip && \
     apt-get install -y curl && \
     apt-get install -y build-essential && \
-#    apt-get install -y libssl-dev && \
     apt-get install -y libffi-dev && \
     groupadd -r onap && useradd -r -g onap onap && \
     chmod u+w /etc/sudoers && \
@@ -35,8 +34,10 @@ WORKDIR /service
 # get binary zip from nexus - vfc-nfvo-lcm
 RUN wget -q -O vfc-nfvo-lcm.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.lcm&a=vfc-nfvo-lcm&v=LATEST&e=zip' && \
     unzip vfc-nfvo-lcm.zip && \
-    rm -rf vfc-nfvo-lcm.zip && \
-    chown onap:onap -R /service /var/log
+    rm -rf vfc-nfvo-lcm.zip
+
+# change user:group
+RUN chown onap:onap -R /service /var/log
 
 WORKDIR /service/vfc/nfvo/lcm
 RUN pip install --upgrade setuptools pip && \
