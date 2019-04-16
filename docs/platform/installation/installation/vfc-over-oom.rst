@@ -10,7 +10,7 @@
 
 This is a guide to help developer or tester to try to install VF-C over OOM
 
-**1 Component & function**
+**2 Component & function**
 ==========================
 
 Now VF-C have the following repos in https://gerrit.onap.org/r/#/admin/projects/?filter=vfc
@@ -80,7 +80,7 @@ VF-C Docker Images
   nexus3.onap.org:10001/onap/vfc/ztevnfmdriver:1.3.0
   
 
-**2 VF-C Deployment**
+**3 VF-C Deployment**
 =====================
 
 For initialization of docker there are 2 deployment options currently adpoted in ONAP:
@@ -200,8 +200,9 @@ You will see all the pod is runing
 	dev-vfc-vfc-zte-sdnc-driver-6554df5856-ctjxh                  1/1       Running            7          79d
 	dev-vfc-vfc-zte-vnfm-driver-7dbd4f887-thvvg                   2/2       Running            8          79d
 
-**3 VF-C health check **
-======================================
+
+**4 VF-C health check **
+========================
 
 When VF-C pod is up, if you want to check the service status, you can visit the following APIs in K8S cluster to check.
 These swagger API will also show the APIs VF-C provided.
@@ -255,7 +256,7 @@ You can execute the following steps:
 You can visit the http://172.60.2.39:30280/api/vnflcm/v1/swagger.json in the browser
 
 
-**4 Debug and Testing in running Pod**
+**5 Debug and Testing in running Pod**
 ======================================
 When you are doing the testing and would like to replace some new file like binary or some script and want to check the new resut.
 Before you replace the file to the running pod,you need to close the pod livenessProbe and readinessProbe first to avoid the pod restart.
@@ -300,7 +301,7 @@ Take vfc-catalog pod as an example:
 Then you can replace the file into the pod. 
 
 
-**5 Kubectl basic command**
+**6 Kubectl basic command**
 ======================================
 
 Basic operation of kubernests cluster(Take the namespace of onap in linux client as an example)
