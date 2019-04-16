@@ -201,7 +201,7 @@ You will see all the pod is runing
 	dev-vfc-vfc-zte-vnfm-driver-7dbd4f887-thvvg                   2/2       Running            8          79d
 
 
-**4 VF-C health check **
+**4 VF-C health check**
 ========================
 
 When VF-C pod is up, if you want to check the service status, you can visit the following APIs in K8S cluster to check.
@@ -258,6 +258,7 @@ You can visit the http://172.60.2.39:30280/api/vnflcm/v1/swagger.json in the bro
 
 **5 Debug and Testing in running Pod**
 ======================================
+
 When you are doing the testing and would like to replace some new file like binary or some script and want to check the new resut.
 Before you replace the file to the running pod,you need to close the pod livenessProbe and readinessProbe first to avoid the pod restart.
 
@@ -367,9 +368,11 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
 ::
                  
     1>Build namespace
+	
         kubectl create namespace test
                   
     2>create pod with 3 replication
+	
         kubectl run nginx --image=nginx --replicas=3 -n test
                   
     3>Pod exposed ports for nginx (target port, source port target-port)
