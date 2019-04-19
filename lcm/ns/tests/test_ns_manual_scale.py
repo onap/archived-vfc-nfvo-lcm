@@ -23,7 +23,7 @@ from lcm.ns.biz.scaleaspect import get_json_data
 from rest_framework import status
 
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
-from lcm.ns.const import NS_INST_STATUS
+from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import catalog

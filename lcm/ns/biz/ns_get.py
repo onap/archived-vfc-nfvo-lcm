@@ -15,7 +15,8 @@
 import json
 import logging
 
-from lcm.ns.const import OWNER_TYPE, NS_INSTANCE_BASE_URI
+from lcm.ns.const import NS_INSTANCE_BASE_URI
+from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.utils import restcall
 from lcm.pub.database.models import NSInstModel, NfInstModel, VLInstModel, CPInstModel, VNFFGInstModel
 

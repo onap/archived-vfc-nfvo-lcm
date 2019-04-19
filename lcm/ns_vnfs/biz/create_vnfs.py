@@ -18,7 +18,7 @@ import traceback
 import uuid
 from threading import Thread
 
-from lcm.ns.const import OWNER_TYPE
+from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
