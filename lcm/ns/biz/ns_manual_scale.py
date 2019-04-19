@@ -18,7 +18,7 @@ import time
 import traceback
 
 from lcm.ns.biz.scaleaspect import get_scale_vnf_data_info_list
-from lcm.ns.const import NS_INST_STATUS
+from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS

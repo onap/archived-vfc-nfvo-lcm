@@ -17,7 +17,7 @@ import traceback
 import datetime
 import time
 
-from lcm.ns.const import NS_INST_STATUS
+from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.ns_vnfs.biz.update_vnfs import NFOperateService
 from lcm.pub.exceptions import NSLCMException

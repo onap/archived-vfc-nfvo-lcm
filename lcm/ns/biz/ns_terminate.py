@@ -23,7 +23,7 @@ from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
-from lcm.ns.const import OWNER_TYPE
+from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.database.models import PNFInstModel
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 

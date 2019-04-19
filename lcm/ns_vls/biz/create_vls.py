@@ -17,7 +17,7 @@ import logging
 import traceback
 import uuid
 
-from lcm.ns.const import OWNER_TYPE
+from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import VLInstModel, NSInstModel, VNFFGInstModel
 from lcm.pub.exceptions import NSLCMException
