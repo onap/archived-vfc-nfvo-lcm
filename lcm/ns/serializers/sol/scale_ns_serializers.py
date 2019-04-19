@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +18,14 @@ from rest_framework import serializers
 from lcm.ns.serializers.sol.inst_ns_serializers import VnfLocationConstraintSerializer, ParamsForVnfSerializer
 from lcm.ns.serializers.sol.update_serializers import VnfInstanceDataSerializer
 from lcm.ns.serializers.sol.ns_instance import NsScaleInfoSerializer, VnfScaleInfoSerializer
+from lcm.ns.enum import SCALING_DIRECTION, SCALE_VNF_TYPE, SCALE_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class ScaleNsByStepsDataSerializer(serializers.Serializer):
     scalingDirection = serializers.ChoiceField(
         help_text="The scaling direction",
-        choices=["SCALE_IN", "SCALE_OUT"],
+        choices=enum_to_list(SCALING_DIRECTION),
         required=True)
     aspectId = serializers.CharField(
         help_text="The aspect of the NS that is requested to be scaled, as declared in the NSD. ",
@@ -131,7 +134,7 @@ class ScaleVnfDataSerializers(serializers.Serializer):
 
     scaleVnfType = serializers.ChoiceField(
         help_text="Type of the scale VNF operation requested.",
-        choices=["SCALE_OUT", "SCALE_IN", "SCALE_TO_INSTANTIATION_LEVEL", "SCALE_TO_SCALE_LEVEL(S)"],
+        choices=enum_to_list(SCALE_VNF_TYPE),
         required=True)
 
     scaleToLevelData = ScaleToLevelDataSerializer(
@@ -146,7 +149,7 @@ class ScaleVnfDataSerializers(serializers.Serializer):
 class ScaleNsRequestSerializer(serializers.Serializer):
     scaleType = serializers.ChoiceField(
         help_text="Indicates the type of scaling to be performed",
-        choices=["SCALE_NS", "SCALE_VNF"],
+        choices=enum_to_list(SCALE_TYPE),
         required=True)
     scaleNsData = ScaleNsDataSerializer(
         help_text="The necessary information to scale the referenced NS instance.",

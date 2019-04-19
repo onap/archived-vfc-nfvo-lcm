@@ -15,7 +15,8 @@
 
 from rest_framework import serializers
 
-from lcm.ns import const
+from lcm.ns.enum import AUTH_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class OAuthCredentialsSerializer(serializers.Serializer):
@@ -55,7 +56,7 @@ class SubscriptionAuthenticationSerializer(serializers.Serializer):
                   " willing to accept when receiving a notification.",
         child=serializers.ChoiceField(
             required=True,
-            choices=const.AUTH_TYPES),
+            choices=enum_to_list(AUTH_TYPE)),
         required=True)
     paramsBasic = BasicAuthSerializer(
         help_text="Parameters for authentication/authorization using BASIC.",

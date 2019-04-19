@@ -18,6 +18,8 @@ from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
 from lcm.ns.serializers.sol.ns_instance import NsCpHandleSerializer, NfpRuleSerializer
 from lcm.ns.serializers.sol.cp_serializers import CpProtocolDataSerializer
 from lcm.ns.serializers.sol.cp_serializers import IpAddressesDataSerialzier
+from lcm.ns.enum import OPERATIONAL_STATE, STOP_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class VnfInstanceDataSerializer(serializers.Serializer):
@@ -184,13 +186,13 @@ class ChangeVnfFlavourDataSerizlizer(serializers.Serializer):
 class OperationalStatesSerializer(serializers.Serializer):
     OperationalStates = serializers.ChoiceField(
         help_text="State of operation",
-        choices=["STARTED", "STOPPED"])
+        choices=enum_to_list(OPERATIONAL_STATE))
 
 
 class StopTypeSerializer(serializers.Serializer):
     StopType = serializers.ChoiceField(
         help_text="Type of stop",
-        choices=["FORCEFUL", "GRACEFUL"])
+        choices=enum_to_list(STOP_TYPE))
 
 
 class OperateVnfDataSerializer(serializers.Serializer):

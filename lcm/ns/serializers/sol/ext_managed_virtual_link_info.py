@@ -14,6 +14,8 @@
 
 from rest_framework import serializers
 from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
+from lcm.ns.enum import CP_INSTANCE_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class VnfLinkPortInfo(serializers.Serializer):
@@ -37,7 +39,7 @@ class VnfLinkPortInfo(serializers.Serializer):
         allow_blank=True)
     cpInstanceType = serializers.ChoiceField(
         required=False,
-        choices=['VNFC_CP', 'EXT_CP'],
+        choices=enum_to_list(CP_INSTANCE_TYPE),
         help_text="Type of the CP instance that is identified by cpInstanceId.")
 
 

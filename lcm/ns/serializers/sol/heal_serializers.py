@@ -14,6 +14,8 @@
 # limitations under the License.
 
 from rest_framework import serializers
+from lcm.ns.enum import DEGREE_HEALING
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 # class ActionVmSerializer(serializers.Serializer):
@@ -45,7 +47,7 @@ class HealVnfDataSerializer(serializers.Serializer):
 class HealNsDataSerializer(serializers.Serializer):
     degreeHealing = serializers.ChoiceField(
         help_text="Indicates the degree of healing.",
-        choices=["HEAL_RESTORE", "HEAL_QOS", "HEAL_RESET", "PARTIAL_HEALING"],
+        choices=enum_to_list(DEGREE_HEALING),
         required=True)
     actionsHealing = serializers.ListField(
         help_text="Used to specify dedicated healing actions in a particular order",

@@ -21,13 +21,8 @@ from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
 from lcm.ns.serializers.sol.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
 from lcm.ns.serializers.sol.ext_managed_virtual_link_info import ExtManagedVirtualLinkInfo, VnfLinkPortInfo
 from lcm.ns.serializers.sol.pub_serializers import AffinityOrAntiAffinityRuleSerializer
-from lcm.ns.const import IPADDRESSES_TYPE_LIST
-
-
-INSTANTIATION_STATE = [
-    "NOT_INSTANTIATED",
-    "INSTANTIATED"
-]
+from lcm.ns.enum import IPADDRESSES_TYPE, INSTANTIATION_STATE, VNF_STATE, NFP_STATE, PROTOCOL
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class VnfScaleInfoSerializer(serializers.Serializer):
@@ -198,7 +193,7 @@ class InstantiatedVnfInfo(serializers.Serializer):
         allow_blank=False)
     vnfState = serializers.ChoiceField(
         help_text="State of the VNF instance.",
-        choices=["STARTED", "STOPPED"],
+        choices=enum_to_list(VNF_STATE),
         required=True,
         allow_null=True,
         allow_blank=False)
@@ -361,7 +356,7 @@ class VnfInstanceSerializer(serializers.Serializer):
         required=False)
     instantiationState = serializers.ChoiceField(
         help_text="The instantiation state of the VNF.",
-        choices=INSTANTIATION_STATE,
+        choices=enum_to_list(INSTANTIATION_STATE),
         required=True,
         allow_null=False,
         allow_blank=False)
@@ -516,7 +511,7 @@ class NfpRuleSerializer(serializers.Serializer):
         allow_null=True)
     etherType = serializers.ChoiceField(
         help_text="Indicates the protocol carried over the Ethernet layer",
-        choices=IPADDRESSES_TYPE_LIST,
+        choices=enum_to_list(IPADDRESSES_TYPE),
         required=False,
         allow_null=True)
     vlanTag = serializers.ListField(
@@ -526,7 +521,7 @@ class NfpRuleSerializer(serializers.Serializer):
     protocol = serializers.ChoiceField(
         help_text="Indicates the L4 protocol, For IPv4 [7] this corresponds to"
                   "the field called Protocol to identifythe next level protocol",
-        choices=["TCP", "UDP", "ICMP"],
+        choices=enum_to_list(PROTOCOL),
         required=False,
         allow_null=True)
     dscp = serializers.CharField(
@@ -585,7 +580,7 @@ class NfpInfoSerializer(serializers.Serializer):
         required=True)
     nfpState = serializers.ChoiceField(
         help_text="The state of the NFP instance.",
-        choices=["ENABLED", "DISABLED"],
+        choices=enum_to_list(NFP_STATE),
         required=True)
 
 
@@ -716,11 +711,10 @@ class NsInstanceSerializer(serializers.Serializer):
         help_text="Identifier of the nested NS(s) of the NS instance.",
         child=serializers.CharField(),
         required=False,
-        allow_null=True
-    )
+        allow_null=True)
     nsState = serializers.ChoiceField(
         help_text="The state of the NS instance.",
-        choices=["NOT_INSTANTIATED", "INSTANTIATED"],
+        choices=enum_to_list(INSTANTIATION_STATE),
         required=True,
         allow_null=True)
     nsScaleStatus = NsScaleInfoSerializer(

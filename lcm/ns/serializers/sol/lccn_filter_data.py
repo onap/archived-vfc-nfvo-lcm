@@ -16,8 +16,8 @@
 from rest_framework import serializers
 
 from ns_instance_subscription_filter import NsInstanceSubscriptionFilter
-from lcm.ns.const import NOTIFICATION_TYPES, NS_LCM_OP_TYPES, LCM_OPERATION_STATE_TYPES, NS_COMPOMENT_TYPE,\
-    LCM_OPName_For_Change_Notification_Type, LCM_OpOcc_Status_For_ChangeNotification_Type
+from lcm.ns.enum import NOTIFICATION_TYPE, OPERATION_TYPE, OPERATION_STATE_TYPE, NS_COMPOMENT_TYPE, OPNAME_FOR_CHANGE_NOTIFICATION_TYPE, OPOCC_STATUS_FOR_CHANGENOTIFICATION_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class LifeCycleChangeNotificationsFilter(serializers.Serializer):
@@ -27,31 +27,31 @@ class LifeCycleChangeNotificationsFilter(serializers.Serializer):
         allow_null=False)
     notificationTypes = serializers.ListField(
         help_text="Match particular notification types.",
-        child=serializers.ChoiceField(required=True, choices=NOTIFICATION_TYPES),
+        child=serializers.ChoiceField(required=True, choices=enum_to_list(NOTIFICATION_TYPE)),
         required=False,
         allow_null=False)
     operationTypes = serializers.ListField(
         help_text="Match particular NS lifecycle operation types for the notification of type NsLcmOperationOccurrenceNotification.",
-        child=serializers.ChoiceField(required=True, choices=NS_LCM_OP_TYPES),
+        child=serializers.ChoiceField(required=True, choices=enum_to_list(OPERATION_TYPE)),
         required=False,
         allow_null=False)
     operationStates = serializers.ListField(
         help_text="Match particular LCM operation state values as reported in notifications of type NsLcmOperationOccurrenceNotification.",
-        child=serializers.ChoiceField(required=True, choices=LCM_OPERATION_STATE_TYPES),
+        child=serializers.ChoiceField(required=True, choices=enum_to_list(OPERATION_STATE_TYPE)),
         required=False,
         allow_null=False)
     nsComponentTypes = serializers.ListField(
         help_text="Match particular NS component types for the notification of type NsChangeNotification. ",
-        child=serializers.ChoiceField(required=True, choices=NS_COMPOMENT_TYPE),
+        child=serializers.ChoiceField(required=True, choices=enum_to_list(NS_COMPOMENT_TYPE)),
         required=False,
         allow_null=False)
     lcmOpNameImpactingNsComponent = serializers.ListField(
         help_text="Match particular LCM operation names for the notification of type NsChangeNotification.",
-        child=serializers.ChoiceField(required=True, choices=LCM_OPName_For_Change_Notification_Type),
+        child=serializers.ChoiceField(required=True, choices=enum_to_list(OPNAME_FOR_CHANGE_NOTIFICATION_TYPE)),
         required=False,
         allow_null=False)
     lcmOpOccStatusImpactingNsComponent = serializers.ListField(
         help_text="Match particular LCM operation status values as reported in notifications of type NsChangeNotification.",
-        child=serializers.ChoiceField(required=True, choices=LCM_OpOcc_Status_For_ChangeNotification_Type),
+        child=serializers.ChoiceField(required=True, choices=enum_to_list(OPOCC_STATUS_FOR_CHANGENOTIFICATION_TYPE)),
         required=False,
         allow_null=False)

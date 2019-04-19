@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from rest_framework import serializers
+from lcm.ns.enum import AFFINITY_OR_ANTIAFFIINTY, AFFINITY_OR_ANTIAFFIINTY_SCOPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class ProblemDetailsSerializer(serializers.Serializer):
@@ -75,13 +78,13 @@ class AffinityOrAntiAffinityRuleSerializer(serializers.Serializer):
         allow_null=False)
     affinityOrAntiAffiinty = serializers.ChoiceField(
         help_text="The type of the constraint.",
-        choices=["AFFINITY", "ANTI_AFFINITY"],
+        choices=enum_to_list(AFFINITY_OR_ANTIAFFIINTY),
         required=True,
         allow_null=False,
         allow_blank=False)
     scope = serializers.ChoiceField(
         help_text="Specifies the scope of the rule where the placement constraint applies.",
-        choices=["NFVI_POP", "ZONE", "ZONE_GROUP", "NFVI_NODE"],
+        choices=enum_to_list(AFFINITY_OR_ANTIAFFIINTY_SCOPE),
         required=True,
         allow_null=False,
         allow_blank=False)

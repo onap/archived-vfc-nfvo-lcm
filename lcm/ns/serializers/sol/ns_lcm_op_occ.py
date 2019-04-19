@@ -1,5 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
-# Copyright (c) 2019, ZTE
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 from rest_framework import serializers
 
-from lcm.ns import const
 from lcm.ns.serializers.sol.affected_nss import AffectedNssSerializer
 from lcm.ns.serializers.sol.affected_pnfs import AffectedPnfsSerializer
 from lcm.ns.serializers.sol.affected_saps import AffectedSapsSerializer
@@ -25,6 +24,8 @@ from lcm.ns.serializers.sol.affected_vnffgs import AffectedVnffgsSerializer
 from lcm.ns.serializers.sol.affected_vnfs import AffectedVnfsSerializer
 from lcm.ns.serializers.sol.pub_serializers import LinkSerializer
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
+from lcm.ns.enum import OPERATION_STATE_TYPE, OPERATION_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class ResourceChangesSerializer(serializers.Serializer):
@@ -93,7 +94,7 @@ class NSLCMOpOccSerializer(serializers.Serializer):
     operationState = serializers.ChoiceField(
         help_text="The state of the VNF LCM operation occurrence. ",
         required=True,
-        choices=const.LCM_OPERATION_STATE_TYPES
+        choices=enum_to_list(OPERATION_STATE_TYPE)
     )
     stateEnteredTime = serializers.CharField(
         help_text="Date-time when the current state was entered.",
@@ -109,7 +110,7 @@ class NSLCMOpOccSerializer(serializers.Serializer):
     operation = serializers.ChoiceField(
         help_text="The lifecycle management operation",
         required=True,
-        choices=const.NS_LCM_OP_TYPES
+        choices=enum_to_list(OPERATION_TYPE)
     )
     isAutomaticInvocation = serializers.BooleanField(
         help_text="Set to true if this NS LCM operation occurrence has been automatically triggered by the NFVO.",
