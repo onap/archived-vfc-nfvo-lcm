@@ -1,5 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
-# Copyright 2019 ZTE Corporation.
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,15 +15,8 @@
 
 
 from rest_framework import serializers
-
-from lcm.ns import const
-
-
-CHANGE_TYPE = [
-    const.CHANGE_TYPES.ADD,
-    const.CHANGE_TYPES.REMOVE,
-    const.CHANGE_TYPES.MODIFY
-]
+from lcm.ns.enum import CHANGE_TYPE, CHANGE_RESULT
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class AffectedVnffgsSerializer(serializers.Serializer):
@@ -38,10 +31,10 @@ class AffectedVnffgsSerializer(serializers.Serializer):
     changeType = serializers.ChoiceField(
         help_text="Signals the type of lifecycle change.",
         required=True,
-        choices=CHANGE_TYPE
+        choices=enum_to_list(CHANGE_TYPE)
     )
     changeResult = serializers.ChoiceField(
         help_text="Signals the result of change identified by the 'changeType' attribute.",
         required=True,
-        choices=const.CHANGE_RESULT
+        choices=enum_to_list(CHANGE_RESULT)
     )

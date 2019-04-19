@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +14,8 @@
 # limitations under the License.
 
 from rest_framework import serializers
-from lcm.ns.const import IPADDRESSES_TYPE_LIST
-
-
-LAYER_PROTOCOL = [
-    "IP_OVER_ETHERNET"
-]
+from lcm.ns.enum import LAYER_PROTOCOL, IPADDRESSES_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class AddressRangeSerializer(serializers.Serializer):
@@ -34,7 +31,7 @@ class IpAddressesDataSerialzier(serializers.Serializer):
     type = serializers.ChoiceField(
         help_text="The type of the IP addresses.",
         required=True,
-        choices=IPADDRESSES_TYPE_LIST)
+        choices=enum_to_list(IPADDRESSES_TYPE))
     fixedAddresses = serializers.ListField(
         child=serializers.CharField(
             help_text="Fixed addresses to assign.",
@@ -57,7 +54,7 @@ class IpAddressesInfoSerialzier(serializers.Serializer):
     type = serializers.ChoiceField(
         help_text="The type of the IP addresses.",
         required=True,
-        choices=IPADDRESSES_TYPE_LIST)
+        choices=enum_to_list(IPADDRESSES_TYPE))
     addresses = serializers.ListField(
         help_text="An IPV4 or IPV6 address",
         required=False,
@@ -104,7 +101,7 @@ class IpOverEthernetAddressInfoSerializer(serializers.Serializer):
 class CpProtocolDataSerializer(serializers.Serializer):
     layerProtocol = serializers.ChoiceField(
         help_text="Identifier of layer(s) and protocol(s)",
-        choices=LAYER_PROTOCOL,
+        choices=enum_to_list(LAYER_PROTOCOL),
         required=True)
     ipOverEthernet = IpOverEthernetAddressDataSerializer(
         help_text="Network address data for IP over Ethernet to assign to the extCP instance.",
@@ -115,7 +112,7 @@ class CpProtocolDataSerializer(serializers.Serializer):
 class CpProtocolInfoSerializer(serializers.Serializer):
     layerProtocol = serializers.ChoiceField(
         help_text="Identifier of layer(s) and protocol(s)",
-        choices=LAYER_PROTOCOL,
+        choices=enum_to_list(LAYER_PROTOCOL),
         required=True)
     ipOverEthernet = IpOverEthernetAddressInfoSerializer(
         help_text="Network address data for IP over Ethernet to assign to the extCP instance.",

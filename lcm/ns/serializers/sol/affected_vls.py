@@ -1,4 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +15,8 @@
 
 
 from rest_framework import serializers
-
-from lcm.ns.const import CHANGE_TYPES, CHANGE_RESULT
-
-CHANGE_TYPE = [
-    CHANGE_TYPES.ADD,
-    CHANGE_TYPES.DELETE,
-    CHANGE_TYPES.MODIFY,
-    CHANGE_TYPES.ADD_LINK_PORT,
-    CHANGE_TYPES.REMOVE_LINK_PORT
-]
+from lcm.ns.enum import CHANGE_TYPE, CHANGE_RESULT
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class AffectedVLsSerializer(serializers.Serializer):
@@ -38,10 +31,10 @@ class AffectedVLsSerializer(serializers.Serializer):
     changeType = serializers.ChoiceField(
         help_text="Signals the type of change",
         required=True,
-        choices=CHANGE_TYPE
+        choices=enum_to_list(CHANGE_TYPE)
     )
     changeResult = serializers.ChoiceField(
         help_text="Signals the result of change identified by the 'changeType' attribute.",
         required=True,
-        choices=CHANGE_RESULT
+        choices=enum_to_list(CHANGE_RESULT)
     )

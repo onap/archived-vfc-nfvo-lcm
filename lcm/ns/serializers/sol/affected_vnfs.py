@@ -1,5 +1,5 @@
 # Copyright (c) 2019, CMCC Technologies Co., Ltd.
-# Copyright 2019 ZTE Corporation.
+# Copyright (c) 2019, ZTE Corporation.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,22 +16,10 @@
 
 from rest_framework import serializers
 
-from lcm.ns.const import CHANGE_TYPES, CHANGE_RESULT
+from lcm.ns.enum import CHANGE_TYPE, CHANGE_RESULT
+from lcm.pub.utils.enumutil import enum_to_list
 from lcm.ns.serializers.sol.ext_virtual_link_info import ExtVirtualLinkInfoSerializer
 from lcm.ns.serializers.sol.update_serializers import ModifyVnfInfoDataSerializer
-
-CHANGE_TYPE = [
-    CHANGE_TYPES.ADD,
-    CHANGE_TYPES.REMOVE,
-    CHANGE_TYPES.INSTANTIATE,
-    CHANGE_TYPES.TERMINATE,
-    CHANGE_TYPES.SCALE,
-    CHANGE_TYPES.CHANGE_FLAVOUR,
-    CHANGE_TYPES.HEAL,
-    CHANGE_TYPES.OPERATE,
-    CHANGE_TYPES.MODIFY_INFORMATION,
-    CHANGE_TYPES.CHANGE_EXTERNAL_VNF_CONNECTIVITY
-]
 
 
 class ChangedInfoSerializer(serializers.Serializer):
@@ -64,12 +52,12 @@ class AffectedVnfsSerializer(serializers.Serializer):
     changeType = serializers.ChoiceField(
         help_text="Signals the type of change",
         required=True,
-        choices=CHANGE_TYPE
+        choices=enum_to_list(CHANGE_TYPE)
     )
     changeResult = serializers.ChoiceField(
         help_text="Signals the result of change identified by the 'changeType' attribute.",
         required=True,
-        choices=CHANGE_RESULT
+        choices=enum_to_list(CHANGE_RESULT)
     )
     changedInfo = ChangedInfoSerializer(
         help_text="Information about the changed VNF instance information, including VNF configurable properties, if applicable.",

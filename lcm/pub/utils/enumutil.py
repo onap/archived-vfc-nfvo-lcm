@@ -15,3 +15,7 @@
 
 def enum(**enums):
     return type('Enum', (), enums)
+
+
+def enum_to_list(e):
+    return [v for k, v in e.__dict__.iteritems() if not k.startswith("_")]
