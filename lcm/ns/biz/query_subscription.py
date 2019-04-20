@@ -55,8 +55,6 @@ class QuerySubscription:
             subscriptions = SubscriptionModel.objects.filter(**query_data)
         else:
             subscriptions = SubscriptionModel.objects.all()
-        if not subscriptions.exists():
-            raise NSLCMException('Subscriptions do not exist')
         return [self.fill_resp_data(subscription) for subscription in subscriptions]
 
     def fill_resp_data(self, subscription):
