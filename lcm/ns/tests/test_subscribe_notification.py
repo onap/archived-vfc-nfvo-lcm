@@ -121,7 +121,7 @@ class TestSubscription(TestCase):
         mock_requests.get.return_value.status_code = 204
         expected_data = {
             'status': 500,
-            'detail': 'If you are setting operationTypes,then notificationTypes must be '
+            'detail': 'If you are setting operationTypes, notificationTypes must be '
             'NsLcmOperationOccurrenceNotification'
         }
         response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
