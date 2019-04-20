@@ -63,20 +63,22 @@ class NSHealService(threading.Thread):
     def get_and_check_params(self):
         ns_info = NSInstModel.objects.filter(id=self.ns_instance_id)
         if not ns_info:
-            logger.error('NS [id=%s] does not exist' % self.ns_instance_id)
-            raise NSLCMException(
-                'NS [id=%s] does not exist' % self.ns_instance_id)
+            errmsg = 'NS [id=%s] does not exist' % self.ns_instance_id
+            logger.error(errmsg)
+            raise NSLCMException(errmsg)
+
         self.heal_ns_data = ignore_case_get(self.request_data, 'healNsData')
         self.heal_vnf_data = ignore_case_get(self.request_data, 'healVnfData')
+
         if self.heal_ns_data and self.heal_vnf_data:
-            logger.error('healNsData and healVnfData can not exist together')
-            raise NSLCMException(
-                'healNsData and healVnfData can not exist together')
+            errmsg = 'healNsData and healVnfData can not exist together'
+            logger.error(errmsg)
+            raise NSLCMException(errmsg)
+
         if not self.heal_ns_data and not self.heal_vnf_data:
-            logger.error(
-                'healNsData and healVnfData parameters does not exist or value is incorrect.')
-            raise NSLCMException(
-                'healNsData and healVnfData parameters does not exist or value is incorrect.')
+            errmsg = 'healNsData and healVnfData parameters does not exist or value is incorrect.'
+            logger.error(errmsg)
+            raise NSLCMException(errmsg)
 
     def do_heal(self):
         if self.heal_vnf_data:
@@ -88,8 +90,9 @@ class NSHealService(threading.Thread):
                 self.update_job(90,
                                 desc='nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
             else:
-                logger.error('nf heal failed')
-                raise NSLCMException('nf heal failed')
+                errmsg = 'nf heal failed'
+                logger.error(errmsg)
+                raise NSLCMException(errmsg)
         else:
             ns_heal_params = self.prepare_ns_heal_params(self.heal_ns_data)
             for ns_heal_param in ns_heal_params:
@@ -100,8 +103,9 @@ class NSHealService(threading.Thread):
                     self.update_job(90,
                                     desc='nf[%s] heal handle end' % ns_heal_param.get('vnfInstanceId'))
                 else:
-                    logger.error('nf heal failed')
-                    raise NSLCMException('nf heal failed')
+                    errmsg = 'nf heal failed'
+                    logger.error(errmsg)
+                    raise NSLCMException(errmsg)
 
     def do_vnf_or_ns_heal(self, heal_param, progress):
         instance_id = heal_param.get('vnfInstanceId')
@@ -115,8 +119,9 @@ class NSHealService(threading.Thread):
     def prepare_ns_heal_params(self, ns_data):
         degree_healing = ignore_case_get(ns_data, 'degreeHealing')
         if not degree_healing:
-            logger.error('degreeHealing does not exist.')
-            raise NSLCMException('degreeHealing does not exist.')
+            errmsg = 'degreeHealing does not exist.'
+            logger.error(errmsg)
+            raise NSLCMException(errmsg)
         ns_instance_id = self.ns_instance_id
         cause = ''
         action = ignore_case_get(ns_data, 'actionsHealing')
@@ -159,17 +164,16 @@ class NSHealService(threading.Thread):
                     result_arr.append(result)
             return result_arr
         else:
-            logger.error(
-                'The degree of healing dose not exist or value is incorrect.')
-            raise NSLCMException(
-                'The degree of healing dose not exist or value is incorrect.')
+            errmsg = 'The degree of healing dose not exist or value is incorrect.'
+            logger.error(errmsg)
+            raise NSLCMException(errmsg)
 
     def prepare_vnf_heal_params(self, vnf_data):
         vnf_instance_id = ignore_case_get(vnf_data, 'vnfInstanceId')
         if not vnf_instance_id:
-            logger.error('vnfinstanceid does not exist or value is incorrect.')
-            raise NSLCMException(
-                'vnfinstanceid does not exist or value is incorrect.')
+            errmsg = 'vnfinstanceid does not exist or value is incorrect.'
+            logger.error(errmsg)
+            raise NSLCMException(errmsg)
         cause = ignore_case_get(vnf_data, 'cause')
         additional_params = ignore_case_get(vnf_data, 'additionalParams')
         action = ignore_case_get(additional_params, 'action')
