@@ -125,7 +125,8 @@ class TestQuerySubscriptions(TestCase):
                           links=json.dumps(links),
                           ns_instance_filter=json.dumps(ns_instance_filter)).save()
         response = self.client.get("/api/nslcm/v1/subscriptions?nsInstanceId=dummy", format='json')
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([], response.data)
 
     def test_get_subscriptions_with_invalid_filter(self):
         ns_instance_filter = {

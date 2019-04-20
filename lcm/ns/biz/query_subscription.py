@@ -17,7 +17,6 @@ import json
 import logging
 
 from lcm.pub.database.models import SubscriptionModel
-from lcm.pub.exceptions import NSLCMException
 
 logger = logging.getLogger(__name__)
 ROOT_FILTERS = {
@@ -55,8 +54,6 @@ class QuerySubscription:
             subscriptions = SubscriptionModel.objects.filter(**query_data)
         else:
             subscriptions = SubscriptionModel.objects.all()
-        if not subscriptions.exists():
-            raise NSLCMException('Subscriptions do not exist')
         return [self.fill_resp_data(subscription) for subscription in subscriptions]
 
     def fill_resp_data(self, subscription):
