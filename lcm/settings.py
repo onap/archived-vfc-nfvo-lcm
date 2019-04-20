@@ -173,6 +173,7 @@ else:
 if 'test' in sys.argv:
     pub_config.REG_TO_MSB_WHEN_START = False
     pub_config.DEPLOY_WORKFLOW_WHEN_START = False
+    pub_config.REPORT_TO_AAI = False
     DATABASES = {}
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',

@@ -17,8 +17,12 @@ import logging
 
 from lcm.ns.const import NS_INSTANCE_BASE_URI
 from lcm.ns.enum import OWNER_TYPE
-from lcm.pub.utils import restcall
-from lcm.pub.database.models import NSInstModel, NfInstModel, VLInstModel, CPInstModel, VNFFGInstModel
+from lcm.pub.database.models import NSInstModel
+from lcm.pub.database.models import NfInstModel
+from lcm.pub.database.models import VLInstModel
+from lcm.pub.database.models import CPInstModel
+from lcm.pub.database.models import VNFFGInstModel
+from lcm.pub.database.models import PNFInstModel
 
 logger = logging.getLogger(__name__)
 
@@ -167,9 +171,5 @@ class GetNSInfoService(object):
 
     @staticmethod
     def get_pnf_infos(ns_instance_id):
-        uri = "api/nslcm/v1/pnfs?nsInstanceId=%s" % ns_instance_id
-        ret = restcall.req_by_msb(uri, "GET")
-        if ret[0] == 0:
-            return json.loads(ret[1])
-        else:
-            return []
+        pnfs = PNFInstModel.objects.filter(nsInstances__contains=ns_instance_id)
+        return [pnf.__dict__ for pnf in pnfs]
