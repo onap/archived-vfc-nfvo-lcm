@@ -83,10 +83,8 @@ class NSHealService(threading.Thread):
             vnf_heal_params = self.prepare_vnf_heal_params(self.heal_vnf_data)
             status = self.do_vnf_or_ns_heal(vnf_heal_params, 15)
             if status is JOB_MODEL_STATUS.FINISHED:
-                logger.info('nf[%s] heal handle end' %
-                            vnf_heal_params.get('vnfInstanceId'))
-                self.update_job(90,
-                                desc='nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
+                logger.info('nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
+                self.update_job(90, desc='nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
             else:
                 logger.error('nf heal failed')
                 raise NSLCMException('nf heal failed')
@@ -95,10 +93,8 @@ class NSHealService(threading.Thread):
             for ns_heal_param in ns_heal_params:
                 status = self.do_vnf_or_ns_heal(ns_heal_param, 15)
                 if status is JOB_MODEL_STATUS.FINISHED:
-                    logger.info('nf[%s] heal handle end' %
-                                ns_heal_param.get('vnfInstanceId'))
-                    self.update_job(90,
-                                    desc='nf[%s] heal handle end' % ns_heal_param.get('vnfInstanceId'))
+                    logger.info('nf[%s] heal handle end' % ns_heal_param.get('vnfInstanceId'))
+                    self.update_job(90, desc='nf[%s] heal handle end' % ns_heal_param.get('vnfInstanceId'))
                 else:
                     logger.error('nf heal failed')
                     raise NSLCMException('nf heal failed')
@@ -118,37 +114,31 @@ class NSHealService(threading.Thread):
             logger.error('degreeHealing does not exist.')
             raise NSLCMException('degreeHealing does not exist.')
         ns_instance_id = self.ns_instance_id
-        cause = ''
+        cause = 'vm is down'
         action = ignore_case_get(ns_data, 'actionsHealing')
         if degree_healing == "HEAL_RESTORE":
-            ns_inst_infos = NfInstModel.objects.filter(
-                ns_inst_id=self.ns_instance_id)
+            ns_inst_infos = NfInstModel.objects.filter(ns_inst_id=self.ns_instance_id)
             if not ns_inst_infos.exists():
-                raise NSLCMException(
-                    'NSInsts(%s) does not exist' % self.ns_instance_id)
-
+                raise NSLCMException('NSInsts(%s) does not exist' % self.ns_instance_id)
             result_arr = []
             for ns_inst_info in ns_inst_infos:
-                vnfc_insts = VNFCInstModel.objects.filter(
-                    nfinstid=ns_inst_info.nfinstid)
+                vnfc_insts = VNFCInstModel.objects.filter(nfinstid=ns_inst_info.nfinstid)
                 # If a condition is not met, will it all terminate?
                 if not vnfc_insts.exists():
-                    raise NSLCMException(
-                        'vnfcinsts(%s) does not exist' % ns_inst_info.nfinstid)
+                    raise NSLCMException('vnfcinsts(%s) does not exist' % ns_inst_info.nfinstid)
                 for vnfc_inst in vnfc_insts:
                     vm_id = vnfc_inst.vmid
                     vdu_id = vnfc_inst.vduid
                     vm_inst_info = VmInstModel.objects.filter(vmid=vm_id)
                     if not vm_inst_info.exists():
-                        raise NSLCMException(
-                            'vminstinfo(%s) does not exist' % vm_id)
+                        raise NSLCMException('vminstinfo(%s) does not exist' % vm_id)
                     vm_name = vm_inst_info[0].vmname
 
                     result = {
                         "vnfInstanceId": ns_instance_id,
                         "cause": cause,
                         "additionalParams": {
-                            "action": action,
+                            "action": "restartvm",
                             "actionvminfo": {
                                 "vmid": vm_id,
                                 "vduid": vdu_id,

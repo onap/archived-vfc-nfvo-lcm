@@ -1,0 +1,14 @@
+{
+    "metadata": {
+        "vnfdId": "1",
+        "vnfdName": "PGW001",
+        "vnfProvider": "zte",
+        "vnfdVersion": "V00001",
+        "vnfVersion": "V5.10.20",
+        "productType": "CN",
+        "vnfType": "PGW",
+        "description": "PGW VNFD description",
+        "isShared": true,
+        "vnfExtendType": "driver"
+    }
+}
