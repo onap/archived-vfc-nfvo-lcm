@@ -1,0 +1,21 @@
+{
+    "additionalParamForNs": {
+        "sdnControllerId": "2",
+        "location": "CPE-DC_Region"
+    },
+    "locationConstraints": [{
+        "vnfProfileId": "zte_ran_cucp_0001",
+        "locationConstraints": {}
+    },
+        {
+            "vnfProfileId": "zte_ran_cuup_0001",
+            "locationConstraints": {}
+    }
+    ],
+    "addpnfData": [{
+        "pnfId": 1,
+        "pnfName": "test_pnf",
+        "pnfdId": "zte_ran_du_0001",
+        "pnfProfileId": "du"
+    }]
+}

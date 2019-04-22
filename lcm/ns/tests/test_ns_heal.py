@@ -12,46 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-
-import mock
-from django.test import Client
 from django.test import TestCase
+import json
+import mock
+import os
+from rest_framework.test import APIClient
 from rest_framework import status
-
 from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils import fileutil
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 
 
 class TestHealNsViews(TestCase):
     def setUp(self):
-
+        self.cur_path = os.path.dirname(os.path.abspath(__file__))
         self.ns_inst_id = '1'
         self.nf_inst_id = '1'
         self.nf_uuid = '1-1-1'
-
         self.job_id = JobUtil.create_job("NS", JOB_TYPE.HEAL_VNF, self.ns_inst_id)
-
-        self.client = Client()
-
-        model = json.dumps({
-            "metadata": {
-                "vnfdId": "1",
-                "vnfdName": "PGW001",
-                "vnfProvider": "zte",
-                "vnfdVersion": "V00001",
-                "vnfVersion": "V5.10.20",
-                "productType": "CN",
-                "vnfType": "PGW",
-                "description": "PGW VNFD description",
-                "isShared": True,
-                "vnfExtendType": "driver"
-            }
-        })
+        self.client = APIClient()
+        model = json.dumps(fileutil.read_json_file(self.cur_path + '/data/vnfd_model.json'))
         NSInstModel.objects.filter().delete()
         NfInstModel.objects.filter().delete()
         NSInstModel(id=self.ns_inst_id, name="ns_name", status='null').save()
@@ -75,56 +59,26 @@ class TestHealNsViews(TestCase):
 
     @mock.patch.object(NSHealService, 'run')
     def test_heal_vnf_url(self, mock_run):
-
-        data = {
-            "healVnfData": [{
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "vm is down",
-                "additionalParams": {
-                    "action": "restartvm",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }]
-        }
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
+        heal_vnf_json = fileutil.read_json_file(self.cur_path + '/data/heal_vnf.json')
+        heal_vnf_json["healVnfData"]["vnfInstanceId"] = self.nf_inst_id
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=heal_vnf_json, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
         self.assertIsNotNone(response.data)
         self.assertIn("jobId", response.data)
         self.assertNotIn("error", response.data)
-
         response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     # add healNsData
     @mock.patch.object(NSHealService, 'run')
     def test_heal_ns_url(self, mock_run):
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
+        heal_ns_json = fileutil.read_json_file(self.cur_path + '/data/heal_ns.json')
+        heal_ns_json["healNsData"]["vnfInstanceId"] = self.nf_inst_id
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=heal_ns_json, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
         self.assertIsNotNone(response.data)
         self.assertIn("jobId", response.data)
         self.assertNotIn("error", response.data)
-
         response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
@@ -132,23 +86,9 @@ class TestHealNsViews(TestCase):
     @mock.patch.object(NSHealService, 'wait_job_finish')
     @mock.patch.object(NSHealService, 'update_job')
     def test_heal_vnf_thread(self, mock_start, mock_wait, mock_update):
-
-        data = {
-            "healVnfData": [{
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "vm is down",
-                "additionalParams": {
-                    "action": "restartvm",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }]
-        }
-
-        NSHealService(self.ns_inst_id, data, self.job_id).run()
+        heal_vnf_json = fileutil.read_json_file(self.cur_path + '/data/heal_vnf.json')
+        heal_vnf_json["healVnfData"]["vnfInstanceId"] = self.nf_inst_id
+        NSHealService(self.ns_inst_id, heal_vnf_json, self.job_id).run()
         self.assertEqual(NSInstModel.objects.get(id=self.ns_inst_id).status, NS_INST_STATUS.HEALING)
 
     # add healNsData
@@ -156,46 +96,18 @@ class TestHealNsViews(TestCase):
     @mock.patch.object(NSHealService, 'wait_job_finish')
     @mock.patch.object(NSHealService, 'update_job')
     def test_heal_ns_thread(self, mock_start, mock_wait, mock_update):
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
-        NSHealService(self.ns_inst_id, data, self.job_id).run()
+        heal_ns_json = fileutil.read_json_file(self.cur_path + '/data/heal_ns.json')
+        heal_ns_json["healNsData"]["vnfInstanceId"] = self.nf_inst_id
+        NSHealService(self.ns_inst_id, heal_ns_json, self.job_id).run()
         self.assertEqual(NSInstModel.objects.get(id=self.ns_inst_id).status, NS_INST_STATUS.HEALING)
 
     @mock.patch.object(NSHealService, "start")
     def test_heal_vnf_non_existing_ns(self, mock_start):
         mock_start.side_effect = NSLCMException("NS Not Found")
-
         ns_inst_id = "2"
-
-        data = {
-            "healVnfData": [{
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "vm is down",
-                "additionalParams": {
-                    "action": "restartvm",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }]
-        }
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=data)
+        heal_vnf_json = fileutil.read_json_file(self.cur_path + '/data/heal_vnf.json')
+        heal_vnf_json["healVnfData"]["vnfInstanceId"] = self.nf_inst_id
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=heal_vnf_json, format='json')
         self.assertEqual(response.data["error"], "NS Not Found")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
@@ -204,25 +116,10 @@ class TestHealNsViews(TestCase):
     @mock.patch.object(NSHealService, "start")
     def test_heal_ns_heal_non_existing_ns(self, mock_start):
         mock_start.side_effect = NSLCMException("NS Not Found")
-
         ns_inst_id = "2"
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=data)
+        heal_ns_json = fileutil.read_json_file(self.cur_path + '/data/heal_ns.json')
+        heal_ns_json["healNsData"]["vnfInstanceId"] = self.nf_inst_id
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=heal_ns_json, format='json')
         self.assertEqual(response.data["error"], "NS Not Found")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
@@ -230,9 +127,6 @@ class TestHealNsViews(TestCase):
     @mock.patch.object(NSHealService, "start")
     def test_heal_vnf_empty_post(self, mock_start):
         mock_start.side_effect = NSLCMException("healVnfData parameter does not exist or value is incorrect.")
-
-        data = {}
-
-        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data=data)
+        response = self.client.post("/api/nslcm/v1/ns/%s/heal" % self.ns_inst_id, data={})
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)

@@ -17,19 +17,16 @@ import os
 import uuid
 
 from django.test import TestCase
+from lcm.pub.database.models import NSInstModel
+from lcm.ns.biz.ns_create import CreateNSService
+from lcm.pub.utils import restcall, fileutil
 from rest_framework import status
 from rest_framework.test import APIClient
-
-from lcm.ns.biz.ns_create import CreateNSService
-from lcm.pub.database.models import NSInstModel
-from lcm.pub.utils import restcall, fileutil
 
 
 class TestNsInstantiate(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.nsd_id = str(uuid.uuid4())
-        self.ns_package_id = str(uuid.uuid4())
         self.cur_path = os.path.dirname(os.path.abspath(__file__))
         self.create_ns_json = fileutil.read_json_file(self.cur_path + '/data/create_ns.json')
 
@@ -39,13 +36,13 @@ class TestNsInstantiate(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_create_ns(self, mock_call_req):
         nspackage_info = {
-            "csarId": self.ns_package_id,
+            "csarId": str(uuid.uuid4()),
             "packageInfo": {}
         }
         r1_query_nspackage_from_catalog = [0, json.JSONEncoder().encode(nspackage_info), '201']
         r2_create_ns_to_aai = [0, json.JSONEncoder().encode({}), '201']
         mock_call_req.side_effect = [r1_query_nspackage_from_catalog, r2_create_ns_to_aai]
-        self.create_ns_json["csarId"] = self.nsd_id
+        self.create_ns_json["csarId"] = str(uuid.uuid4())
         response = self.client.post("/api/nslcm/v1/ns", data=self.create_ns_json, format='json')
         self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
 
@@ -77,7 +74,7 @@ class TestNsInstantiate(TestCase):
     @mock.patch.object(restcall, 'call_req')
     def test_create_ns_when_ns_name_exist(self, mock_call_req):
         nspackage_info = json.JSONEncoder().encode({
-            "csarId": self.ns_package_id,
+            "csarId": str(uuid.uuid4()),
             "packageInfo": {}
         })
         mock_call_req.return_value = [0, nspackage_info, '200']
