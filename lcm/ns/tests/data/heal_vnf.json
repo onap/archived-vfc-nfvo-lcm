@@ -1,0 +1,14 @@
+{
+    "healVnfData": [{
+        "vnfInstanceId": "default",
+        "cause": "vm is down",
+        "additionalParams": {
+                    "action": "restartvm",
+                    "actionvminfo": {
+                        "vmid": "33",
+                        "vduid": "",
+                        "vmname": "xgw-smp11"
+                    }
+                    }
+    }]
+}

@@ -16,6 +16,7 @@ import shutil
 import logging
 import traceback
 import urllib2
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +51,15 @@ def download_file_from_http(url, local_dir, file_name):
         logger.error(traceback.format_exc())
         logger.error("Failed to download %s to %s.", url, local_file_name)
     return is_download_ok, local_file_name
+
+
+def read_json_file(file_path):
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r') as json_file:
+                data = json_file.read()
+            return json.loads(data)
+        except:
+            logger.error(traceback.format_exc())
+            logger.error("Failed to parse json file %s." % file_path)
+    return None

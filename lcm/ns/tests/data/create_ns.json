@@ -1,0 +1,10 @@
+{
+    "context": {
+        "globalCustomerId": "global-customer-id-test1",
+        "serviceType": "service-type-test1"
+    },
+    "csarId": "default",
+    "nsName": "ns",
+    "nsDescription": "description",
+    "nsdId": "nsdId"
+}
