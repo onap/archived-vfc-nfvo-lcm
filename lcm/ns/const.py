@@ -16,9 +16,6 @@ from lcm.pub.config.config import MSB_BASE_URL
 
 SERVICE_TYPE = 'NetworkService'
 SERVICE_ROLE = 'NetworkService'
-BASIC = "BASIC"
-OAUTH2_CLIENT_CREDENTIALS = "OAUTH2_CLIENT_CREDENTIALS"
-LCCNNOTIFICATION = "NsLcmOperationOccurrenceNotification"
 NS_INSTANCE_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_instances/%s'
 NS_OCC_BASE_URI = MSB_BASE_URL + '/api/nslcm/v1/ns_lcm_op_occs/%s'
 SUBSCRIPTION_ROOT_URI = MSB_BASE_URL + "/api/nslcm/v1/subscriptions/%s"
