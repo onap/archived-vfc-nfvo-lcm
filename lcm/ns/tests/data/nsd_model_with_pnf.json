@@ -1,0 +1,168 @@
+{
+    "vnffgs": [],
+    "inputs": {},
+    "pnfs": [
+        {
+            "pnf_id": "du",
+            "networks": [
+            ],
+            "description":"",
+            "properties":{
+                "descriptor_id": "zte_ran_du_0001",
+                "descriptor_invariant_id": "1111",
+                "provider": "ZTE",
+                "version": "1.0",
+                "function_description": "RAN DU Function",
+                "name": "ZTE RAN DU"
+            }
+        }
+    ],
+    "ns_exposed": {
+        "external_cps": [],
+        "forward_cps": []
+    },
+    "graph": {
+        "cucp": [],
+        "du": [],
+        "vl_flat_net": [
+            "cucp",
+            "cuup"
+        ],
+        "vl_ext_net": [
+            "cucp",
+            "cuup"
+        ],
+        "cuup": []
+    },
+    "vnfs": [
+        {
+            "networks": [
+                {
+                    "key_name": "ran_ext_net",
+                    "vl_id": "vl_ext_net"
+                },
+                {
+                    "key_name": "ran_flat_net",
+                    "vl_id": "vl_flat_net"
+                }
+            ],
+            "dependencies": [
+                {
+                    "key_name": "ran_ext_net",
+                    "vl_id": "vl_ext_net"
+                },
+                {
+                    "key_name": "ran_flat_net",
+                    "vl_id": "vl_flat_net"
+                }
+            ],
+            "vnf_id": "cucp",
+            "description": "",
+            "properties": {
+                "descriptor_id": "zte_ran_cucp_0001",
+                "flavour_description": "default",
+                "software_version": "1.0.1",
+                "flavour_id": "1",
+                "descriptor_version": "1.0",
+                "provider": "ZTE",
+                "id": "zte_ran_cucp_0001",
+                "vnfm_info": [
+                    "GVNFM-Driver"
+                ],
+                "product_name":"ran"
+            }
+        },
+        {
+            "networks": [
+                {
+                    "key_name": "ran_ext_net",
+                    "vl_id": "vl_ext_net"
+                },
+                {
+                    "key_name": "ran_flat_net",
+                    "vl_id": "vl_flat_net"
+                }
+            ],
+            "dependencies": [
+                {
+                    "key_name": "ran_ext_net",
+                    "vl_id": "vl_ext_net"
+                },
+                {
+                    "key_name": "ran_flat_net",
+                    "vl_id": "vl_flat_net"
+                }
+            ],
+            "vnf_id": "cuup",
+            "description": "",
+            "properties": {
+                "descriptor_id": "zte_ran_cuup_0001",
+                "flavour_description": "default",
+                "software_version": "1.0.1",
+                "flavour_id": "1",
+                "descriptor_version": "1.0",
+                "provider": "ZTE",
+                "id": "zte_ran_cuup_0001",
+                "vnfm_info": [
+                    "GVNFM-Driver"
+                ],
+                "product_name":"ran"
+            }
+        }
+    ],
+    "fps": [],
+    "vls": [
+        {
+            "vl_id": "vl_ext_net",
+            "description": "",
+            "properties": {
+                "connectivity_type": {
+                    "layer_protocol": "ipv4"
+                },
+                "vl_profile": {
+                    "cidr": "10.0.0.0/24",
+                    "max_bit_rate_requirements": {
+                        "root": 10000000,
+                        "leaf": 10000000
+                    },
+                    "networkName": "ran_ext_net",
+                    "min_bit_rate_requirements": {
+                        "root": 10000000,
+                        "leaf": 10000000
+                    },
+                    "dhcpEnabled": false
+                },
+                "version": "1.0.1"
+            }
+        },
+        {
+            "vl_id": "vl_flat_net",
+            "description": "",
+            "properties": {
+                "connectivity_type": {
+                    "layer_protocol": "ipv4"
+                },
+                "vl_profile": {
+                    "cidr": "10.1.0.0/24",
+                    "max_bit_rate_requirements": {
+                        "root": 10000000,
+                        "leaf": 10000000
+                    },
+                    "networkName": "ran_flat_net",
+                    "min_bit_rate_requirements": {
+                        "root": 10000000,
+                        "leaf": 10000000
+                    },
+                    "dhcpEnabled": false
+                },
+                "version": "1.0.1"
+            }
+        }
+    ],
+    "nested_ns": [],
+    "metadata": {
+        "template_name": "RAN-NS",
+        "template_version": "1.0",
+        "template_author": "ZTE"
+    }
+}
