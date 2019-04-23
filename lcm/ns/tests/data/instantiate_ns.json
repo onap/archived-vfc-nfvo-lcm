@@ -1,0 +1,17 @@
+{
+    "additionalParamForNs": {
+        "sdnControllerId": "2"
+    },
+    "nsFlavourId": 12345,
+    "localizationLanguage": [{
+        "vnfProfileId": "vnfd1",
+        "locationConstraints": {
+            "countryCode": "countryCode",
+            "civicAddressElement": [
+                        {"caType": "type1",
+                         "caValue": 1
+                         }
+            ]
+        }
+    }]
+}
