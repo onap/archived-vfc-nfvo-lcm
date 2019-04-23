@@ -1,0 +1,12 @@
+{
+    "scaleType": "SCALE_NS",
+    "scaleNsData": [
+        {
+            "scaleNsByStepsData": [{
+                "aspectId": "1",
+                "numberOfSteps": 1,
+                "scalingDirection": "0"
+            }]
+        }
+    ]
+}

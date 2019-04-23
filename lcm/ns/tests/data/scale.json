@@ -1,0 +1,76 @@
+{
+    "scale_options": [
+        {
+            "nsd_id": "ns_ims",
+            "ns_scale_aspect": "TIC_CORE_IMS",
+            "ns_scale_info": [
+                {
+                    "step": "1",
+                    "scale_list": [
+                        {
+                            "vnfd_id": "zte_ims_cscf",
+                            "vnf_scale_aspect": "mpu",
+                            "numberOfSteps": "1"
+                        },
+                        {
+                            "vnfd_id": "zte_ims_hss",
+                            "vnf_scale_aspect": "fpu",
+                            "numberOfSteps": "3"
+                        }
+                    ]
+                },
+                {
+                    "step": "2",
+                    "scale_list": [
+                        {
+                            "vnfd_id": "zte_ims_cscf",
+                            "vnf_scale_aspect": "mpu",
+                            "numberOfSteps": "2"
+                        },
+                        {
+                            "vnfd_id": "zte_ims_hss",
+                            "vnf_scale_aspect": "fpu",
+                            "numberOfSteps": "6"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "nsd_id": "ns_epc",
+            "ns_scale_aspect": "TIC_EDGE_EPC",
+            "ns_scale_info": [
+                {
+                    "step": "1",
+                    "scale_list": [
+                        {
+                            "vnfd_id": "zte_epc_spgw",
+                            "vnf_scale_aspect": "gpu",
+                            "numberOfSteps": "1"
+                        },
+                        {
+                            "vnfd_id": "zte_epc_tas",
+                            "vnf_scale_aspect": "fpu",
+                            "numberOfSteps": "2"
+                        }
+                    ]
+                },
+                {
+                    "step": "2",
+                    "scale_list": [
+                        {
+                            "vnfd_id": "zte_epc_spgw",
+                            "vnf_scale_aspect": "mpu",
+                            "numberOfSteps": "2"
+                        },
+                        {
+                            "vnfd_id": "zte_epc_tas",
+                            "vnf_scale_aspect": "fpu",
+                            "numberOfSteps": "4"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
