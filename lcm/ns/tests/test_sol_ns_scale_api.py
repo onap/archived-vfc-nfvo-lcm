@@ -18,13 +18,13 @@ import uuid
 import mock
 from django.test import Client
 from django.test import TestCase
-from lcm.ns.biz.scaleaspect import get_json_data
 from rest_framework import status
 
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils import fileutil
 
 SCALING_JSON = {
     "scale_options": [
@@ -107,6 +107,7 @@ SCALING_JSON = {
 class TestScaleNsApi(TestCase):
     def setUp(self):
         self.url = "/api/nslcm/v1/ns_instances/%s/scale"
+        self.cur_path = os.path.dirname(os.path.abspath(__file__))
         self.ns_inst_id = str(uuid.uuid4())
         self.job_id = JobUtil.create_job(
             "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
@@ -117,7 +118,6 @@ class TestScaleNsApi(TestCase):
             name="abc",
             nspackage_id=self.package_id,
             nsd_id="111").save()
-
         self.init_scaling_map_json()
 
     def tearDown(self):
@@ -125,12 +125,7 @@ class TestScaleNsApi(TestCase):
         JobModel.objects.filter().delete()
 
     def init_scaling_map_json(self):
-        curdir_path = os.path.dirname(
-            os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__))))
-        filename = curdir_path + "/ns/data/scalemapping.json"
-        self.scaling_map_json = get_json_data(filename)
+        self.scaling_map_json = fileutil.read_json_file(self.cur_path + '/data/scalemapping.json')
 
     def insert_new_ns(self):
         ns_inst_id = str(uuid.uuid4())
