@@ -13,39 +13,22 @@
 # limitations under the License.
 
 import json
-
-from django.test import TestCase, Client
+import os
+from django.test import TestCase
+from lcm.pub.utils import fileutil
 from rest_framework import status
-
+from rest_framework.test import APIClient
 from lcm.pub.database.models import SubscriptionModel
 
 
 class TestQuerySubscriptions(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = APIClient()
+        self.cur_path = os.path.dirname(os.path.abspath(__file__))
+        self.test_single_subscription = fileutil.read_json_file(self.cur_path + '/data/subscription.json')
         self.subscription_id = "99442b18-a5c7-11e8-998c-bf1755941f16"
         self.ns_instance_id = "cd552c9c-ab6f-11e8-b354-236c32aa91a1"
         SubscriptionModel.objects.all().delete()
-        self.test_single_subscription = {
-            "id": self.subscription_id,
-            "callbackUri": "http://aurl.com",
-            "_links": {
-                "self": {
-                    "href": "/api/v1/subscriptions/99442b18-a5c7-11e8-998c-bf1755941f16"
-                }
-            },
-            "filter": {
-                "notificationTypes": ["NsLcmOperationOccurrenceNotification"],
-                "operationTypes": ["INSTANTIATE"],
-                "operationStates": ["STARTING"],
-                # "nsComponentTypes": ["NS"],
-                "nsInstanceSubscriptionFilter": {
-                    "nsdIds": [],
-                    "nsInstanceIds": [self.ns_instance_id],
-                    "nsInstanceNames": []
-                }
-            }
-        }
 
     def tearDown(self):
         pass
@@ -61,13 +44,15 @@ class TestQuerySubscriptions(TestCase):
                 "href": "/api/v1/subscriptions/99442b18-a5c7-11e8-998c-bf1755941f16"
             }
         }
-        SubscriptionModel(subscription_id=self.subscription_id, callback_uri="http://aurl.com",
-                          auth_info="{}", notification_types="['NsLcmOperationOccurrenceNotification']",
-                          operation_types="['INSTANTIATE']",
-                          operation_states="['STARTING']",
-                          # ns_component_types="['NS']",
-                          links=json.dumps(links),
-                          ns_instance_filter=json.dumps(ns_instance_filter)).save()
+        SubscriptionModel(
+            subscription_id=self.subscription_id,
+            callback_uri="http://aurl.com",
+            auth_info="{}",
+            notification_types="['NsLcmOperationOccurrenceNotification']",
+            operation_types="['INSTANTIATE']",
+            operation_states="['STARTING']",
+            links=json.dumps(links),
+            ns_instance_filter=json.dumps(ns_instance_filter)).save()
         response = self.client.get("/api/nslcm/v1/subscriptions", format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual([self.test_single_subscription], response.data)
@@ -83,27 +68,31 @@ class TestQuerySubscriptions(TestCase):
                 "href": "/api/v1/subscriptions/99442b18-a5c7-11e8-998c-bf1755941f16"
             }
         }
-        SubscriptionModel(subscription_id=self.subscription_id, callback_uri="http://aurl.com",
-                          auth_info="{}", notification_types="['NsLcmOperationOccurrenceNotification']",
-                          operation_types="['INSTANTIATE']",
-                          operation_states="['STARTING']",
-                          links=json.dumps(links),
-                          ns_instance_filter=json.dumps(ns_instance_filter)).save()
+        SubscriptionModel(
+            subscription_id=self.subscription_id,
+            callback_uri="http://aurl.com",
+            auth_info="{}",
+            notification_types="['NsLcmOperationOccurrenceNotification']",
+            operation_types="['INSTANTIATE']",
+            operation_states="['STARTING']",
+            links=json.dumps(links),
+            ns_instance_filter=json.dumps(ns_instance_filter)).save()
         dummy_ns_id = "584b35e2-b2a2-11e8-8e11-645106374fd3"
         dummy_subscription_id = "947dcd2c-b2a2-11e8-b365-645106374fd4"
         ns_instance_filter["nsInstanceIds"].append(dummy_ns_id)
-        SubscriptionModel(subscription_id=dummy_subscription_id, callback_uri="http://aurl.com",
-                          auth_info="{}", notification_types="['NsLcmOperationOccurrenceNotification']",
-                          operation_types="['INSTANTIATE']",
-                          operation_states="['STARTING']",
-                          links=json.dumps(links),
-                          ns_instance_filter=json.dumps(ns_instance_filter)).save()
-
+        SubscriptionModel(
+            subscription_id=dummy_subscription_id,
+            callback_uri="http://aurl.com",
+            auth_info="{}",
+            notification_types="['NsLcmOperationOccurrenceNotification']",
+            operation_types="['INSTANTIATE']",
+            operation_states="['STARTING']",
+            links=json.dumps(links),
+            ns_instance_filter=json.dumps(ns_instance_filter)).save()
         response = self.client.get("/api/nslcm/v1/subscriptions?nsInstanceId=" + dummy_ns_id, format='json')
         expected_response = self.test_single_subscription.copy()
         expected_response["id"] = dummy_subscription_id
-        expected_response["filter"]["nsInstanceSubscriptionFilter"]["nsInstanceIds"] = \
-            ns_instance_filter["nsInstanceIds"]
+        expected_response["filter"]["nsInstanceSubscriptionFilter"]["nsInstanceIds"] = ns_instance_filter["nsInstanceIds"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual([expected_response], response.data)
 
@@ -118,12 +107,15 @@ class TestQuerySubscriptions(TestCase):
                 "href": "/api/v1/subscriptions/99442b18-a5c7-11e8-998c-bf1755941f16"
             }
         }
-        SubscriptionModel(subscription_id=self.subscription_id, callback_uri="http://aurl.com",
-                          auth_info="{}", notification_types="['NsLcmOperationOccurrenceNotification']",
-                          operation_types="['INSTANTIATE']",
-                          operation_states="['STARTING']",
-                          links=json.dumps(links),
-                          ns_instance_filter=json.dumps(ns_instance_filter)).save()
+        SubscriptionModel(
+            subscription_id=self.subscription_id,
+            callback_uri="http://aurl.com",
+            auth_info="{}",
+            notification_types="['NsLcmOperationOccurrenceNotification']",
+            operation_types="['INSTANTIATE']",
+            operation_states="['STARTING']",
+            links=json.dumps(links),
+            ns_instance_filter=json.dumps(ns_instance_filter)).save()
         response = self.client.get("/api/nslcm/v1/subscriptions?nsInstanceId=dummy", format='json')
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -138,12 +130,15 @@ class TestQuerySubscriptions(TestCase):
                 "href": "/api/v1/subscriptions/99442b18-a5c7-11e8-998c-bf1755941f16"
             }
         }
-        SubscriptionModel(subscription_id=self.subscription_id, callback_uri="http://aurl.com",
-                          auth_info="{}", notification_types="['NsLcmOperationOccurrenceNotification']",
-                          operation_types="['INSTANTIATE']",
-                          operation_states="['STARTING']",
-                          links=json.dumps(links),
-                          ns_instance_filter=json.dumps(ns_instance_filter)).save()
+        SubscriptionModel(
+            subscription_id=self.subscription_id,
+            callback_uri="http://aurl.com",
+            auth_info="{}",
+            notification_types="['NsLcmOperationOccurrenceNotification']",
+            operation_types="['INSTANTIATE']",
+            operation_states="['STARTING']",
+            links=json.dumps(links),
+            ns_instance_filter=json.dumps(ns_instance_filter)).save()
         response = self.client.get("/api/nslcm/v1/subscriptions?dummy=dummy", format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -158,27 +153,31 @@ class TestQuerySubscriptions(TestCase):
                 "href": "/api/v1/subscriptions/99442b18-a5c7-11e8-998c-bf1755941f16"
             }
         }
-        SubscriptionModel(subscription_id=self.subscription_id, callback_uri="http://aurl.com",
-                          auth_info="{}", notification_types="['NsLcmOperationOccurrenceNotification']",
-                          operation_types="['INSTANTIATE']",
-                          operation_states="['STARTING']",
-                          links=json.dumps(links),
-                          ns_instance_filter=json.dumps(ns_instance_filter)).save()
+        SubscriptionModel(
+            subscription_id=self.subscription_id,
+            callback_uri="http://aurl.com",
+            auth_info="{}",
+            notification_types="['NsLcmOperationOccurrenceNotification']",
+            operation_types="['INSTANTIATE']",
+            operation_states="['STARTING']",
+            links=json.dumps(links),
+            ns_instance_filter=json.dumps(ns_instance_filter)).save()
         dummy_ns_id = "584b35e2-b2a2-11e8-8e11-645106374fd3"
         dummy_subscription_id = "947dcd2c-b2a2-11e8-b365-645106374fd4"
         ns_instance_filter["nsInstanceIds"].append(dummy_ns_id)
-        SubscriptionModel(subscription_id=dummy_subscription_id, callback_uri="http://aurl.com",
-                          auth_info="{}", notification_types="['NsLcmOperationOccurrenceNotification']",
-                          operation_types="['SCALE']",
-                          operation_states="['STARTING']",
-                          links=json.dumps(links),
-                          ns_instance_filter=json.dumps(ns_instance_filter)).save()
-
+        SubscriptionModel(
+            subscription_id=dummy_subscription_id,
+            callback_uri="http://aurl.com",
+            auth_info="{}",
+            notification_types="['NsLcmOperationOccurrenceNotification']",
+            operation_types="['SCALE']",
+            operation_states="['STARTING']",
+            links=json.dumps(links),
+            ns_instance_filter=json.dumps(ns_instance_filter)).save()
         response = self.client.get("/api/nslcm/v1/subscriptions?operationTypes=SCALE", format='json')
         expected_response = self.test_single_subscription.copy()
         expected_response["id"] = dummy_subscription_id
-        expected_response["filter"]["nsInstanceSubscriptionFilter"]["nsInstanceIds"] = \
-            ns_instance_filter["nsInstanceIds"]
+        expected_response["filter"]["nsInstanceSubscriptionFilter"]["nsInstanceIds"] = ns_instance_filter["nsInstanceIds"]
         expected_response["filter"]["operationTypes"] = ["SCALE"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual([expected_response], response.data)
