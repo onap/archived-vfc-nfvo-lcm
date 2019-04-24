@@ -1,0 +1,17 @@
+{
+    "additionalParamForNs": {
+        "location": "VCPE_RegionOne"
+    },
+    "nsFlavourId": "default",
+    "localizationLanguage": [{
+        "vnfProfileId": "vnfd1",
+        "locationConstraints": {
+            "countryCode": "countryCode",
+            "civicAddressElement": [
+                        {"caType": "type1",
+                         "caValue": 1
+                         }
+            ]
+        }
+    }]
+}

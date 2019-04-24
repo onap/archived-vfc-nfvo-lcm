@@ -1,0 +1,44 @@
+{
+    "nsFlavourId": "default",
+    "aditionalParamsForNs": {
+        "nfvo": "vfc",
+        "nf_naming": "true",
+        "multi_stage_design": "false",
+        "availability_zone_max_count": "1",
+        "xyz": "123",
+        "nsd0_providing_service_invariant_uuid": "12204a12-7da2-4ddf-8c2f-992a1a1acebf",
+        "nsd0_providing_service_uuid": "5791dbeb-19d4-43e8-bf44-5b327ccf6bca"
+    },
+    "additionalParamsForVnf": [
+        {
+            "vnfProfileId": "b1bb0ce7-2222-4fa7-95ed-4840d70a1101",
+            "additionalParams": {
+                "vimId": "VCPE_RegionOne"
+            }
+        },
+        {
+            "vnfProfileId": "0408f076-e6c0-4c82-9940-272fddbb82de",
+            "additionalParams": {
+                "vimId": "VCPE_RegionOne"
+            }
+        },
+        {
+            "vnfProfileId": "b1bb0ce7-2222-4fa7-95ed-4840d70a1100",
+            "additionalParams": {
+                "vimId": "VCPE_RegionOne"
+            }
+        },
+        {
+            "vnfProfileId": "b1bb0ce7-2222-4fa7-95ed-4840d70a1102",
+            "additionalParams": {
+                "vimId": "VCPE_RegionOne"
+            }
+        },
+        {
+            "vnfProfileId": "3fca3543-07f5-492f-812c-ed462e4f94f4",
+            "additionalParams": {
+                "vimId": "VCPE_RegionOne"
+            }
+        }
+    ]
+}

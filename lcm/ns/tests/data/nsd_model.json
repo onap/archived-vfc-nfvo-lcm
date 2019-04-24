@@ -3,7 +3,8 @@
         "vnf_id": "vnf1",
         "properties": {
             "id": "vnfd1",
-            "nf_type": "xgw"
+            "nf_type": "xgw",
+            "vnfm_info": "gvnfm"
         },
         "dependencies": [{
             "vl_id": "5"

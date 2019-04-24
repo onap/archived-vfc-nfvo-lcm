@@ -1,11 +1,11 @@
 {
-    "type": "xgw",
-    "vim-id": "3",
+    "type": "gvnfm",
+    "vim-id": {"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"},
     "vnfm-id": "4",
     "certificate-url": "http://127.0.0.0/ztevnfm/v1/auth",
     "esr-system-info-list": {
         "esr-system-info": [{
-            "type": "xgw",
+            "type": "gvnfm",
                     "vendor": "zte",
                     "version": "1.0",
                     "service-url": "http://127.0.0.0/ztevnfm/v1",
