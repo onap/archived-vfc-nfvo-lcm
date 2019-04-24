@@ -1,0 +1,62 @@
+{
+    "vnfs": [{
+        "vnf_id": "b1bb0ce7-2222-4fa7-95ed-4840d70a1101",
+        "properties": {
+            "id": "vnfd0",
+            "nf_type": "test",
+            "vnfm_info": "gvnfm"
+        },
+        "dependencies": [{
+            "vl_id": "5"
+        }]
+    },
+        {
+        "vnf_id": "0408f076-e6c0-4c82-9940-272fddbb82de",
+        "properties": {
+            "id": "vnfd1",
+            "nf_type": "test",
+            "vnfm_info": "gvnfm"
+        },
+        "dependencies": [{
+            "vl_id": "5"
+        }]
+    },
+        {
+        "vnf_id": "b1bb0ce7-2222-4fa7-95ed-4840d70a1100",
+        "properties": {
+            "id": "vnfd2",
+            "nf_type": "test",
+            "vnfm_info": "gvnfm"
+        },
+        "dependencies": [{
+            "vl_id": "5"
+        }]
+    },
+        {
+        "vnf_id": "b1bb0ce7-2222-4fa7-95ed-4840d70a1102",
+        "properties": {
+            "id": "vnfd3",
+            "nf_type": "test",
+            "vnfm_info": "gvnfm"
+        },
+        "dependencies": [{
+            "vl_id": "5"
+        }]
+    },
+        {
+        "vnf_id": "3fca3543-07f5-492f-812c-ed462e4f94f4",
+        "properties": {
+            "id": "vnfd4",
+            "nf_type": "test",
+            "vnfm_info": "gvnfm"
+        },
+        "dependencies": [{
+            "vl_id": "5"
+        }]
+    }
+    ],
+    "vls": [{
+        "vl_id": "5",
+        "properties": {}
+    }]
+}

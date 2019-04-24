@@ -37,3 +37,7 @@ SUBSCRIPTION_DICT = fileutil.read_json_file(cur_path + '/data/subscription.json'
 SOL_REST_HEADER_DICT = fileutil.read_json_file(cur_path + '/data/sol_rest_header.json')
 SOL_CREATE_NS_DICT = fileutil.read_json_file(cur_path + '/data/sol_create_ns.json')
 NS_PACKAGE_INFO_DICT = fileutil.read_json_file(cur_path + '/data/ns_package_info.json')
+SOL_INSTANTIATE_NS_DICT = fileutil.read_json_file(cur_path + '/data/sol_instantiate_ns.json')
+SOL_INSTANTIATE_NS_VCPE_DICT = fileutil.read_json_file(cur_path + '/data/sol_instantiate_ns_vcpe.json')
+SOL_INSTANTIATE_NS_WITH_PNF_DICT = fileutil.read_json_file(cur_path + '/data/sol_instantiate_ns_with_pnf.json')
+VCPE_NS_MODEL_DICT = fileutil.read_json_file(cur_path + '/data/vcpe_ns_model.json')
