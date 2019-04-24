@@ -1,0 +1,17 @@
+[{
+    "id": "99442b18-a5c7-11e8-998c-bf1755941f16",
+    "operationState": "STARTING",
+    "stateEnteredTime": "2019-01-01",
+    "startTime": "2019-01-01",
+    "nsInstanceId": "cd552c9c-ab6f-11e8-b354-236c32aa91a1",
+    "operation": "SCALE",
+    "isAutomaticInvocation": false,
+    "isCancelPending": false,
+    "cancelMode": false,
+    "_links": {
+        "self": {
+                    "href": "demo"
+        },
+        "nsInstance": "demo"
+    }
+}]
