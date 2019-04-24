@@ -12,20 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import os
-
 from django.test import TestCase
-
-from lcm.ns.biz.scaleaspect import get_json_data
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.utils.timeutil import now_time
+from lcm.pub.utils import fileutil
 
 
 class TestScaleAspect(TestCase):
 
     def setUp(self):
-        self.init_scaling_map_json()
+        self.cur_path = os.path.dirname(os.path.abspath(__file__))
+        self.scaling_map_json = fileutil.read_json_file(self.cur_path + '/data/scalemapping.json')
+        self.vnfd_model_json = fileutil.read_json_file(self.cur_path + '/data/vnfd_model.json')
         self.initInstModel()
 
         self.init_scale_ns_data()
@@ -69,14 +70,6 @@ class TestScaleAspect(TestCase):
             ]
         }]
 
-    def init_scaling_map_json(self):
-        curdir_path = os.path.dirname(
-            os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__))))
-        filename = curdir_path + "/ns/data/scalemapping.json"
-        self.scaling_map_json = get_json_data(filename)
-
     def initInstModel(self):
         self.nsd_id = "23"
         self.ns_inst_id = "1"
@@ -118,11 +111,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=self.nf_uuid,
             package_id=self.package_id,
-            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-            '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-            '"productType": "CN","vnfType": "PGW",'
-            '"description": "PGW VNFD description",'
-            '"isShared":true,"vnfExtendType":"driver"}}')
+            vnfd_model=json.dumps(self.vnfd_model_json))
 
         # Create a second vnf instance
         self.nf_inst_id = "232"
@@ -143,11 +132,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=self.nf_uuid,
             package_id=self.package_id,
-            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-                       '"productType": "CN","vnfType": "PGW",'
-                       '"description": "PGW VNFD description",'
-                       '"isShared":true,"vnfExtendType":"driver"}}')
+            vnfd_model=json.dumps(self.vnfd_model_json))
 
     def add_another_nf_instance(self):
         # Create a third vnf instance
@@ -169,11 +154,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=nf_uuid,
             package_id=package_id,
-            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-                       '"productType": "CN","vnfType": "PGW",'
-                       '"description": "PGW VNFD description",'
-                       '"isShared":true,"vnfExtendType":"driver"}}')
+            vnfd_model=json.dumps(self.vnfd_model_json))
 
     def add_new_vnf_instance(self):
         # Create a third vnf instance
@@ -195,11 +176,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=nf_uuid,
             package_id=package_id,
-            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-                       '"productType": "CN","vnfType": "PGW",'
-                       '"description": "PGW VNFD description",'
-                       '"isShared":true,"vnfExtendType":"driver"}}')
+            vnfd_model=json.dumps(self.vnfd_model_json))
 
         # Create a third vnf instance
         nf_inst_id = "242"
@@ -220,11 +197,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=nf_uuid,
             package_id=package_id,
-            vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-                       '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-                       '"productType": "CN","vnfType": "PGW",'
-                       '"description": "PGW VNFD description",'
-                       '"isShared":true,"vnfExtendType":"driver"}}')
+            vnfd_model=json.dumps(self.vnfd_model_json))
 
     def tearDown(self):
         NSInstModel().clean()
