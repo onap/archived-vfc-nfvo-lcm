@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import json
-import os
 import uuid
 
 import mock
@@ -26,15 +25,15 @@ from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import catalog
-from lcm.pub.utils import restcall, fileutil
+from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
+from lcm.ns.tests import SCALING_MAP_DICT, VNFD_MODEL_DICT, SCALE_NS_DICT
 
 
 class TestNsManualScale(TestCase):
 
     def setUp(self):
-        self.cur_path = os.path.dirname(os.path.abspath(__file__))
-        self.scaling_map_json = fileutil.read_json_file(self.cur_path + '/data/scalemapping.json')
+        self.scaling_map_json = SCALING_MAP_DICT
         self.ns_inst_id = str(uuid.uuid4())
         self.job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
         self.client = APIClient()
@@ -63,7 +62,6 @@ class TestNsManualScale(TestCase):
 
     def insert_new_nf(self):
         self.vnfm_inst_id = "1"
-        vnfd_model_json = fileutil.read_json_file(self.cur_path + '/data/vnfd_model.json')
         NfInstModel.objects.create(
             nfinstid="233",
             nf_name="name_1",
@@ -78,30 +76,29 @@ class TestNsManualScale(TestCase):
             status='active',
             mnfinstid="ab34-3g5j-de13-ab85-ij93",
             package_id="nf_zte_hss",
-            vnfd_model=json.dumps(vnfd_model_json))
+            vnfd_model=json.dumps(VNFD_MODEL_DICT))
 
     @mock.patch.object(NSManualScaleService, 'run')
     def test_ns_manual_scale(self, mock_run):
-        scale_ns_json = fileutil.read_json_file(self.cur_path + '/data/scale_ns.json')
-        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data=scale_ns_json, format='json')
+        response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data=SCALE_NS_DICT, format='json')
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     def test_ns_manual_scale_error_scaletype(self):
-        scale_ns_json = fileutil.read_json_file(self.cur_path + '/data/scale_ns.json')
+        scale_ns_json = SCALE_NS_DICT.copy()
         scale_ns_json["scaleType"] = "SCALE_ERR"
         NSManualScaleService(self.ns_inst_id, scale_ns_json, self.job_id).run()
         jobs = JobModel.objects.filter(jobid=self.job_id)
         self.assertEqual(255, jobs[0].progress)
 
     def test_ns_manual_scale_error_nsd_id(self):
-        scale_ns_json = fileutil.read_json_file(self.cur_path + '/data/scale_ns.json')
+        scale_ns_json = SCALE_NS_DICT.copy()
         scale_ns_json["scaleNsData"][0]["scaleNsByStepsData"][0]["aspectId"] = "sss_zte"
         NSManualScaleService(self.ns_inst_id, scale_ns_json, self.job_id).run()
         jobs = JobModel.objects.filter(jobid=self.job_id)
         self.assertEqual(255, jobs[0].progress)
 
     def test_ns_manual_scale_error_aspect(self):
-        scale_ns_json = fileutil.read_json_file(self.cur_path + '/data/scale_ns.json')
+        scale_ns_json = SCALE_NS_DICT.copy()
         scale_ns_json["scaleNsData"][0]["scaleNsByStepsData"][0]["aspectId"] = "sss_zte"
         ns_inst_id, job_id = self.insert_new_ns()
         job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_inst_id)
@@ -112,7 +109,7 @@ class TestNsManualScale(TestCase):
     @mock.patch.object(catalog, 'get_scalingmap_json_package')
     @mock.patch.object(NSManualScaleService, 'do_vnfs_scale')
     def test_ns_manual_scale_success(self, mock_do_vnfs_scale, mock_get_scalingmap_json_package):
-        scale_ns_json = fileutil.read_json_file(self.cur_path + '/data/scale_ns.json')
+        scale_ns_json = SCALE_NS_DICT.copy()
         scale_ns_json["scaleNsData"][0]["scaleNsByStepsData"][0]["aspectId"] = "TIC_EDGE_IMS"
         mock_get_scalingmap_json_package.return_value = self.scaling_map_json
         mock_do_vnfs_scale.return_value = JOB_MODEL_STATUS.FINISHED
@@ -125,7 +122,7 @@ class TestNsManualScale(TestCase):
 
     @mock.patch.object(restcall, 'call_req')
     def test_ns_manual_scale_thread(self, mock_call):
-        scale_ns_json = fileutil.read_json_file(self.cur_path + '/data/scale_ns.json')
+        scale_ns_json = SCALE_NS_DICT.copy()
         NSManualScaleService(self.ns_inst_id, scale_ns_json, self.job_id).run()
         self.assertTrue(NSInstModel.objects.get(id=self.ns_inst_id).status, NS_INST_STATUS.ACTIVE)
 
@@ -139,7 +136,7 @@ class TestNsManualScale(TestCase):
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_when_ns_not_exist(self, mock_start):
         mock_start.side_effect = NSLCMException("NS scale failed.")
-        scale_ns_json = fileutil.read_json_file(self.cur_path + '/data/scale_ns.json')
+        scale_ns_json = SCALE_NS_DICT.copy()
         response = self.client.post("/api/nslcm/v1/ns/11/scale", data=scale_ns_json, format='json')
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
