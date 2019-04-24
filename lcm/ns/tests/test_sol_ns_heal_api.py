@@ -24,73 +24,44 @@ from lcm.ns.biz.ns_heal import NSHealService
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.ns.tests import VNFD_MODEL_DICT, HEAL_NS_DICT, HEAL_VNF_DICT
 
 
 class TestHealNsApi(TestCase):
     def setUp(self):
         self.url = "/api/nslcm/v1/ns_instances/%s/heal"
-        # self.ns_inst_id = '1'
         self.ns_inst_id = str(uuid.uuid4())
         self.nf_inst_id = '1'
         self.nf_uuid = '1-1-1'
-
         self.job_id = JobUtil.create_job("NS", JOB_TYPE.HEAL_VNF, self.ns_inst_id)
-
         self.client = Client()
-
-        model = json.dumps({
-            "metadata": {
-                "vnfdId": "1",
-                "vnfdName": "PGW001",
-                "vnfProvider": "zte",
-                "vnfdVersion": "V00001",
-                "vnfVersion": "V5.10.20",
-                "productType": "CN",
-                "vnfType": "PGW",
-                "description": "PGW VNFD description",
-                "isShared": True,
-                "vnfExtendType": "driver"
-            }
-        })
+        model = json.dumps(VNFD_MODEL_DICT)
         NSInstModel.objects.filter().delete()
         NfInstModel.objects.filter().delete()
         NSInstModel(id=self.ns_inst_id, name="ns_name", status='null').save()
-        NfInstModel.objects.create(nfinstid=self.nf_inst_id,
-                                   nf_name='name_1',
-                                   vnf_id='1',
-                                   vnfm_inst_id='1',
-                                   ns_inst_id=self.ns_inst_id,
-                                   max_cpu='14',
-                                   max_ram='12296',
-                                   max_hd='101',
-                                   max_shd="20",
-                                   max_net=10,
-                                   status='null',
-                                   mnfinstid=self.nf_uuid,
-                                   package_id='pkg1',
-                                   vnfd_model=model)
+        NfInstModel.objects.create(
+            nfinstid=self.nf_inst_id,
+            nf_name='name_1',
+            vnf_id='1',
+            vnfm_inst_id='1',
+            ns_inst_id=self.ns_inst_id,
+            max_cpu='14',
+            max_ram='12296',
+            max_hd='101',
+            max_shd="20",
+            max_net=10,
+            status='null',
+            mnfinstid=self.nf_uuid,
+            package_id='pkg1',
+            vnfd_model=model)
 
     def tearDown(self):
         pass
 
     @mock.patch.object(NSHealService, 'run')
     def test_heal_vnf_url(self, mock_run):
-
-        data = {
-            "healVnfData": [{
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "vm is down",
-                "additionalParams": {
-                    "action": "restartvm",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }]
-        }
-
+        data = HEAL_VNF_DICT.copy()
+        data["healVnfData"]["vnfInstanceId"] = self.nf_inst_id
         response = self.client.post(self.url % self.ns_inst_id, data=data)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
         self.assertIsNotNone(response.data)
@@ -102,22 +73,8 @@ class TestHealNsApi(TestCase):
 
     @mock.patch.object(NSHealService, 'run')
     def test_heal_ns_url(self, mock_run):
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
+        data = HEAL_NS_DICT.copy()
+        data["healNsData"]["vnfInstanceId"] = self.nf_inst_id
         response = self.client.post(self.url % self.ns_inst_id, data=data)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
         self.assertIsNotNone(response['Location'])
@@ -127,23 +84,9 @@ class TestHealNsApi(TestCase):
     @mock.patch.object(NSHealService, "start")
     def test_heal_vnf_non_existing_ns(self, mock_start):
         mock_start.side_effect = NSLCMException("NS Not Found")
-
         ns_inst_id = "2"
-
-        data = {
-            "healVnfData": [{
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "vm is down",
-                "additionalParams": {
-                    "action": "restartvm",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }]
-        }
-
+        data = HEAL_VNF_DICT.copy()
+        data["healVnfData"]["vnfInstanceId"] = self.nf_inst_id
         response = self.client.post(self.url % ns_inst_id, data=data)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -151,24 +94,9 @@ class TestHealNsApi(TestCase):
     @mock.patch.object(NSHealService, "start")
     def test_heal_ns_heal_non_existing_ns(self, mock_start):
         mock_start.side_effect = NSLCMException("NS Not Found")
-
         ns_inst_id = "2"
-
-        data = {
-            "healNsData": {
-                "vnfInstanceId": self.nf_inst_id,
-                "cause": "",
-                "additionalParams": {
-                    "action": "vmreset",
-                    "actionvminfo": {
-                        "vmid": "33",
-                        "vduid": "",
-                        "vmname": "xgw-smp11"
-                    }
-                }
-            }
-        }
-
+        data = HEAL_NS_DICT.copy()
+        data["healNsData"]["vnfInstanceId"] = self.nf_inst_id
         response = self.client.post(self.url % ns_inst_id, data=data)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 

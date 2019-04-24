@@ -14,21 +14,19 @@
 # limitations under the License.
 
 import json
-import os
 from rest_framework.test import APIClient
 from django.test import TestCase
 from rest_framework import status
 from lcm.pub.database.models import NSLcmOpOccModel
-from lcm.pub.utils import fileutil
+from lcm.ns.tests import OCCURRENCE_DICT, NSLCMOP_WITH_EXCLUDE_DEFAULT_DICT
 
 
 class TestNSLcmOpOccs(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.cur_path = os.path.dirname(os.path.abspath(__file__))
-        self.multiple_ns_lcm_op = fileutil.read_json_file(self.cur_path + '/data/occurrence.json')
+        self.multiple_ns_lcm_op = OCCURRENCE_DICT
         self.single_ns_lcm_op = self.multiple_ns_lcm_op[0]
-        self.nslcmop_with_exclude_default = fileutil.read_json_file(self.cur_path + '/data/occurrence_exclude_default.json')
+        self.nslcmop_with_exclude_default = NSLCMOP_WITH_EXCLUDE_DEFAULT_DICT
         NSLcmOpOccModel.objects.all().delete()
 
     def tearDown(self):

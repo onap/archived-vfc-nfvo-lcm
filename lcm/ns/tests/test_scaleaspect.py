@@ -13,20 +13,16 @@
 # limitations under the License.
 
 import json
-import os
 from django.test import TestCase
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.utils.timeutil import now_time
-from lcm.pub.utils import fileutil
+from lcm.ns.tests import VNFD_MODEL_DICT
 
 
 class TestScaleAspect(TestCase):
 
     def setUp(self):
-        self.cur_path = os.path.dirname(os.path.abspath(__file__))
-        self.scaling_map_json = fileutil.read_json_file(self.cur_path + '/data/scalemapping.json')
-        self.vnfd_model_json = fileutil.read_json_file(self.cur_path + '/data/vnfd_model.json')
         self.initInstModel()
 
         self.init_scale_ns_data()
@@ -111,7 +107,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=self.nf_uuid,
             package_id=self.package_id,
-            vnfd_model=json.dumps(self.vnfd_model_json))
+            vnfd_model=json.dumps(VNFD_MODEL_DICT))
 
         # Create a second vnf instance
         self.nf_inst_id = "232"
@@ -132,7 +128,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=self.nf_uuid,
             package_id=self.package_id,
-            vnfd_model=json.dumps(self.vnfd_model_json))
+            vnfd_model=json.dumps(VNFD_MODEL_DICT))
 
     def add_another_nf_instance(self):
         # Create a third vnf instance
@@ -154,7 +150,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=nf_uuid,
             package_id=package_id,
-            vnfd_model=json.dumps(self.vnfd_model_json))
+            vnfd_model=json.dumps(VNFD_MODEL_DICT))
 
     def add_new_vnf_instance(self):
         # Create a third vnf instance
@@ -176,7 +172,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=nf_uuid,
             package_id=package_id,
-            vnfd_model=json.dumps(self.vnfd_model_json))
+            vnfd_model=json.dumps(VNFD_MODEL_DICT))
 
         # Create a third vnf instance
         nf_inst_id = "242"
@@ -197,7 +193,7 @@ class TestScaleAspect(TestCase):
             status='active',
             mnfinstid=nf_uuid,
             package_id=package_id,
-            vnfd_model=json.dumps(self.vnfd_model_json))
+            vnfd_model=json.dumps(VNFD_MODEL_DICT))
 
     def tearDown(self):
         NSInstModel().clean()

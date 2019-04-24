@@ -13,19 +13,17 @@
 # limitations under the License.
 
 import json
-import os
 from django.test import TestCase
-from lcm.pub.utils import fileutil
 from rest_framework import status
 from rest_framework.test import APIClient
 from lcm.pub.database.models import SubscriptionModel
+from lcm.ns.tests import SUBSCRIPTION_DICT
 
 
 class TestQuerySubscriptions(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.cur_path = os.path.dirname(os.path.abspath(__file__))
-        self.test_single_subscription = fileutil.read_json_file(self.cur_path + '/data/subscription.json')
+        self.test_single_subscription = SUBSCRIPTION_DICT.copy()
         self.subscription_id = "99442b18-a5c7-11e8-998c-bf1755941f16"
         self.ns_instance_id = "cd552c9c-ab6f-11e8-b354-236c32aa91a1"
         SubscriptionModel.objects.all().delete()
