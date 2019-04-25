@@ -12,125 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import json
 import uuid
-
 import mock
-from django.test import Client
 from django.test import TestCase
 from rest_framework import status
-
+from rest_framework.test import APIClient
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
-from lcm.pub.utils import fileutil
-
-SCALING_JSON = {
-    "scale_options": [
-        {
-            "nsd_id": "ns_ims",
-            "ns_scale_aspect": "TIC_CORE_IMS",
-            "ns_scale_info": [
-                {
-                    "step": "1",
-                    "scale_list": [
-                        {
-                            "vnfd_id": "zte_ims_cscf",
-                            "vnf_scale_aspect": "mpu",
-                            "numberOfSteps": "1"
-                        },
-                        {
-                            "vnfd_id": "zte_ims_hss",
-                            "vnf_scale_aspect": "fpu",
-                            "numberOfSteps": "3"
-                        }
-                    ]
-                },
-                {
-                    "step": "2",
-                    "scale_list": [
-                        {
-                            "vnfd_id": "zte_ims_cscf",
-                            "vnf_scale_aspect": "mpu",
-                            "numberOfSteps": "2"
-                        },
-                        {
-                            "vnfd_id": "zte_ims_hss",
-                            "vnf_scale_aspect": "fpu",
-                            "numberOfSteps": "6"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "nsd_id": "ns_epc",
-            "ns_scale_aspect": "TIC_EDGE_EPC",
-            "ns_scale_info": [
-                {
-                    "step": "1",
-                    "scale_list": [
-                        {
-                            "vnfd_id": "zte_epc_spgw",
-                            "vnf_scale_aspect": "gpu",
-                            "numberOfSteps": "1"
-                        },
-                        {
-                            "vnfd_id": "zte_epc_tas",
-                            "vnf_scale_aspect": "fpu",
-                            "numberOfSteps": "2"
-                        }
-                    ]
-                },
-                {
-                    "step": "2",
-                    "scale_list": [
-                        {
-                            "vnfd_id": "zte_epc_spgw",
-                            "vnf_scale_aspect": "mpu",
-                            "numberOfSteps": "2"
-                        },
-                        {
-                            "vnfd_id": "zte_epc_tas",
-                            "vnf_scale_aspect": "fpu",
-                            "numberOfSteps": "4"
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
+from lcm.ns.tests import VNFD_MODEL_DICT, SCALE_NS_DICT
 
 
 class TestScaleNsApi(TestCase):
     def setUp(self):
         self.url = "/api/nslcm/v1/ns_instances/%s/scale"
-        self.cur_path = os.path.dirname(os.path.abspath(__file__))
         self.ns_inst_id = str(uuid.uuid4())
-        self.job_id = JobUtil.create_job(
-            "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        self.job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
         self.package_id = "7"
-        self.client = Client()
+        self.client = APIClient()
         NSInstModel(
             id=self.ns_inst_id,
             name="abc",
             nspackage_id=self.package_id,
             nsd_id="111").save()
-        self.init_scaling_map_json()
 
     def tearDown(self):
         NSInstModel.objects.filter().delete()
         JobModel.objects.filter().delete()
 
-    def init_scaling_map_json(self):
-        self.scaling_map_json = fileutil.read_json_file(self.cur_path + '/data/scalemapping.json')
-
     def insert_new_ns(self):
         ns_inst_id = str(uuid.uuid4())
-        job_id = JobUtil.create_job(
-            "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
         package_id = "23"
         NSInstModel(
             id=ns_inst_id,
@@ -140,27 +54,12 @@ class TestScaleNsApi(TestCase):
         return ns_inst_id, job_id
 
     def insert_new_nf(self):
-        # Create a third vnf instance
         self.nf_name = "name_1"
         self.vnf_id = "1"
         self.vnfm_inst_id = "1"
         nf_inst_id = "233"
         package_id = "nf_zte_hss"
         nf_uuid = "ab34-3g5j-de13-ab85-ij93"
-        vnf_model = {
-            "metadata": {
-                "vnfdId": "1",
-                "vnfdName": "PGW001",
-                "vnfProvider": "zte",
-                "vnfdVersion": "V00001",
-                "vnfVersion": "V5.10.20",
-                "productType": "CN",
-                "vnfType": "PGW",
-                "description": "PGW VNFD description",
-                "isShared": True,
-                "vnfExtendType": "driver"
-            }
-        }
         NfInstModel.objects.create(
             nfinstid=nf_inst_id,
             nf_name=self.nf_name,
@@ -175,22 +74,12 @@ class TestScaleNsApi(TestCase):
             status='active',
             mnfinstid=nf_uuid,
             package_id=package_id,
-            vnfd_model=str(vnf_model)
+            vnfd_model=json.dumps(VNFD_MODEL_DICT)
         )
 
     @mock.patch.object(NSManualScaleService, 'run')
     def test_ns_scale(self, mock_run):
-        data = {
-            "scaleType": "SCALE_NS",
-            "scaleNsData": {
-                "scaleNsByStepsData": {
-                    "aspectId": "1",
-                    "numberOfSteps": 1,
-                    "scalingDirection": "0"
-                }
-            }
-        }
-        response = self.client.post(self.url % self.ns_inst_id, data=data)
+        response = self.client.post(self.url % self.ns_inst_id, data=SCALE_NS_DICT)
         self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertIsNotNone(response['Location'])
         response = self.client.get(response['Location'], format='json')
@@ -199,30 +88,14 @@ class TestScaleNsApi(TestCase):
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_empty_data(self, mock_start):
         mock_start.side_effect = NSLCMException("NS scale failed.")
-        response = self.client.post(
-            self.url %
-            self.ns_inst_id, data={})
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_400_BAD_REQUEST)
+        response = self.client.post(self.url % self.ns_inst_id, data={}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_when_ns_not_exist(self, mock_start):
         mock_start.side_effect = NSLCMException("NS scale failed.")
-        data = {
-            "scaleType": "SCALE_NS",
-            "scaleNsData": {
-                "scaleNsByStepsData": {
-                    "aspectId": "1",
-                    "numberOfSteps": 1,
-                    "scalingDirection": "0"
-                }
-            }
-        }
-        response = self.client.post(self.url % '11', data=data)
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response = self.client.post(self.url % '11', data=SCALE_NS_DICT)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def test_method_not_allowed(self):
         response = self.client.put(self.url % '1', data={}, format='json')

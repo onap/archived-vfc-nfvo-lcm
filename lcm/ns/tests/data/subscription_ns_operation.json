@@ -1,0 +1,19 @@
+{
+    "callbackUri": "http://aurl.com",
+    "authentication": {
+        "authType": ["BASIC"],
+        "paramsBasic": {
+            "username": "username",
+            "password": "password"
+        }
+    },
+    "filter": {
+        "notificationTypes": ["NsLcmOperationOccurrenceNotification"],
+        "operationTypes": [
+            "INSTANTIATE"
+        ],
+        "operationStates": [
+            "STARTING"
+        ]
+    }
+}
