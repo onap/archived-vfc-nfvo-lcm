@@ -11,14 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from lcm.pub.utils.enumutil import enum
-
-VNF_STATUS = enum(NULL='null', INSTANTIATING="instantiating", INACTIVE='inactive', ACTIVE="active", FAILED="failed",
-                  TERMINATING="terminating", SCALING="scaling", HEALING="healing", UPDATING="updating")
-INST_TYPE = enum(VNF=0, VNFM=1)
-INST_TYPE_NAME = enum(VNF='VNF', VNFM='VNFM')
-PACKAGE_TYPE = enum(VNFD='VNFD', NSD='NSD')
 
 NFVO_VNF_INST_TIMEOUT_SECOND = 3000
-
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'

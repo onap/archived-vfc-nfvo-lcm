@@ -18,31 +18,9 @@ from lcm.ns.serializers.sol.ext_virtual_link_info import ExtVirtualLinkInfoSeria
 from lcm.ns.serializers.sol.cp_serializers import AddressRangeSerializer
 from lcm.ns.serializers.sol.resource_handle import ResourceHandleSerializer
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer, LinkSerializer
-
-
-# class ResourceHandleSerializer(serializers.Serializer):
-#     vimConnectionId = serializers.CharField(
-#         help_text="Identifier of the VIM connection to manage the resource.",
-#         required=False,
-#         allow_null=True,
-#         allow_blank=True
-#     )
-#     resourceProviderId = serializers.CharField(
-#         help_text="Identifier of the entity responsible for the management of the resource.",
-#         required=False,
-#         allow_null=True,
-#         allow_blank=True
-#     )
-#     resourceId = serializers.CharField(
-#         help_text="Identifier of the resource in the scope of the VIM or the resource provider.",
-#         required=True
-#     )
-#     vimLevelResourceType = serializers.CharField(
-#         help_text="Type of the resource in the scope of the VIM or the resource provider.",
-#         required=False,
-#         allow_null=True,
-#         allow_blank=True
-#     )
+from lcm.ns.enum import LAYER_PROTOCOL, IPADDRESSES_TYPE, AFFINITY_OR_ANTIAFFIINTY_SCOPE, AFFINITY_OR_ANTIAFFIINTY, LCM_NOTIFICATION_STATUS, OPERATION_STATE_TYPE
+from lcm.ns_vnfs.enum import STORAGE_CHANGE_TYPE, VNFC_CHANGE_TYPE, VL_CHANGE_TYPE, RESOURE_TYPE, RESOURCE_ID_TYPE, GRANT_OPERATION, VNF_NOTIFICATION_TYPE
+from lcm.pub.utils.enumutil import enum_to_list
 
 
 class ResourceDefinitionSerializer(serializers.Serializer):
@@ -52,7 +30,7 @@ class ResourceDefinitionSerializer(serializers.Serializer):
     )
     type = serializers.ChoiceField(
         help_text="Type of the resource definition referenced.",
-        choices=["COMPUTE", "VL", "STORAGE", "LINKPORT"],
+        choices=enum_to_list(RESOURE_TYPE),
         required=True
     )
     vduId = serializers.CharField(
@@ -77,7 +55,7 @@ class ResourceDefinitionSerializer(serializers.Serializer):
 class ConstraintResourceRefSerializer(serializers.Serializer):
     idType = serializers.ChoiceField(
         help_text="The type of the identifier.",
-        choices=["RES_MGMT", "GRANT"],
+        choices=enum_to_list(RESOURCE_ID_TYPE),
         required=True
     )
     resourceId = serializers.CharField(
@@ -101,12 +79,12 @@ class ConstraintResourceRefSerializer(serializers.Serializer):
 class PlacementConstraintSerializer(serializers.Serializer):
     affinityOrAntiAffinity = serializers.ChoiceField(
         help_text="The type of the constraint.",
-        choices=["AFFINITY", "ANTI_AFFINITY"],
+        choices=enum_to_list(AFFINITY_OR_ANTIAFFIINTY),
         required=True
     )
     scope = serializers.ChoiceField(
         help_text="The scope of the placement constraint indicating the category of the place where the constraint applies.",
-        choices=["NFVI_POP", "ZONE", "ZONE_GROUP", "NFVI_NODE"],
+        choices=enum_to_list(AFFINITY_OR_ANTIAFFIINTY_SCOPE),
         required=True
     )
     resource = ConstraintResourceRefSerializer(
@@ -171,7 +149,7 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     operation = serializers.ChoiceField(
         help_text="The lifecycle management operation for which granting is requested.",
-        choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
+        choices=enum_to_list(GRANT_OPERATION),
         required=True
     )
     isAutomaticInvocation = serializers.BooleanField(
@@ -415,7 +393,7 @@ class VimAssetsSerializer(serializers.Serializer):
 class IpAddresseSerializer(serializers.Serializer):
     type = serializers.ChoiceField(
         help_text="The type of the IP addresses.",
-        choices=["IPV4", "IPV6"],
+        choices=enum_to_list(IPADDRESSES_TYPE),
         required=True
     )
     fixedAddresses = serializers.ListSerializer(
@@ -458,7 +436,7 @@ class IpOverEthernetAddressSerializer(serializers.Serializer):
 class CpProtocolDataConfigSerializer(serializers.Serializer):
     layerProtocol = serializers.ChoiceField(
         help_text="Identifier of layer(s) and protocol(s).",
-        choices=["IP_OVER_ETHERNET"],
+        choices=enum_to_list(LAYER_PROTOCOL),
         required=True
     )
     ipOverEthernet = IpOverEthernetAddressSerializer(
@@ -693,7 +671,7 @@ class AffectedVnfcSerializer(serializers.Serializer):
     )
     changeType = serializers.ChoiceField(
         help_text="Signals the type of change.",
-        choices=["ADDED", "REMOVED", "MODIFIED", "TEMPORARY"],
+        choices=enum_to_list(VNFC_CHANGE_TYPE),
         required=True
     )
     computeResource = ResourceHandleSerializer(
@@ -737,7 +715,7 @@ class AffectedVirtualLinkSerializer(serializers.Serializer):
     )
     changeType = serializers.ChoiceField(
         help_text="Signals the type of change.",
-        choices=["ADDED", "REMOVED", "MODIFIED", "TEMPORARY", "LINK_PORT_ADDED", "LINK_PORT_REMOVED"],
+        choices=enum_to_list(VL_CHANGE_TYPE),
         required=True
     )
     networkResource = ResourceHandleSerializer(
@@ -764,7 +742,7 @@ class AffectedVirtualStorageSerializer(serializers.Serializer):
     )
     changeType = serializers.ChoiceField(
         help_text="Signals the type of change.",
-        choices=["ADDED", "REMOVED", "MODIFIED", "TEMPORARY"],
+        choices=enum_to_list(STORAGE_CHANGE_TYPE),
         required=True
     )
     storageResource = ResourceHandleSerializer(
@@ -939,11 +917,7 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     )
     notificationType = serializers.ChoiceField(
         help_text="Discriminator for the different notification types.",
-        choices=[
-            'VnfLcmOperationOccurrenceNotification',
-            'VnfIdentifierCreationNotification',
-            'VnfIdentifierDeletionNotification'
-        ],
+        choices=enum_to_list(VNF_NOTIFICATION_TYPE),
         required=True
     )
     subscriptionId = serializers.CharField(
@@ -956,12 +930,12 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     )
     notificationStatus = serializers.ChoiceField(
         help_text="Indicates whether this notification reports about the start of a lifecycle operation or the result of a lifecycle operation.",
-        choices=["START", "RESULT"],
+        choices=enum_to_list(LCM_NOTIFICATION_STATUS),
         required=True
     )
     operationState = serializers.ChoiceField(
         help_text="The state of the VNF LCM operation occurrence.",
-        choices=["STARTING", "PROCESSING", "COMPLETED", "FAILED_TEMP", "FAILED", "ROLLING_BACK", "ROLLED_BACK"],
+        choices=enum_to_list(OPERATION_STATE_TYPE),
         required=True
     )
     vnfInstanceId = serializers.CharField(
@@ -970,7 +944,7 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
     )
     operation = serializers.ChoiceField(
         help_text="The lifecycle management operation.",
-        choices=["INSTANTIATE", "SCALE", "SCALE_TO_LEVEL", "CHANGE_FLAVOUR", "TERMINATE", "HEAL", "OPERATE", "CHANGE_EXT_CONN", "MODIFY_INFO"],
+        choices=enum_to_list(GRANT_OPERATION),
         required=True
     )
     isAutomaticInvocation = serializers.BooleanField(
@@ -1029,11 +1003,7 @@ class VnfIdentifierCreationNotificationSerializer(serializers.Serializer):
     )
     notificationType = serializers.ChoiceField(
         help_text="Discriminator for the different notification types.",
-        choices=[
-            'VnfLcmOperationOccurrenceNotification',
-            'VnfIdentifierCreationNotification',
-            'VnfIdentifierDeletionNotification'
-        ],
+        choices=enum_to_list(VNF_NOTIFICATION_TYPE),
         required=True
     )
     subscriptionId = serializers.CharField(
@@ -1071,11 +1041,7 @@ class VnfIdentifierDeletionNotificationSerializer(serializers.Serializer):
     )
     notificationType = serializers.ChoiceField(
         help_text="Discriminator for the different notification types.",
-        choices=[
-            'VnfLcmOperationOccurrenceNotification',
-            'VnfIdentifierCreationNotification',
-            'VnfIdentifierDeletionNotification'
-        ],
+        choices=enum_to_list(VNF_NOTIFICATION_TYPE),
         required=True
     )
     subscriptionId = serializers.CharField(

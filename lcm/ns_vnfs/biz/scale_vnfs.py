@@ -21,7 +21,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_scaling_request
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
-from lcm.ns_vnfs.const import VNF_STATUS
+from lcm.ns_vnfs.enum import VNF_STATUS
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
 
 JOB_ERROR = 255

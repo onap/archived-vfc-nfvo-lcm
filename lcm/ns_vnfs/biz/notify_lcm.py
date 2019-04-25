@@ -26,7 +26,7 @@ from lcm.pub.msapi.aai import create_network_aai, query_network_aai, delete_netw
 from lcm.pub.msapi.aai import create_vserver_aai
 from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.utils.values import ignore_case_get
-from lcm.ns_vnfs.const import INST_TYPE
+from lcm.ns_vnfs.enum import INST_TYPE
 
 logger = logging.getLogger(__name__)
 
