@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import mock
 from django.test import TestCase
 from rest_framework.test import APIClient
 import uuid
+from lcm.ns.tests import SUBSCRIPTION_NS_DELETION_DICT, SUBSCRIPTION_NS_OPERATION_DICT
 
 
 class TestSubscription(TestCase):
@@ -44,79 +46,30 @@ class TestSubscription(TestCase):
     @mock.patch.object(uuid, 'uuid4')
     def test_subscribe_notification(self, mock_uuid4, mock_requests):
         temp_uuid = "99442b18-a5c7-11e8-998c-bf1755941f13"
-        dummy_subscription = {
-            "callbackUri": "http://aurl.com",
-            "authentication": {
-                "authType": ["BASIC"],
-                "paramsBasic": {
-                    "username": "username",
-                    "password": "password"
-                }
-            },
-            "filter": {
-                "notificationTypes": ["NsLcmOperationOccurrenceNotification"],
-                "operationTypes": [
-                    "INSTANTIATE"
-                ],
-                "operationStates": [
-                    "STARTING"
-                ],
-            }
-        }
         mock_requests.return_value.status_code = 204
         mock_requests.get.return_value.status_code = 204
         mock_uuid4.return_value = temp_uuid
-        response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
+        response = self.client.post("/api/nslcm/v1/subscriptions", data=SUBSCRIPTION_NS_OPERATION_DICT, format='json')
         self.assertEqual(201, response.status_code)
-        self.assertEqual(dummy_subscription["callbackUri"], response.data["callbackUri"])
+        self.assertEqual(SUBSCRIPTION_NS_OPERATION_DICT["callbackUri"], response.data["callbackUri"])
         self.assertEqual(temp_uuid, response.data["id"])
 
     @mock.patch("requests.get")
-    def test_invalid_auth_subscription(self, mock_requests):
-        dummy_subscription = {
-            "callbackUri": "http://aurl.com",
-            "authentication": {
-                "authType": ["OAUTH2_CLIENT_CREDENTIALS"],
-                "paramsBasic": {
-                    "username": "username",
-                    "password": "password"
-                }
-            },
-            "filter": {
-                "notificationTypes": ["NsLcmOperationOccurrenceNotification"],
-                "operationTypes": [
-                    "INSTANTIATE"
-                ],
-                "operationStates": [
-                    "STARTING"
-                ],
-            }
-        }
+    def test_subscription_notification_invalide_auth(self, mock_requests):
         mock_requests.return_value.status_code = 204
         mock_requests.get.return_value.status_code = 204
-
         expected_data = {
             'status': 500,
             'detail': 'Auth type should be BASIC'
         }
-        response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
+        subscription = copy.deepcopy(SUBSCRIPTION_NS_OPERATION_DICT)
+        subscription["authentication"]["authType"] = ["OAUTH2_CLIENT_CREDENTIALS"]
+        response = self.client.post("/api/nslcm/v1/subscriptions", data=subscription, format='json')
         self.assertEqual(500, response.status_code)
         self.assertEqual(expected_data, response.data)
 
     @mock.patch("requests.get")
     def test_invalid_notification_type(self, mock_requests):
-        dummy_subscription = {
-            "callbackUri": "http://aurl.com",
-            "filter": {
-                "notificationTypes": ["NsIdentifierDeletionNotification"],
-                "operationTypes": [
-                    "INSTANTIATE"
-                ],
-                "operationStates": [
-                    "STARTING"
-                ],
-            }
-        }
         mock_requests.return_value.status_code = 204
         mock_requests.get.return_value.status_code = 204
         expected_data = {
@@ -124,7 +77,7 @@ class TestSubscription(TestCase):
             'detail': 'If you are setting operationTypes, notificationTypes must be '
             'NsLcmOperationOccurrenceNotification'
         }
-        response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
+        response = self.client.post("/api/nslcm/v1/subscriptions", data=SUBSCRIPTION_NS_DELETION_DICT, format='json')
         self.assertEqual(500, response.status_code)
         self.assertEqual(expected_data, response.data)
 
@@ -132,26 +85,14 @@ class TestSubscription(TestCase):
     @mock.patch.object(uuid, 'uuid4')
     def test_duplicate_subscription(self, mock_uuid4, mock_requests):
         temp_uuid = str(uuid.uuid4())
-        dummy_subscription = {
-            "callbackUri": "http://aurl.com",
-            "filter": {
-                "notificationTypes": ["NsLcmOperationOccurrenceNotification"],
-                "operationTypes": [
-                    "INSTANTIATE"
-                ],
-                "operationStates": [
-                    "STARTING"
-                ]
-            }
-        }
         mock_requests.return_value.status_code = 204
         mock_requests.get.return_value.status_code = 204
         mock_uuid4.return_value = temp_uuid
-        response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
+        response = self.client.post("/api/nslcm/v1/subscriptions", data=SUBSCRIPTION_NS_OPERATION_DICT, format='json')
         self.assertEqual(201, response.status_code)
-        self.assertEqual(dummy_subscription["callbackUri"], response.data["callbackUri"])
+        self.assertEqual(SUBSCRIPTION_NS_OPERATION_DICT["callbackUri"], response.data["callbackUri"])
         self.assertEqual(temp_uuid, response.data["id"])
-        response = self.client.post("/api/nslcm/v1/subscriptions", data=dummy_subscription, format='json')
+        response = self.client.post("/api/nslcm/v1/subscriptions", data=SUBSCRIPTION_NS_OPERATION_DICT, format='json')
         self.assertEqual(303, response.status_code)
         expected_data = {
             'status': 303,

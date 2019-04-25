@@ -1,0 +1,12 @@
+{
+    "callbackUri": "http://aurl.com",
+    "filter": {
+        "notificationTypes": ["NsIdentifierDeletionNotification"],
+        "operationTypes": [
+            "INSTANTIATE"
+        ],
+        "operationStates": [
+            "STARTING"
+        ]
+    }
+}
