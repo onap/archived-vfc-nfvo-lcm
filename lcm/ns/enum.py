@@ -190,18 +190,6 @@ STOP_TYPE = enum(
     FORCEFUL="FORCEFUL",
     GRACEFUL="GRACEFUL"
 )
-VNF_STATUS = enum(
-    NULL='null',
-    INSTANTIATING="instantiating",
-    INACTIVE='inactive',
-    ACTIVE="active",
-    FAILED="failed",
-    TERMINATING="terminating",
-    SCALING="scaling",
-    OPERATING="operating",
-    UPDATING="updating",
-    HEALING="healing"
-)
 VNF_STATE = enum(
     STARTED="STARTED",
     STOPPED="STOPPED"

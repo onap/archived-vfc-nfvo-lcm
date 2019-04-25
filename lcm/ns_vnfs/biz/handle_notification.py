@@ -19,7 +19,7 @@ import uuid
 from rest_framework import status
 from rest_framework.response import Response
 
-from lcm.ns_vnfs.const import INST_TYPE
+from lcm.ns_vnfs.enum import INST_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import (CPInstModel, NfInstModel, PortInstModel,
                                      VLInstModel, VmInstModel, VNFCInstModel)

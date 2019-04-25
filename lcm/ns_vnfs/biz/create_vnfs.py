@@ -32,7 +32,8 @@ from lcm.pub.utils.share_lock import do_biz_with_share_lock
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
-from lcm.ns_vnfs.const import VNF_STATUS, NFVO_VNF_INST_TIMEOUT_SECOND, INST_TYPE, INST_TYPE_NAME
+from lcm.ns_vnfs.const import NFVO_VNF_INST_TIMEOUT_SECOND
+from lcm.ns_vnfs.enum import VNF_STATUS, INST_TYPE, INST_TYPE_NAME
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
 from lcm.pub.config.config import REG_TO_MSB_REG_PARAM, OOF_BASE_URL, OOF_PASSWD, OOF_USER
 from lcm.pub.config.config import CUST_NAME, CUST_LAT, CUST_LONG

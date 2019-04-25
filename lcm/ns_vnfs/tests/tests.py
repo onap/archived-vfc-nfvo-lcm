@@ -31,7 +31,7 @@ from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
 from lcm.ns_vnfs.biz.subscribe import SubscriptionDeletion
 from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
-from lcm.ns_vnfs.const import VNF_STATUS, INST_TYPE
+from lcm.ns_vnfs.enum import VNF_STATUS, INST_TYPE
 from lcm.ns_vnfs.biz import create_vnfs
 from lcm.ns_vnfs.biz.place_vnfs import PlaceVnfs
 from lcm.pub.msapi import resmgr
