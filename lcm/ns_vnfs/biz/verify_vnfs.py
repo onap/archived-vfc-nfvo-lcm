@@ -18,14 +18,14 @@ import threading
 import traceback
 import time
 
+from lcm.ns_vnfs.const import JOB_ERROR
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.restcall import req_by_msb
 
-logger = logging.getLogger(__name__)
 
-JOB_ERROR = 255
+logger = logging.getLogger(__name__)
 
 
 class VerifyVnfs(threading.Thread):

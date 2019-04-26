@@ -21,6 +21,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.msapi import resmgr
+from lcm.ns_vnfs.const import SCALAR_UNIT_DICT
 
 logger = logging.getLogger(__name__)
 
@@ -163,11 +164,11 @@ class GrantVnf(object):
 
 
 def parse_unit(val, base_unit):
-    recognized_units = ["B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB"]
-    units_rate = [1, 1000, 1024, 1000000, 1048576, 1000000000, 1073741824, 1000000000000, 1099511627776]
-    unit_rate_map = {unit.upper(): rate for unit, rate in zip(recognized_units, units_rate)}
+    # recognized_units = ["B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB"]
+    # units_rate = [1, 1000, 1024, 1000000, 1048576, 1000000000, 1073741824, 1000000000000, 1099511627776]
+    # unit_rate_map = {unit.upper(): rate for unit, rate in zip(recognized_units, units_rate)}
     num_unit = val.strip().split(" ")
     if len(num_unit) != 2:
         return val.strip()
     num, unit = num_unit[0], num_unit[1]
-    return int(num) * unit_rate_map[unit.upper()] / unit_rate_map[base_unit.upper()]
+    return int(num) * SCALAR_UNIT_DICT[unit.upper()] / SCALAR_UNIT_DICT[base_unit.upper()]

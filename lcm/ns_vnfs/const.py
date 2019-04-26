@@ -13,4 +13,16 @@
 # limitations under the License.
 
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+JOB_ERROR = 255
 NFVO_VNF_INST_TIMEOUT_SECOND = 3000
+SCALAR_UNIT_DICT = {
+    "B": 1,
+    "kB": 1000,
+    "KiB": 1024,
+    "MB": 1000000,
+    "MiB": 1048576,
+    "GB": 1000000000,
+    "GiB": 1073741824,
+    "TB": 1000000000000,
+    "TiB": 1099511627776
+}
