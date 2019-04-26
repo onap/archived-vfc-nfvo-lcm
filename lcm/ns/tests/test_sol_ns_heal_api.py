@@ -23,7 +23,8 @@ from rest_framework import status
 from lcm.ns.biz.ns_heal import NSHealService
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_TYPE
 from lcm.ns.tests import VNFD_MODEL_DICT, HEAL_NS_DICT, HEAL_VNF_DICT
 
 

@@ -20,14 +20,13 @@ from threading import Thread
 from lcm.pub.utils.syscomm import fun_name
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
+from lcm.pub.enum import JOB_PROGRESS, JOB_ERROR_CODE
 from lcm.pub.exceptions import NSLCMException
 from lcm.workflows.graphflow.flow.flow import GraphFlow
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
-logger = logging.getLogger(__name__)
 
-RESULT_OK, RESULT_NG = "0", "1"
-JOB_ERROR = 255
+logger = logging.getLogger(__name__)
 
 config = {
     "CreateVnf": {"module": "lcm.ns_vnfs", "class": "CreateVnf"},
@@ -63,7 +62,7 @@ def run_ns_instantiate(input_data, occ_id):
     logger.debug("Enter %s, input_data is %s", fun_name(), input_data)
     ns_inst_id = ignore_case_get(input_data, "nsInstanceId")
     job_id = ignore_case_get(input_data, "jobId")
-    update_job(job_id, 10, "true", "Start to prepare the NS instantiate workflow parameter")
+    update_job(job_id, 10, JOB_ERROR_CODE.NO_ERROR, "Start to prepare the NS instantiate workflow parameter")
     deploy_graph = build_deploy_graph(input_data)
     TaskSet = build_TaskSet(input_data)
     ns_instantiate_ok = False
@@ -77,19 +76,19 @@ def run_ns_instantiate(input_data, occ_id):
         gf.task_manager.wait_tasks_done(gf.sort_nodes)
         if gf.task_manager.is_all_task_finished():
             logger.debug("NS is instantiated!")
-            update_job(job_id, 90, "true", "Start to post deal")
+            update_job(job_id, 90, JOB_ERROR_CODE.NO_ERROR, "Start to post deal")
             post_deal(ns_inst_id, "true")
-            update_job(job_id, 100, "true", "Create NS successfully.")
+            update_job(job_id, JOB_PROGRESS.FINISHED, JOB_ERROR_CODE.NO_ERROR, "Create NS successfully.")
             NsLcmOpOcc.update(occ_id, "COMPLETED")
             ns_instantiate_ok = True
     except NSLCMException as e:
         logger.error("Failded to Create NS: %s", e.message)
-        update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        update_job(job_id, JOB_PROGRESS.ERROR, JOB_ERROR_CODE.ERROR, "Failded to Create NS.")
         NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
         post_deal(ns_inst_id, "false")
     except Exception as e:
         logger.error(traceback.format_exc())
-        update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        update_job(job_id, JOB_PROGRESS.ERROR, JOB_ERROR_CODE.ERROR, "Failded to Create NS.")
         NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
         post_deal(ns_inst_id, "false")
     return ns_instantiate_ok

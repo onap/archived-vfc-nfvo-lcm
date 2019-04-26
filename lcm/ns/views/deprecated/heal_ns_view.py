@@ -22,7 +22,8 @@ from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.serializers.deprecated.ns_serializers import _HealNsReqSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_TYPE
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,9 @@ class NSHealView(APIView):
 
             logger.debug("Leave HealNSView::post ret=%s", resp_serializer.data)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+        except NSLCMException as e:
+            logger.error("Exception in HealNSView: %s", e.message)
+            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             logger.error("Exception in HealNSView: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

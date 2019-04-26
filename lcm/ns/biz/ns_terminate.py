@@ -26,8 +26,7 @@ from lcm.pub.utils import restcall
 from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.database.models import PNFInstModel
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
-
-JOB_ERROR = 255
+from lcm.pub.enum import JOB_PROGRESS
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,7 @@ class TerminateNsService(threading.Thread):
     def run(self):
         try:
             if not NSInstModel.objects.filter(id=self.ns_inst_id):
-                JobUtil.add_job_status(self.job_id, 100, "Need not terminate.", '')
+                JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, "Need not terminate.", '')
                 NsLcmOpOcc.update(self.occ_id, "COMPLETED")
                 return
             JobUtil.add_job_status(self.job_id, 10, "Starting terminate...", '')
@@ -55,15 +54,15 @@ class TerminateNsService(threading.Thread):
             self.cancel_pnf_list()
 
             NSInstModel.objects.filter(id=self.ns_inst_id).update(status='null')
-            JobUtil.add_job_status(self.job_id, 100, "ns terminate ends.", '')
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, "ns terminate ends.", '')
             NsLcmOpOcc.update(self.occ_id, "COMPLETED")
         except NSLCMException as e:
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
         except Exception as e:
             logger.error(e.message)
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, "ns terminate fail.")
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, "ns terminate fail.")
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
 
     def cancel_vl_list(self):
@@ -186,11 +185,11 @@ class TerminateNsService(threading.Thread):
                 logger.debug("%s:%s:%s", progress, new_response_id, job_desc)
                 response_id = new_response_id
                 count = 0
-            if progress == JOB_ERROR:
+            if progress == JOB_PROGRESS.ERROR:
                 job_timeout = False
                 logger.error("Job(%s) failed: %s", vnf_job_id, job_desc)
                 break
-            elif progress == 100:
+            elif progress == JOB_PROGRESS.FINISHED:
                 job_end_normal, job_timeout = True, False
                 logger.info("Job(%s) ended normally", vnf_job_id)
                 break

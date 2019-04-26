@@ -26,7 +26,8 @@ from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import catalog
 from lcm.pub.utils import restcall
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE
 from lcm.ns.tests import SCALING_MAP_DICT, VNFD_MODEL_DICT, SCALE_NS_DICT
 
 

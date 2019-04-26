@@ -23,7 +23,8 @@ from lcm.ns.biz.ns_update import NSUpdateService
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.sol.update_serializers import UpdateNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_TYPE
 
 logger = logging.getLogger(__name__)
 

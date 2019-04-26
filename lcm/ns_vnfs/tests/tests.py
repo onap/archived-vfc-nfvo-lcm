@@ -21,8 +21,8 @@ from rest_framework import status
 from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel, OOFDataModel, SubscriptionModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
-from lcm.pub.utils.jobutil import JOB_MODEL_STATUS
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs

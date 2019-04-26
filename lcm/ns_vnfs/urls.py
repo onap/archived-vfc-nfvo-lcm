@@ -31,11 +31,8 @@ urlpatterns = [
     url(r'^api/nslcm/v1/vnfms/(?P<vnfmid>[0-9a-zA-Z_-]+)', NfVnfmInfoView.as_view()),
     # url(r'^api/nslcm/v1/vims/(?P<vimid>[0-9a-zA-Z_-]+)', NfVimInfoView.as_view()),
     url(r'^api/nslcm/v1/vims/(?P<cloudowner>[0-9a-zA-Z_-]+)/(?P<cloudregionid>[0-9a-zA-Z_-]+)', NfVimInfoView.as_view()),
-
-    # move form v2
     url(r'^api/nslcm/v2/grants$', VnfGrantView.as_view()),
-    url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$',
-        VnfNotifyView.as_view()),
+    url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$', VnfNotifyView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

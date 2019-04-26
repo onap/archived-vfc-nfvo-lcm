@@ -21,7 +21,8 @@ from lcm.ns.biz.scaleaspect import get_scale_vnf_data_info_list
 from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_MODEL_STATUS, JOB_PROGRESS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
@@ -44,12 +45,12 @@ class NSManualScaleService(threading.Thread):
         try:
             self.do_biz()
         except NSLCMException as e:
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
         except Exception as e:
             logger.error(e.message)
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, 'ns scale fail')
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, 'ns scale fail')
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
         finally:
             self.update_ns_status(NS_INST_STATUS.ACTIVE)
@@ -59,7 +60,7 @@ class NSManualScaleService(threading.Thread):
         self.update_ns_status(NS_INST_STATUS.SCALING)
         self.check_and_set_params()
         self.do_vnfs_scale()
-        self.update_job(100, desc='ns scale success')
+        self.update_job(JOB_PROGRESS.FINISHED, desc='ns scale success')
         NsLcmOpOcc.update(self.occ_id, "COMPLETED")
 
     def check_and_set_params(self):
@@ -118,9 +119,9 @@ class NSManualScaleService(threading.Thread):
             job_result = JobModel.objects.get(jobid=sub_job_id)
             time.sleep(query_interval)
             end_time = datetime.datetime.now()
-            if job_result.progress == 100:
+            if job_result.progress == JOB_PROGRESS.FINISHED:
                 return JOB_MODEL_STATUS.FINISHED
-            if job_result.progress > 100:
+            if job_result.progress > JOB_PROGRESS.FINISHED:
                 return JOB_MODEL_STATUS.ERROR
         return JOB_MODEL_STATUS.TIMEOUT
 

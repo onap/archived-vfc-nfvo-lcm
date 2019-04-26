@@ -14,40 +14,46 @@
 
 import json
 import logging
+from threading import Thread
 import traceback
 import uuid
-from threading import Thread
 
 from lcm.ns.enum import OWNER_TYPE
+from lcm.ns_vnfs.const import NFVO_VNF_INST_TIMEOUT_SECOND
+from lcm.ns_vnfs.biz.subscribe import SubscriptionCreation
+from lcm.ns_vnfs.biz.wait_job import wait_job_finish
+from lcm.ns_vnfs.enum import VNF_STATUS, INST_TYPE, INST_TYPE_NAME
 from lcm.pub.config.config import REPORT_TO_AAI
+from lcm.pub.config.config import REG_TO_MSB_REG_PARAM, OOF_BASE_URL, OOF_PASSWD, OOF_USER
+from lcm.pub.config.config import CUST_NAME, CUST_LAT, CUST_LONG
 from lcm.pub.database.models import NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel, OOFDataModel
+from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_PROGRESS, JOB_ERROR_CODE
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_vnf_aai
 from lcm.pub.msapi.extsys import get_vnfm_by_id
 from lcm.pub.msapi.resmgr import create_vnf, create_vnf_creation_info
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.msapi.vnfmdriver import send_nf_init_request
-from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil, JOB_TYPE
+from lcm.pub.utils import restcall
+from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.share_lock import do_biz_with_share_lock
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.utils import restcall
-from lcm.ns_vnfs.const import NFVO_VNF_INST_TIMEOUT_SECOND
-from lcm.ns_vnfs.enum import VNF_STATUS, INST_TYPE, INST_TYPE_NAME
-from lcm.ns_vnfs.biz.wait_job import wait_job_finish
-from lcm.pub.config.config import REG_TO_MSB_REG_PARAM, OOF_BASE_URL, OOF_PASSWD, OOF_USER
-from lcm.pub.config.config import CUST_NAME, CUST_LAT, CUST_LONG
-from lcm.ns_vnfs.biz.subscribe import SubscriptionCreation
+
 
 logger = logging.getLogger(__name__)
 
 
 def prepare_create_params():
     nf_inst_id = str(uuid.uuid4())
-    NfInstModel(nfinstid=nf_inst_id, status=VNF_STATUS.INSTANTIATING, create_time=now_time(),
-                lastuptime=now_time()).save()
+    NfInstModel(
+        nfinstid=nf_inst_id,
+        status=VNF_STATUS.INSTANTIATING,
+        create_time=now_time(),
+        lastuptime=now_time()
+    ).save()
     job_id = JobUtil.create_job(INST_TYPE_NAME.VNF, JOB_TYPE.CREATE_VNF, nf_inst_id)
-    JobUtil.add_job_status(job_id, 0, 'create vnf record in database.', 0)
+    JobUtil.add_job_status(job_id, JOB_PROGRESS.STARTED, 'create vnf record in database.', JOB_ERROR_CODE.NO_ERROR)
     return nf_inst_id, job_id
 
 
@@ -88,7 +94,7 @@ class CreateVnfs(Thread):
             self.subscribe()
             self.write_vnf_creation_info()
             self.save_info_to_db()
-            JobUtil.add_job_status(self.job_id, 100, 'vnf instantiation success', 0)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, 'vnf instantiation success', JOB_ERROR_CODE.NO_ERROR)
         except NSLCMException as e:
             self.vnf_inst_failed_handle(e.message)
         except Exception:
@@ -111,8 +117,7 @@ class CreateVnfs(Thread):
     def check_nf_name_exist(self):
         is_exist = NfInstModel.objects.filter(nf_name=self.vnf_inst_name).exists()
         if is_exist:
-            logger.error('The name of NF instance already exists.')
-            raise NSLCMException('The name of NF instance already exists.')
+            raise NSLCMException('The name of VNF instance already exists.')
 
     def get_vnfd_id(self):
         if self.vnfd_id:
@@ -135,7 +140,6 @@ class CreateVnfs(Thread):
                 self.vnf_inst_name = self.vnf_inst_name[:30]
                 self.vnf_inst_name = self.vnf_inst_name.replace("-", "_")
                 return
-        logger.error('Can not found vnf in nsd model')
         raise NSLCMException('Can not found vnf in nsd model')
 
     def check_nf_package_valid(self):
@@ -321,9 +325,15 @@ class CreateVnfs(Thread):
         req_body = self.build_homing_request()
         base_url = OOF_BASE_URL
         resources = "/api/oof/v1/placement"
-        resp = restcall.call_req(base_url=base_url, user=OOF_USER, passwd=OOF_PASSWD,
-                                 auth_type=restcall.rest_oneway_auth, resource=resources,
-                                 method="POST", content=json.dumps(req_body), additional_headers="")
+        resp = restcall.call_req(
+            base_url=base_url,
+            user=OOF_USER,
+            passwd=OOF_PASSWD,
+            auth_type=restcall.rest_oneway_auth,
+            resource=resources,
+            method="POST",
+            content=json.dumps(req_body),
+            additional_headers="")
         resp_body = resp[-2]
         resp_status = resp[-1]
         if resp_body:
@@ -332,8 +342,10 @@ class CreateVnfs(Thread):
             logger.warn("Missing OOF sync response")
         logger.debug(("OOF sync response code is %s") % resp_status)
         if str(resp_status) != '202' or resp[0] != 0:
-            OOFDataModel.objects.filter(request_id=req_body["requestInfo"]["requestId"],
-                                        transaction_id=req_body["requestInfo"]["transactionId"]).update(
+            OOFDataModel.objects.filter(
+                request_id=req_body["requestInfo"]["requestId"],
+                transaction_id=req_body["requestInfo"]["transactionId"]
+            ).update(
                 request_status="failed",
                 vim_id="none",
                 cloud_owner="none",
@@ -368,15 +380,15 @@ class CreateVnfs(Thread):
         create_vnf(data)
 
     def wait_vnfm_job_finish(self):
-        ret = wait_job_finish(vnfm_id=self.vnfm_inst_id,
-                              vnfo_job_id=self.job_id,
-                              vnfm_job_id=self.vnfm_job_id,
-                              progress_range=[10, 90],
-                              timeout=NFVO_VNF_INST_TIMEOUT_SECOND)
+        ret = wait_job_finish(
+            vnfm_id=self.vnfm_inst_id,
+            vnfo_job_id=self.job_id,
+            vnfm_job_id=self.vnfm_job_id,
+            progress_range=[10, 90],
+            timeout=NFVO_VNF_INST_TIMEOUT_SECOND)
 
         if ret != JOB_MODEL_STATUS.FINISHED:
-            logger.error('VNF instantiation failed on VNFM side. ret=[%s]', ret)
-            raise NSLCMException('VNF instantiation failed on VNFM side.')
+            raise NSLCMException('VNF instantiation failed from VNFM. The job status is %s' % ret)
 
     def subscribe(self):
         data = {
@@ -392,8 +404,8 @@ class CreateVnfs(Thread):
             'nf_inst_id': self.nf_inst_id,
             'ns_inst_id': self.ns_inst_id,
             'vnfm_inst_id': self.vnfm_inst_id,
-            'vms': [{'vmId': vm_inst_info.resouceid, 'vmName': vm_inst_info.vmname, 'vmStatus': 'ACTIVE'} for
-                    vm_inst_info in vm_inst_infos]}
+            'vms': [{'vmId': vm_inst_info.resouceid, 'vmName': vm_inst_info.vmname, 'vmStatus': 'ACTIVE'} for vm_inst_info in vm_inst_infos]
+        }
         create_vnf_creation_info(data)
         logger.debug("write_vnf_creation_info end")
 
@@ -405,8 +417,7 @@ class CreateVnfs(Thread):
 
     def vnf_inst_failed_handle(self, error_msg):
         logger.error('VNF instantiation failed, detail message: %s' % error_msg)
-        NfInstModel.objects.filter(nfinstid=self.nf_inst_id).update(status=VNF_STATUS.FAILED,
-                                                                    lastuptime=now_time())
+        NfInstModel.objects.filter(nfinstid=self.nf_inst_id).update(status=VNF_STATUS.FAILED, lastuptime=now_time())
         JobUtil.add_job_status(self.job_id, 255, 'VNF instantiation failed, detail message: %s' % error_msg, 0)
 
     def save_vnf_inst_id_in_vnffg(self):
@@ -416,7 +427,6 @@ class CreateVnfs(Thread):
                 continue
             vnffg_inst_infos = VNFFGInstModel.objects.filter(vnffgdid=vnffg['vnffg_Id'], nsinstid=self.ns_inst_id)
             if not vnffg_inst_infos:
-                logger.error('Vnffg instance not exist.')
                 raise NSLCMException('Vnffg instance not exist.')
             vnf_list = vnffg_inst_infos[0].vnflist
             vnffg_inst_infos.update(vnf_list=vnf_list + ',' + self.nf_inst_id if vnf_list else self.nf_inst_id)

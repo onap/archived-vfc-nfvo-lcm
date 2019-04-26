@@ -23,7 +23,6 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.enum import VNF_STATUS
 
 logger = logging.getLogger(__name__)
-SCALE_TYPE = ("SCALE_NS", "SCALE_VNF")
 
 scale_vnf_data_mapping = {
     "vnfInstanceId": "",

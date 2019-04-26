@@ -17,19 +17,16 @@ import traceback
 import datetime
 import time
 
-from lcm.ns.enum import NS_INST_STATUS
+from lcm.ns.enum import NS_INST_STATUS, OPERATIONAL_STATE, STOP_TYPE
 from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.ns_vnfs.biz.update_vnfs import NFOperateService
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_MODEL_STATUS, JOB_PROGRESS
 from lcm.pub.utils.values import ignore_case_get
-from lcm.pub.utils.enumutil import enum
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 
-JOB_ERROR = 255
 logger = logging.getLogger(__name__)
-OPERATIONAL_STATES = enum(STOPPED='STOPPED', STARTED='STARTED')
-STOP_TYPE = enum(GRACEFUL='GRACEFUL', FORCEFUL='FORCEFUL')
 
 
 class NSUpdateService(threading.Thread):
@@ -47,20 +44,20 @@ class NSUpdateService(threading.Thread):
             self.do_biz()
         except NSLCMException as e:
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
         except Exception as e:
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, 'ns update fail')
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, 'ns update fail')
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
 
     def do_biz(self):
-        self.update_job(1, desc='ns update start')
+        self.update_job(JOB_PROGRESS.STARTED, desc='ns update start')
         self.get_and_check_params()
         self.update_ns_status(NS_INST_STATUS.UPDATING)
         self.do_update()
         self.update_ns_status(NS_INST_STATUS.ACTIVE)
-        self.update_job(100, desc='ns update success')
+        self.update_job(JOB_PROGRESS.FINISHED, desc='ns update success')
         NsLcmOpOcc.update(self.occ_id, "COMPLETED")
 
     def get_and_check_params(self):
@@ -116,7 +113,7 @@ class NSUpdateService(threading.Thread):
                 'ChangeStateTo does not exist or value is incorrect.')
         graceful_stop_timeout = ''
         operational_states = ignore_case_get(change_state_to, 'OperationalStates')
-        if operational_states == OPERATIONAL_STATES.STOPPED:
+        if operational_states == OPERATIONAL_STATE.STOPPED:
             stop_type = ignore_case_get(vnf_data, 'stopType')
             if stop_type == STOP_TYPE.GRACEFUL:
                 graceful_stop_timeout = ignore_case_get(vnf_data, 'gracefulStopTimeout')
@@ -137,9 +134,9 @@ class NSUpdateService(threading.Thread):
             job_result = JobModel.objects.get(jobid=sub_job_id)
             time.sleep(query_interval)
             end_time = datetime.datetime.now()
-            if job_result.progress == 100:
+            if job_result.progress == JOB_PROGRESS.FINISHED:
                 return JOB_MODEL_STATUS.FINISHED
-            elif job_result.progress > 100:
+            elif job_result.progress > JOB_PROGRESS.FINISHED:
                 return JOB_MODEL_STATUS.ERROR
             else:
                 continue

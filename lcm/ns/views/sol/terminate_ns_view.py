@@ -20,7 +20,7 @@ from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.utils.jobutil import JOB_TYPE
+from lcm.pub.enum import JOB_TYPE
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.serializers.sol.terminate_ns_serializers import TerminateNsReqSerializer
 from lcm.pub.exceptions import BadRequestException

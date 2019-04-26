@@ -19,7 +19,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.serializers.sol.scale_ns_serializers import ScaleNsRequestSerializer
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_TYPE
 from lcm.ns.const import NS_OCC_BASE_URI
 from lcm.pub.exceptions import BadRequestException
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
