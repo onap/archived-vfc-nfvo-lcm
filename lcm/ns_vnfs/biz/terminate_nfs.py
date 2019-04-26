@@ -24,7 +24,8 @@ from lcm.pub.msapi import resmgr
 from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai, query_vserver_aai, delete_vserver_aai
 from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.msapi.vnfmdriver import send_nf_terminate_request
-from lcm.pub.utils.jobutil import JOB_MODEL_STATUS, JobUtil
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import NFVO_VNF_INST_TIMEOUT_SECOND
 from lcm.ns_vnfs.enum import VNF_STATUS, INST_TYPE

@@ -20,7 +20,8 @@ from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_TYPE
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns.tests import HEAL_NS_DICT, HEAL_VNF_DICT, VNFD_MODEL_DICT
 
@@ -116,6 +117,7 @@ class TestHealNsViews(TestCase):
         heal_ns_json = HEAL_NS_DICT.copy()
         heal_ns_json["healNsData"]["vnfInstanceId"] = self.nf_inst_id
         response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=heal_ns_json, format='json')
+        print response.data
         self.assertEqual(response.data["error"], "NS Not Found")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)

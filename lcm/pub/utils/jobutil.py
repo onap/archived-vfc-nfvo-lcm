@@ -12,26 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import datetime
+from functools import reduce
 import logging
-import uuid
 import traceback
+import uuid
 
 from lcm.pub.database.models import JobStatusModel, JobModel
+from lcm.pub.enum import JOB_STATUS
 from lcm.pub.utils import idutil
-from functools import reduce
 
 logger = logging.getLogger(__name__)
-
-
-def enum(**enums):
-    return type('Enum', (), enums)
-
-
-JOB_STATUS = enum(PROCESSING=0, FINISH=1)
-JOB_MODEL_STATUS = enum(STARTED='started', PROCESSING='processing', FINISHED='finished', ERROR='error',
-                        TIMEOUT='timeout')
-JOB_TYPE = enum(CREATE_VNF="create vnf", TERMINATE_VNF="terminate vnf", GRANT_VNF="grant vnf", MANUAL_SCALE_VNF="manual scale vnf",
-                HEAL_VNF="heal vnf", TERMINATE_NS="terminate ns", UPDATE_NS="update ns")
 
 
 class JobUtil(object):

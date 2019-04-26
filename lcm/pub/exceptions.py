@@ -11,15 +11,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-class NSLCMException(Exception):
+class BaseException(Exception):
+    def __init__(self, message):
+        super(BaseException, self).__init__(message)
+        logger.error(self.message)
+
+
+class BadRequestException(BaseException):
     pass
 
 
-class BadRequestException(Exception):
+class NSLCMException(BaseException):
     pass
 
 
-class SeeOtherException(Exception):
+class SeeOtherException(BaseException):
     pass

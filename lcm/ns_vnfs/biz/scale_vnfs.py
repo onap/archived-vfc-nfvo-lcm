@@ -19,9 +19,9 @@ import traceback
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_scaling_request
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE, JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_PROGRESS
 from lcm.pub.utils.values import ignore_case_get
-from lcm.ns_vnfs.const import JOB_ERROR
 from lcm.ns_vnfs.enum import VNF_STATUS
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
 
@@ -43,11 +43,11 @@ class NFManualScaleService(threading.Thread):
         try:
             self.do_biz()
         except NSLCMException as e:
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
         except Exception as ex:
             logger.error(ex.message)
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_ERROR, 'VNF scale failed')
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, 'VNF scale failed')
         finally:
             self.update_nf_status()
 

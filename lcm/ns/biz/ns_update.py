@@ -21,7 +21,8 @@ from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.ns_vnfs.biz.update_vnfs import NFOperateService
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.enumutil import enum
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc

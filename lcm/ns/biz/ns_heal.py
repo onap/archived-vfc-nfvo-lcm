@@ -21,7 +21,8 @@ import traceback
 from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import JobModel, NSInstModel, NfInstModel, VNFCInstModel, VmInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_MODEL_STATUS
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_MODEL_STATUS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
@@ -64,7 +65,6 @@ class NSHealService(threading.Thread):
         ns_info = NSInstModel.objects.filter(id=self.ns_instance_id)
         if not ns_info:
             errmsg = 'NS [id=%s] does not exist' % self.ns_instance_id
-            logger.error(errmsg)
             raise NSLCMException(errmsg)
 
         self.heal_ns_data = ignore_case_get(self.request_data, 'healNsData')
@@ -77,7 +77,6 @@ class NSHealService(threading.Thread):
 
         if not self.heal_ns_data and not self.heal_vnf_data:
             errmsg = 'healNsData and healVnfData parameters does not exist or value is incorrect.'
-            logger.error(errmsg)
             raise NSLCMException(errmsg)
 
     def do_heal(self):
@@ -89,7 +88,6 @@ class NSHealService(threading.Thread):
                 self.update_job(90, desc='nf[%s] heal handle end' % vnf_heal_params.get('vnfInstanceId'))
             else:
                 errmsg = 'nf heal failed'
-                logger.error(errmsg)
                 raise NSLCMException(errmsg)
         else:
             ns_heal_params = self.prepare_ns_heal_params(self.heal_ns_data)

@@ -21,8 +21,8 @@ from rest_framework import status
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.database.models import NfInstModel, NSInstModel
 from lcm.pub.utils import restcall
-from lcm.pub.utils.jobutil import JOB_MODEL_STATUS
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
 
 
 class TestTerminateNsViews(TestCase):

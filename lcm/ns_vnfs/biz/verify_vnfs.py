@@ -18,9 +18,9 @@ import threading
 import traceback
 import time
 
-from lcm.ns_vnfs.const import JOB_ERROR
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil, JOB_TYPE
+from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.enum import JOB_TYPE, JOB_PROGRESS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.restcall import req_by_msb
 
@@ -46,10 +46,10 @@ class VerifyVnfs(threading.Thread):
             self.do_func_test()
             self.verify_ok = True
         except NSLCMException as e:
-            self.update_job(JOB_ERROR, e.message)
+            self.update_job(JOB_PROGRESS.ERROR, e.message)
         except:
             logger.error(traceback.format_exc())
-            self.update_job(JOB_ERROR, 'Unknown error in vnf verify.')
+            self.update_job(JOB_PROGRESS.ERROR, 'Unknown error in vnf verify.')
         finally:
             logger.warn("Ignore terminate vnf operation")
             if self.verify_ok:
@@ -119,11 +119,11 @@ class VerifyVnfs(threading.Thread):
         if ret[0] != 0:
             raise NSLCMException("Failed to call term vnf: %s" % ret[1])
         rsp_data = json.JSONDecoder().decode(ret[1])
-        end_progress = 100 if self.verify_ok else JOB_ERROR
-        term_progress = 95 if self.verify_ok else JOB_ERROR
+        end_progress = 100 if self.verify_ok else JOB_PROGRESS.ERROR
+        term_progress = 95 if self.verify_ok else JOB_PROGRESS.ERROR
         if not self.wait_until_job_done(rsp_data["jobId"], term_progress):
             logger.error("Vnf(%s) term failed", self.vnf_inst_id)
-            end_progress = JOB_ERROR
+            end_progress = JOB_PROGRESS.ERROR
         self.update_job(end_progress, "Term vnf end.")
 
     def update_job(self, progress, desc=''):
@@ -152,7 +152,7 @@ class VerifyVnfs(threading.Thread):
                 logger.debug("%s:%s:%s", progress, new_response_id, job_desc)
                 response_id = new_response_id
                 count = 0
-            if progress == JOB_ERROR:
+            if progress == JOB_PROGRESS.ERROR:
                 if 'already onBoarded' in job_desc:
                     logger.warn("%s:%s", job_id, job_desc)
                     job_end_normal, job_timeout = True, False
@@ -193,7 +193,7 @@ class VerifyVnfs(threading.Thread):
                 logger.debug("%s:%s:%s", progress, new_response_id, job_desc)
                 response_id = new_response_id
                 count = 0
-            if progress == JOB_ERROR:
+            if progress == JOB_PROGRESS.ERROR:
                 if 'already onBoarded' in job_desc:
                     logger.warn("%s:%s", job_id, job_desc)
                     job_end_normal, job_timeout = True, False
