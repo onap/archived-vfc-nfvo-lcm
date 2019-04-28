@@ -14,6 +14,10 @@
 import logging
 
 from lcm.pub.utils.jobutil import JobUtil
+from lcm.pub.utils.values import remove_none_key
+from lcm.jobs.api_model import JobQueryResp, JobDescriptor, JobHistory
+from lcm.jobs.serializers import JobQueryRespSerializer
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,20 +31,27 @@ class GetJobInfoService(object):
         logger.debug("[getjob]job_id=%s, response_id=%s", self.job_id, self.response_id)
         jobs = JobUtil.query_job_status(self.job_id, self.response_id)
         if not jobs:
-            return {"jobId": self.job_id}
-        ret = {
-            "jobId": self.job_id,
-            "responseDescriptor": {
-                "status": jobs[0].status,
-                "progress": jobs[0].progress,
-                "statusDescription": jobs[0].descp,
-                "errorCode": jobs[0].errcode,
-                "responseId": jobs[0].indexid,
-                "responseHistoryList": [
-                    {
-                        "status": job.status,
-                        "progress": job.progress,
-                        "statusDescription": job.descp,
-                        "errorCode": job.errcode,
-                        "responseId": job.indexid} for job in jobs[1:]]}}
-        return ret
+            job_query_resp = JobQueryResp(self.job_id)
+            job_query_resp_serializer = JobQueryRespSerializer(job_query_resp)
+            return remove_none_key(job_query_resp_serializer.data)
+        job_query_resp = JobQueryResp(
+            self.job_id,
+            JobDescriptor(
+                jobs[0].status,
+                jobs[0].progress,
+                jobs[0].descp,
+                jobs[0].errcode,
+                jobs[0].indexid,
+                [
+                    JobHistory(
+                        job.status,
+                        job.progress,
+                        job.descp,
+                        job.errcode,
+                        job.indexid
+                    ) for job in jobs[1:]
+                ]
+            )
+        )
+        job_query_resp_serializer = JobQueryRespSerializer(job_query_resp)
+        return remove_none_key(job_query_resp_serializer.data)

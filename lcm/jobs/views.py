@@ -20,11 +20,13 @@ from rest_framework.views import APIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 
+from lcm.pub.enum import JOB_ERROR_CODE
 from lcm.jobs.job_get import GetJobInfoService
 from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.api_model import JobUpdReq, JobUpdResp
 from lcm.jobs.serializers import JobUpdReqSerializer, JobUpdRespSerializer
 from lcm.jobs.serializers import JobQueryRespSerializer
-from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException, NSLCMException
 
 logger = logging.getLogger(__name__)
 
@@ -76,31 +78,27 @@ class JobView(APIView):
 
             req_serializer = JobUpdReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise NSLCMException(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
 
             jobs = JobUtil.query_job_status(job_id)
             if not jobs:
                 raise NSLCMException("Job(%s) does not exist.")
 
-            if jobs[-1].errcode != '255':
-                progress = request.data.get('progress')
-                desc = request.data.get('desc', '%s' % progress)
-                errcode = '0' if request.data.get('errcode') in ('true', 'active') else '255'
+            if jobs[-1].errcode != JOB_ERROR_CODE.ERROR:
+                job_up_req = JobUpdReq()
+                job_up_req.load(request.data)
+                desc = job_up_req.desc
+                errcode = JOB_ERROR_CODE.NO_ERROR if job_up_req.errcode in ('true', 'active') else JOB_ERROR_CODE.ERROR
                 logger.debug("errcode=%s", errcode)
-                JobUtil.add_job_status(job_id, progress, desc, error_code=errcode)
-
-            resp_serializer = JobUpdRespSerializer(data={'result': 'ok'})
-            if not resp_serializer.is_valid():
-                raise NSLCMException(req_serializer.errors)
-
+                JobUtil.add_job_status(job_id, job_up_req.progress, desc, error_code=errcode)
+            job_update_resp = JobUpdResp('ok')
+            resp_serializer = JobUpdRespSerializer(job_update_resp)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+        except NSLCMException as e:
+            job_update_resp = JobUpdResp('error', e.message)
+            resp_serializer = JobUpdRespSerializer(job_update_resp)
+            return Response(data=resp_serializer.data, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            resp_serializer = JobUpdRespSerializer(data={
-                'result': 'error',
-                'msg': e.message})
-            if not resp_serializer.is_valid():
-                logger.error(resp_serializer.errors)
-                return Response(data={
-                    'result': 'error',
-                    'msg': resp_serializer.errors}, status=status.HTTP_202_ACCEPTED)
-            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+            job_update_resp = JobUpdResp('error', e.message)
+            resp_serializer = JobUpdRespSerializer(job_update_resp)
+            return Response(data=resp_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

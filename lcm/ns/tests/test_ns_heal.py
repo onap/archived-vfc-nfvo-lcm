@@ -117,7 +117,6 @@ class TestHealNsViews(TestCase):
         heal_ns_json = HEAL_NS_DICT.copy()
         heal_ns_json["healNsData"]["vnfInstanceId"] = self.nf_inst_id
         response = self.client.post("/api/nslcm/v1/ns/%s/heal" % ns_inst_id, data=heal_ns_json, format='json')
-        print response.data
         self.assertEqual(response.data["error"], "NS Not Found")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
