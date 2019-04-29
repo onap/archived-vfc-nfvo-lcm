@@ -13,12 +13,14 @@
 # limitations under the License.
 
 from django.conf.urls import include, url
+from django.contrib import admin
 
 from lcm.pub.config.config import DEPLOY_WORKFLOW_WHEN_START
 from lcm.pub.config.config import REG_TO_MSB_WHEN_START, REG_TO_MSB_REG_URL, REG_TO_MSB_REG_PARAM
 
 
 urlpatterns = [
+    url(r'^api/nslcm/v1/admin', admin.site.urls),
     url(r'^', include('lcm.samples.urls')),
     url(r'^', include('lcm.ns_vnfs.urls')),
     url(r'^', include('lcm.ns_pnfs.urls')),
