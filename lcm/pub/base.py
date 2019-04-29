@@ -1,4 +1,4 @@
-# Copyright 2016 ZTE Corporation.
+# Copyright 2019 ZTE Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,8 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-from lcm.pub.utils import fileutil
 
-cur_path = os.path.dirname(os.path.abspath(__file__))
-UPDATE_JOB_DICT = fileutil.read_json_file(cur_path + '/update_job.json')
+class ApiModelBase(object):
+    def to_dict(self):
+        r_dict = to_dict(self)
+        return r_dict
+
+
+def to_dict(obj, cls=ApiModelBase):
+    r_dict = {}
+    for k, v in obj.__dict__.iteritems():
+        if isinstance(v, cls):
+            r_dict[k] = to_dict(v)
+        elif isinstance(v, list):
+            r_dict[k] = [to_dict(obj) for obj in v]
+        else:
+            r_dict[k] = v
+    return r_dict

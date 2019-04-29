@@ -16,7 +16,6 @@ import logging
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import remove_none_key
 from lcm.jobs.api_model import JobQueryResp, JobDescriptor, JobHistory
-from lcm.jobs.serializers import JobQueryRespSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -32,8 +31,7 @@ class GetJobInfoService(object):
         jobs = JobUtil.query_job_status(self.job_id, self.response_id)
         if not jobs:
             job_query_resp = JobQueryResp(self.job_id)
-            job_query_resp_serializer = JobQueryRespSerializer(job_query_resp)
-            return remove_none_key(job_query_resp_serializer.data)
+            return remove_none_key(job_query_resp.to_dict())
         job_query_resp = JobQueryResp(
             self.job_id,
             JobDescriptor(
@@ -53,5 +51,4 @@ class GetJobInfoService(object):
                 ]
             )
         )
-        job_query_resp_serializer = JobQueryRespSerializer(job_query_resp)
-        return remove_none_key(job_query_resp_serializer.data)
+        return remove_none_key(job_query_resp.to_dict())

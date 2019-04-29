@@ -16,6 +16,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 from lcm.pub.database.models import JobModel, JobStatusModel
+from lcm.jobs.tests import UPDATE_JOB_DICT
 
 
 class JobsViewTest(TestCase):
@@ -59,3 +60,9 @@ class JobsViewTest(TestCase):
         self.assertIn('responseDescriptor', response.data)
         self.assertEqual(100, response.data['responseDescriptor']['progress'])
         self.assertEqual(1, len(response.data['responseDescriptor']['responseHistoryList']))
+
+    def test_up_job(self):
+        JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
+        JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst', errcode="0").save()
+        response = self.client.post("/api/nslcm/v1/jobs/%s" % self.job_id, format='json', data=UPDATE_JOB_DICT)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
