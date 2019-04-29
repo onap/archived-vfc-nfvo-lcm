@@ -82,11 +82,10 @@ class JobView(APIView):
 
             jobs = JobUtil.query_job_status(job_id)
             if not jobs:
-                raise NSLCMException("Job(%s) does not exist.")
+                raise NSLCMException("Job(%s) does not exist." % job_id)
 
             if jobs[-1].errcode != JOB_ERROR_CODE.ERROR:
-                job_up_req = JobUpdReq()
-                job_up_req.load(request.data)
+                job_up_req = JobUpdReq(**request.data)
                 desc = job_up_req.desc
                 errcode = JOB_ERROR_CODE.NO_ERROR if job_up_req.errcode in ('true', 'active') else JOB_ERROR_CODE.ERROR
                 logger.debug("errcode=%s", errcode)
