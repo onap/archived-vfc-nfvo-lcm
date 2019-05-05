@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from lcm.pub.base import ApiModelBase
 
-class JobHistory(object):
+
+class JobHistory(ApiModelBase):
     def __init__(self, status="", progress="", statusDescription="", errorCode="", responseId=""):
         self.status = status
         self.progress = progress
@@ -22,39 +24,30 @@ class JobHistory(object):
         self.responseId = responseId
 
 
-class JobDescriptor(object):
-    def __init__(self, status="", progress=0, statusDescription="", errorCode="", responseId="", responseHistoryList=None):
-        self.status = status
-        self.progress = progress
-        self.statusDescription = statusDescription
-        self.errorCode = errorCode
-        self.responseId = responseId
-        self.responseHistoryList = responseHistoryList
+class JobDescriptor(ApiModelBase):
+    def __init__(self, status="", progress=0, statusDescription="", errorCode="", responseId="", responseHistoryList=None, dict_str=None):
+        self.status = dict_str.get("status", "") if dict_str else status
+        self.progress = dict_str.get("progress", 0) if dict_str else progress
+        self.statusDescription = dict_str.get("statusDescription", "") if dict_str else statusDescription
+        self.errorCode = dict_str.get("errorCode", "") if dict_str else errorCode
+        self.responseId = dict_str.get("responseId", "") if dict_str else responseId
+        self.responseHistoryList = [JobHistory(job_history) for job_history in dict_str.get("responseHistoryList", None)] if dict_str else responseHistoryList
 
 
-class JobQueryResp(object):
-    def __init__(self, jobId="", responseDescriptor=None):
-        self.jobId = jobId
-        self.responseDescriptor = responseDescriptor
+class JobQueryResp(ApiModelBase):
+    def __init__(self, jobId="", responseDescriptor=None, dict_str=None):
+        self.jobId = dict_str.get("jobId", "") if dict_str else jobId
+        self.responseDescriptor = JobDescriptor(dict_str=dict_str.get("responseDescriptor", None)) if dict_str else responseDescriptor
 
 
-class JobUpdReq(object):
+class JobUpdReq(ApiModelBase):
     def __init__(self, progress="", desc="", errcode=""):
         self.progress = progress
         self.desc = desc
         self.errcode = errcode
 
-    def load(self, data):
-        self.progress = data["progress"]
-        self.desc = data["desc"]
-        self.errcode = data["errcode"]
 
-
-class JobUpdResp(object):
+class JobUpdResp(ApiModelBase):
     def __init__(self, result="", msg=""):
         self.result = result
         self.msg = msg
-
-    def load(self, data):
-        self.result = data["result"]
-        self.msg = data["msg"]
