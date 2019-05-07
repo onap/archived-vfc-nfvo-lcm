@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ps auxww | grep "manage.py runserver 0.0.0.0:8403" | awk '{print $2}' | xargs kill -9
-ps auxww |grep 'uwsgi --http' |awk '{print $1}' |xargs kill -9
+ps auxww |grep 'uwsgi --http' |awk '{print $2}' |xargs kill -9
