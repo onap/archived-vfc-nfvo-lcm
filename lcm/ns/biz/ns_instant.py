@@ -97,7 +97,10 @@ class InstantNSService(object):
                 if isinstance(vnfm_type_temp, list):
                     vnfm_type = vnfm_type_temp[0]
                 vimid = self.get_vnf_vim_id(vim_id, location_constraints, vnfd_id)
-                vnfm_info = extsys.select_vnfm(vnfm_type=vnfm_type, vim_id=vimid)
+                s_vimid = vimid
+                if isinstance(vimid, dict):
+                    s_vimid = "%s_%s" % (vimid["cloud_owner"], vimid["cloud_regionid"])
+                vnfm_info = extsys.select_vnfm(vnfm_type=vnfm_type, vim_id=s_vimid)
 
                 params_vnf.append({
                     "vnfProfileId": vnf["vnf_id"],
