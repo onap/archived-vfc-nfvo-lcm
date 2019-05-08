@@ -39,6 +39,6 @@ fi
 
 sed -i "s|DB_IP.*|DB_IP = '$MYSQL_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 sed -i "s|DB_PORT.*|DB_PORT = $MYSQL_PORT|" vfc/nfvo/lcm/lcm/pub/config/config.py
-sed -i "s|REDIS_HOST.*|REDIS_HOST = '$MYSQL_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
+sed -i "s|REDIS_HOST.*|REDIS_HOST = '$REDIS_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 
 cat vfc/nfvo/lcm/lcm/pub/config/config.py
