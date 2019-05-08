@@ -22,9 +22,9 @@ fi
 #nohup uwsgi --http :8403 -t 120 --module lcm.wsgi --master --processes 4 &
 
 if [ "${SSL_ENABLED}" = "true" ]; then
-    nohup uwsgi --https :8403,lcm/pub/ssl/cert/foobar.crt,lcm/pub/ssl/cert/foobar.key, -t 120  --module lcm.wsgi --uid=onap --gid=onap --master --processes 4 &
+    nohup uwsgi --https :8403,lcm/pub/ssl/cert/foobar.crt,lcm/pub/ssl/cert/foobar.key, -t 120  --module lcm.wsgi --uid onap --gid onap --master --processes 4 &
 else
-    nohup uwsgi --http :8403 -t 120 --module lcm.wsgi --uid=onap --gid=onap --master --processes 4 &
+    nohup uwsgi --http :8403 -t 120 --module lcm.wsgi --uid onap --gid onap --master --processes 4 &
 fi
 
 
