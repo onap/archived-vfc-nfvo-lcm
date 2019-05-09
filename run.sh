@@ -26,10 +26,3 @@ if [ "${SSL_ENABLED}" = "true" ]; then
 else
     nohup uwsgi --http :8403 -t 120 --module lcm.wsgi --uid onap --gid onap --master --processes 4 &
 fi
-
-
-while [ ! -f $logDir/runtime_nslcm.log ]; do
-    sleep 1
-done
-
-tail -F  $logDir/runtime_nslcm.log
