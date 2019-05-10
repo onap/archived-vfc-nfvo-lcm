@@ -138,7 +138,10 @@ class TerminateVnfs(threading.Thread):
             raise NSLCMException('VNF terminate failed on VNFM side.')
 
     def delete_subscription(self):
-        SubscriptionDeletion(self.vnfm_inst_id, self.vnf_inst_id).do_biz()
+        try:
+            SubscriptionDeletion(self.vnfm_inst_id, self.vnf_inst_id).do_biz()
+        except Exception as e:
+            logger.error("delete_subscription failed: %s", e.message)
 
     def delete_data_from_db(self):
         NfInstModel.objects.filter(nfinstid=self.vnf_inst_id).delete()
