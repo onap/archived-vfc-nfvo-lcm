@@ -36,7 +36,7 @@ from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.msapi.vnfmdriver import send_nf_init_request
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.utils.share_lock import do_biz_with_share_lock
+# from lcm.pub.utils.share_lock import do_biz_with_share_lock
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
 
@@ -414,7 +414,7 @@ class CreateVnfs(Thread):
 
     def save_info_to_db(self):
         logger.debug("save_info_to_db start")
-        do_biz_with_share_lock("set-vnflist-in-vnffginst-%s" % self.ns_inst_id, self.save_vnf_inst_id_in_vnffg)
+        # do_biz_with_share_lock("set-vnflist-in-vnffginst-%s" % self.ns_inst_id, self.save_vnf_inst_id_in_vnffg)
         NfInstModel.objects.filter(nfinstid=self.nf_inst_id).update(status=VNF_STATUS.ACTIVE, lastuptime=now_time())
         logger.debug("save_info_to_db end")
 
