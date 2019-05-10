@@ -352,7 +352,7 @@ class CreateVnfs(Thread):
                 cloud_region_id="none",
                 vdu_info="none"
             )
-            raise Exception("Received a Bad Sync from OOF with response code %s" % resp_status)
+            logger.error("Received a Bad Sync from OOF with response code %s" % resp_status)
         logger.info("Completed Homing request to OOF")
 
     def send_get_vnfm_request_to_extsys(self):
@@ -395,7 +395,10 @@ class CreateVnfs(Thread):
             'vnfInstanceId': self.vnfm_nf_inst_id,
             'vnfmId': self.vnfm_inst_id
         }
-        SubscriptionCreation(data).do_biz()
+        try:
+            SubscriptionCreation(data).do_biz()
+        except Exception as e:
+            logger.error("subscribe failed: %s", e.message)
 
     def write_vnf_creation_info(self):
         logger.debug("write_vnf_creation_info start")
