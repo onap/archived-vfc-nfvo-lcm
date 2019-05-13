@@ -24,3 +24,4 @@ function migrate_database {
 
 create_database
 migrate_database
+
