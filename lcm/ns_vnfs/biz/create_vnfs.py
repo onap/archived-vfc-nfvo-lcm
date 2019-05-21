@@ -329,7 +329,7 @@ class CreateVnfs(Thread):
             base_url=base_url,
             user=OOF_USER,
             passwd=OOF_PASSWD,
-            auth_type=restcall.rest_oneway_auth,
+            auth_type=restcall.rest_no_auth,
             resource=resources,
             method="POST",
             content=json.dumps(req_body),
