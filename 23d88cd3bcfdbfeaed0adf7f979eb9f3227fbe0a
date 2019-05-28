@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bcf9c147_3a9834bc",
+        "filename": "lcm/pub/nfvi/vim/api/multivim/api.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2019-05-28T05:12:08Z",
+      "side": 1,
+      "message": "I think we use vim_id \u003d json.JSONDecoder().decode(vim_id) if isinstance(vim_id, (str, unicode)) else vim_id. if vim_id is string, your code will not work.",
+      "range": {
+        "startLine": 30,
+        "startChar": 4,
+        "endLine": 30,
+        "endChar": 72
+      },
+      "revId": "23d88cd3bcfdbfeaed0adf7f979eb9f3227fbe0a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
