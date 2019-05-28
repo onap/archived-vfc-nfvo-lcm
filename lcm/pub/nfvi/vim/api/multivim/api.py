@@ -20,7 +20,7 @@ from lcm.pub.nfvi.vim import const
 
 logger = logging.getLogger(__name__)
 
-VIM_DRIVER_BASE_URL = "api/multicloud/v0"
+VIM_DRIVER_BASE_URL = "api/multicloud/v1"
 
 
 def call(vim_id, tenant_id, res, method, data=''):
@@ -34,11 +34,11 @@ def call(vim_id, tenant_id, res, method, data=''):
     #     vim_id=vim_id,
     #     tenant_id="/" + tenant_id if tenant_id else "",
     #     res=res)
-    url = "{base_url}/{cloud_owner}/{cloud_regionid}/{tenant_id}/{res}".format(
+    url = "{base_url}/{cloud_owner}/{cloud_regionid}{tenant_id}/{res}".format(
         base_url=VIM_DRIVER_BASE_URL,
         cloud_owner=cloud_owner,
         cloud_regionid=cloud_regionid,
-        tenant_id=tenant_id if tenant_id else "",
+        tenant_id="/" + tenant_id if tenant_id else "",
         res=res)
     ret = req_by_msb(url, method, data)
     if ret[0] > 0:
