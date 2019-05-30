@@ -194,7 +194,7 @@ class GrantRequestSerializer(serializers.Serializer):
     )
     additionalParams = serializers.DictField(
         help_text="Additional parameters passed by the VNFM.",
-        child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
+        # child=serializers.CharField(help_text="KeyValue Pairs", allow_blank=True),
         required=False,
         allow_null=True
     )
