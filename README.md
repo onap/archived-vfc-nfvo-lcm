@@ -15,22 +15,25 @@
 # Micro service of network service life cycle management.
 
 1. Code structure guide
-   ./         nslcm project files
-   ./docker   nslcm docker related scripts
-   ./logs     nslcm log file
-   ./lcm      NS life cycle management
-       ./ns      NS life cycle API& logic
-             ./               API url and const
-             ./views          API related NS views, each operation is a view
-             ./serializers    API related request and response parametes.
-                              Suggest related to sol003/sol005, each datatype is a file.
-                              Common datatypes are put into the common file
-             ./biz            NS LCM mangement busyness logic files
-             ./tests          all the test case. At least each API should have a test case
-        ./ns_sfcs  SFC of NS API & logic
-        ./ns_vls   vl in NS API & logic
-        ./ns_vnfs  vnf in NS API & logic, which is used to integrate with VNFM drivers.
+   ./           nslcm project root dir files, including license, pom, tox, start/stop scripts, log configuration, etc
+   ./docker     nslcm docker related scripts
+   ./docs       nslcm project documents
+   ./lcm        NS life cycle management
        ./jobs      nslcm related job
+       ./ns        NS life cycle API&logic
+             ./               API url, const, enum files
+             ./biz            NS LCM management busyness logic files
+             ./data           NS LCM workflow plans
+             ./serializers    API related request and response definitions.
+             ./tests          Test cases
+             ./views          API related NS views
+       ./ns_pnfs   PNF related API&logic in NS layer
+       ./ns_sfcs   SFC related API&logic in NS layer
+       ./ns_vls    VL related API&logic in NS layer
+       ./ns_vnfs   VNF related API&logic in NS layer
        ./pub       common class, including database model, external micro service API, utils, and config parameters.
        ./samples   project micro service health check
        ./swagger   auto-generate nslcm swagger
+       ./workflows workflow related logic
+   ./logs       nslcm log file
+   ./resources  nslcm resources, including database scripts
