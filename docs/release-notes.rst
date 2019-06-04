@@ -11,6 +11,85 @@ orchestration and close loop automation by working with SO, DCAE and Policy.
 VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
+Version: 1.3.0
+--------------
+
+:Release Date: 2019-06-06
+
+**New Features**
+
+- NS Orchestration supports PNF:1.NSLCM supports NSD, composed of VNF, PNF, and VL;2.Catalog supports PNFD and updates NSD DM
+- Hardware Platform Awareness (HPA) Support:1.integrate with OOF;2.VF-C can parse R2+ TOSCA MODEL which includes HPA feature
+- Standard Alignment:SOL003 Alignment in GVNFM and Catalog
+- Standalone DB Microservice
+
+- Functional Enhancement: 
+1. Upgrade Multicloud API to support consistent identification of cloud region functional requirement 
+2. OOF Integration Optimization.Optimize the methodology for VNF(vdu) placement, add the process for placement with selected candidates(VIM)
+3. Align VNFD SOL2.5.1 and model multi-version support
+
+- Standard Alignment-SOL005 Alignment
+
+- Maturity Enhancement:
+1. Mysql  DB migrate to OOM shared MariaDB Galera Cluster
+2. Configuration inject automatically
+3. Add data persistent storage to avoid data loss due to pod restart
+
+
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.3.2
+ - vfc-nfvo-catalog 1.3.2
+ - vfc-nfvo-resmgr 1.3.0
+ - vfc-nfvo-driver-emsdriver 1.3.0
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.3.3
+ - vfc-nfvo-driver-gvnfm-jujudriver 1.3.1
+ - vfc-nfvo-driver-svnfm-ztedriver 1.3.1
+ - vfc-nfvo-driver-svnfm-huaweidriver 1.3.0
+ - vfc-nfvo-driver-svnfm-nokiav2driver 1.3.1
+ - vfc-nfvo-driver-sfc-ztesfcdriver 1.3.1
+ - vfc-nfvo-multivimproxy 1.3.0
+ - vfc-nfvo-db 1.3.0
+GVNFM
+ - vfc-gvnfm-vnflcm 1.3.2
+ - vfc-gvnfm-vnfmgr 1.3.2
+ - vfc-gvnfm-vnfres 1.3.2
+Workflow
+ - workflow-engine-mgr-service 1.3.0
+ - activiti-extension 1.3.0
+
+**Bug Fixes**
+
+**Known Issues**
+
+ - `VFC-1402 <https://jira.onap.org/browse/VFC-1402>`_ Lost connection to Mariadb server during query in vnflcm.
+ - `VFC-1411 <https://jira.onap.org/browse/VFC-1411>`_ The network can not be deleted in ns terminate.
+
+**Security Notes**
+
+VFC code has been formally scanned during build time using NexusIQ and all Critical
+vulnerabilities have been addressed, items that remain open have been assessed
+for risk and determined to be false positive. The VFC open Critical security
+vulnerabilities and their risk assessment have been documented as part
+of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=51282550>`_.
+
+Quick Links:
+
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
+- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=51282550>`_
+
+**Upgrade Notes**
+	NA
+
+**Deprecation Notes**
+	NA
+
+**Other**
+	NA
+
 Version: 1.2.0
 --------------
 
