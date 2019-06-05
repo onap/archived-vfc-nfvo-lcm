@@ -18,12 +18,8 @@ Version: 1.3.0
 
 **New Features**
 
-- NS Orchestration supports PNF:1.NSLCM supports NSD, composed of VNF, PNF, and VL;2.Catalog supports PNFD and updates NSD DM
-- Hardware Platform Awareness (HPA) Support:1.integrate with OOF;2.VF-C can parse R2+ TOSCA MODEL which includes HPA feature
-- Standard Alignment:SOL003 Alignment in GVNFM and Catalog
-- Standalone DB Microservice
-
 - Functional Enhancement: 
+
 1. Upgrade Multicloud API to support consistent identification of cloud region functional requirement 
 2. OOF Integration Optimization.Optimize the methodology for VNF(vdu) placement, add the process for placement with selected candidates(VIM)
 3. Align VNFD SOL2.5.1 and model multi-version support
@@ -31,6 +27,7 @@ Version: 1.3.0
 - Standard Alignment-SOL005 Alignment
 
 - Maturity Enhancement:
+
 1. Mysql  DB migrate to OOM shared MariaDB Galera Cluster
 2. Configuration inject automatically
 3. Add data persistent storage to avoid data loss due to pod restart
