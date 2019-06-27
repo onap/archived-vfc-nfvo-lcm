@@ -20,9 +20,11 @@ from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.enum import JOB_TYPE
-from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializer, _NsOperateJobSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +34,7 @@ class NSTerminateView(APIView):
         request_body=_TerminateNsReqSerializer(),
         responses={
             status.HTTP_202_ACCEPTED: _NsOperateJobSerializer(),
+            status.HTTP_400_BAD_REQUEST: "Bad Request",
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -40,7 +43,7 @@ class NSTerminateView(APIView):
             logger.debug("Enter TerminateNSView::post %s", request.data)
             req_serializer = _TerminateNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise NSLCMException(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
 
             job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
             TerminateNsService(ns_instance_id, job_id, request.data).start()
@@ -50,6 +53,8 @@ class NSTerminateView(APIView):
                 raise NSLCMException(resp_serializer.errors)
             logger.debug("Leave TerminateNSView::post ret=%s", resp_serializer.data)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+        except BadRequestException as e:
+            return Response(data={'error': e.message}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error("Exception in CreateNS: %s", e.message)
             return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
