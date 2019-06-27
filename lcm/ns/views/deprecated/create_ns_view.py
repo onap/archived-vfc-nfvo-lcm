@@ -21,8 +21,11 @@ from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.ns.biz.ns_get import GetNSInfoService
-from lcm.ns.serializers.deprecated.ns_serializers import _CreateNsReqSerializer, _CreateNsRespSerializer, _QueryNsRespSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _CreateNsReqSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _CreateNsRespSerializer
+from lcm.ns.serializers.deprecated.ns_serializers import _QueryNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.values import ignore_case_get
 
 logger = logging.getLogger(__name__)
@@ -54,6 +57,7 @@ class CreateNSView(APIView):
         request_body=_CreateNsReqSerializer(),
         responses={
             status.HTTP_201_CREATED: _CreateNsRespSerializer(),
+            status.HTTP_400_BAD_REQUEST: "Bad Request",
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
@@ -62,7 +66,7 @@ class CreateNSView(APIView):
         try:
             req_serializer = _CreateNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise NSLCMException(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
 
             if ignore_case_get(request.data, 'test') == "test":
                 return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
@@ -84,6 +88,8 @@ class CreateNSView(APIView):
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
             return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
+        except BadRequestException as e:
+            return Response(data={'error': e.message}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("Exception in CreateNS: %s", e.message)
