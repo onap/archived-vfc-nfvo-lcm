@@ -18,6 +18,7 @@ import traceback
 import uuid
 
 from lcm.pub.database.models import JobStatusModel, JobModel
+from lcm.pub.enum import JOB_PROGRESS
 from lcm.pub.enum import JOB_STATUS
 from lcm.pub.utils import idutil
 
@@ -65,7 +66,7 @@ class JobUtil(object):
         job.status = JOB_STATUS.PROCESSING
         job.user = user
         job.starttime = datetime.datetime.now().strftime('%Y-%m-%d %X')
-        job.progress = 0
+        job.progress = JOB_PROGRESS.STARTED
         job.resname = res_name
         logger.debug("create a new job, jobid=%s, jobtype=%s, jobaction=%s, resid=%s, status=%d" %
                      (job.jobid, job.jobtype, job.jobaction, job.resid, job.status))
