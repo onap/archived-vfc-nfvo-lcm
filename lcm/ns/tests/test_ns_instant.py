@@ -35,9 +35,18 @@ class TestNsInstant(TestCase):
         NSInstModel.objects.filter().delete()
         self.url = "/api/nslcm/v1/ns/%s/instantiate" % "2"
         NSInstModel(id="2", nspackage_id="7", nsd_id="2", status="active").save()
+        self._mock_get_auto_id()
 
     def tearDown(self):
         pass
+
+    def _mock_get_auto_id(self):
+        fake_auto_id = mock.Mock()
+        fake_auto_id.return_value = 1
+        patcher = mock.patch(
+            'lcm.pub.utils.idutil.get_auto_id',
+            fake_auto_id)
+        patcher.start()
 
     @mock.patch.object(restcall, 'call_req')
     @mock.patch('lcm.pub.msapi.sdc_run_catalog.parse_nsd', MagicMock(return_value=json.dumps({"model": json.dumps(NSD_MODEL_DICT)})))
