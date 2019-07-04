@@ -66,7 +66,7 @@ class InstantNSService(object):
 
             input_parameters = []
             if 'additionalParamForNs' in self.req_data:
-                for key, val in self.req_data['additionalParamForNs'].items():
+                for key, val in list(self.req_data['additionalParamForNs'].items()):
                     input_parameters.append({"key": key, "value": val})
 
                 if 'location' in self.req_data['additionalParamForNs']:
@@ -149,7 +149,7 @@ class InstantNSService(object):
                                    template_name=service_tpl['templateName'],
                                    template_id=service_tpl['serviceTemplateId']).save()
 
-                for key, val in self.req_data['additionalParamForNs'].items():
+                for key, val in list(self.req_data['additionalParamForNs'].items()):
                     InputParamMappingModel(service_id=self.ns_inst_id,
                                            input_key=key,
                                            input_value=val).save()
@@ -174,10 +174,10 @@ class InstantNSService(object):
 
         except Exception as e:
             logger.error(traceback.format_exc())
-            logger.error("ns-instant(%s) workflow error:%s" % (self.ns_inst_id, e.message))
-            NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
+            logger.error("ns-instant(%s) workflow error:%s" % (self.ns_inst_id, e.args[0]))
+            NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
             JobUtil.add_job_status(job_id, 255, 'NS instantiation failed')
-            return dict(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return dict(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def start_wso2_workflow(self, job_id, ns_inst, plan_input, occ_id):
         # todo occ_id

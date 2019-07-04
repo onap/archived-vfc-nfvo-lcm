@@ -16,7 +16,7 @@ import os
 import sys
 import platform
 
-import redisco
+import lcm.pub.redisco
 
 from lcm.pub.config.config import REDIS_HOST, REDIS_PORT, REDIS_PASSWD
 from lcm.pub.config.config import DB_NAME, DB_IP, DB_USER, DB_PASSWD, DB_PORT
@@ -51,9 +51,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'lcm.pub.database',
     'lcm.swagger',
+    'django_nose',
     'drf_yasg'
 ]
-
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -76,13 +77,13 @@ SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'lcm.swagger.urls.swagger_info'
 }
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'lcm.middleware.LogContextMiddleware',
@@ -122,7 +123,7 @@ DATABASES = {
 #    'NAME': 'D:/etsi-plug-test/db/nfvo',
 # }
 
-redisco.connection_setup(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWD, db=0)
+lcm.pub.redisco.connection_setup(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWD, db=0)
 # CACHE_BACKEND = 'redis_cache.cache://%s@%s:%s' % (REDIS_PASSWD, REDIS_HOST, REDIS_PORT)
 
 TIME_ZONE = 'UTC'

@@ -32,7 +32,7 @@ class GrantVnf(object):
 
     def exec_grant(self):
         logger.debug("grant data from vnfm:%s", self.data)
-        if isinstance(self.data, (unicode, str)):
+        if isinstance(self.data, str):
             self.data = json.JSONDecoder().decode(self.data)
         has_res_tpl = False
         grant_type = None

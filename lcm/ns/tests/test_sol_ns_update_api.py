@@ -27,10 +27,10 @@ class TestUpdateNsApi(TestCase):
 
     def test_method_not_allowed(self):
         response = self.client.put(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.patch(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.delete(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.get(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)

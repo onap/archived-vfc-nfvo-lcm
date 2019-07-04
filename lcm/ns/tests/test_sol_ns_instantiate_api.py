@@ -66,7 +66,7 @@ class TestInstantiateNsApi(TestCase):
     def test_ns_instantiate_normal(self, mock_do_biz):
         mock_do_biz.return_value = {'occ_id': "1"}
         response = self.client.post(self.url % self.nsInstanceId, data=self.req_data, format='json')
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
     def test_ns_instantiate_when_fail_to_parse_nsd(self, mock_call_req):
@@ -93,13 +93,13 @@ class TestInstantiateNsApi(TestCase):
 
     def test_method_not_allowed(self):
         response = self.client.put(self.url % self.nsInstanceId, data=self.req_data, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.patch(self.url % self.nsInstanceId, data=self.req_data, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.delete(self.url % self.nsInstanceId, data=self.req_data, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.get(self.url % self.nsInstanceId, data=self.req_data, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
     @mock.patch('lcm.pub.msapi.sdc_run_catalog.parse_nsd', MagicMock(return_value=json.dumps({"model": json.dumps(VCPE_NS_MODEL_DICT)})))

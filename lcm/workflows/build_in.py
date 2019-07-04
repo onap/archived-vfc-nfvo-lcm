@@ -88,14 +88,14 @@ def run_ns_instantiate(input_data, occ_id):
         NsLcmOpOcc.update(occ_id, "COMPLETED")
         ns_instantiate_ok = True
     except NSLCMException as e:
-        logger.error("Failded to Create NS: %s", e.message)
+        logger.error("Failded to Create NS: %s", e.args[0])
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
-        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
         post_deal(ns_inst_id, "false")
     except Exception as e:
         logger.error(traceback.format_exc())
         update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
-        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
         post_deal(ns_inst_id, "false")
     finally:
         g_jobs_status.pop(job_id)
@@ -283,7 +283,7 @@ def confirm_sfc_status(sfc_inst_id):
 def create_pnf(pnf_param_json):
     if pnf_param_json and len(pnf_param_json) > 0:
         pnfs = json.JSONDecoder().decode(pnf_param_json)
-        for pnf in pnfs.itervalues():
+        for pnf in list(pnfs.values()):
             uri = "/api/nslcm/v1/pnfs"
             method = "POST"
             content = json.JSONEncoder().encode(pnf["input"]["content"])

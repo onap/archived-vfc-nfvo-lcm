@@ -18,4 +18,4 @@ def enum(**enums):
 
 
 def enum_to_list(e):
-    return [v for k, v in e.__dict__.iteritems() if not k.startswith("_")]
+    return [v for k, v in list(e.__dict__.items()) if not k.startswith("_")]

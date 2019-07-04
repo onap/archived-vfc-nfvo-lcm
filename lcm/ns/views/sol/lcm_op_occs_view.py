@@ -79,7 +79,7 @@ class QueryMultiNsLcmOpOccs(APIView):
             raise NSLCMException(ns_lcm_op_occs_serializer.errors)
 
         logger.debug("QueryMultiNsLcmOpOccs--get::> Remove default fields if exclude_default is specified")
-        if 'exclude_default' in request.query_params.keys():
+        if 'exclude_default' in list(request.query_params.keys()):
             for field in EXCLUDE_DEFAULT:
                 for lcm_op in ns_lcm_op_occs_serializer.data:
                     del lcm_op[field]

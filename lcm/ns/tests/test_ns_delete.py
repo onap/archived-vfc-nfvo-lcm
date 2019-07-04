@@ -38,4 +38,4 @@ class TestNsDelelete(TestCase):
         r2_delete_ns_to_aai = [0, json.JSONEncoder().encode({}), '200']
         mock_call_req.side_effect = [r1_query_ns_to_aai, r2_delete_ns_to_aai]
         response = self.client.delete("/api/nslcm/v1/ns/%s" % self.ns_inst_id)
-        self.failUnlessEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)

@@ -55,7 +55,7 @@ def get_vim_by_id_vim_info(cloudowner, cloudregionid):
 
 def get_vim_by_id(vim_id):
     # cloud_owner, cloud_region = split_vim_to_owner_region(vim_id)
-    vim_id = json.JSONDecoder().decode(vim_id) if isinstance(vim_id, (str, unicode)) else vim_id
+    vim_id = json.JSONDecoder().decode(vim_id) if isinstance(vim_id, str) else vim_id
     cloud_owner = vim_id['cloud_owner']
     cloud_regionid = vim_id['cloud_regionid']
     ret = call_aai("/cloud-infrastructure/cloud-regions/cloud-region/%s/%s?depth=all"

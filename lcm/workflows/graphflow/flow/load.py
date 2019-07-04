@@ -39,7 +39,7 @@ def load_class(imp_module, imp_class):
 
 def load_class_from_config(config):
     class_set = {}
-    for k, v in config.iteritems():
+    for k, v in list(config.items()):
         imp_module = load_module(v["module"])
         cls = load_class(imp_module, v["class"])
         class_set[k] = cls

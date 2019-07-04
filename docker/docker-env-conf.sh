@@ -4,7 +4,7 @@ install_sf(){
 
     apk --no-cache update
     apk --no-cache add bash curl gcc wget mysql-client openssl-dev
-    apk --no-cache add python-dev libffi-dev musl-dev py2-virtualenv
+    apk --no-cache add python36-dev libffi-dev musl-dev py3-virtualenv
     wget -q -O vfc-nfvo-lcm.zip "https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.lcm&a=vfc-nfvo-lcm&v=${pkg_version}-SNAPSHOT&e=zip" && \
     unzip vfc-nfvo-lcm.zip && \
     rm -rf vfc-nfvo-lcm.zip && \
