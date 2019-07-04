@@ -66,7 +66,7 @@ class TestNsInstant(TestCase):
     def test_ns_instantiate_normal(self, mock_do_biz):
         mock_do_biz.return_value = dict(data=JOB_DICT, status=status.HTTP_200_OK)
         resp = self.client.post(self.url, data=INSTANTIATE_NS_DICT, format='json')
-        self.failUnlessEqual(status.HTTP_200_OK, resp.status_code)
+        self.assertEqual(status.HTTP_200_OK, resp.status_code)
         self.assertEqual(JOB_DICT, resp.data)
 
     @mock.patch.object(restcall, 'call_req')

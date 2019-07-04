@@ -63,11 +63,11 @@ class VimAdaptor:
             try:
                 self.authInfo = self.apiImpl.login(connectInfo)
             except VimException as e:
-                self.authInfo = [1, e.message]
-            except Exception as ex:
+                self.authInfo = [1, e.args[0]]
+            except Exception as e:
                 logger.error(traceback.format_exc())
                 logger.error(str(sys.exc_info()))
-                self.authInfo = [1, ex.message if ex.message else str(sys.exc_info())]
+                self.authInfo = [1, e.args[0] if e.args[0] else str(sys.exc_info())]
             except:
                 logger.error(traceback.format_exc())
                 self.authInfo = [1, str(sys.exc_info())]

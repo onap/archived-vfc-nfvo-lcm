@@ -21,7 +21,7 @@ class ApiModelBase(object):
 
 def to_dict(instance, cls=ApiModelBase):
     r_dict = {}
-    for k, v in instance.__dict__.iteritems():
+    for k, v in list(instance.__dict__.items()):
         if isinstance(v, cls):
             r_dict[k] = to_dict(v)
         elif isinstance(v, list):

@@ -39,7 +39,7 @@ class DeleteVls(object):
                 return {"result": 0, "detail": "vl is not exist or has been already deleted"}
             self.ns_inst_id = vl_inst_info[0].ownerid
             # vim_id = vl_inst_info[0].vimid
-            vim_id = json.JSONDecoder().decode(vl_inst_info[0].vimid) if isinstance(vl_inst_info[0].vimid, (str, unicode)) \
+            vim_id = json.JSONDecoder().decode(vl_inst_info[0].vimid) if isinstance(vl_inst_info[0].vimid, str) \
                 else vl_inst_info[0].vimid
             subnetwork_id_list = vl_inst_info[0].relatedsubnetworkid.split(",")
             network_id = vl_inst_info[0].relatednetworkid
@@ -56,7 +56,7 @@ class DeleteVls(object):
             return self.exception_handle(e)
 
     def exception_handle(self, e):
-        detail = "vl delete failed, detail message: %s" % e.message
+        detail = "vl delete failed, detail message: %s" % e.args[0]
         logger.error(detail)
         return {"result": 0, "detail": detail}
 

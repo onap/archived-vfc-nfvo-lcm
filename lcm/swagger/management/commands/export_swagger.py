@@ -33,4 +33,4 @@ class Command(BaseCommand):
         response = self.client.get("/api/nslcm/v1/swagger.json")
         with open(options['name'], 'w') as swagger_file:
             swagger_file.write(json.dumps(response.data))
-        print "swagger api is written to %s" % options['name']
+        print("swagger api is written to %s" % options['name'])

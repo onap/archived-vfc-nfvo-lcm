@@ -54,7 +54,7 @@ class NFHealService(threading.Thread):
             self.update_nf_status(VNF_STATUS.ACTIVE)
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, 'vnf heal success')
         except NSLCMException as e:
-            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.args[0])
         except:
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, 'vnf heal fail')

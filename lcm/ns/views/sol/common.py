@@ -41,25 +41,25 @@ def view_safe_call_with_log(logger):
             try:
                 return func(*args, **kwargs)
             except SeeOtherException as e:
-                logger.error(e.message)
+                logger.error(e.args[0])
                 return make_error_resp(
-                    detail=e.message,
+                    detail=e.args[0],
                     status=status.HTTP_303_SEE_OTHER
                 )
             except BadRequestException as e:
-                logger.error(e.message)
+                logger.error(e.args[0])
                 return make_error_resp(
-                    detail=e.message,
+                    detail=e.args[0],
                     status=status.HTTP_400_BAD_REQUEST
                 )
             except NSLCMException as e:
-                logger.error(e.message)
+                logger.error(e.args[0])
                 return make_error_resp(
-                    detail=e.message,
+                    detail=e.args[0],
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
             except Exception as e:
-                logger.error(e.message)
+                logger.error(e.args[0])
                 logger.error(traceback.format_exc())
                 return make_error_resp(
                     detail='Unexpected exception',

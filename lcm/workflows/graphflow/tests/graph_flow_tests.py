@@ -28,7 +28,7 @@ config = {
 
 class test(object):
     def execute(self, args):
-        print "test args %s" % args
+        print("test args %s" % args)
 
 
 class GraphFlowTest(unittest.TestCase):
@@ -66,7 +66,7 @@ class GraphFlowTest(unittest.TestCase):
         gf.join()
         gf.task_manager.wait_tasks_done(gf.sort_nodes)
         task_set = gf.task_manager.get_all_task()
-        for task in task_set.itervalues():
+        for task in list(task_set.values()):
             self.assertEqual(task.FINISHED, task.status)
 
     def test_async_task(self):
@@ -97,7 +97,7 @@ class GraphFlowTest(unittest.TestCase):
         gf.join()
         gf.task_manager.wait_tasks_done(gf.sort_nodes)
         task_set = gf.task_manager.get_all_task()
-        for task in task_set.itervalues():
+        for task in list(task_set.values()):
             self.assertEqual(task.FINISHED, task.status)
 
     @mock.patch.object(restcall, 'call_req')
@@ -136,5 +136,5 @@ class GraphFlowTest(unittest.TestCase):
         gf.join()
         gf.task_manager.wait_tasks_done(gf.sort_nodes)
         task_set = gf.task_manager.get_all_task()
-        for task in task_set.itervalues():
+        for task in list(task_set.values()):
             self.assertEqual(task.FINISHED, task.status)
