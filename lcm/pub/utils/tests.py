@@ -14,12 +14,12 @@
 
 import unittest
 import mock
-import enumutil
-import fileutil
-import urllib2
-import syscomm
-import timeutil
-import values
+from . import enumutil
+from . import fileutil
+from urllib import request
+from . import syscomm
+from . import timeutil
+from . import values
 
 from lcm.pub.database.models import JobStatusModel, JobModel
 from lcm.pub.utils.jobutil import JobUtil
@@ -51,11 +51,11 @@ class UtilsTest(unittest.TestCase):
         fileutil.make_dirs(dirs)
         fileutil.delete_dirs(dirs)
 
-    @mock.patch.object(urllib2, 'urlopen')
+    @mock.patch.object(request, 'urlopen')
     def test_download_file_from_http(self, mock_urlopen):
         mock_urlopen.return_value = MockReq()
         fileutil.delete_dirs("abc")
-        is_ok, f_name = fileutil.download_file_from_http("1", "abc", "1.txt")
+        is_ok, f_name = fileutil.download_file_from_http("https://git.onap.org/vfc/nfvo/lcm/tree/version.properties", "abc", "1.txt")
         self.assertTrue(is_ok)
         self.assertTrue(f_name.endswith("1.txt"))
         fileutil.delete_dirs("abc")

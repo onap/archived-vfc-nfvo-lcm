@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class BaseException(Exception):
     def __init__(self, message):
         super(BaseException, self).__init__(message)
-        logger.error(self.message)
+        logger.error(self.args[0])
 
 
 class BadRequestException(BaseException):

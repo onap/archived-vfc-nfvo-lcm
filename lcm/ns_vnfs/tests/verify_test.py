@@ -27,4 +27,4 @@ class TestGetVnfViews(TestCase):
 
     def test_verify_vnfs(self):
         response = self.client.post("/api/nslcm/v1/vnfonboarding", data=self.data)
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)

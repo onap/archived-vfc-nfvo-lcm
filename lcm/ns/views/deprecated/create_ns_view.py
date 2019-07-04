@@ -89,8 +89,8 @@ class CreateNSView(APIView):
                 raise NSLCMException(resp_serializer.errors)
             return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
         except BadRequestException as e:
-            return Response(data={'error': e.message}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error(traceback.format_exc())
-            logger.error("Exception in CreateNS: %s", e.message)
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error("Exception in CreateNS: %s", e.args[0])
+            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -43,9 +43,9 @@ class NFManualScaleService(threading.Thread):
         try:
             self.do_biz()
         except NSLCMException as e:
-            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.args[0])
         except Exception as ex:
-            logger.error(ex.message)
+            logger.error(ex.args[0])
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, 'VNF scale failed')
         finally:

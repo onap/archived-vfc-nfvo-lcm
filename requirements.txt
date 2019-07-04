@@ -1,6 +1,6 @@
 # rest framework
-Django==1.11.9
-djangorestframework==3.7.7
+Django==2.1.4
+djangorestframework==3.9.4
 
 # for access MySQL
 PyMySQL==0.9.3
@@ -9,7 +9,7 @@ PyMySQL==0.9.3
 redis==2.10.5
 
 # for access redis cache
-redisco==0.1.4
+# redisco==0.1.4
 django-redis-cache==0.13.1
 
 # for call rest api
@@ -17,7 +17,7 @@ httplib2==0.12.3
 
 # for unit test
 coverage==4.2
-mock==2.0.0
+mock==3.0.5
 unittest_xml_reporting==1.12.0
 
 # for parser
@@ -33,7 +33,7 @@ flex>=6.11.1
 swagger-spec-validator>=2.1.0
 
 # for onap logging
-onappylog>=1.0.6
+onappylog==1.0.9
 
 # uwsgi for parallel processing
-uwsgi
+# uwsgi

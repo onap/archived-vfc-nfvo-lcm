@@ -35,7 +35,7 @@ class GrantVnfs(object):
 
     def send_grant_vnf_to_resMgr(self):
         logger.debug("grant data from vnfm:%s", self.data)
-        if isinstance(self.data, (unicode, str)):
+        if isinstance(self.data, str):
             self.data = json.JSONDecoder().decode(self.data)
         has_res_tpl = False
         grant_type = None

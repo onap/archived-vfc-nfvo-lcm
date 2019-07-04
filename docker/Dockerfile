@@ -1,4 +1,4 @@
-FROM python:2-alpine
+FROM python:3.6-alpine
 
 ARG HTTP_PROXY=${HTTP_PROXY}
 ARG HTTPS_PROXY=${HTTPS_PROXY}

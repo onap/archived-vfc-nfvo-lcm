@@ -13,7 +13,7 @@
 # limitations under the License.
 import mock
 import json
-from test_data import nsd_model
+from .test_data import nsd_model
 from rest_framework import status
 from lcm.pub.utils import restcall
 from lcm.pub.database.models import FPInstModel

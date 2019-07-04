@@ -50,7 +50,7 @@ class TaskManager(object):
     def is_all_task_finished(self, task_key_set=None):
         states = []
         if not task_key_set:
-            task_key_set = self.task_set.keys()
+            task_key_set = list(self.task_set.keys())
         total = len(task_key_set)
         for key in task_key_set:
             if key in self.task_set:
@@ -65,7 +65,7 @@ class TaskManager(object):
     def wait_tasks_done(self, task_key_set=None):
         if task_key_set:
             for key in task_key_set:
-                if key in self.task_set.keys():
+                if key in list(self.task_set.keys()):
                     task = self.task_set[key]
                     logger.debug("current wait task %s, endtime %s, status %s" % (task.key, task.endtime, task.status))
                     while task.endtime >= datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') and task.status in [STARTED, PROCESSING]:
@@ -74,7 +74,7 @@ class TaskManager(object):
                         task.status = ERROR
                     logger.debug("wait task final status %s" % task.status)
         else:
-            for task in self.task_set.itervalues():
+            for task in list(self.task_set.values()):
                 while task.endtime >= datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') and task.status in [STARTED, PROCESSING]:
                     time.sleep(1)
                 if task.status in [STARTED, PROCESSING]:

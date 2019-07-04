@@ -82,7 +82,7 @@ class TestNsManualScale(TestCase):
     @mock.patch.object(NSManualScaleService, 'run')
     def test_ns_manual_scale(self, mock_run):
         response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data=SCALE_NS_DICT, format='json')
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     def test_ns_manual_scale_error_scaletype(self):
         scale_ns_json = SCALE_NS_DICT.copy()
