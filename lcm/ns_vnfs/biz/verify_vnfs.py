@@ -46,7 +46,7 @@ class VerifyVnfs(threading.Thread):
             self.do_func_test()
             self.verify_ok = True
         except NSLCMException as e:
-            self.update_job(JOB_PROGRESS.ERROR, e.message)
+            self.update_job(JOB_PROGRESS.ERROR, e.args[0])
         except:
             logger.error(traceback.format_exc())
             self.update_job(JOB_PROGRESS.ERROR, 'Unknown error in vnf verify.')

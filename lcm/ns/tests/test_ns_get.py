@@ -25,15 +25,15 @@ class TestNsQuery(TestCase):
 
     def test_query_ns_by_nsinstance_id(self):
         response = self.client.get("/api/nslcm/v1/ns/1")
-        self.failUnlessEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertIsNotNone(response.data)
 
     def test_query_all_nsinstance(self):
         response = self.client.get("/api/nslcm/v1/ns")
-        self.failUnlessEqual(status.HTTP_200_OK, response.status_code, response.data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
         self.assertIsNotNone(response.data)
         self.assertEqual(2, len(response.data))
 
     def test_query_ns_by_non_existing_nsinstance_id(self):
         response = self.client.get("/api/nslcm/v1/ns/200")
-        self.failUnlessEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)

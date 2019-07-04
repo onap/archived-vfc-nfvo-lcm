@@ -510,13 +510,13 @@ vnfd_model_dict1 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'2'
+                'num_cpus': '2'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_omm.001',
-            'image_file': u'opencos_sss_omm_img_release_20150723-1-disk1',
+            'vdu_id': 'vdu_omm.001',
+            'image_file': 'opencos_sss_omm_img_release_20150723-1-disk1',
             'dependencies': [
 
             ],
@@ -550,10 +550,10 @@ vnfd_model_dict1 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'omm.001',
+                'template_id': 'omm.001',
                 'manual_scale_select_vim': False
             },
-            'description': u'singleommvm'
+            'description': 'singleommvm'
         },
         {
             'volumn_storages': [
@@ -561,13 +561,13 @@ vnfd_model_dict1 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'4'
+                'num_cpus': '4'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_1',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_1',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -601,10 +601,10 @@ vnfd_model_dict1 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'1',
+                'template_id': '1',
                 'manual_scale_select_vim': False
             },
-            'description': u'ompvm'
+            'description': 'ompvm'
         },
         {
             'volumn_storages': [
@@ -612,13 +612,13 @@ vnfd_model_dict1 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_2',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_2',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -652,10 +652,10 @@ vnfd_model_dict1 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'2',
+                'template_id': '2',
                 'manual_scale_select_vim': False
             },
-            'description': u'ompvm'
+            'description': 'ompvm'
         },
         {
             'volumn_storages': [
@@ -663,13 +663,13 @@ vnfd_model_dict1 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_3',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_3',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -703,10 +703,10 @@ vnfd_model_dict1 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'3',
+                'template_id': '3',
                 'manual_scale_select_vim': False
             },
-            'description': u'ompvm'
+            'description': 'ompvm'
         },
         {
             'volumn_storages': [
@@ -714,13 +714,13 @@ vnfd_model_dict1 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'4'
+                'num_cpus': '4'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_10',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_10',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -754,10 +754,10 @@ vnfd_model_dict1 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'10',
+                'template_id': '10',
                 'manual_scale_select_vim': False
             },
-            'description': u'ppvm'
+            'description': 'ppvm'
         },
         {
             'volumn_storages': [
@@ -765,13 +765,13 @@ vnfd_model_dict1 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_11',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_11',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -805,10 +805,10 @@ vnfd_model_dict1 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'11',
+                'template_id': '11',
                 'manual_scale_select_vim': False
             },
-            'description': u'ppvm'
+            'description': 'ppvm'
         },
         {
             'volumn_storages': [
@@ -816,13 +816,13 @@ vnfd_model_dict1 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_12',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_12',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -856,10 +856,10 @@ vnfd_model_dict1 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'12',
+                'template_id': '12',
                 'manual_scale_select_vim': False
             },
-            'description': u'ppvm'
+            'description': 'ppvm'
         }
     ],
     'volumn_storages': [
@@ -870,7 +870,7 @@ vnfd_model_dict1 = {
             'targets': {
 
             },
-            'policy_id': u'policy_scale_sss-vnf-template',
+            'policy_id': 'policy_scale_sss-vnf-template',
             'properties': {
                 'policy_file': '*-vnfd.zip/*-vnf-policy.xml'
             },
@@ -881,28 +881,28 @@ vnfd_model_dict1 = {
         {
             'description': '',
             'properties': {
-                'name': u'opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
+                'name': 'opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
                 'checksum': '',
-                'disk_format': u'VMDK',
-                'file_url': u'./zte-cn-sss-main-image/OMM/opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
+                'disk_format': 'VMDK',
+                'file_url': './zte-cn-sss-main-image/OMM/opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
                 'container_type': 'vm',
                 'version': '',
                 'hypervisor_type': 'kvm'
             },
-            'image_file_id': u'opencos_sss_omm_img_release_20150723-1-disk1'
+            'image_file_id': 'opencos_sss_omm_img_release_20150723-1-disk1'
         },
         {
             'description': '',
             'properties': {
-                'name': u'sss.vmdk',
+                'name': 'sss.vmdk',
                 'checksum': '',
-                'disk_format': u'VMDK',
-                'file_url': u'./zte-cn-sss-main-image/NE/sss.vmdk',
+                'disk_format': 'VMDK',
+                'file_url': './zte-cn-sss-main-image/NE/sss.vmdk',
                 'container_type': 'vm',
                 'version': '',
                 'hypervisor_type': 'kvm'
             },
-            'image_file_id': u'sss'
+            'image_file_id': 'sss'
         }
     ],
     'vls': [
@@ -921,17 +921,17 @@ vnfd_model_dict1 = {
          },
     ],
     'metadata': {
-        'vendor': u'zte',
+        'vendor': 'zte',
         'is_shared': False,
         'description': '',
-        'domain_type': u'CN',
-        'version': u'v4.14.10',
+        'domain_type': 'CN',
+        'version': 'v4.14.10',
         'vmnumber_overquota_alarm': False,
         'cross_dc': False,
-        'vnf_type': u'SSS',
-        'vnfd_version': u'V00000001',
-        'id': u'vnfd_2',
-        'name': u'sss-vnf-template'
+        'vnf_type': 'SSS',
+        'vnfd_version': 'V00000001',
+        'id': 'vnfd_2',
+        'name': 'sss-vnf-template'
     },
 
     'vnf_exposed': {
@@ -964,13 +964,13 @@ vnfd_model_dict2 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'2'
+                'num_cpus': '2'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_omm.001',
-            'image_file': u'opencos_sss_omm_img_release_20150723-1-disk1',
+            'vdu_id': 'vdu_omm.001',
+            'image_file': 'opencos_sss_omm_img_release_20150723-1-disk1',
             'dependencies': [
 
             ],
@@ -1004,10 +1004,10 @@ vnfd_model_dict2 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'omm.001',
+                'template_id': 'omm.001',
                 'manual_scale_select_vim': False
             },
-            'description': u'singleommvm'
+            'description': 'singleommvm'
         },
         {
             'volumn_storages': [
@@ -1015,13 +1015,13 @@ vnfd_model_dict2 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'4'
+                'num_cpus': '4'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_1',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_1',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -1055,10 +1055,10 @@ vnfd_model_dict2 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'1',
+                'template_id': '1',
                 'manual_scale_select_vim': False
             },
-            'description': u'ompvm'
+            'description': 'ompvm'
         },
         {
             'volumn_storages': [
@@ -1066,13 +1066,13 @@ vnfd_model_dict2 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_2',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_2',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -1106,10 +1106,10 @@ vnfd_model_dict2 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'2',
+                'template_id': '2',
                 'manual_scale_select_vim': False
             },
-            'description': u'ompvm'
+            'description': 'ompvm'
         },
         {
             'volumn_storages': [
@@ -1117,13 +1117,13 @@ vnfd_model_dict2 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_3',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_3',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -1157,10 +1157,10 @@ vnfd_model_dict2 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'3',
+                'template_id': '3',
                 'manual_scale_select_vim': False
             },
-            'description': u'ompvm'
+            'description': 'ompvm'
         },
         {
             'volumn_storages': [
@@ -1168,13 +1168,13 @@ vnfd_model_dict2 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'4'
+                'num_cpus': '4'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_10',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_10',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -1208,10 +1208,10 @@ vnfd_model_dict2 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'10',
+                'template_id': '10',
                 'manual_scale_select_vim': False
             },
-            'description': u'ppvm'
+            'description': 'ppvm'
         },
         {
             'volumn_storages': [
@@ -1219,13 +1219,13 @@ vnfd_model_dict2 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_11',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_11',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -1259,10 +1259,10 @@ vnfd_model_dict2 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'11',
+                'template_id': '11',
                 'manual_scale_select_vim': False
             },
-            'description': u'ppvm'
+            'description': 'ppvm'
         },
         {
             'volumn_storages': [
@@ -1270,13 +1270,13 @@ vnfd_model_dict2 = {
             ],
             'nfv_compute': {
                 'mem_size': '',
-                'num_cpus': u'14'
+                'num_cpus': '14'
             },
             'local_storages': [
 
             ],
-            'vdu_id': u'vdu_12',
-            'image_file': u'sss',
+            'vdu_id': 'vdu_12',
+            'image_file': 'sss',
             'dependencies': [
 
             ],
@@ -1310,10 +1310,10 @@ vnfd_model_dict2 = {
                 'local_affinity_antiaffinity_rule': {
 
                 },
-                'template_id': u'12',
+                'template_id': '12',
                 'manual_scale_select_vim': False
             },
-            'description': u'ppvm'
+            'description': 'ppvm'
         }
     ],
     'volumn_storages': [
@@ -1324,7 +1324,7 @@ vnfd_model_dict2 = {
             'targets': {
 
             },
-            'policy_id': u'policy_scale_sss-vnf-template',
+            'policy_id': 'policy_scale_sss-vnf-template',
             'properties': {
                 'policy_file': '*-vnfd.zip/*-vnf-policy.xml'
             },
@@ -1335,28 +1335,28 @@ vnfd_model_dict2 = {
         {
             'description': '',
             'properties': {
-                'name': u'opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
+                'name': 'opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
                 'checksum': '',
-                'disk_format': u'VMDK',
-                'file_url': u'./zte-cn-sss-main-image/OMM/opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
+                'disk_format': 'VMDK',
+                'file_url': './zte-cn-sss-main-image/OMM/opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
                 'container_type': 'vm',
                 'version': '',
                 'hypervisor_type': 'kvm'
             },
-            'image_file_id': u'opencos_sss_omm_img_release_20150723-1-disk1'
+            'image_file_id': 'opencos_sss_omm_img_release_20150723-1-disk1'
         },
         {
             'description': '',
             'properties': {
-                'name': u'sss.vmdk',
+                'name': 'sss.vmdk',
                 'checksum': '',
-                'disk_format': u'VMDK',
-                'file_url': u'./zte-cn-sss-main-image/NE/sss.vmdk',
+                'disk_format': 'VMDK',
+                'file_url': './zte-cn-sss-main-image/NE/sss.vmdk',
                 'container_type': 'vm',
                 'version': '',
                 'hypervisor_type': 'kvm'
             },
-            'image_file_id': u'sss'
+            'image_file_id': 'sss'
         }
     ],
     'vls': [
@@ -1375,17 +1375,17 @@ vnfd_model_dict2 = {
          },
     ],
     'metadata': {
-        'vendor': u'zte',
+        'vendor': 'zte',
         'is_shared': False,
         'description': '',
-        'domain_type': u'CN',
-        'version': u'v4.14.10',
+        'domain_type': 'CN',
+        'version': 'v4.14.10',
         'vmnumber_overquota_alarm': False,
         'cross_dc': False,
-        'vnf_type': u'SSS',
-        'vnfd_version': u'V00000001',
-        'id': u'sss-vnf-template',
-        'name': u'vnfd_2'
+        'vnf_type': 'SSS',
+        'vnfd_version': 'V00000001',
+        'id': 'sss-vnf-template',
+        'name': 'vnfd_2'
     },
     'vnf_exposed': {
         "external_cps": [

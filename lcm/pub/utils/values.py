@@ -31,7 +31,7 @@ def ignore_case_get(args, key, def_val=""):
 def remove_none_key(data, none_list=None):
     none_list = none_list if none_list else [None, '', 'NULL', 'None', 'null', {}, '{}']
     if isinstance(data, dict):
-        data = dict([(k, remove_none_key(v)) for k, v in data.iteritems() if v not in none_list])
+        data = dict([(k, remove_none_key(v)) for k, v in list(data.items()) if v not in none_list])
     if isinstance(data, list):
         data = [remove_none_key(s) for s in data if s not in none_list]
     return data
@@ -45,7 +45,7 @@ def update_value(origin_data, new_data):
         origin_data = eval(str_data)
     logger.debug(isinstance(origin_data, dict))
     logger.debug(new_data)
-    for k, v in new_data.iteritems():
+    for k, v in list(new_data.items()):
         if k not in origin_data:
             origin_data[k] = v
         else:

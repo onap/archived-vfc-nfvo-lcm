@@ -61,17 +61,17 @@ class TestTerminateNsApi(TestCase):
         mock_run.re.return_value = "1"
         req_data = {"terminationTime": "2019-03-25T09:10:35.610"}
         response = self.client.post(self.url % self.ns_inst_id, data=req_data)
-        self.failUnlessEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertIsNotNone(response['Location'])
         response = self.client.get(response['Location'], format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_method_not_allowed(self):
         response = self.client.put(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.patch(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.delete(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
         response = self.client.get(self.url % '1', data={}, format='json')
-        self.failUnlessEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)

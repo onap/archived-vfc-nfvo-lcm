@@ -13,7 +13,7 @@
 # limitations under the License.
 import mock
 import json
-from test_data import nsd_model, vnfd_model_dict1, vnfd_model_dict2
+from .test_data import nsd_model, vnfd_model_dict1, vnfd_model_dict2
 from rest_framework import status
 from lcm.pub.utils import restcall
 from lcm.pub.database.models import FPInstModel, NfInstModel

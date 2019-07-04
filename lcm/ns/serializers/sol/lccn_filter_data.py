@@ -15,7 +15,7 @@
 
 from rest_framework import serializers
 
-from ns_instance_subscription_filter import NsInstanceSubscriptionFilter
+from .ns_instance_subscription_filter import NsInstanceSubscriptionFilter
 from lcm.ns.enum import NOTIFICATION_TYPE, OPERATION_TYPE, OPERATION_STATE_TYPE, NS_COMPOMENT_TYPE, OPNAME_FOR_CHANGE_NOTIFICATION_TYPE, OPOCC_STATUS_FOR_CHANGENOTIFICATION_TYPE
 from lcm.pub.utils.enumutil import enum_to_list
 

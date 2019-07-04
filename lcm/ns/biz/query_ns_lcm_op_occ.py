@@ -39,7 +39,7 @@ class QueryNsLcmOpOcc:
     def query_multi_ns_lcm_op_occ(self):
         query_data = {}
         logger.debug("QueryMultiNsLcmOpOccs--get--biz::> Check for filters in query params" % self.params)
-        for query, value in self.params.iteritems():
+        for query, value in list(self.params.items()):
             if query in FILTERS:
                 query_data[FILTERS[query]] = value
         # Query the database with filters if the request has fields in request params, else fetch all records

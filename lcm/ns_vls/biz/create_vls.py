@@ -72,7 +72,7 @@ class CreateVls(object):
         return {"result": 1, "detail": detail, "vlId": self.vl_inst_id}
 
     def get_data(self):
-        if isinstance(self.context, (unicode, str)):
+        if isinstance(self.context, str):
             self.context = json.JSONDecoder().decode(self.context)
         vl_info = self.get_vl_info(ignore_case_get(self.context, "vls"))
         self.vld_id = ignore_case_get(vl_info, "vl_id")
@@ -139,7 +139,7 @@ class CreateVls(object):
         return vl_ret[1]
 
     def create_vl_to_resmgr(self):
-        self.vim_id = json.JSONDecoder().decode(self.vim_id) if isinstance(self.vim_id, (str, unicode)) else self.vim_id
+        self.vim_id = json.JSONDecoder().decode(self.vim_id) if isinstance(self.vim_id, str) else self.vim_id
         vim_id = self.vim_id['cloud_owner'] + self.vim_id['cloud_regionid']
         req_param = {
             "vlInstanceId": self.vl_inst_id,

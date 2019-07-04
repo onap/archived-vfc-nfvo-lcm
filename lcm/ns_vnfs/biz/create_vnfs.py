@@ -110,7 +110,7 @@ class CreateVnfs(Thread):
         self.properties = ignore_case_get(additional_param, 'properties')
         self.vnfm_inst_id = ignore_case_get(additional_param, 'vnfmInstanceId')
         para = ignore_case_get(additional_param, 'inputs')
-        self.inputs = json.loads(para) if isinstance(para, (str, unicode)) else para
+        self.inputs = json.loads(para) if isinstance(para, str) else para
         self.vim_id = ignore_case_get(additional_param, 'vimId')
         self.vnfd_id = ignore_case_get(additional_param, 'vnfdId')
 
@@ -166,7 +166,7 @@ class CreateVnfs(Thread):
                     'subnetwork_name': subnet_name,
                     'vl_instance_id': vl_instance_id
                 })
-                vim_id = json.JSONDecoder().decode(vl_instance.vimid) if isinstance(vl_instance.vimid, (str, unicode)) \
+                vim_id = json.JSONDecoder().decode(vl_instance.vimid) if isinstance(vl_instance.vimid, str) \
                     else vl_instance.vimid
                 ext_virtual_link.append({
                     "vlInstanceId": vl_instance_id,

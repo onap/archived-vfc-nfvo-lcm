@@ -57,6 +57,6 @@ class NSManualScaleView(APIView):
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(job_id, 255, 'NS scale failed: %s' % e.message)
+            JobUtil.add_job_status(job_id, 255, 'NS scale failed: %s' % e.args[0])
             return Response(data={'error': 'NS scale failed: %s' % ns_instance_id},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)

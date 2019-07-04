@@ -43,7 +43,7 @@ class TestNsInstantiate(TestCase):
         mock_call_req.side_effect = [r1_query_nspackage_from_catalog, r2_create_ns_to_aai]
         self.create_ns_dict["csarId"] = str(uuid.uuid4())
         response = self.client.post("/api/nslcm/v1/ns", data=self.create_ns_dict, format='json')
-        self.failUnlessEqual(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
     @mock.patch.object(CreateNSService, "do_biz")
     def test_create_ns_empty_data(self, mock_do_biz):
