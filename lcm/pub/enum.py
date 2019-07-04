@@ -30,9 +30,10 @@ JOB_TYPE = enum(
     HEAL_VNF="heal vnf",
     GRANT_VNF="grant vnf",
     MANUAL_SCALE_VNF="manual scale vnf",
-    TERMINATE_NS="terminate ns",
     TERMINATE_VNF="terminate vnf",
-    UPDATE_NS="update ns"
+    TERMINATE_NS="terminate ns",
+    UPDATE_NS="update ns",
+    HEAL_NS='heal ns'
 )
 JOB_PROGRESS = enum(
     ERROR=255,
