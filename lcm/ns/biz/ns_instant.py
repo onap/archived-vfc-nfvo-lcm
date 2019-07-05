@@ -270,8 +270,6 @@ class InstantNSService(object):
             vimid = ignore_case_get(vnf_vim, vnfdid)
             if not vimid:
                 vimid = vim_id
-            if not vimid:
-                raise NSLCMException("No Vim info for vl(%s) of vnf(%s)." % (vl["vl_id"], vnfdid))
             if "location_info" not in vl["properties"]:
                 vl["properties"]["location_info"] = {}
             vl["properties"]["location_info"]["vimid"] = vimid
