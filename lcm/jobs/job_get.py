@@ -27,7 +27,7 @@ class GetJobInfoService(object):
         self.response_id = response_id if response_id else 0
 
     def do_biz(self):
-        logger.debug("[getjob]job_id=%s, response_id=%s", self.job_id, self.response_id)
+        logger.debug("GetJobInfoService, job_id=%s, response_id=%s", self.job_id, self.response_id)
         jobs = JobUtil.query_job_status(self.job_id, self.response_id)
         if not jobs:
             job_query_resp = JobQueryResp(self.job_id)

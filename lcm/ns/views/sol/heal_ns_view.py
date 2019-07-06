@@ -17,7 +17,7 @@ from .common import view_safe_call_with_log
 from drf_yasg.utils import swagger_auto_schema
 from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.const import NS_OCC_BASE_URI
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.pub.exceptions import BadRequestException
 from lcm.ns.serializers.sol.heal_serializers import HealNsReqSerializer
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
@@ -45,7 +45,7 @@ class HealNSView(APIView):
             logger.error("request.data is not valid,error: %s" % req_serializer.errors)
             raise BadRequestException(req_serializer.errors)
 
-        job_id = JobUtil.create_job("NS", JOB_TYPE.HEAL_NS, ns_instance_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.HEAL, ns_instance_id)
         ns_heal_service = NSHealService(ns_instance_id, request.data, job_id)
         ns_heal_service.start()
         response = Response(data={}, status=status.HTTP_202_ACCEPTED)

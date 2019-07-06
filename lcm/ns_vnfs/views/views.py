@@ -23,7 +23,7 @@ from rest_framework.views import APIView
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id_vim_info
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
 from lcm.ns_vnfs.biz.get_vnfs import GetVnf, GetVnfVms
@@ -133,14 +133,14 @@ class NfTerminate(APIView):
         vnf_inst_id = vnfinstid
         terminationType = ignore_case_get(request.data, 'terminationType')
         gracefulTerminationTimeout = ignore_case_get(request.data, 'gracefulTerminationTimeout')
-        job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, vnf_inst_id)
+        job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.TERMINATE, vnf_inst_id)
         data = {'terminationType': terminationType, 'gracefulTerminationTimeout': gracefulTerminationTimeout}
         logger.debug("data=%s", data)
         try:
             TerminateVnfs(data, vnf_inst_id, job_id).start()
         except Exception as e:
-            logger.error(e.message)
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
+            logger.error(e.args[0])
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_409_CONFLICT)
         rsp = {'jobId': job_id}
 
         resp_serializer = TerminateVnfRespSerializer(data=rsp)
@@ -166,7 +166,7 @@ class NfGrant(APIView):
                 raise Exception(req_serializer.errors)
 
             vnf_inst_id = ignore_case_get(request.data, 'vnfInstanceId')
-            job_id = JobUtil.create_job("VNF", JOB_TYPE.GRANT_VNF, vnf_inst_id)
+            job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.GRANT, vnf_inst_id)
             rsp = GrantVnfs(request.data, job_id).send_grant_vnf_to_resMgr()
             """
             rsp = {
@@ -184,9 +184,9 @@ class NfGrant(APIView):
 
             return Response(data=rsp, status=status.HTTP_201_CREATED)
         except Exception as e:
-            logger.error(e.message)
+            logger.error(e.args[0])
             logger.error(traceback.format_exc())
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_409_CONFLICT)
 
 
 class NfPlacement(APIView):
@@ -206,9 +206,9 @@ class NfPlacement(APIView):
             PlaceVnfs(request.data).extract()
             return Response(data={}, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(e.message)
+            logger.error(e.args[0])
             logger.error(traceback.format_exc())
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_409_CONFLICT)
 
 
 class LcmNotify(APIView):
@@ -229,8 +229,8 @@ class LcmNotify(APIView):
             NotifyLcm(vnfmid, vnfInstanceId, request.data).do_biz()
             return Response(data={}, status=status.HTTP_201_CREATED)
         except Exception as e:
-            logger.error(e.message)
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
+            logger.error(e.ars[0])
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_409_CONFLICT)
 
 
 class NfScaleView(APIView):
@@ -250,8 +250,8 @@ class NfScaleView(APIView):
             NFManualScaleService(vnfinstid, request.data).start()
             return Response(data={}, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
-            logger.error(e.message)
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
+            logger.error(e.args[0])
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_409_CONFLICT)
 
 
 class NfVerifyView(APIView):
@@ -279,8 +279,8 @@ class NfVerifyView(APIView):
 
             return Response(data=rsp, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
-            logger.error(e.message)
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_409_CONFLICT)
+            logger.error(e.args[0])
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_409_CONFLICT)
 
 
 class NfVnfmInfoView(APIView):
@@ -301,10 +301,10 @@ class NfVnfmInfoView(APIView):
                 raise Exception(resp_serializer.errors)
 
         except NSLCMException as e:
-            logger.error(e.message)
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error(e.args[0])
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            logger.error(e.message)
+            logger.error(e.args[0])
             logger.error(traceback.format_exc())
             return Response(data={'error': 'Failed to get vnfm info.'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -331,10 +331,10 @@ class NfVimInfoView(APIView):
                 raise Exception(resp_serializer.errors)
 
         except NSLCMException as e:
-            logger.error(e.message)
-            return Response(data={'error': '%s' % e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error(e.args[0])
+            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            logger.error(e.message)
+            logger.error(e.args[0])
             logger.error(traceback.format_exc())
             return Response(data={'error': 'Failed to get vim info.'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)

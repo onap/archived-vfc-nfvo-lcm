@@ -73,7 +73,7 @@ class JobUpdReqSerializer(serializers.Serializer):
         help_text="Progress of job",
         required=True)
     desc = serializers.CharField(
-        help_text="Desc of job",
+        help_text="Description of job",
         required=False)
     errcode = serializers.CharField(
         help_text="Error code of job",
@@ -82,8 +82,8 @@ class JobUpdReqSerializer(serializers.Serializer):
 
 class JobUpdRespSerializer(serializers.Serializer):
     result = serializers.CharField(
-        help_text="Result of job update",
+        help_text="Result of the job",
         required=True)
     msg = serializers.CharField(
-        help_text="Detail of job update",
+        help_text="Detail of the job",
         required=False)

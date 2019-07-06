@@ -22,7 +22,7 @@ from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 
@@ -45,7 +45,7 @@ class NSTerminateView(APIView):
             if not req_serializer.is_valid():
                 raise BadRequestException(req_serializer.errors)
 
-            job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
+            job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.TERMINATE, ns_instance_id)
             TerminateNsService(ns_instance_id, job_id, request.data).start()
 
             resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
@@ -54,7 +54,7 @@ class NSTerminateView(APIView):
             logger.debug("Leave TerminateNSView::post ret=%s", resp_serializer.data)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except BadRequestException as e:
-            return Response(data={'error': e.message}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            logger.error("Exception in CreateNS: %s", e.message)
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error("Exception in CreateNS: %s", e.args[0])
+            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

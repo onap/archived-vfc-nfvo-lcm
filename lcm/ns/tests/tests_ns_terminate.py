@@ -21,7 +21,7 @@ from rest_framework import status
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.database.models import NfInstModel, NSInstModel
 from lcm.pub.utils import restcall
-from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE
+from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_ACTION
 from lcm.pub.utils.jobutil import JobUtil
 
 
@@ -50,7 +50,7 @@ class TestTerminateNsViews(TestCase):
         NfInstModel.objects.all().delete()
 
     @mock.patch.object(TerminateNsService, 'run')
-    def test_terminate_vnf_url(self, mock_run):
+    def test_terminate_ns_api(self, mock_run):
         mock_run.re.return_value = "1"
         req_data = {
             "terminationType": "forceful",
@@ -62,8 +62,8 @@ class TestTerminateNsViews(TestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     @mock.patch.object(restcall, 'call_req')
-    def test_terminate_vnf(self, mock_call_req):
-        job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
+    def test_terminate_ns_service(self, mock_call_req):
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.TERMINATE, self.ns_inst_id)
 
         mock_vals = {
             "/api/nslcm/v1/ns/ns_vls/1":
@@ -93,7 +93,7 @@ class TestTerminateNsViews(TestCase):
         req_data = {
             "terminationType": "FORCEFUL",
             "gracefulTerminationTimeout": "600"}
-        TerminateNsService(self.nf_inst_id, job_id, req_data).run()
+        TerminateNsService(self.ns_inst_id, job_id, req_data).run()
         nsinst = NSInstModel.objects.get(id=self.ns_inst_id)
         if nsinst:
             self.assertTrue(1, 0)

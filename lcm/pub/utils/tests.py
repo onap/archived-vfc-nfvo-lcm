@@ -107,8 +107,8 @@ class UtilsTest(unittest.TestCase):
         job_id = "5"
         JobModel.objects.filter().delete()
         JobUtil.create_job(
-            inst_type="1",
-            jobaction="2",
+            job_type="1",
+            job_action="2",
             inst_id="3",
             user="4",
             job_id=5,
