@@ -27,7 +27,7 @@ from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.config.config import REG_TO_MSB_REG_PARAM, OOF_BASE_URL, OOF_PASSWD, OOF_USER
 from lcm.pub.config.config import CUST_NAME, CUST_LAT, CUST_LONG
 from lcm.pub.database.models import NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel, OOFDataModel
-from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_PROGRESS, JOB_ERROR_CODE
+from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_ACTION, JOB_PROGRESS, JOB_ERROR_CODE, JOB_TYPE
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_vnf_aai
 from lcm.pub.msapi.extsys import get_vnfm_by_id
@@ -52,7 +52,7 @@ def prepare_create_params():
         create_time=now_time(),
         lastuptime=now_time()
     ).save()
-    job_id = JobUtil.create_job(INST_TYPE_NAME.VNF, JOB_TYPE.CREATE_VNF, nf_inst_id)
+    job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.CREATE, nf_inst_id)
     JobUtil.add_job_status(job_id, JOB_PROGRESS.STARTED, 'create vnf record in database.', JOB_ERROR_CODE.NO_ERROR)
     return nf_inst_id, job_id
 

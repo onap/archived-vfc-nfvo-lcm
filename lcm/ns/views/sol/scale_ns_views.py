@@ -20,7 +20,7 @@ from rest_framework.views import APIView
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.serializers.sol.scale_ns_serializers import ScaleNsRequestSerializer
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.const import NS_OCC_BASE_URI
 from lcm.pub.exceptions import BadRequestException
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
@@ -45,7 +45,7 @@ class ScaleNSView(APIView):
         if not req_serializer.is_valid():
             raise BadRequestException(req_serializer.errors)
 
-        job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_instance_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, ns_instance_id)
 
         nsManualScaleService = NSManualScaleService(ns_instance_id, request.data, job_id)
         nsManualScaleService.start()

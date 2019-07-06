@@ -26,14 +26,17 @@ JOB_MODEL_STATUS = enum(
     TIMEOUT='timeout'
 )
 JOB_TYPE = enum(
-    CREATE_VNF="create vnf",
-    HEAL_VNF="heal vnf",
-    GRANT_VNF="grant vnf",
-    MANUAL_SCALE_VNF="manual scale vnf",
-    TERMINATE_VNF="terminate vnf",
-    TERMINATE_NS="terminate ns",
-    UPDATE_NS="update ns",
-    HEAL_NS='heal ns'
+    NS="NS",
+    VNF="VNF"
+)
+JOB_ACTION = enum(
+    CREATE="CREATE",
+    INSTANTIATE="INSTANTIATE",
+    UPDATE="UPDATE",
+    HEAL="HEAL",
+    GRANT="GRANT",
+    MANUAL_SCALE="MANUAL SCALE",
+    TERMINATE="TERMINATE"
 )
 JOB_PROGRESS = enum(
     ERROR=255,

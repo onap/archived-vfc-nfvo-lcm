@@ -24,7 +24,7 @@ from lcm.ns.biz.ns_heal import NSHealService
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.tests import VNFD_MODEL_DICT, HEAL_NS_DICT, HEAL_VNF_DICT
 
 
@@ -34,7 +34,7 @@ class TestHealNsApi(TestCase):
         self.ns_inst_id = str(uuid.uuid4())
         self.nf_inst_id = '1'
         self.nf_uuid = '1-1-1'
-        self.job_id = JobUtil.create_job("NS", JOB_TYPE.HEAL_VNF, self.ns_inst_id)
+        self.job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.HEAL, self.ns_inst_id)
         self.client = Client()
         model = json.dumps(VNFD_MODEL_DICT)
         NSInstModel.objects.filter().delete()

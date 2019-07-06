@@ -27,7 +27,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import catalog
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE
+from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_ACTION
 from lcm.ns.tests import SCALING_MAP_DICT, VNFD_MODEL_DICT, SCALE_NS_DICT
 
 
@@ -36,7 +36,7 @@ class TestNsManualScale(TestCase):
     def setUp(self):
         self.scaling_map_json = SCALING_MAP_DICT
         self.ns_inst_id = str(uuid.uuid4())
-        self.job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        self.job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, self.ns_inst_id)
         self.client = APIClient()
         self.package_id = "7"
         NSInstModel(
@@ -51,8 +51,7 @@ class TestNsManualScale(TestCase):
 
     def insert_new_ns(self):
         ns_inst_id = str(uuid.uuid4())
-        job_id = JobUtil.create_job(
-            "NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, self.ns_inst_id)
         package_id = "23"
         NSInstModel(
             id=ns_inst_id,
@@ -102,7 +101,7 @@ class TestNsManualScale(TestCase):
         scale_ns_json = SCALE_NS_DICT.copy()
         scale_ns_json["scaleNsData"][0]["scaleNsByStepsData"][0]["aspectId"] = "sss_zte"
         ns_inst_id, job_id = self.insert_new_ns()
-        job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_inst_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, ns_inst_id)
         NSManualScaleService(ns_inst_id, scale_ns_json, job_id).run()
         jobs = JobModel.objects.filter(jobid=job_id)
         self.assertEqual(255, jobs[0].progress)
@@ -115,7 +114,7 @@ class TestNsManualScale(TestCase):
         mock_get_scalingmap_json_package.return_value = self.scaling_map_json
         mock_do_vnfs_scale.return_value = JOB_MODEL_STATUS.FINISHED
         ns_inst_id, job_id = self.insert_new_ns()
-        job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_inst_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, ns_inst_id)
         self.insert_new_nf()
         NSManualScaleService(ns_inst_id, scale_ns_json, job_id).run()
         jobs = JobModel.objects.filter(jobid=job_id)

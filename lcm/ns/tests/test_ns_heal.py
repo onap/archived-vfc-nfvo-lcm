@@ -21,7 +21,7 @@ from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns.tests import HEAL_NS_DICT, HEAL_VNF_DICT, VNFD_MODEL_DICT
 
@@ -31,7 +31,7 @@ class TestHealNsViews(TestCase):
         self.ns_inst_id = '1'
         self.nf_inst_id = '1'
         self.nf_uuid = '1-1-1'
-        self.job_id = JobUtil.create_job("NS", JOB_TYPE.HEAL_VNF, self.ns_inst_id)
+        self.job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.HEAL, self.ns_inst_id)
         self.client = APIClient()
         NSInstModel.objects.filter().delete()
         NfInstModel.objects.filter().delete()
