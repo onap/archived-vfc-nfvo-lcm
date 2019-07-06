@@ -62,7 +62,7 @@ class JobView(APIView):
             return Response(data=ret, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(traceback.format_exc())
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         operation_description="Update job",
@@ -94,10 +94,10 @@ class JobView(APIView):
             resp_serializer = JobUpdRespSerializer(job_update_resp)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except NSLCMException as e:
-            job_update_resp = JobUpdResp('error', e.message)
+            job_update_resp = JobUpdResp('error', e.args[0])
             resp_serializer = JobUpdRespSerializer(job_update_resp)
             return Response(data=resp_serializer.data, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            job_update_resp = JobUpdResp('error', e.message)
+            job_update_resp = JobUpdResp('error', e.args[0])
             resp_serializer = JobUpdRespSerializer(job_update_resp)
             return Response(data=resp_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
