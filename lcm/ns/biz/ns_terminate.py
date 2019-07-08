@@ -26,7 +26,7 @@ from lcm.pub.utils import restcall
 from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.database.models import PNFInstModel
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
-from lcm.pub.enum import JOB_PROGRESS
+from lcm.jobs.enum import JOB_PROGRESS
 
 logger = logging.getLogger(__name__)
 

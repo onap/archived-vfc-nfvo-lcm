@@ -20,7 +20,7 @@ from rest_framework.views import APIView
 
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns.serializers.sol.terminate_ns_serializers import TerminateNsReqSerializer
 from lcm.pub.exceptions import BadRequestException
@@ -42,20 +42,20 @@ class TerminateNsView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
-        job_id = JobUtil.create_job("NS", JOB_TYPE.TERMINATE_NS, ns_instance_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.TERMINATE, ns_instance_id)
 
         logger.debug("Enter TerminateNSView::post %s", request.data)
         req_serializer = TerminateNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():
             logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
             raise BadRequestException(req_serializer.errors)
-        terminationTime = ignore_case_get(request.data, 'terminationTime')
-        logger.debug("terminationTime is %s" % terminationTime)
+        termination_time = ignore_case_get(request.data, 'terminationTime')
+        logger.debug("terminationTime is %s" % termination_time)
         # todo terminationTime
-        terminateNsService = TerminateNsService(ns_instance_id, job_id, request.data)
-        terminateNsService.start()
-        logger.debug("Location: %s" % terminateNsService.occ_id)
+        terminate_ns_service = TerminateNsService(ns_instance_id, job_id, request.data)
+        terminate_ns_service.start()
+        logger.debug("Location: %s" % terminate_ns_service.occ_id)
         response = Response(data={}, status=status.HTTP_202_ACCEPTED)
-        response["Location"] = NS_OCC_BASE_URI % terminateNsService.occ_id
+        response["Location"] = NS_OCC_BASE_URI % terminate_ns_service.occ_id
         logger.debug("Leave TerminateNSView")
         return response

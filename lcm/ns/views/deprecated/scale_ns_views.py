@@ -23,7 +23,7 @@ from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class NSManualScaleView(APIView):
     )
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSManualScaleView::post %s, %s", request.data, ns_instance_id)
-        job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, ns_instance_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, ns_instance_id)
         try:
             req_serializer = _ManualScaleNsReqSerializer(data=request.data)
             if not req_serializer.is_valid():

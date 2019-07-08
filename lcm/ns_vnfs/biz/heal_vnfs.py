@@ -24,7 +24,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_heal_request
 from lcm.pub.utils import restcall
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_PROGRESS
+from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_PROGRESS, JOB_ACTION
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.enum import VNF_STATUS
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
@@ -38,7 +38,7 @@ class NFHealService(threading.Thread):
         super(NFHealService, self).__init__()
         self.vnf_instance_id = vnf_instance_id
         self.data = data
-        self.job_id = JobUtil.create_job("NF", JOB_TYPE.HEAL_VNF, vnf_instance_id)
+        self.job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.HEAL, vnf_instance_id)
         self.nf_model = {}
         self.nf_additional_params = {}
         self.nf_heal_params = {}

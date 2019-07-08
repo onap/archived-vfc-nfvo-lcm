@@ -20,7 +20,7 @@ import time
 
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE, JOB_PROGRESS
+from lcm.jobs.enum import JOB_TYPE, JOB_PROGRESS, JOB_ACTION
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.restcall import req_by_msb
 
@@ -40,7 +40,7 @@ class VerifyVnfs(threading.Thread):
     def run(self):
         try:
             self.verify_config = self.load_config()
-            JobUtil.create_job("VNF", JOB_TYPE.CREATE_VNF, self.job_id, 'vnfsdk', self.job_id)
+            JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.CREATE, self.job_id, 'vnfsdk', self.job_id)
             self.do_on_boarding()
             self.do_inst_vnf()
             self.do_func_test()

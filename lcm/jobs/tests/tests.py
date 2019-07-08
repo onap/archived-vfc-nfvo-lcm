@@ -11,17 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from django.test import TestCase
-from rest_framework.test import APIClient
-from rest_framework import status
 
-from lcm.pub.database.models import JobModel, JobStatusModel
+from django.test import TestCase
 from lcm.jobs.tests import UPDATE_JOB_DICT
+from lcm.pub.database.models import JobModel, JobStatusModel
+from rest_framework import status
+from rest_framework.test import APIClient
 
 
 class JobsViewTest(TestCase):
     def setUp(self):
         self.job_id = 'test_job_id'
+        self.job_type = 'NS'
+        self.job_type = ''
         self.client = APIClient()
         JobModel.objects.all().delete()
         JobStatusModel.objects.all().delete()

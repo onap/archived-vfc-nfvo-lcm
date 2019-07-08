@@ -23,7 +23,7 @@ from lcm.ns.serializers.deprecated.ns_serializers import _HealNsReqSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class NSHealView(APIView):
             if not req_serializer.is_valid():
                 raise NSLCMException(req_serializer.errors)
 
-            job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, ns_instance_id)
+            job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.HEAL, ns_instance_id)
             NSHealService(ns_instance_id, request.data, job_id).start()
 
             resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})

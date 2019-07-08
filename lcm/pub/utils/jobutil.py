@@ -18,8 +18,8 @@ import traceback
 import uuid
 
 from lcm.pub.database.models import JobStatusModel, JobModel
-from lcm.pub.enum import JOB_PROGRESS
-from lcm.pub.enum import JOB_STATUS
+from lcm.jobs.enum import JOB_PROGRESS
+from lcm.jobs.enum import JOB_STATUS
 from lcm.pub.utils import idutil
 
 logger = logging.getLogger(__name__)
@@ -54,14 +54,14 @@ class JobUtil(object):
         return len(jobs) > 0
 
     @staticmethod
-    def create_job(inst_type, jobaction, inst_id, user='', job_id=None, res_name=''):
+    def create_job(job_type, job_action, inst_id, user='', job_id=None, res_name=''):
         if job_id is None:
             job_id = JobUtil.__gen_job_id(
-                '%s-%s-%s' % (str(inst_type).replace(' ', '_'), str(jobaction).replace(' ', '_'), str(inst_id)))
+                '%s-%s-%s' % (str(job_type).replace(' ', '_'), str(job_action).replace(' ', '_'), str(inst_id)))
         job = JobModel()
         job.jobid = job_id
-        job.jobtype = inst_type
-        job.jobaction = jobaction
+        job.jobtype = job_type
+        job.jobaction = job_action
         job.resid = str(inst_id)
         job.status = JOB_STATUS.PROCESSING
         job.user = user

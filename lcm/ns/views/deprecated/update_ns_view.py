@@ -25,7 +25,7 @@ from lcm.ns.serializers.sol.update_serializers import UpdateNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class NSUpdateView(APIView):
             if not req_serializer.is_valid():
                 raise BadRequestException(req_serializer.errors)
 
-            job_id = JobUtil.create_job("NS", JOB_TYPE.UPDATE_NS, ns_instance_id)
+            job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.UPDATE, ns_instance_id)
             NSUpdateService(ns_instance_id, request.data, job_id).start()
 
             resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
@@ -56,7 +56,7 @@ class NSUpdateView(APIView):
             logger.debug("Leave UpdateNSView::post ret=%s", resp_serializer.data)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except BadRequestException as e:
-            return Response(data={'error': e.message}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            logger.error("Exception in UpdateNSView: %s", e.message)
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error("Exception in UpdateNSView: %s", e.args[0])
+            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

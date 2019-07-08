@@ -23,7 +23,7 @@ from lcm.ns.biz.ns_update import NSUpdateService
 from lcm.ns.serializers.sol.update_serializers import UpdateNsReqSerializer
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.const import NS_OCC_BASE_URI
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
 from .common import view_safe_call_with_log
@@ -41,17 +41,17 @@ class UpdateNSView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
-        job_id = JobUtil.create_job("NS", JOB_TYPE.UPDATE_NS, ns_instance_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.UPDATE, ns_instance_id)
 
         logger.debug("Enter UpdateNSView::post %s, %s", request.data, ns_instance_id)
         req_serializer = UpdateNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():
             logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
             raise BadRequestException(req_serializer.errors)
-        nsUpdateService = NSUpdateService(ns_instance_id, request.data, job_id)
-        nsUpdateService.start()
+        ns_update_service = NSUpdateService(ns_instance_id, request.data, job_id)
+        ns_update_service.start()
         response = Response(data={}, status=status.HTTP_202_ACCEPTED)
-        logger.debug("Location: %s" % nsUpdateService.occ_id)
-        response["Location"] = NS_OCC_BASE_URI % nsUpdateService.occ_id
+        logger.debug("Location: %s" % ns_update_service.occ_id)
+        response["Location"] = NS_OCC_BASE_URI % ns_update_service.occ_id
         logger.debug("Leave UpdateNSView")
         return response

@@ -22,7 +22,7 @@ from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
-from lcm.pub.enum import JOB_TYPE
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.tests import VNFD_MODEL_DICT, SCALE_NS_DICT
 
 
@@ -30,7 +30,7 @@ class TestScaleNsApi(TestCase):
     def setUp(self):
         self.url = "/api/nslcm/v1/ns_instances/%s/scale"
         self.ns_inst_id = str(uuid.uuid4())
-        self.job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        self.job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, self.ns_inst_id)
         self.package_id = "7"
         self.client = APIClient()
         NSInstModel(
@@ -45,7 +45,7 @@ class TestScaleNsApi(TestCase):
 
     def insert_new_ns(self):
         ns_inst_id = str(uuid.uuid4())
-        job_id = JobUtil.create_job("NS", JOB_TYPE.MANUAL_SCALE_VNF, self.ns_inst_id)
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.MANUAL_SCALE, self.ns_inst_id)
         package_id = "23"
         NSInstModel(
             id=ns_inst_id,

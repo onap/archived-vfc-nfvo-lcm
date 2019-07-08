@@ -20,7 +20,7 @@ from threading import Thread
 from lcm.pub.utils.syscomm import fun_name
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
-from lcm.pub.enum import JOB_PROGRESS, JOB_ERROR_CODE
+from lcm.jobs.enum import JOB_PROGRESS, JOB_ERROR_CODE
 from lcm.pub.exceptions import NSLCMException
 from lcm.workflows.graphflow.flow.flow import GraphFlow
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc

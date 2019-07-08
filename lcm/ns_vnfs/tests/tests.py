@@ -21,7 +21,7 @@ from rest_framework import status
 from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel, OOFDataModel, SubscriptionModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
-from lcm.pub.enum import JOB_MODEL_STATUS, JOB_TYPE
+from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_ACTION
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
@@ -264,7 +264,7 @@ class TestTerminateVnfViews(TestCase):
     @mock.patch.object(restcall, 'call_req')
     @mock.patch.object(SubscriptionDeletion, 'send_subscription_deletion_request')
     def test_terminate_vnf(self, mock_send_subscription_deletion_request, mock_call_req):
-        job_id = JobUtil.create_job("VNF", JOB_TYPE.TERMINATE_VNF, self.nf_inst_id)
+        job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.TERMINATE, self.nf_inst_id)
 
         nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
         if nfinst:
@@ -531,7 +531,7 @@ class TestHealVnfViews(TestCase):
         self.nf_inst_id = str(uuid.uuid4())
         self.nf_uuid = '111'
 
-        self.job_id = JobUtil.create_job("VNF", JOB_TYPE.HEAL_VNF, self.nf_inst_id)
+        self.job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.HEAL, self.nf_inst_id)
 
         NSInstModel(id=self.ns_inst_id, name="ns_name").save()
         NfInstModel.objects.create(nfinstid=self.nf_inst_id,
