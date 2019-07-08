@@ -90,6 +90,8 @@ class CreateVls(object):
     def create_vl_to_vim(self):
         self.vim_id = self.vl_properties["location_info"]["vimid"]
         if not self.vim_id:
+            if isinstance(self.additionalParam, str):
+                self.additionalParam = json.JSONDecoder().decode(self.additionalParam)
             self.vim_id = ignore_case_get(self.additionalParam, "location")
         self.tenant = ignore_case_get(self.vl_properties["location_info"], "tenant")
         network_data = {
