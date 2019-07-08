@@ -17,3 +17,4 @@ from lcm.pub.utils import fileutil
 
 cur_path = os.path.dirname(os.path.abspath(__file__))
 UPDATE_JOB_DICT = fileutil.read_json_file(cur_path + '/update_job.json')
+UPDATE_JOB_BAD_REQ_DICT = fileutil.read_json_file(cur_path + '/update_job_bad_req.json')
