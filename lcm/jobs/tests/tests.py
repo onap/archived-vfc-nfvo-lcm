@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from django.test import TestCase
+from lcm.jobs.enum import JOB_ACTION, JOB_STATUS, JOB_TYPE
 from lcm.jobs.tests import UPDATE_JOB_DICT
 from lcm.pub.database.models import JobModel, JobStatusModel
 from rest_framework import status
@@ -22,8 +23,6 @@ from rest_framework.test import APIClient
 class JobsViewTest(TestCase):
     def setUp(self):
         self.job_id = 'test_job_id'
-        self.job_type = 'NS'
-        self.job_type = ''
         self.client = APIClient()
         JobModel.objects.all().delete()
         JobStatusModel.objects.all().delete()
@@ -32,30 +31,59 @@ class JobsViewTest(TestCase):
         JobModel.objects.all().delete()
         JobStatusModel.objects.all().delete()
 
-    def test_job(self):
-        JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
-        JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst', errcode="0").save()
+    def test_query_ns_job(self):
+        JobModel(jobid=self.job_id,
+                 jobtype=JOB_TYPE.NS,
+                 jobaction=JOB_ACTION.INSTANTIATE,
+                 resid='1').save()
+        JobStatusModel(indexid=1,
+                       jobid=self.job_id,
+                       status=JOB_STATUS.PROCESSING,
+                       progress=20,
+                       descp='Finish to instantiate NS.',
+                       errcode="0").save()
         response = self.client.get("/api/nslcm/v1/jobs/%s" % self.job_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
         self.assertIn('jobId', response.data)
         self.assertIn('responseDescriptor', response.data)
         self.assertEqual(20, response.data['responseDescriptor']['progress'])
 
-    def test_non_exiting_job(self):
-        job_id = 'test_new_job_id'
-        JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
-        JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst', errcode="0").save()
+    def test_query_ns_job_not_existed(self):
+        job_id = 'test_job_id_not_existed'
         response = self.client.get("/api/nslcm/v1/jobs/%s" % job_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertIn('jobId', response.data)
         self.assertNotIn('responseDescriptor', response.data)
 
     def test_query_job_with_response_id(self):
-        JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
-        JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst', errcode="0").save()
-        JobStatusModel(indexid=2, jobid=self.job_id, status='inst', progress=50, descp='inst', errcode="0").save()
-        JobStatusModel(indexid=3, jobid=self.job_id, status='inst', progress=80, descp='inst', errcode="0").save()
-        JobStatusModel(indexid=4, jobid=self.job_id, status='inst', progress=100, descp='inst', errcode="0").save()
+        JobModel(jobid=self.job_id,
+                 jobtype=JOB_TYPE.NS,
+                 jobaction=JOB_ACTION.INSTANTIATE,
+                 resid='1').save()
+        JobStatusModel(indexid=1,
+                       jobid=self.job_id,
+                       status=JOB_STATUS.PROCESSING,
+                       progress=20,
+                       descp='NS instantiation progress is 20%.',
+                       errcode="0").save()
+        JobStatusModel(indexid=2,
+                       jobid=self.job_id,
+                       status=JOB_STATUS.PROCESSING,
+                       progress=50,
+                       descp='NS instantiation progress is 50%.',
+                       errcode="0").save()
+        JobStatusModel(indexid=3,
+                       jobid=self.job_id,
+                       status=JOB_STATUS.PROCESSING,
+                       progress=80,
+                       descp='NS instantiation progress is 80%.',
+                       errcode="0").save()
+        JobStatusModel(indexid=4,
+                       jobid=self.job_id,
+                       status=JOB_STATUS.FINISH,
+                       progress=100,
+                       descp='Finish to instantiate NS.',
+                       errcode="0").save()
         response = self.client.get("/api/nslcm/v1/jobs/%s?responseId=2" % self.job_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.job_id, response.data.get('jobId'))
@@ -63,8 +91,18 @@ class JobsViewTest(TestCase):
         self.assertEqual(100, response.data['responseDescriptor']['progress'])
         self.assertEqual(1, len(response.data['responseDescriptor']['responseHistoryList']))
 
-    def test_up_job(self):
-        JobModel(jobid=self.job_id, jobtype='VNF', jobaction='INST', resid='1').save()
-        JobStatusModel(indexid=1, jobid=self.job_id, status='inst', progress=20, descp='inst', errcode="0").save()
+    def test_update_job(self):
+        JobModel(
+            jobid=self.job_id,
+            jobtype=JOB_TYPE.NS,
+            jobaction=JOB_ACTION.INSTANTIATE,
+            resid='1').save()
+        JobStatusModel(
+            indexid=1,
+            jobid=self.job_id,
+            status=JOB_STATUS.PROCESSING,
+            progress=20,
+            descp='NS instantiation progress is 20%.',
+            errcode="0").save()
         response = self.client.post("/api/nslcm/v1/jobs/%s" % self.job_id, format='json', data=UPDATE_JOB_DICT)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
