@@ -44,12 +44,12 @@ class NSUpdateService(threading.Thread):
             self.do_biz()
         except NSLCMException as e:
             logger.error(traceback.format_exc())
-            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
-            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.args[0])
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.args[0])
         except Exception as e:
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, 'ns update fail')
-            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.args[0])
 
     def do_biz(self):
         self.update_job(JOB_PROGRESS.STARTED, desc='ns update start')

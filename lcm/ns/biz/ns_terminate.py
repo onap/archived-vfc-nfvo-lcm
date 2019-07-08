@@ -57,13 +57,13 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, "ns terminate ends.", '')
             NsLcmOpOcc.update(self.occ_id, "COMPLETED")
         except NSLCMException as e:
-            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.message)
-            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+            JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.args[0])
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.args[0])
         except Exception as e:
-            logger.error(e.message)
+            logger.error(e.args[0])
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, "ns terminate fail.")
-            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.message)
+            NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.args[0])
 
     def cancel_vl_list(self):
         array_vlinst = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=self.ns_inst_id)
@@ -82,7 +82,7 @@ class TerminateNsService(threading.Thread):
                     if str(result) == '0':
                         delete_result = "success"
             except Exception as e:
-                logger.error("[cancel_vl_list] error[%s]!" % e.message)
+                logger.error("[cancel_vl_list] error[%s]!" % e.args[0])
                 logger.error(traceback.format_exc())
             job_msg = "Delete vlinst:[%s] %s." % (vlinst.vlinstanceid, delete_result)
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
@@ -104,7 +104,7 @@ class TerminateNsService(threading.Thread):
                     if str(result) == '0':
                         delete_result = "success"
             except Exception as e:
-                logger.error("[cancel_sfc_list] error[%s]!" % e.message)
+                logger.error("[cancel_sfc_list] error[%s]!" % e.args[0])
                 logger.error(traceback.format_exc())
             job_msg = "Delete sfcinst:[%s] %s." % (sfcinst.sfcid, delete_result)
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
@@ -126,7 +126,7 @@ class TerminateNsService(threading.Thread):
                 if vnf_job_id:
                     delete_result = "deleting"
             except Exception as e:
-                logger.error("[cancel_vnf_list] error[%s]!" % e.message)
+                logger.error("[cancel_vnf_list] error[%s]!" % e.args[0])
                 logger.error(traceback.format_exc())
             job_msg = "Delete vnfinst:[%s] %s." % (vnfinst.nfinstid, delete_result)
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
@@ -209,7 +209,7 @@ class TerminateNsService(threading.Thread):
                     if ret[0] == 0:
                         delete_result = "success"
                 except Exception as e:
-                    logger.error("[cancel_pnf_list] error[%s]!" % e.message)
+                    logger.error("[cancel_pnf_list] error[%s]!" % e.args[0])
                     logger.error(traceback.format_exc())
                 job_msg = "Delete pnfinst:[%s] %s" % (pnfinst.pnfId, delete_result)
                 cur_progress += step_progress

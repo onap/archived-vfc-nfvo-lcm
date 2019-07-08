@@ -82,14 +82,14 @@ def run_ns_instantiate(input_data, occ_id):
             NsLcmOpOcc.update(occ_id, "COMPLETED")
             ns_instantiate_ok = True
     except NSLCMException as e:
-        logger.error("Failded to Create NS: %s", e.message)
+        logger.error("Failded to Create NS: %s", e.args[0])
         update_job(job_id, JOB_PROGRESS.ERROR, JOB_ERROR_CODE.ERROR, "Failded to Create NS.")
-        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
         post_deal(ns_inst_id, "false")
     except Exception as e:
         logger.error(traceback.format_exc())
         update_job(job_id, JOB_PROGRESS.ERROR, JOB_ERROR_CODE.ERROR, "Failded to Create NS.")
-        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.message)
+        NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
         post_deal(ns_inst_id, "false")
     return ns_instantiate_ok
 

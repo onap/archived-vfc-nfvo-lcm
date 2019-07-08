@@ -68,7 +68,7 @@ class SfcInstanceView(APIView):
             return Response(data=rsp, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(traceback.format_exc())
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class PortPairGpView(APIView):
@@ -151,7 +151,7 @@ class SfcView(APIView):
             if not req_serializer.is_valid():
                 raise Exception(req_serializer.errors)
         except Exception as e:
-            logger.error("Exception occurs: %s", e.message)
+            logger.error("Exception occurs: %s", e.args[0])
             logger.error(traceback.format_exc())
         data = {
             'nsinstid': ignorcase_get(request.data, 'nsInstanceId'),

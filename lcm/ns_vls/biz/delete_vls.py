@@ -97,9 +97,9 @@ class DeleteVls(object):
             resp_data, resp_status = delete_network_aai(self.vl_inst_id, resource_version)
             logger.debug("Delete network[%s] from aai successfully, status: %s", self.vl_inst_id, resp_status)
         except NSLCMException as e:
-            logger.debug("Fail to delete network[%s] from aai: %s", self.vl_inst_id, e.message)
+            logger.debug("Fail to delete network[%s] from aai: %s", self.vl_inst_id, e.args[0])
         except Exception as e:
-            logger.error("Exception occurs when delete network[%s] from aai: %s", self.vl_inst_id, e.message)
+            logger.error("Exception occurs when delete network[%s] from aai: %s", self.vl_inst_id, e.args[0])
             logger.error(traceback.format_exc())
 
     def delete_vl_from_db(self, vl_inst_info):

@@ -61,7 +61,7 @@ class CreateSfcWorker(Thread):
             self.handle_exception(e)
 
     def handle_exception(self, e):
-        detail = "sfc instantiation failed, detail message: %s" % e.message
+        detail = "sfc instantiation failed, detail message: %s" % e.args[0]
         JobUtil.add_job_status(self.job_id, 255, "create sfc failed!", "")
         logger.error(traceback.format_exc())
         logger.error(detail)

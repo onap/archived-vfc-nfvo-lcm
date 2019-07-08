@@ -67,7 +67,7 @@ class CreateVls(object):
             return self.exception_handle(e)
 
     def exception_handle(self, e):
-        detail = "vl instantiation failed, detail message: %s" % e.message
+        detail = "vl instantiation failed, detail message: %s" % e.args[0]
         logger.error(detail)
         return {"result": 1, "detail": detail, "vlId": self.vl_inst_id}
 
@@ -247,6 +247,6 @@ class CreateVls(object):
             resp_data, resp_status = create_network_aai(self.vl_inst_id, data)
             logger.debug("Success to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
         except NSLCMException as e:
-            logger.debug("Fail to create network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.message))
+            logger.debug("Fail to create network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.args[0]))
         except:
             logger.error(traceback.format_exc())

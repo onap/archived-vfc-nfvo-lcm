@@ -57,7 +57,7 @@ class NotifyLcm(object):
                 self.update_network_in_aai()
             logger.debug("notify lcm end")
         except NSLCMException as e:
-            self.exception(e.message)
+            self.exception(e.args[0])
         except Exception:
             logger.error(traceback.format_exc())
             self.exception('unexpected exception')
@@ -122,7 +122,7 @@ class NotifyLcm(object):
                 (vserver_id, resp_status))
             logger.debug("delete_vserver_in_aai end!")
         except NSLCMException as e:
-            logger.debug("Fail to delete vserver from aai, detail message: %s" % e.message)
+            logger.debug("Fail to delete vserver from aai, detail message: %s" % e.args[0])
         except:
             logger.error(traceback.format_exc())
 
@@ -224,7 +224,7 @@ class NotifyLcm(object):
                 else:
                     logger.error('affectedVl struct error: changeType not in {added,removed,modified}')
         except NSLCMException as e:
-            logger.debug("Fail to create internal network to aai, detail message: %s" % e.message)
+            logger.debug("Fail to create internal network to aai, detail message: %s" % e.args[0])
         except:
             logger.error(traceback.format_exc())
 
@@ -255,7 +255,7 @@ class NotifyLcm(object):
             resp_data, resp_status = create_network_aai(vlInstanceId, data)
             logger.debug("Success to create network[%s] to aai: [%s].", vlInstanceId, resp_status)
         except NSLCMException as e:
-            logger.debug("Fail to create network[%s] to aai, detail message: %s" % (vlInstanceId, e.message))
+            logger.debug("Fail to create network[%s] to aai, detail message: %s" % (vlInstanceId, e.args[0]))
         except:
             logger.error(traceback.format_exc())
 
@@ -271,7 +271,7 @@ class NotifyLcm(object):
             logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
                          % (vlInstanceId, resp_status))
         except NSLCMException as e:
-            logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (vlInstanceId, e.message))
+            logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (vlInstanceId, e.args[0]))
         except:
             logger.error(traceback.format_exc())
 
@@ -311,6 +311,6 @@ class NotifyLcm(object):
                          % (vserver_id, self.vnf_instid, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to create vserver to aai, vnf instance=[%s], detail message: %s"
-                         % (self.vnf_instid, e.message))
+                         % (self.vnf_instid, e.args[0]))
         except:
             logger.error(traceback.format_exc())

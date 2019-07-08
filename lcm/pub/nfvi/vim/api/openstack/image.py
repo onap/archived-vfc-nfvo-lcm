@@ -36,7 +36,7 @@ class ImageUploadThread(threading.Thread):
             self.glance.images.upload(self.image_id, open(self.image_path, 'rb'))
         except Exception as ex:
             logger.error(traceback.format_exc())
-            err_msg = ex.message if ex.message else str(sys.exc_info())
+            err_msg = ex.args[0] if ex.args[0] else str(sys.exc_info())
             logger.error("Failed to upload image(%s): %s", self.image_id, err_msg)
         except:
             logger.error(traceback.format_exc())

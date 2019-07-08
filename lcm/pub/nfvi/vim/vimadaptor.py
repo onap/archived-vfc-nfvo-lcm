@@ -43,14 +43,14 @@ class VimAdaptor:
         try:
             ret = fun(self.authInfo[1], *args) if self.authInfo[0] == 0 else self.authInfo
         except VimException as e:
-            ret = [1, e.message]
+            ret = [1, e.args[0]]
         except RequestException as e:
             logger.error("request=%s, url=%s" % (e.request.headers._store, e.request.url))
             logger.error(traceback.format_exc())
-            ret = [1, e.message if e.message else str(sys.exc_info())]
+            ret = [1, e.args[0] if e.args[0] else str(sys.exc_info())]
         except Exception as ex:
             logger.error(traceback.format_exc())
-            ret = [1, ex.message if ex.message else str(sys.exc_info())]
+            ret = [1, ex.args[0] if ex.args[0] else str(sys.exc_info())]
         except:
             logger.error(traceback.format_exc())
             ret = [1, str(sys.exc_info())]

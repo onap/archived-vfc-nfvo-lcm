@@ -64,10 +64,10 @@ class TerminateVnfs(threading.Thread):
             self.delete_subscription()
             self.delete_data_from_db()
         except NSLCMException as e:
-            self.set_job_err(e.message)
+            self.set_job_err(e.args[0])
         except Exception as ex:
             logger.error(traceback.format_exc())
-            self.set_job_err(ex.message)
+            self.set_job_err(ex.args[0])
 
     def set_vnf_status(self, vnf_inst_info):
         vnf_status = vnf_inst_info.status
@@ -141,7 +141,7 @@ class TerminateVnfs(threading.Thread):
         try:
             SubscriptionDeletion(self.vnfm_inst_id, self.vnf_inst_id).do_biz()
         except Exception as e:
-            logger.error("delete_subscription failed: %s", e.message)
+            logger.error("delete_subscription failed: %s", e.args[0])
 
     def delete_data_from_db(self):
         NfInstModel.objects.filter(nfinstid=self.vnf_inst_id).delete()
@@ -161,7 +161,7 @@ class TerminateVnfs(threading.Thread):
             logger.debug(
                 "Success to delete vnf[%s] from aai, resp_status: [%s]." % (self.vnf_inst_id, resp_status))
         except NSLCMException as e:
-            logger.debug("Fail to delete vnf from aai[%s], detail message: %s" % (self.vnf_inst_id, e.message))
+            logger.debug("Fail to delete vnf from aai[%s], detail message: %s" % (self.vnf_inst_id, e.args[0]))
         except:
             logger.error(traceback.format_exc())
 
@@ -189,6 +189,6 @@ class TerminateVnfs(threading.Thread):
                     (vserver_id, resp_status))
             logger.debug("delete_vserver_in_aai end!")
         except NSLCMException as e:
-            logger.debug("Fail to delete vserver from aai, detail message: %s" % e.message)
+            logger.debug("Fail to delete vserver from aai, detail message: %s" % e.args[0])
         except:
             logger.error(traceback.format_exc())

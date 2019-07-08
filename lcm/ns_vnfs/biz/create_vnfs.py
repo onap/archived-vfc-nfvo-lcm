@@ -96,7 +96,7 @@ class CreateVnfs(Thread):
             self.save_info_to_db()
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, 'vnf instantiation success', JOB_ERROR_CODE.NO_ERROR)
         except NSLCMException as e:
-            self.vnf_inst_failed_handle(e.message)
+            self.vnf_inst_failed_handle(e.args[0])
         except Exception:
             logger.error(traceback.format_exc())
             self.vnf_inst_failed_handle('unexpected exception')
@@ -398,7 +398,7 @@ class CreateVnfs(Thread):
         try:
             SubscriptionCreation(data).do_biz()
         except Exception as e:
-            logger.error("subscribe failed: %s", e.message)
+            logger.error("subscribe failed: %s", e.args[0])
 
     def write_vnf_creation_info(self):
         logger.debug("write_vnf_creation_info start")
@@ -474,6 +474,6 @@ class CreateVnfs(Thread):
                          % (self.nf_inst_id, self.ns_inst_id, resp_status))
         except NSLCMException as e:
             logger.debug("Fail to create vnf[%s] to aai, ns instance=[%s], detail message: %s"
-                         % (self.nf_inst_id, self.ns_inst_id, e.message))
+                         % (self.nf_inst_id, self.ns_inst_id, e.args[0]))
         except:
             logger.error(traceback.format_exc())

@@ -46,7 +46,7 @@ class DeleteSfcs(object):
             return self.exception_handle(e)
 
     def exception_handle(self, e):
-        detail = 'sfc delete failed, detail message: %s' % e.message
+        detail = 'sfc delete failed, detail message: %s' % e.args[0]
         logger.error(detail)
         return {"result": 1, "detail": detail}
 

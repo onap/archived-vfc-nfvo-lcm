@@ -50,8 +50,8 @@ class CreateNSView(APIView):
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(traceback.format_exc())
-            logger.error("Exception in GetNS: %s", e.message)
-            return Response(data={'error': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error("Exception in GetNS: %s", e.args[0])
+            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
         request_body=_CreateNsReqSerializer(),

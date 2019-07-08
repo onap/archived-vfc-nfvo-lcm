@@ -37,8 +37,8 @@ def query_net(auth_info, net_id):
         keystone = auth_info["keystone"]
         tenant = keystone.tenants.get(tenant_id=net["tenant_id"])
     except NetworkNotFoundClient as e:
-        logger.warn("NetworkNotFoundClient: %s", e.message)
-        return [2, e.message]
+        logger.warn("NetworkNotFoundClient: %s", e.args[0])
+        return [2, e.args[0]]
     return [0, {
         "id": net["id"],
         "name": net["name"],
@@ -86,8 +86,8 @@ def query_subnet(auth_info, subnet_id):
     try:
         subnet_info = neutron.show_subnet(subnet_id)["subnet"]
     except SubnetNotFound as e:
-        logger.warn("SubnetNotFound: %s", e.message)
-        return [2, e.message]
+        logger.warn("SubnetNotFound: %s", e.args[0])
+        return [2, e.args[0]]
     ret = [0, {}]
     ret[1]["id"] = subnet_id
     ret[1]["name"] = subnet_info["name"]
@@ -108,8 +108,8 @@ def query_port(auth_info, port_id):
     try:
         port_info = neutron.show_port(port_id)["port"]
     except NeutronClientException as e:
-        logger.warn("NeutronClientException: %s", e.message)
-        return [2, e.message]
+        logger.warn("NeutronClientException: %s", e.args[0])
+        return [2, e.args[0]]
     ret = [0, {}]
     ret[1]["id"] = port_id
     ret[1]["name"] = port_info["name"]
@@ -236,7 +236,7 @@ def create_port(auth_info, data):
     try:
         port_created = neutron.create_port(create_param)
     except NeutronClientException as ex:
-        logger.info("create_port exception: %s, %s", str(sys.exc_info()), ex.message)
+        logger.info("create_port exception: %s, %s", str(sys.exc_info()), ex.args[0])
         create_param['port'].pop('security_groups')
         if 'allowed_address_pairs' in create_param['port']:
             create_param['port'].pop('allowed_address_pairs')
@@ -372,7 +372,7 @@ def create_subnet(neutron, network_id, data):
     except Exception as ex:
         logger.error(traceback.format_exc())
         logger.error(str(sys.exc_info()))
-        return [1, ex.message if ex.message else str(sys.exc_info())]
+        return [1, ex.args[0] if ex.args[0] else str(sys.exc_info())]
 
 
 def rollback(neutron, network_data):
@@ -398,10 +398,10 @@ def delete_network(auth_info, network_id):
         neutron.delete_network(network_id)
     except Exception as ex:
         logger.error(traceback.format_exc())
-        msg = ex.message if ex.message else str(sys.exc_info())
+        msg = ex.args[0] if ex.args[0] else str(sys.exc_info())
         logger.error(msg)
         if 404 == ex.status_code:
-            return [0, ex.message]
+            return [0, ex.args[0]]
         return [1, "Vim exception."]
     return [0, "Network(%s) is deleted" % network_id]
 
@@ -411,8 +411,8 @@ def delete_subnet(auth_info, subnet_id):
     try:
         neutron.delete_subnet(subnet_id)
     except NeutronClientException as e:
-        logger.warn("[%s]NetworkNotFoundClient: %s", fun_name(), e.message)
-        return [0, e.message]
+        logger.warn("[%s]NetworkNotFoundClient: %s", fun_name(), e.args[0])
+        return [0, e.args[0]]
     return [0, "Subnet(%s) is deleted" % subnet_id]
 
 
@@ -421,6 +421,6 @@ def delete_port(auth_info, port_id):
     try:
         neutron.delete_port(port_id)
     except NeutronClientException as e:
-        logger.warn("[%s]NeutronClientException: %s", fun_name(), e.message)
-        return [0, e.message]
+        logger.warn("[%s]NeutronClientException: %s", fun_name(), e.args[0])
+        return [0, e.args[0]]
     return [0, "Port(%s) is deleted" % port_id]
