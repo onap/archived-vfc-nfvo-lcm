@@ -56,11 +56,12 @@ class CreatePnf(object):
     def create_pnf_inst(self):
         pnfInstances = PNFInstModel.objects.filter(pnfId=self.pnfId)
         if pnfInstances:
-            if not pnfInstances.filter(nsInstances__contains=self.nsInstances):
-                for pnfInstance in pnfInstances:
-                    new_nsInstances = pnfInstance.nsInstances + "," + self.nsInstances
-                    pnfInstance.nsInstances = new_nsInstances
-                    pnfInstance.save()
+            if pnfInstances[0].nsInstances:
+                if not pnfInstances.filter(nsInstances__contains=self.nsInstances):
+                    for pnfInstance in pnfInstances:
+                        new_nsInstances = pnfInstance.nsInstances + "," + self.nsInstances
+                        pnfInstance.nsInstances = new_nsInstances
+                        pnfInstance.save()
         else:
             PNFInstModel(pnfId=self.pnfId,
                          pnfName=self.pnfName,
