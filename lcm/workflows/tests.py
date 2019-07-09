@@ -19,7 +19,7 @@ import unittest
 import mock
 from django.test import Client
 from rest_framework import status
-
+from lcm.jobs.const import JOB_INSTANCE_URI, JOB_INSTANCE_RESPONSE_ID_URI
 from lcm.pub.database.models import WFPlanModel
 from lcm.pub.utils import restcall
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
@@ -115,19 +115,19 @@ class WorkflowViewTest(unittest.TestCase):
                 [0, json.JSONEncoder().encode({
                     "sfcStatus": "active"
                 }), '201'],
-            "/api/nslcm/v1/jobs/11?responseId=0":
+            JOB_INSTANCE_RESPONSE_ID_URI % ("11", "0"):
                 [0, json.JSONEncoder().encode({"responseDescriptor": {
                     "responseId": "1",
                     "progress": 100,
                     "statusDescription": "ok"
                 }}), '200'],
-            "/api/nslcm/v1/jobs/111?responseId=0":
+            JOB_INSTANCE_RESPONSE_ID_URI % ("111", "0"):
                 [0, json.JSONEncoder().encode({"responseDescriptor": {
                     "responseId": "1",
                     "progress": 100,
                     "statusDescription": "ok"
                 }}), '200'],
-            "/api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
+            JOB_INSTANCE_URI % job_id:
                 [0, '{}', '201'],
             "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id):
                 [0, '{}', '201']
@@ -161,7 +161,7 @@ class WorkflowViewTest(unittest.TestCase):
                     "detail": "vl1",
                     "vlId": "1"
                 }), '201'],
-            "/api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
+            JOB_INSTANCE_URI % job_id:
                 [0, '{}', '201'],
             "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id):
                 [0, '{}', '201']
@@ -204,13 +204,13 @@ class WorkflowViewTest(unittest.TestCase):
                 [0, json.JSONEncoder().encode({
                     "vnfStatus": "error"
                 }), '201'],
-            "/api/nslcm/v1/jobs/11?responseId=0":
+            JOB_INSTANCE_RESPONSE_ID_URI % ("11", "0"):
                 [0, json.JSONEncoder().encode({"responseDescriptor": {
                     "responseId": "1",
                     "progress": 100,
                     "statusDescription": "ok"
                 }}), '200'],
-            "/api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
+            JOB_INSTANCE_URI % job_id:
                 [0, '{}', '201'],
             "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id):
                 [0, '{}', '201']
