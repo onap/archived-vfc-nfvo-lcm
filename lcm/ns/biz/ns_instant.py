@@ -191,7 +191,7 @@ class InstantNSService(object):
         JobUtil.add_job_status(job_id, 10, 'NS inst(%s) wso2 workflow started: %s' % (
             self.ns_inst_id, ret.get('status')))
         if ret.get('status') == 1:
-            return dict(data={'jobId': job_id}, status=status.HTTP_200_OK)
+            return dict(data={'jobId': job_id}, status=status.HTTP_200_OK, occ_id=occ_id)
         return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def start_activiti_workflow(self, job_id, plan_input, occ_id):
