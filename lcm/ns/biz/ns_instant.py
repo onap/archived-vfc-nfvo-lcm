@@ -177,7 +177,7 @@ class InstantNSService(object):
             logger.error("ns-instant(%s) workflow error:%s" % (self.ns_inst_id, e.args[0]))
             NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
             JobUtil.add_job_status(job_id, 255, 'NS instantiation failed')
-            return dict(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return dict(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR, occ_id=occ_id)
 
     def start_wso2_workflow(self, job_id, ns_inst, plan_input, occ_id):
         # todo occ_id
