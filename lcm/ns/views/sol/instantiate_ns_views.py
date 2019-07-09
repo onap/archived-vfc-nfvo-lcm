@@ -57,7 +57,9 @@ class InstantiateNsView(APIView):
                 InstantNsReq['locationConstraints'].append(vnf)
 
         ack = InstantNSService(ns_instance_id, request.data).do_biz()
-        nsLcmOpOccId = ack['occ_id']
+        nsLcmOpOccId = ack.get('occ_id')
+        if not nsLcmOpOccId:
+            return Response(data=ack['data'], status=ack['status'])
         response = Response(data={}, status=status.HTTP_202_ACCEPTED)
         logger.debug("Location: %s" % ack['occ_id'])
         response["Location"] = NS_OCC_BASE_URI % nsLcmOpOccId
