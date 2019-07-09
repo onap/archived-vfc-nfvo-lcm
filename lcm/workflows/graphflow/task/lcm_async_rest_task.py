@@ -14,6 +14,7 @@
 
 import logging
 import json
+from lcm.jobs.const import JOB_INSTANCE_URI
 from lcm.workflows.graphflow.task.async_rest_task import ASyncRestTask
 from lcm.pub.utils import restcall
 
@@ -26,7 +27,7 @@ class LcmASyncRestTask(ASyncRestTask):
 
     def __init__(self, *args):
         super(LcmASyncRestTask, self).__init__(*args)
-        self.job_url = "/api/nslcm/v1/jobs/%s"
+        # self.job_url = JOB_INSTANCE_URI
 
     def call_rest(self, url, method, content=None):
         ret = restcall.req_by_msb(url, method, content)
@@ -37,7 +38,7 @@ class LcmASyncRestTask(ASyncRestTask):
         logger.debug("get_ext_status %s", self.key)
         job_status = None
         if job_id:
-            url = "/api/nslcm/v1/jobs/%s" % job_id
+            url = JOB_INSTANCE_URI % job_id
             status, job_result = self.call_rest(url, self.GET)
             if status in self.STATUS_OK:
                 progress = job_result["responseDescriptor"]["progress"]

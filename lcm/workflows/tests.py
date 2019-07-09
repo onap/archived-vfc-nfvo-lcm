@@ -22,8 +22,8 @@ from rest_framework import status
 
 from lcm.pub.database.models import WFPlanModel
 from lcm.pub.utils import restcall
-from lcm.workflows import build_in
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
+from lcm.workflows import build_in
 
 
 class WorkflowViewTest(unittest.TestCase):
@@ -127,7 +127,7 @@ class WorkflowViewTest(unittest.TestCase):
                     "progress": 100,
                     "statusDescription": "ok"
                 }}), '200'],
-            "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
+            "/api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
                 [0, '{}', '201'],
             "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id):
                 [0, '{}', '201']
@@ -161,7 +161,7 @@ class WorkflowViewTest(unittest.TestCase):
                     "detail": "vl1",
                     "vlId": "1"
                 }), '201'],
-            "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
+            "/api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
                 [0, '{}', '201'],
             "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id):
                 [0, '{}', '201']
@@ -210,7 +210,7 @@ class WorkflowViewTest(unittest.TestCase):
                     "progress": 100,
                     "statusDescription": "ok"
                 }}), '200'],
-            "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
+            "/api/nslcm/v1/jobs/{jobId}".format(jobId=job_id):
                 [0, '{}', '201'],
             "api/nslcm/v1/ns/{nsInstanceId}/postdeal".format(nsInstanceId=ns_inst_id):
                 [0, '{}', '201']

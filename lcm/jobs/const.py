@@ -11,6 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from lcm.pub.config.config import MSB_BASE_URL
 
-JOB_INSTANCE_URI = MSB_BASE_URL + '/api/nslcm/v1/jobs/%s'
+JOB_INSTANCE_URI = '/api/nslcm/v1/jobs/%s'
+JOB_INSTANCE_RESPONSE_ID_URI = '/api/nslcm/v1/jobs/%s?responseId=%s'

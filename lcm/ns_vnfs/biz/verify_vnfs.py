@@ -17,7 +17,7 @@ import os
 import threading
 import traceback
 import time
-
+from lcm.jobs.const import JOB_INSTANCE_RESPONSE_ID_URI
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_PROGRESS, JOB_ACTION
@@ -136,7 +136,7 @@ class VerifyVnfs(threading.Thread):
         while count < retry_count:
             count = count + 1
             time.sleep(interval_second)
-            ret = req_by_msb("/api/nslcm/v1/jobs/%s?responseId=%s" % (job_id, response_id), "GET")
+            ret = req_by_msb(JOB_INSTANCE_RESPONSE_ID_URI % (job_id, response_id), "GET")
             if ret[0] != 0:
                 logger.error("Failed to query job: %s:%s", ret[2], ret[1])
                 continue

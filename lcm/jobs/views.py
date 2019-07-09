@@ -88,9 +88,10 @@ class JobView(APIView):
             if jobs[-1].errcode != JOB_ERROR_CODE.ERROR:
                 job_up_req = JobUpdReq(**request.data)
                 desc = job_up_req.desc
-                errcode = JOB_ERROR_CODE.NO_ERROR if job_up_req.errcode in ('true', 'active') else JOB_ERROR_CODE.ERROR
-                logger.debug("errcode=%s", errcode)
-                JobUtil.add_job_status(job_id, job_up_req.progress, desc, error_code=errcode)
+                no_err_list = ('true', 'active', '0')
+                err_code = JOB_ERROR_CODE.NO_ERROR if job_up_req.errcode in no_err_list else JOB_ERROR_CODE.ERROR
+                logger.debug("errcode=%s", err_code)
+                JobUtil.add_job_status(job_id, job_up_req.progress, desc, error_code=err_code)
             job_update_resp = JobUpdResp('ok')
             resp_serializer = JobUpdRespSerializer(job_update_resp)
             logger.debug("Leave JobView::post, response=%s", resp_serializer.data)

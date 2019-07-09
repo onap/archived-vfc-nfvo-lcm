@@ -16,7 +16,7 @@ import json
 import logging
 import traceback
 from threading import Thread
-
+from lcm.jobs.const import JOB_INSTANCE_URI
 from lcm.pub.utils.syscomm import fun_name
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
@@ -173,7 +173,7 @@ def post_deal(ns_inst_id, status):
 
 def update_job(job_id, progress, errcode, desc):
     logger.debug("job_id %s" % job_id)
-    uri = "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id)
+    uri = JOB_INSTANCE_URI % job_id
     data = json.JSONEncoder().encode({
         "progress": progress,
         "errcode": errcode,

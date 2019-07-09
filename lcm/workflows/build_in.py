@@ -16,7 +16,8 @@ import logging
 import traceback
 from threading import Thread
 import time
-
+from lcm.jobs.const import JOB_INSTANCE_URI, JOB_INSTANCE_RESPONSE_ID_URI
+from lcm.jobs.enum import JOB_ERROR_CODE
 from lcm.pub.utils.syscomm import fun_name
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
@@ -61,40 +62,40 @@ def run_ns_instantiate(input_data, occ_id):
     sdnc_id = ignore_case_get(input_data, "sdnControllerId")
     g_jobs_status[job_id] = [1 for i in range(vnf_count)]
     try:
-        update_job(job_id, 10, "true", "Start to create VL")
+        update_job(job_id, 10, JOB_ERROR_CODE.NO_ERROR, "Start to create VL")
         for i in range(vl_count):
             create_vl(ns_inst_id, i + 1, nsd_json, ns_param_json)
 
-        update_job(job_id, 30, "true", "Start to create VNF")
+        update_job(job_id, 30, JOB_ERROR_CODE.NO_ERROR, "Start to create VNF")
         jobs = [create_vnf(ns_inst_id, i + 1, vnf_param_json) for i in range(vnf_count)]
         wait_until_jobs_done(job_id, jobs)
 
         [confirm_vnf_status(inst_id) for inst_id, _, _ in jobs]
 
-        update_job(job_id, 50, "true", "Start to create PNF")
+        update_job(job_id, 50, JOB_ERROR_CODE.NO_ERROR, "Start to create PNF")
         create_pnf(pnf_param_json)
 
-        update_job(job_id, 70, "true", "Start to create SFC")
+        update_job(job_id, 70, JOB_ERROR_CODE.NO_ERROR, "Start to create SFC")
         g_jobs_status[job_id] = [1 for i in range(sfc_count)]
         jobs = [create_sfc(ns_inst_id, i + 1, nsd_json, sdnc_id) for i in range(sfc_count)]
         wait_until_jobs_done(job_id, jobs)
 
         [confirm_sfc_status(inst_id) for inst_id, _, _ in jobs]
 
-        update_job(job_id, 90, "true", "Start to post deal")
+        update_job(job_id, 90, JOB_ERROR_CODE.NO_ERROR, "Start to post deal")
         post_deal(ns_inst_id, "true")
 
-        update_job(job_id, 100, "true", "Create NS successfully.")
+        update_job(job_id, 100, JOB_ERROR_CODE.NO_ERROR, "Create NS successfully.")
         NsLcmOpOcc.update(occ_id, "COMPLETED")
         ns_instantiate_ok = True
     except NSLCMException as e:
         logger.error("Failded to Create NS: %s", e.args[0])
-        update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        update_job(job_id, JOB_ERROR, JOB_ERROR_CODE.ERROR, "Failded to Create NS.")
         NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
         post_deal(ns_inst_id, "false")
     except Exception as e:
         logger.error(traceback.format_exc())
-        update_job(job_id, JOB_ERROR, "255", "Failded to Create NS.")
+        update_job(job_id, JOB_ERROR, JOB_ERROR_CODE.ERROR, "Failded to Create NS.")
         NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
         post_deal(ns_inst_id, "false")
     finally:
@@ -181,7 +182,7 @@ def post_deal(ns_inst_id, status):
 
 
 def update_job(job_id, progress, errcode, desc):
-    uri = "api/nslcm/v1/jobs/{jobId}".format(jobId=job_id)
+    uri = JOB_INSTANCE_URI % job_id
     data = json.JSONEncoder().encode({
         "progress": progress,
         "errcode": errcode,
@@ -211,7 +212,7 @@ class JobWaitThread(Thread):
         while count < self.retry_count:
             count = count + 1
             time.sleep(self.interval_second)
-            uri = "/api/nslcm/v1/jobs/%s?responseId=%s" % (self.job_id, response_id)
+            uri = JOB_INSTANCE_RESPONSE_ID_URI % (self.job_id, response_id)
             ret = restcall.req_by_msb(uri, "GET")
             if ret[0] != 0:
                 logger.error("Failed to query job: %s:%s", ret[2], ret[1])

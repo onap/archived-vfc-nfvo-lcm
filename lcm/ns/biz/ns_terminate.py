@@ -17,6 +17,7 @@ import threading
 import time
 import traceback
 
+from lcm.jobs.const import JOB_INSTANCE_RESPONSE_ID_URI
 from lcm.pub.database.models import NSInstModel, VLInstModel, FPInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
@@ -169,7 +170,7 @@ class TerminateNsService(threading.Thread):
         while count < retry_count:
             count = count + 1
             time.sleep(interval_second)
-            uri = "/api/nslcm/v1/jobs/%s?responseId=%s" % (vnf_job_id, response_id)
+            uri = JOB_INSTANCE_RESPONSE_ID_URI % (vnf_job_id, response_id)
             ret = restcall.req_by_msb(uri, "GET")
             if ret[0] != 0:
                 logger.error("Failed to query job: %s:%s", ret[2], ret[1])

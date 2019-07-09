@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from django.test import TestCase
+from lcm.jobs.const import JOB_INSTANCE_URI
 from lcm.jobs.enum import JOB_ACTION, JOB_STATUS, JOB_TYPE
 from lcm.jobs.tests import UPDATE_JOB_DICT, UPDATE_JOB_BAD_REQ_DICT
 from lcm.pub.database.models import JobModel, JobStatusModel
@@ -42,7 +43,7 @@ class JobsViewTest(TestCase):
                        progress=20,
                        descp='Finish to instantiate NS.',
                        errcode="0").save()
-        response = self.client.get("/api/nslcm/v1/jobs/%s" % self.job_id)
+        response = self.client.get(JOB_INSTANCE_URI % self.job_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
         self.assertIn('jobId', response.data)
         self.assertIn('responseDescriptor', response.data)
@@ -50,7 +51,7 @@ class JobsViewTest(TestCase):
 
     def test_query_ns_job_not_existed(self):
         job_id = 'test_job_id_not_existed'
-        response = self.client.get("/api/nslcm/v1/jobs/%s" % job_id)
+        response = self.client.get(JOB_INSTANCE_URI % job_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertIn('jobId', response.data)
         self.assertNotIn('responseDescriptor', response.data)
@@ -84,7 +85,8 @@ class JobsViewTest(TestCase):
                        progress=100,
                        descp='Finish to instantiate NS.',
                        errcode="0").save()
-        response = self.client.get("/api/nslcm/v1/jobs/%s?responseId=2" % self.job_id)
+        url = JOB_INSTANCE_URI % self.job_id + "?responseId=2"
+        response = self.client.get(url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.job_id, response.data.get('jobId'))
         self.assertIn('responseDescriptor', response.data)
@@ -104,11 +106,11 @@ class JobsViewTest(TestCase):
             progress=20,
             descp='NS instantiation progress is 20%.',
             errcode="0").save()
-        response = self.client.post("/api/nslcm/v1/jobs/%s" % self.job_id, format='json', data=UPDATE_JOB_DICT)
+        response = self.client.post(JOB_INSTANCE_URI % self.job_id, format='json', data=UPDATE_JOB_DICT)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
     def test_update_job_not_existed(self):
-        response = self.client.post("/api/nslcm/v1/jobs/%s" % self.job_id, format='json', data=UPDATE_JOB_DICT)
+        response = self.client.post(JOB_INSTANCE_URI % self.job_id, format='json', data=UPDATE_JOB_DICT)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_update_job_with_bad_req(self):
@@ -124,5 +126,5 @@ class JobsViewTest(TestCase):
             progress=20,
             descp='NS instantiation progress is 20%.',
             errcode="0").save()
-        response = self.client.post("/api/nslcm/v1/jobs/%s" % self.job_id, format='json', data=UPDATE_JOB_BAD_REQ_DICT)
+        response = self.client.post(JOB_INSTANCE_URI % self.job_id, format='json', data=UPDATE_JOB_BAD_REQ_DICT)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
