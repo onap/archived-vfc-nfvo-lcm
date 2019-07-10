@@ -27,8 +27,7 @@ logger = logging.getLogger(__name__)
 def make_error_resp(status, detail):
     return Response(
         data={
-            'status': status,
-            'detail': detail
+            'error': detail
         },
         status=status
     )

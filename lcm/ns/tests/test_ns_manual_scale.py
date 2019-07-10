@@ -131,7 +131,7 @@ class TestNsManualScale(TestCase):
         mock_start.side_effect = NSLCMException("NS scale failed.")
         response = self.client.post("/api/nslcm/v1/ns/%s/scale" % self.ns_inst_id, data={}, format='json')
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-        self.assertIn("detail", response.data)
+        self.assertIn("error", response.data)
 
     @mock.patch.object(NSManualScaleService, 'start')
     def test_ns_manual_scale_when_ns_not_exist(self, mock_start):
@@ -139,4 +139,4 @@ class TestNsManualScale(TestCase):
         scale_ns_json = SCALE_NS_DICT.copy()
         response = self.client.post("/api/nslcm/v1/ns/11/scale", data=scale_ns_json, format='json')
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-        self.assertIn("detail", response.data)
+        self.assertIn("error", response.data)
