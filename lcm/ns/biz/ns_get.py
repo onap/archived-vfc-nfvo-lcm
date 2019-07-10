@@ -124,7 +124,7 @@ class GetNSInfoService(object):
                     'nsVirtualLinkProfileId': vl.vldid,
                     'vlInstanceName': vl.vlinstancename,
                     'resourceHandle': {
-                        'vimId': vl.vimId,
+                        'vimId': vl.vimid,
                         'resourceId': vl.relatednetworkid,
                         'vimLevelResourceType': vl.vltype
                     },
