@@ -26,6 +26,7 @@ from lcm.pub.exceptions import NSLCMException
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
 
@@ -39,24 +40,19 @@ class NSUpdateView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
-        try:
-            logger.debug("Enter UpdateNSView::post %s, %s", request.data, ns_instance_id)
-            req_serializer = UpdateNsReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                raise BadRequestException(req_serializer.errors)
+        logger.debug("Enter UpdateNSView::post %s, %s", request.data, ns_instance_id)
+        req_serializer = UpdateNsReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            raise BadRequestException(req_serializer.errors)
 
-            job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.UPDATE, ns_instance_id)
-            NSUpdateService(ns_instance_id, request.data, job_id).start()
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.UPDATE, ns_instance_id)
+        NSUpdateService(ns_instance_id, request.data, job_id).start()
 
-            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
+        resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
+        if not resp_serializer.is_valid():
+            raise NSLCMException(resp_serializer.errors)
 
-            logger.debug("Leave UpdateNSView::post ret=%s", resp_serializer.data)
-            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
-        except BadRequestException as e:
-            return Response(data={'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error("Exception in UpdateNSView: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.debug("Leave UpdateNSView::post ret=%s", resp_serializer.data)
+        return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
