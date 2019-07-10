@@ -123,11 +123,11 @@ class GetNSInfoService(object):
                     'nsVirtualLinkDescId': vl.vldid,
                     'nsVirtualLinkProfileId': vl.vldid,
                     'vlInstanceName': vl.vlinstancename,
-                    'resourceHandle': {
+                    'resourceHandle': [{
                         'vimId': vl.vimid,
                         'resourceId': vl.relatednetworkid,
                         'vimLevelResourceType': vl.vltype
-                    },
+                    }],
                     # todo 'linkPort': self.get_cp_infos(vl.vlinstanceid,is_sol),
                     'networkId': vl.relatednetworkid,
                     'subNetworkid': vl.relatedsubnetworkid
