@@ -21,7 +21,7 @@ from lcm.jobs.const import JOB_INSTANCE_RESPONSE_ID_URI
 from lcm.pub.database.models import NSInstModel, VLInstModel, FPInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
 from lcm.ns.enum import OWNER_TYPE

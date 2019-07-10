@@ -22,7 +22,7 @@ from rest_framework.views import APIView
 
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vnfm_by_id, get_vim_by_id_vim_info
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs

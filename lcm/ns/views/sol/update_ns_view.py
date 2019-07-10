@@ -22,7 +22,7 @@ from rest_framework.views import APIView
 from lcm.ns.biz.ns_update import NSUpdateService
 from lcm.ns.serializers.sol.update_serializers import UpdateNsReqSerializer
 from lcm.pub.exceptions import BadRequestException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.const import NS_OCC_BASE_URI
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer

@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.pub.utils.values import remove_none_key
 from lcm.jobs.api_model import JobQueryResp, JobDescriptor, JobHistory
 

@@ -22,7 +22,7 @@ from lcm.ns_sfcs.biz.create_port_chain import CreatePortChain
 from lcm.ns_sfcs.biz.create_portpairgp import CreatePortPairGroup
 
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.ns_sfcs.biz.utils import update_fp_status
 
 logger = logging.getLogger(__name__)

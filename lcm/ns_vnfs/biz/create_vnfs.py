@@ -35,7 +35,7 @@ from lcm.pub.msapi.resmgr import create_vnf, create_vnf_creation_info
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.msapi.vnfmdriver import send_nf_init_request
 from lcm.pub.utils import restcall
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 # from lcm.pub.utils.share_lock import do_biz_with_share_lock
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get

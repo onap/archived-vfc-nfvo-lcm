@@ -17,7 +17,7 @@ import logging
 
 import math
 
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_MODEL_STATUS
 from lcm.pub.msapi.vnfmdriver import query_vnfm_job
 from lcm.pub.utils.values import ignore_case_get

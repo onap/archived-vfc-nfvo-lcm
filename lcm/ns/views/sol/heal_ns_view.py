@@ -21,7 +21,7 @@ from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.pub.exceptions import BadRequestException
 from lcm.ns.serializers.sol.heal_serializers import HealNsReqSerializer
 from lcm.ns.serializers.sol.pub_serializers import ProblemDetailsSerializer
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView

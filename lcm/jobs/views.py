@@ -22,7 +22,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from lcm.jobs.enum import JOB_ERROR_CODE
 from lcm.jobs.job_get import GetJobInfoService
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.api_model import JobUpdReq, JobUpdResp
 from lcm.jobs.serializers import JobUpdReqSerializer, JobUpdRespSerializer
 from lcm.jobs.serializers import JobQueryRespSerializer
@@ -62,7 +62,7 @@ class JobView(APIView):
                 raise NSLCMException(resp_serializer.errors)
             logger.debug("Leave JobView::get, response=%s", resp_serializer.data)
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
+        except NSLCMException as e:
             logger.error(traceback.format_exc())
             return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

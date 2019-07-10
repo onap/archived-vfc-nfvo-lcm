@@ -21,7 +21,7 @@ from rest_framework.test import APIClient
 from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.tests import VNFD_MODEL_DICT, SCALE_NS_DICT
 

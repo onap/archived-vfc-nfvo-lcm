@@ -21,7 +21,7 @@ import traceback
 from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import JobModel, NSInstModel, NfInstModel, VNFCInstModel, VmInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_PROGRESS
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService

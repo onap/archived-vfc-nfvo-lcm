@@ -20,7 +20,7 @@ from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns.tests import HEAL_NS_DICT, HEAL_VNF_DICT, VNFD_MODEL_DICT

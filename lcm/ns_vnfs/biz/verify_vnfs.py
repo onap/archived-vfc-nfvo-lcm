@@ -19,7 +19,7 @@ import traceback
 import time
 from lcm.jobs.const import JOB_INSTANCE_RESPONSE_ID_URI
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_PROGRESS, JOB_ACTION
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils.restcall import req_by_msb

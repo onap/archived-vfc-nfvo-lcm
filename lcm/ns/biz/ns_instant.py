@@ -30,7 +30,7 @@ from lcm.pub.msapi.catalog import get_process_id
 from lcm.pub.msapi.catalog import get_servicetemplate_id, get_servicetemplate
 from lcm.pub.msapi import extsys
 from lcm.pub.msapi.wso2bpel import workflow_run
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.workflows import build_in
 from lcm.ns.biz.ns_instantiate_flow import run_ns_instantiate

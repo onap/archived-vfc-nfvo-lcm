@@ -22,7 +22,7 @@ from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.database.models import NfInstModel, NSInstModel
 from lcm.pub.utils import restcall
 from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_ACTION
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 
 
 class TestTerminateNsViews(TestCase):

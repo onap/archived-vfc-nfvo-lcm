@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from lcm.jobs.enum import JOB_ERROR_CODE
+from lcm.pub.utils.enumutil import enum_to_list
 from rest_framework import serializers
 
 
@@ -39,7 +41,6 @@ class JobDescriptorSerializer(serializers.Serializer):
     status = serializers.CharField(
         help_text="Status of job",
         required=True)
-    # progress = serializers.CharField(help_text="Progress of job", required=True)
     progress = serializers.IntegerField(
         help_text="Progress of job",
         required=True)
@@ -47,8 +48,9 @@ class JobDescriptorSerializer(serializers.Serializer):
         help_text="Description of job",
         required=False,
         allow_null=True)
-    errorCode = serializers.CharField(
+    errorCode = serializers.ChoiceField(
         help_text="Error code of job",
+        choices=enum_to_list(JOB_ERROR_CODE),
         required=False,
         allow_null=True)
     responseId = serializers.CharField(

@@ -21,7 +21,7 @@ from rest_framework.views import APIView
 from lcm.ns.biz.ns_terminate import TerminateNsService
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.exceptions import BadRequestException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer

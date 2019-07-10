@@ -20,7 +20,7 @@ import traceback
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.vnfmdriver import send_nf_operate_request
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_PROGRESS, JOB_ACTION
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.enum import VNF_STATUS

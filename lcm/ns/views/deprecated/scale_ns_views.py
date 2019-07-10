@@ -22,7 +22,7 @@ from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.utils.jobutil import JobUtil
+from lcm.jobs.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 
 logger = logging.getLogger(__name__)
