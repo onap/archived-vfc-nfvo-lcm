@@ -25,6 +25,7 @@ from lcm.pub.utils.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from lcm.ns.serializers.deprecated.ns_serializers import _TerminateNsReqSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
 
@@ -38,23 +39,19 @@ class NSTerminateView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
-        try:
-            logger.debug("Enter TerminateNSView::post %s", request.data)
-            req_serializer = _TerminateNsReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                raise BadRequestException(req_serializer.errors)
+        logger.debug("Enter TerminateNSView::post %s", request.data)
+        req_serializer = _TerminateNsReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            raise BadRequestException(req_serializer.errors)
 
-            job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.TERMINATE, ns_instance_id)
-            TerminateNsService(ns_instance_id, job_id, request.data).start()
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.TERMINATE, ns_instance_id)
+        TerminateNsService(ns_instance_id, job_id, request.data).start()
 
-            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
-            logger.debug("Leave TerminateNSView::post ret=%s", resp_serializer.data)
-            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
-        except BadRequestException as e:
-            return Response(data={'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error("Exception in CreateNS: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
+        if not resp_serializer.is_valid():
+            raise NSLCMException(resp_serializer.errors)
+
+        logger.debug("Leave TerminateNSView::post ret=%s", resp_serializer.data)
+        return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
