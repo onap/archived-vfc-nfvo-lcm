@@ -22,8 +22,10 @@ from lcm.ns.biz.ns_heal import NSHealService
 from lcm.ns.serializers.deprecated.ns_serializers import _HealNsReqSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
 
@@ -36,26 +38,19 @@ class NSHealView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
-        try:
-            logger.debug("Enter HealNSView::post %s", request.data)
-            logger.debug("Enter HealNSView:: %s", ns_instance_id)
-            req_serializer = _HealNsReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                raise NSLCMException(req_serializer.errors)
+        logger.debug("Enter HealNSView::post %s, %s", ns_instance_id, request.data)
+        req_serializer = _HealNsReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            raise BadRequestException(req_serializer.errors)
 
-            job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.HEAL, ns_instance_id)
-            NSHealService(ns_instance_id, request.data, job_id).start()
+        job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.HEAL, ns_instance_id)
+        NSHealService(ns_instance_id, request.data, job_id).start()
 
-            resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
+        resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
+        if not resp_serializer.is_valid():
+            raise NSLCMException(resp_serializer.errors)
 
-            logger.debug("Leave HealNSView::post ret=%s", resp_serializer.data)
-            return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
-        except NSLCMException as e:
-            logger.error("Exception in HealNSView: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except Exception as e:
-            logger.error("Exception in HealNSView: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.debug("Leave HealNSView::post ret=%s", resp_serializer.data)
+        return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
