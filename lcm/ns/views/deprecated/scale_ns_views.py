@@ -22,6 +22,7 @@ from lcm.ns.biz.ns_manual_scale import NSManualScaleService
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _ManualScaleNsReqSerializer
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
 from .common import view_safe_call_with_log
@@ -42,7 +43,7 @@ class NSManualScaleView(APIView):
         logger.debug("Enter NSManualScaleView::post %s, %s", request.data, ns_instance_id)
         req_serializer = _ManualScaleNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():
-            raise NSLCMException(req_serializer.errors)
+            raise BadRequestException(req_serializer.errors)
 
         req = request.data
         scale_data = {}
