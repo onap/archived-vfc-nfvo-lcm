@@ -60,7 +60,7 @@ class InstantiateNsView(APIView):
         nsLcmOpOccId = ack.get('occ_id')
         if not nsLcmOpOccId:
             return Response(data=ack['data'], status=ack['status'])
-        response = Response(data={}, status=status.HTTP_202_ACCEPTED)
+        response = Response(data=ack['data'], status=status.HTTP_202_ACCEPTED)
         logger.debug("Location: %s" % ack['occ_id'])
         response["Location"] = NS_OCC_BASE_URI % nsLcmOpOccId
         logger.debug("Leave InstantiateNsView::post::ack=%s", ack)

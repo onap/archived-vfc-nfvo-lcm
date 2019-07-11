@@ -64,7 +64,7 @@ class TestInstantiateNsApi(TestCase):
 
     @mock.patch.object(InstantNSService, 'do_biz')
     def test_ns_instantiate_normal(self, mock_do_biz):
-        mock_do_biz.return_value = {'occ_id': "1"}
+        mock_do_biz.return_value = {'occ_id': "1", 'data': {}}
         response = self.client.post(self.url % self.nsInstanceId, data=self.req_data, format='json')
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
