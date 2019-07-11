@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-import traceback
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -22,6 +21,8 @@ from rest_framework.views import APIView
 from lcm.ns.biz.ns_instant import InstantNSService
 from lcm.ns.serializers.deprecated.ns_serializers import _NsOperateJobSerializer
 from lcm.ns.serializers.deprecated.ns_serializers import _InstantNsReqSerializer
+from lcm.pub.exceptions import BadRequestException
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
 
@@ -35,19 +36,15 @@ class NSInstView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
-        try:
-            logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
-            logger.debug("request.data=%s", request.data)
-            req_serializer = _InstantNsReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
-                return Response({'error': req_serializer.errors},
-                                status=status.HTTP_400_BAD_REQUEST)
-            ack = InstantNSService(ns_instance_id, request.data).do_biz()
-            logger.debug("Leave NSInstView::post::ack=%s", ack)
-            return Response(data=ack['data'], status=ack['status'])
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            logger.error("Exception in InstNS: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
+        logger.debug("request.data=%s", request.data)
+        req_serializer = _InstantNsReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            logger.debug("request.data is not valid,error: %s" % req_serializer.errors)
+            raise BadRequestException(req_serializer.errors)
+
+        ack = InstantNSService(ns_instance_id, request.data).do_biz()
+        logger.debug("Leave NSInstView::post::ack=%s", ack)
+        return Response(data=ack['data'], status=ack['status'])
