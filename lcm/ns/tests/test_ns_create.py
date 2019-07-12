@@ -49,7 +49,6 @@ class TestNsInstantiate(TestCase):
     def test_create_ns_empty_data(self, mock_do_biz):
         mock_do_biz.side_effect = Exception("Exception in CreateNS.")
         response = self.client.post("/api/nslcm/v1/ns", data={})
-        self.assertEqual(response.data["error"], "Exception in CreateNS.")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
 
@@ -58,7 +57,6 @@ class TestNsInstantiate(TestCase):
         mock_do_biz.side_effect = Exception("nsd not exists.")
         self.create_ns_dict["csarId"] = "1"
         response = self.client.post("/api/nslcm/v1/ns", data=self.create_ns_dict, format='json')
-        self.assertEqual(response.data["error"], "nsd not exists.")
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
 
