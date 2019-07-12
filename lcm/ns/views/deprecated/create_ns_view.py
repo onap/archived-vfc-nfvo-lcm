@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-import traceback
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -27,6 +26,7 @@ from lcm.ns.serializers.deprecated.ns_serializers import _QueryNsRespSerializer
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.values import ignore_case_get
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
 
@@ -39,19 +39,15 @@ class CreateNSView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def get(self, request):
-        try:
-            logger.debug("CreateNSView::get")
-            ret = GetNSInfoService().get_ns_info()
-            logger.debug("CreateNSView::get::ret=%s", ret)
-            resp_serializer = _QueryNsRespSerializer(data=ret, many=True)
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
-            return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            logger.error("Exception in GetNS: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.debug("CreateNSView::get")
+        ret = GetNSInfoService().get_ns_info()
+        logger.debug("CreateNSView::get::ret=%s", ret)
+        resp_serializer = _QueryNsRespSerializer(data=ret, many=True)
+        if not resp_serializer.is_valid():
+            raise NSLCMException(resp_serializer.errors)
+        return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         request_body=_CreateNsReqSerializer(),
@@ -61,36 +57,38 @@ class CreateNSView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request):
         logger.debug("Enter CreateNS: %s", request.data)
-        try:
-            req_serializer = _CreateNsReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                raise BadRequestException(req_serializer.errors)
+        req_serializer = _CreateNsReqSerializer(data=request.data)
+        if not req_serializer.is_valid():
+            raise BadRequestException(req_serializer.errors)
 
-            if ignore_case_get(request.data, 'test') == "test":
-                return Response(data={'nsInstanceId': "test"}, status=status.HTTP_201_CREATED)
-            csar_id = ignore_case_get(request.data, 'csarId')
-            ns_name = ignore_case_get(request.data, 'nsName')
-            description = ignore_case_get(request.data, 'description')
-            context = ignore_case_get(request.data, 'context')
-            ns_inst_id = CreateNSService(csar_id, ns_name, description, context).do_biz()
+        if ignore_case_get(request.data, 'test') == "test":
+            return Response(
+                data={'nsInstanceId': "test"},
+                status=status.HTTP_201_CREATED
+            )
+        csar_id = ignore_case_get(request.data, 'csarId')
+        ns_name = ignore_case_get(request.data, 'nsName')
+        description = ignore_case_get(request.data, 'description')
+        context = ignore_case_get(request.data, 'context')
+        ns_inst_id = CreateNSService(
+            csar_id,
+            ns_name,
+            description,
+            context
+        ).do_biz()
 
-            logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
-            resp_serializer = _CreateNsRespSerializer(
-                data={'nsInstanceId': ns_inst_id,
-                      'nsInstanceName': 'nsInstanceName',
-                      'nsInstanceDescription': 'nsInstanceDescription',
-                      'nsdId': 123,
-                      'nsdInfoId': 456,
-                      'nsState': 'NOT_INSTANTIATED',
-                      '_links': {'self': {'href': 'href'}}})
-            if not resp_serializer.is_valid():
-                raise NSLCMException(resp_serializer.errors)
-            return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
-        except BadRequestException as e:
-            return Response(data={'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            logger.error("Exception in CreateNS: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
+        resp_serializer = _CreateNsRespSerializer(
+            data={'nsInstanceId': ns_inst_id,
+                  'nsInstanceName': 'nsInstanceName',
+                  'nsInstanceDescription': 'nsInstanceDescription',
+                  'nsdId': 123,
+                  'nsdInfoId': 456,
+                  'nsState': 'NOT_INSTANTIATED',
+                  '_links': {'self': {'href': 'href'}}})
+        if not resp_serializer.is_valid():
+            raise NSLCMException(resp_serializer.errors)
+        return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
