@@ -44,20 +44,15 @@ class GetNSInfoService(object):
         if is_sol:
             nsInstance = {}
             nsInstance['id'] = ns_inst.id
-            if ns_inst.name:
-                nsInstance['nsInstanceName'] = ns_inst.name
-            if ns_inst.description:
-                nsInstance['nsInstanceDescription'] = ns_inst.description
-            if ns_inst.nsd_id:
-                nsInstance['nsdId'] = ns_inst.nsd_id
+            nsInstance['nsInstanceName'] = ns_inst.name
+            nsInstance['nsInstanceDescription'] = ns_inst.description
+            nsInstance['nsdId'] = ns_inst.nsd_id
+            nsInstance['nsdInfoId'] = ns_inst.nspackage_id
+            nsInstance['nsState'] = ns_inst.status
             if ns_inst.nsd_invariant_id:
                 nsInstance['nsdInvariantId'] = ns_inst.nsd_invariant_id
-            if ns_inst.nspackage_id:
-                nsInstance['nsdInfoId'] = ns_inst.nspackage_id
             if ns_inst.flavour_id:
                 nsInstance['flavourId'] = ns_inst.flavour_id
-            if ns_inst.status:
-                nsInstance['nsState'] = ns_inst.status
                 # todo 'nsScaleStatus':{}
                 # todo  'additionalAffinityOrAntiAffinityRule':{}
             logger.debug(" test ")

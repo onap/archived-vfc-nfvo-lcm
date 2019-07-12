@@ -681,6 +681,9 @@ class NsInstanceSerializer(serializers.Serializer):
     nsdId = serializers.CharField(
         help_text="Identifier of the NSD on which the NS instance is based.",
         required=True)
+    nsdInvariantId = serializers.CharField(
+        help_text="Identifier of the NSD in a version independent manner.",
+        required=False)
     nsdInfoId = serializers.CharField(
         help_text="Identifier of the NSD information object on which the NS instance is based.",
         required=True)
