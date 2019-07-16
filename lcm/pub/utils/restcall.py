@@ -44,7 +44,7 @@ def call_req(base_url, user, passwd, auth_type, resource, method, content='', ad
         full_url = combine_url(base_url, resource)
         headers = {'content-type': 'application/json', 'accept': 'application/json'}
         if user:
-            headers['Authorization'] = 'Basic %s' % base64.b64encode(bytes('%s:%s' % (user, passwd), "utf-8"))
+            headers['Authorization'] = 'Basic %s' % base64.b64encode(bytes('%s:%s' % (user, passwd), "utf-8")).decode()
         ca_certs = None
         if additional_headers:
             headers.update(additional_headers)
