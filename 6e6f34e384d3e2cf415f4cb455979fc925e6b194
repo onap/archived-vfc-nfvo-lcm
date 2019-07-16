@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "603b302d_0ac890a4",
+        "filename": "lcm/pub/redisco/containers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 2363
+      },
+      "writtenOn": "2019-07-16T05:10:28Z",
+      "side": 1,
+      "message": "Please put this after line 31 \"import collections\"",
+      "range": {
+        "startLine": 70,
+        "startChar": 12,
+        "endLine": 70,
+        "endChar": 50
+      },
+      "revId": "6e6f34e384d3e2cf415f4cb455979fc925e6b194",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
