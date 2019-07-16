@@ -38,7 +38,11 @@ class GetNSInfoService(object):
             ns_insts = NSInstModel.objects.filter(id=ns_inst_id)
         else:
             ns_insts = NSInstModel.objects.all()
-        return [self.get_single_ns_info(ns_inst, is_sol) for ns_inst in ns_insts]
+        result = []
+        for ns_inst in ns_insts:
+            if ns_insts and ns_insts[0].status != 'null':
+                result.append(self.get_single_ns_info(ns_inst, is_sol))
+        return result
 
     def get_single_ns_info(self, ns_inst, is_sol=False):
         if is_sol:
