@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import base64
 import sys
 import traceback
 import logging
@@ -43,7 +44,7 @@ def call_req(base_url, user, passwd, auth_type, resource, method, content='', ad
         full_url = combine_url(base_url, resource)
         headers = {'content-type': 'application/json', 'accept': 'application/json'}
         if user:
-            headers['Authorization'] = 'Basic ' + ('%s:%s' % (user, passwd)).encode("base64")
+            headers['Authorization'] = 'Basic %s' % base64.b64encode(bytes('%s:%s' % (user, passwd), "utf-8"))
         ca_certs = None
         if additional_headers:
             headers.update(additional_headers)
