@@ -67,7 +67,7 @@ class Container(object):
         if hasattr(self, 'db_cache') and self.db_cache:
             return self.db_cache
         else:
-            from redisco import connection
+            from lcm.pub.redisco import connection
             self.db_cache = connection
             return self.db_cache
 
