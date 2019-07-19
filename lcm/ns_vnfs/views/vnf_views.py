@@ -52,7 +52,7 @@ class VnfGrantView(APIView):
             if not resp_serializer.is_valid():
                 raise Exception(resp_serializer.errors)
 
-            return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
+            return Response(data=grant_resp, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(traceback.format_exc())
             logger.error("Exception in VnfGrant: %s", e.args[0])
