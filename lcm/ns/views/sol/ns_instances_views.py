@@ -50,7 +50,7 @@ class NSInstancesView(APIView):
         resp_serializer = NsInstanceSerializer(data=ret, many=True)
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
-        return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=ret, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         request_body=CreateNsRequestSerializer(),
@@ -89,7 +89,7 @@ class NSInstancesView(APIView):
         resp_serializer = NsInstanceSerializer(data=nsInstance)
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
-        response = Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
+        response = Response(data=nsInstance, status=status.HTTP_201_CREATED)
         response["Location"] = NS_INSTANCE_BASE_URI % nsInstance['id']
         return response
 
@@ -115,7 +115,7 @@ class IndividualNsInstanceView(APIView):
         resp_serializer = NsInstanceSerializer(data=ret[0])
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
-        return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=ret[0], status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         request_body=None,

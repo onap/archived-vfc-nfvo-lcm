@@ -51,7 +51,7 @@ class SfcDetailView(APIView):
             return Response(data={'error': resp_serializer.errors},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response(status=status.HTTP_200_OK, data=resp_serializer.data)
+        return Response(status=status.HTTP_200_OK, data=resp_data)
 
     @swagger_auto_schema(
         request_body=None,

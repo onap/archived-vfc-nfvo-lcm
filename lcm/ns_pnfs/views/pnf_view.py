@@ -70,7 +70,8 @@ class PnfView(APIView):
             else:
                 pnfInstDataSet = GetPnf().do_biz()
             logger.debug("PnfView::get::ret=%s", pnfInstDataSet)
-            resp_serializer = PnfInstancesSerializer(data=[pnfInstData.__dict__ for pnfInstData in pnfInstDataSet])
+            ret = [pnfInstData.__dict__ for pnfInstData in pnfInstDataSet]
+            resp_serializer = PnfInstancesSerializer(data=ret)
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
