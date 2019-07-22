@@ -63,4 +63,4 @@ class NSManualScaleView(APIView):
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
 
-        return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(data={'jobId': job_id}, status=status.HTTP_202_ACCEPTED)

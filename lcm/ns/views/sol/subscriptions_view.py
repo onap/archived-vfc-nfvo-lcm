@@ -95,7 +95,7 @@ class SubscriptionsView(APIView):
             data=subscription_data)
         if not sub_resp_serializer.is_valid():
             raise NSLCMException(sub_resp_serializer.errors)
-        return Response(data=sub_resp_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data=subscription_data, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
         responses={
@@ -118,4 +118,4 @@ class SubscriptionsView(APIView):
             raise NSLCMException(subscriptions_serializer.errors)
         logger.debug("SubscribeNotification--get::> Remove default fields if exclude_default is "
                      "specified")
-        return Response(data=subscriptions_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=resp_data, status=status.HTTP_200_OK)

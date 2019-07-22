@@ -77,10 +77,11 @@ class TablesList(APIView):
         try:
             model_obj = eval("models.%s.objects" % modelName)
             count = len(model_obj.filter())
-            resp_serializer = RecordCountSerializer(data={"count": count})
+            ret = {"count": count}
+            resp_serializer = RecordCountSerializer(data=ret)
             if not resp_serializer.is_valid():
                 raise Exception(resp_serializer.errors)
-            return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+            return Response(data=ret, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(e.args[0])
             logger.error(traceback.format_exc())

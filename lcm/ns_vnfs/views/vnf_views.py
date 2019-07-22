@@ -50,7 +50,7 @@ class VnfGrantView(APIView):
 
             resp_serializer = GrantSerializer(data=grant_resp)
             if not resp_serializer.is_valid():
-                raise Exception(resp_serializer.errors)
+                raise Exception(grant_resp)
 
             return Response(data=grant_resp, status=status.HTTP_201_CREATED)
         except Exception as e:
