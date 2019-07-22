@@ -47,7 +47,7 @@ class NSDetailView(APIView):
         resp_serializer = _QueryNsRespSerializer(data=ret[0])
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
-        return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=ret[0], status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         request_body=None,

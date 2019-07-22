@@ -53,5 +53,5 @@ class NSTerminateView(APIView):
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
 
-        logger.debug("Leave TerminateNSView::post ret=%s", resp_serializer.data)
-        return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
+        logger.debug("Leave TerminateNSView::post ret=%s", {'jobId': job_id})
+        return Response(data={'jobId': job_id}, status=status.HTTP_202_ACCEPTED)

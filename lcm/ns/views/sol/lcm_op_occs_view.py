@@ -81,9 +81,9 @@ class QueryMultiNsLcmOpOccs(APIView):
         logger.debug("QueryMultiNsLcmOpOccs--get::> Remove default fields if exclude_default is specified")
         if 'exclude_default' in list(request.query_params.keys()):
             for field in EXCLUDE_DEFAULT:
-                for lcm_op in ns_lcm_op_occs_serializer.data:
+                for lcm_op in resp_data:
                     del lcm_op[field]
-        return Response(data=ns_lcm_op_occs_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=resp_data, status=status.HTTP_200_OK)
 
 
 class QuerySingleNsLcmOpOcc(APIView):
@@ -104,4 +104,4 @@ class QuerySingleNsLcmOpOcc(APIView):
         if not ns_lcm_op_occ_serializer.is_valid():
             raise NSLCMException(ns_lcm_op_occ_serializer.errors)
 
-        return Response(data=ns_lcm_op_occ_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=resp_data, status=status.HTTP_200_OK)

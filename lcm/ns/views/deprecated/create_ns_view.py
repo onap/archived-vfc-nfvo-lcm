@@ -47,7 +47,7 @@ class CreateNSView(APIView):
         resp_serializer = _QueryNsRespSerializer(data=ret, many=True)
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
-        return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=ret, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         request_body=_CreateNsReqSerializer(),
@@ -81,14 +81,14 @@ class CreateNSView(APIView):
         ).do_biz()
 
         logger.debug("CreateNSView::post::ret={'nsInstanceId':%s}", ns_inst_id)
-        resp_serializer = _CreateNsRespSerializer(
-            data={'nsInstanceId': ns_inst_id,
-                  'nsInstanceName': 'nsInstanceName',
-                  'nsInstanceDescription': 'nsInstanceDescription',
-                  'nsdId': 123,
-                  'nsdInfoId': 456,
-                  'nsState': 'NOT_INSTANTIATED',
-                  '_links': {'self': {'href': 'href'}}})
+        ret = {'nsInstanceId': ns_inst_id,
+               'nsInstanceName': 'nsInstanceName',
+                'nsInstanceDescription': 'nsInstanceDescription',
+                'nsdId': 123,
+                'nsdInfoId': 456,
+                'nsState': 'NOT_INSTANTIATED',
+                '_links': {'self': {'href': 'href'}}}
+        resp_serializer = _CreateNsRespSerializer(data=ret)
         if not resp_serializer.is_valid():
             raise NSLCMException(resp_serializer.errors)
-        return Response(data=resp_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data=ret, status=status.HTTP_201_CREATED)

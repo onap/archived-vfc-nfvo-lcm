@@ -71,16 +71,16 @@ class VlDetailView(APIView):
         if not vl_inst_info:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        resp_serializer = GetVlRespSerializer(data={
-            'vlId': vl_inst_id,
-            'vlName': vl_inst_info[0].vlinstancename,
-            'vlStatus': "active"})
+        ret = {'vlId': vl_inst_id,
+               'vlName': vl_inst_info[0].vlinstancename,
+               'vlStatus': "active"}
+        resp_serializer = GetVlRespSerializer(data=ret)
         if not resp_serializer.is_valid():
             logger.error(resp_serializer.errors)
             return Response(data={'error': resp_serializer.errors},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response(status=status.HTTP_200_OK, data=resp_serializer.data)
+        return Response(status=status.HTTP_200_OK, data=ret)
 
     @swagger_auto_schema(
         request_body=None,

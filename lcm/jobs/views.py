@@ -60,8 +60,8 @@ class JobView(APIView):
             resp_serializer = JobQueryRespSerializer(data=ret)
             if not resp_serializer.is_valid():
                 raise NSLCMException(resp_serializer.errors)
-            logger.debug("Leave JobView::get, response=%s", resp_serializer.data)
-            return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+            logger.debug("Leave JobView::get, response=%s", ret)
+            return Response(data=ret, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(traceback.format_exc())
             return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -94,12 +94,12 @@ class JobView(APIView):
                 JobUtil.add_job_status(job_id, job_up_req.progress, desc, error_code=err_code)
             job_update_resp = JobUpdResp('ok')
             resp_serializer = JobUpdRespSerializer(job_update_resp)
-            logger.debug("Leave JobView::post, response=%s", resp_serializer.data)
+            logger.debug("Leave JobView::post, response=%s", job_update_resp)
             return Response(data=resp_serializer.data, status=status.HTTP_202_ACCEPTED)
         except BadRequestException as e:
             job_update_resp = JobUpdResp('error', e.args[0])
             resp_serializer = JobUpdRespSerializer(job_update_resp)
-            return Response(data=resp_serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=job_update_resp, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             job_update_resp = JobUpdResp('error', e.args[0])
             resp_serializer = JobUpdRespSerializer(job_update_resp)
