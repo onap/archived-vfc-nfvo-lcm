@@ -44,3 +44,5 @@ SOL_INSTANTIATE_NS_WITH_PNF_DICT = fileutil.read_json_file(cur_path + '/data/sol
 VCPE_NS_MODEL_DICT = fileutil.read_json_file(cur_path + '/data/vcpe_ns_model.json')
 SUBSCRIPTION_NS_OPERATION_DICT = fileutil.read_json_file(cur_path + '/data/subscription_ns_operation.json')
 SUBSCRIPTION_NS_DELETION_DICT = fileutil.read_json_file(cur_path + '/data/subscription_ns_deletion.json')
+UPDATE_NS_DICT = fileutil.read_json_file(cur_path + '/data/update_ns.json')
+TERMINATE_NS_DICT = fileutil.read_json_file(cur_path + '/data/terminate_ns.json')

@@ -18,7 +18,7 @@ import time
 import traceback
 
 from lcm.jobs.const import JOB_INSTANCE_RESPONSE_ID_URI
-from lcm.pub.database.models import NSInstModel, VLInstModel, FPInstModel, NfInstModel
+from lcm.pub.database.models import NSInstModel, VLInstModel, FPInstModel, NfInstModel, JobModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
 from lcm.pub.utils.jobutil import JobUtil

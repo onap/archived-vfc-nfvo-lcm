@@ -102,21 +102,11 @@ def check_scale_list(vnf_scale_list, ns_instanceId, aspect, step):
 
 
 def get_scale_vnf_data_list(filename, ns_instanceId, aspect, step, scale_type):
-
     vnf_scale_list = get_vnf_scale_info(filename, ns_instanceId, aspect, step)
     check_scale_list(vnf_scale_list, ns_instanceId, aspect, step)
     scaleVnfDataList = set_scaleVnfData_type(vnf_scale_list, scale_type)
     logger.debug("scaleVnfDataList = %s" % scaleVnfDataList)
     return scaleVnfDataList
-
-
-# Get the nsd id according to the ns instance id.
-def get_nsdId(ns_instanceId):
-    if NSInstModel.objects.filter(id=ns_instanceId):
-        nsd_id = NSInstModel.objects.filter(id=ns_instanceId)[0].nsd_id
-        return nsd_id
-
-    return None
 
 
 def check_and_set_params(scaleNsData, ns_InstanceId):
@@ -139,10 +129,9 @@ def get_scale_vnf_data(scaleNsData, ns_InstanceId):
         os.path.dirname(
             os.path.dirname(
                 os.path.abspath(__file__))))
-    filename = curdir_path + "/ns/data/scalemapping.json"
+    filename = curdir_path + "/ns/tests/data/scalemapping.json"
     logger.debug("filename = %s" % filename)
-    aspect, numberOfSteps, scale_type = check_and_set_params(
-        scaleNsData, ns_InstanceId)
+    aspect, numberOfSteps, scale_type = check_and_set_params(scaleNsData, ns_InstanceId)
     return get_scale_vnf_data_list(
         filename,
         ns_InstanceId,
@@ -165,7 +154,7 @@ def get_scale_vnf_data_info_list(scaleNsData, ns_InstanceId):
             )
         )
     )
-    scalingmap_filename = base_path + "/ns/data/scalemapping.json"
+    scalingmap_filename = base_path + "/ns/tests/data/scalemapping.json"
     scalingmap_json = get_json_data(scalingmap_filename)
 
     # Gets and checks the values of parameters.
@@ -185,6 +174,14 @@ def get_scale_vnf_data_info_list(scaleNsData, ns_InstanceId):
     check_scale_list(scale_vnf_data_info_list, ns_InstanceId, aspect, numberOfSteps)
 
     return scale_vnf_data_info_list
+
+
+# Get the nsd id according to the ns instance id.
+def get_nsdId(ns_instanceId):
+    if NSInstModel.objects.filter(id=ns_instanceId):
+        nsd_id = NSInstModel.objects.filter(id=ns_instanceId)[0].nsd_id
+        return nsd_id
+    return None
 
 
 # Get the vnf scaling info from the scaling_map.json according to the ns package id.

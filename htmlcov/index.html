@@ -1,0 +1,1964 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coverage report</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.debounce.min.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="coverage_html.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(coverage.index_ready);
+    </script>
+</head>
+<body class="indexfile">
+
+<div id="header">
+    <div class="content">
+        <h1>Coverage report:
+            <span class="pc_cov">39%</span>
+        </h1>
+
+        <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
+
+        <form id="filter_container">
+            <input id="filter" type="text" value="" placeholder="filter..." />
+        </form>
+    </div>
+</div>
+
+<div class="help_panel">
+    <img id="panel_icon" src="keybd_open.png" alt="Hide keyboard shortcuts" />
+    <p class="legend">Hot-keys on this page</p>
+    <div>
+    <p class="keyhelp">
+        <span class="key">n</span>
+        <span class="key">s</span>
+        <span class="key">m</span>
+        <span class="key">x</span>
+        
+        <span class="key">b</span>
+        <span class="key">p</span>
+        
+        <span class="key">c</span> &nbsp; change column sorting
+    </p>
+    </div>
+</div>
+
+<div id="index">
+    <table class="index">
+        <thead>
+            
+            <tr class="tablehead" title="Click to sort">
+                <th class="name left headerSortDown shortkey_n">Module</th>
+                <th class="shortkey_s">statements</th>
+                <th class="shortkey_m">missing</th>
+                <th class="shortkey_x">excluded</th>
+                
+                <th class="shortkey_b">branches</th>
+                <th class="shortkey_p">partial</th>
+                
+                <th class="right shortkey_c">coverage</th>
+            </tr>
+        </thead>
+        
+        <tfoot>
+            <tr class="total">
+                <td class="name left">Total</td>
+                <td>8497</td>
+                <td>4615</td>
+                <td>0</td>
+                
+                <td>1721</td>
+                <td>36</td>
+                
+                <td class="right" data-ratio="3982 10218">39%</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_jobs_api_model_py.html">lcm\jobs\api_model.py</a></td>
+                <td>29</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 31">35%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_jobs_const_py.html">lcm\jobs\const.py</a></td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 2">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_jobs_enum_py.html">lcm\jobs\enum.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_jobs_job_get_py.html">lcm\jobs\job_get.py</a></td>
+                <td>17</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 21">38%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_jobs_serializers_py.html">lcm\jobs\serializers.py</a></td>
+                <td>24</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="24 24">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_jobs_views_py.html">lcm\jobs\views.py</a></td>
+                <td>59</td>
+                <td>39</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="20 69">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_create_subscription_py.html">lcm\ns\biz\create_subscription.py</a></td>
+                <td>87</td>
+                <td>62</td>
+                <td>0</td>
+                
+                <td>24</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="25 111">23%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_create_py.html">lcm\ns\biz\ns_create.py</a></td>
+                <td>58</td>
+                <td>39</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="19 66">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_delete_py.html">lcm\ns\biz\ns_delete.py</a></td>
+                <td>44</td>
+                <td>31</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 50">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_get_py.html">lcm\ns\biz\ns_get.py</a></td>
+                <td>77</td>
+                <td>55</td>
+                <td>0</td>
+                
+                <td>38</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="22 115">19%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_heal_py.html">lcm\ns\biz\ns_heal.py</a></td>
+                <td>143</td>
+                <td>116</td>
+                <td>0</td>
+                
+                <td>38</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="27 181">15%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_instant_py.html">lcm\ns\biz\ns_instant.py</a></td>
+                <td>201</td>
+                <td>164</td>
+                <td>0</td>
+                
+                <td>70</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="37 271">14%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_instantiate_flow_py.html">lcm\ns\biz\ns_instantiate_flow.py</a></td>
+                <td>102</td>
+                <td>77</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="25 112">22%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_lcm_op_occ_py.html">lcm\ns\biz\ns_lcm_op_occ.py</a></td>
+                <td>31</td>
+                <td>4</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>5</td>
+                
+                <td class="right" data-ratio="32 41">78%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_manual_scale_py.html">lcm\ns\biz\ns_manual_scale.py</a></td>
+                <td>89</td>
+                <td>60</td>
+                <td>0</td>
+                
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="29 105">28%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_terminate_py.html">lcm\ns\biz\ns_terminate.py</a></td>
+                <td>188</td>
+                <td>25</td>
+                <td>0</td>
+                
+                <td>54</td>
+                <td>10</td>
+                
+                <td class="right" data-ratio="205 242">85%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_ns_update_py.html">lcm\ns\biz\ns_update.py</a></td>
+                <td>102</td>
+                <td>76</td>
+                <td>0</td>
+                
+                <td>28</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="26 130">20%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_query_ns_lcm_op_occ_py.html">lcm\ns\biz\query_ns_lcm_op_occ.py</a></td>
+                <td>33</td>
+                <td>21</td>
+                <td>0</td>
+                
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 45">27%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_query_subscription_py.html">lcm\ns\biz\query_subscription.py</a></td>
+                <td>28</td>
+                <td>17</td>
+                <td>0</td>
+                
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 40">28%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_biz_scaleaspect_py.html">lcm\ns\biz\scaleaspect.py</a></td>
+                <td>133</td>
+                <td>110</td>
+                <td>0</td>
+                
+                <td>42</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="23 175">13%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_const_py.html">lcm\ns\const.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_enum_py.html">lcm\ns\enum.py</a></td>
+                <td>31</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="31 31">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_deprecated_ns_serializers_py.html">lcm\ns\serializers\deprecated\ns_serializers.py</a></td>
+                <td>111</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="111 111">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_affected_nss_py.html">lcm\ns\serializers\sol\affected_nss.py</a></td>
+                <td>8</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 8">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_affected_pnfs_py.html">lcm\ns\serializers\sol\affected_pnfs.py</a></td>
+                <td>11</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 11">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_affected_saps_py.html">lcm\ns\serializers\sol\affected_saps.py</a></td>
+                <td>9</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 9">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_affected_vls_py.html">lcm\ns\serializers\sol\affected_vls.py</a></td>
+                <td>8</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 8">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_affected_vnffgs_py.html">lcm\ns\serializers\sol\affected_vnffgs.py</a></td>
+                <td>8</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 8">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_affected_vnfs_py.html">lcm\ns\serializers\sol\affected_vnfs.py</a></td>
+                <td>16</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="16 16">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_cp_serializers_py.html">lcm\ns\serializers\sol\cp_serializers.py</a></td>
+                <td>35</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="35 35">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_create_ns_serializers_py.html">lcm\ns\serializers\sol\create_ns_serializers.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_ext_managed_virtual_link_info_py.html">lcm\ns\serializers\sol\ext_managed_virtual_link_info.py</a></td>
+                <td>14</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 14">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_ext_virtual_link_info_py.html">lcm\ns\serializers\sol\ext_virtual_link_info.py</a></td>
+                <td>10</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 10">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_heal_serializers_py.html">lcm\ns\serializers\sol\heal_serializers.py</a></td>
+                <td>15</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 15">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_inst_ns_serializers_py.html">lcm\ns\serializers\sol\inst_ns_serializers.py</a></td>
+                <td>30</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="30 30">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_lccn_filter_data_py.html">lcm\ns\serializers\sol\lccn_filter_data.py</a></td>
+                <td>12</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 12">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_lccn_subscription_py.html">lcm\ns\serializers\sol\lccn_subscription.py</a></td>
+                <td>12</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 12">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_lccn_subscription_request_py.html">lcm\ns\serializers\sol\lccn_subscription_request.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_ns_instance_py.html">lcm\ns\serializers\sol\ns_instance.py</a></td>
+                <td>175</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="175 175">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_ns_instance_subscription_filter_py.html">lcm\ns\serializers\sol\ns_instance_subscription_filter.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_ns_lcm_op_occ_py.html">lcm\ns\serializers\sol\ns_lcm_op_occ.py</a></td>
+                <td>41</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="41 41">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_pub_serializers_py.html">lcm\ns\serializers\sol\pub_serializers.py</a></td>
+                <td>18</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="18 18">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_resource_handle_py.html">lcm\ns\serializers\sol\resource_handle.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_scale_ns_serializers_py.html">lcm\ns\serializers\sol\scale_ns_serializers.py</a></td>
+                <td>39</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="39 39">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_subscription_auth_data_py.html">lcm\ns\serializers\sol\subscription_auth_data.py</a></td>
+                <td>14</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 14">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_terminate_ns_serializers_py.html">lcm\ns\serializers\sol\terminate_ns_serializers.py</a></td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="3 3">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_serializers_sol_update_serializers_py.html">lcm\ns\serializers\sol\update_serializers.py</a></td>
+                <td>132</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="132 132">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_tests_test_ns_terminate_py.html">lcm\ns\tests\test_ns_terminate.py</a></td>
+                <td>99</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="99 99">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_common_py.html">lcm\ns\views\deprecated\common.py</a></td>
+                <td>26</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 30">43%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_create_ns_view_py.html">lcm\ns\views\deprecated\create_ns_view.py</a></td>
+                <td>43</td>
+                <td>23</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="20 51">39%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_get_del_ns_view_py.html">lcm\ns\views\deprecated\get_del_ns_view.py</a></td>
+                <td>29</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="16 33">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_heal_ns_view_py.html">lcm\ns\views\deprecated\heal_ns_view.py</a></td>
+                <td>28</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 32">53%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_inst_ns_post_deal_view_py.html">lcm\ns\views\deprecated\inst_ns_post_deal_view.py</a></td>
+                <td>46</td>
+                <td>30</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="16 54">30%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_inst_ns_view_py.html">lcm\ns\views\deprecated\inst_ns_view.py</a></td>
+                <td>23</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 25">56%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_scale_ns_views_py.html">lcm\ns\views\deprecated\scale_ns_views.py</a></td>
+                <td>32</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 36">47%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_term_ns_view_py.html">lcm\ns\views\deprecated\term_ns_view.py</a></td>
+                <td>28</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 32">53%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_deprecated_update_ns_view_py.html">lcm\ns\views\deprecated\update_ns_view.py</a></td>
+                <td>28</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 32">53%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_common_py.html">lcm\ns\views\sol\common.py</a></td>
+                <td>30</td>
+                <td>16</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 36">39%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_heal_ns_view_py.html">lcm\ns\views\sol\heal_ns_view.py</a></td>
+                <td>30</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 32">53%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_health_check_py.html">lcm\ns\views\sol\health_check.py</a></td>
+                <td>11</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 11">82%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_instantiate_ns_views_py.html">lcm\ns\views\sol\instantiate_ns_views.py</a></td>
+                <td>39</td>
+                <td>24</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 47">32%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_lcm_op_occs_view_py.html">lcm\ns\views\sol\lcm_op_occs_view.py</a></td>
+                <td>47</td>
+                <td>26</td>
+                <td>0</td>
+                
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="21 61">34%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_ns_instances_views_py.html">lcm\ns\views\sol\ns_instances_views.py</a></td>
+                <td>74</td>
+                <td>49</td>
+                <td>0</td>
+                
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="25 90">28%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_scale_ns_views_py.html">lcm\ns\views\sol\scale_ns_views.py</a></td>
+                <td>29</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 31">55%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_subscriptions_view_py.html">lcm\ns\views\sol\subscriptions_view.py</a></td>
+                <td>49</td>
+                <td>25</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="24 57">42%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_terminate_ns_view_py.html">lcm\ns\views\sol\terminate_ns_view.py</a></td>
+                <td>33</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="18 35">51%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_views_sol_update_ns_view_py.html">lcm\ns\views\sol\update_ns_view.py</a></td>
+                <td>30</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 32">53%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_pnfs_biz_create_pnf_py.html">lcm\ns_pnfs\biz\create_pnf.py</a></td>
+                <td>41</td>
+                <td>28</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 51">25%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_pnfs_biz_delete_pnf_py.html">lcm\ns_pnfs\biz\delete_pnf.py</a></td>
+                <td>14</td>
+                <td>6</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 14">57%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_pnfs_biz_get_pnf_py.html">lcm\ns_pnfs\biz\get_pnf.py</a></td>
+                <td>14</td>
+                <td>10</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="4 20">20%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_pnfs_serializers_pnf_serializer_py.html">lcm\ns_pnfs\serializers\pnf_serializer.py</a></td>
+                <td>10</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 10">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_pnfs_views_pnf_view_py.html">lcm\ns_pnfs\views\pnf_view.py</a></td>
+                <td>70</td>
+                <td>52</td>
+                <td>0</td>
+                
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="18 84">21%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_create_flowcla_py.html">lcm\ns_sfcs\biz\create_flowcla.py</a></td>
+                <td>48</td>
+                <td>35</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 50">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_create_port_chain_py.html">lcm\ns_sfcs\biz\create_port_chain.py</a></td>
+                <td>33</td>
+                <td>22</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 35">31%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_create_portpairgp_py.html">lcm\ns_sfcs\biz\create_portpairgp.py</a></td>
+                <td>163</td>
+                <td>139</td>
+                <td>0</td>
+                
+                <td>60</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="24 223">11%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_create_sfc_worker_py.html">lcm\ns_sfcs\biz\create_sfc_worker.py</a></td>
+                <td>44</td>
+                <td>29</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 46">33%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_delete_sfcs_py.html">lcm\ns_sfcs\biz\delete_sfcs.py</a></td>
+                <td>66</td>
+                <td>51</td>
+                <td>0</td>
+                
+                <td>22</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 88">17%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_get_sfcs_py.html">lcm\ns_sfcs\biz\get_sfcs.py</a></td>
+                <td>6</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="4 6">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_sfc_instance_py.html">lcm\ns_sfcs\biz\sfc_instance.py</a></td>
+                <td>55</td>
+                <td>42</td>
+                <td>0</td>
+                
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 67">19%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_biz_utils_py.html">lcm\ns_sfcs\biz\utils.py</a></td>
+                <td>31</td>
+                <td>22</td>
+                <td>0</td>
+                
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 45">20%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_serializers_serializers_py.html">lcm\ns_sfcs\serializers\serializers.py</a></td>
+                <td>33</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="33 33">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_views_detail_views_py.html">lcm\ns_sfcs\views\detail_views.py</a></td>
+                <td>29</td>
+                <td>16</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 35">37%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_sfcs_views_views_py.html">lcm\ns_sfcs\views\views.py</a></td>
+                <td>92</td>
+                <td>61</td>
+                <td>0</td>
+                
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="31 106">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vls_biz_create_vls_py.html">lcm\ns_vls\biz\create_vls.py</a></td>
+                <td>131</td>
+                <td>105</td>
+                <td>0</td>
+                
+                <td>30</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="26 161">16%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vls_biz_delete_vls_py.html">lcm\ns_vls\biz\delete_vls.py</a></td>
+                <td>71</td>
+                <td>52</td>
+                <td>0</td>
+                
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="19 87">22%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vls_biz_get_vls_py.html">lcm\ns_vls\biz\get_vls.py</a></td>
+                <td>6</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="4 6">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vls_serializers_serializers_py.html">lcm\ns_vls\serializers\serializers.py</a></td>
+                <td>17</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 17">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vls_views_views_py.html">lcm\ns_vls\views\views.py</a></td>
+                <td>47</td>
+                <td>30</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 57">30%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_create_vnfs_py.html">lcm\ns_vnfs\biz\create_vnfs.py</a></td>
+                <td>244</td>
+                <td>194</td>
+                <td>0</td>
+                
+                <td>50</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="50 294">17%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_get_vnfs_py.html">lcm\ns_vnfs\biz\get_vnfs.py</a></td>
+                <td>13</td>
+                <td>6</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="7 13">54%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_grant_vnf_py.html">lcm\ns_vnfs\biz\grant_vnf.py</a></td>
+                <td>93</td>
+                <td>76</td>
+                <td>0</td>
+                
+                <td>38</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 131">13%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_grant_vnfs_py.html">lcm\ns_vnfs\biz\grant_vnfs.py</a></td>
+                <td>71</td>
+                <td>56</td>
+                <td>0</td>
+                
+                <td>28</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 99">15%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_handle_notification_py.html">lcm\ns_vnfs\biz\handle_notification.py</a></td>
+                <td>208</td>
+                <td>175</td>
+                <td>0</td>
+                
+                <td>54</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="33 262">13%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_heal_vnfs_py.html">lcm\ns_vnfs\biz\heal_vnfs.py</a></td>
+                <td>89</td>
+                <td>65</td>
+                <td>0</td>
+                
+                <td>24</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="24 113">21%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_notify_lcm_py.html">lcm\ns_vnfs\biz\notify_lcm.py</a></td>
+                <td>197</td>
+                <td>168</td>
+                <td>0</td>
+                
+                <td>58</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="29 255">11%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_place_vnfs_py.html">lcm\ns_vnfs\biz\place_vnfs.py</a></td>
+                <td>89</td>
+                <td>78</td>
+                <td>0</td>
+                
+                <td>44</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 133">8%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_scale_vnfs_py.html">lcm\ns_vnfs\biz\scale_vnfs.py</a></td>
+                <td>67</td>
+                <td>45</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="22 77">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_subscribe_py.html">lcm\ns_vnfs\biz\subscribe.py</a></td>
+                <td>68</td>
+                <td>47</td>
+                <td>0</td>
+                
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="21 82">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_terminate_nfs_py.html">lcm\ns_vnfs\biz\terminate_nfs.py</a></td>
+                <td>140</td>
+                <td>105</td>
+                <td>0</td>
+                
+                <td>28</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="35 168">21%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_update_vnfs_py.html">lcm\ns_vnfs\biz\update_vnfs.py</a></td>
+                <td>61</td>
+                <td>40</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="21 67">31%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_verify_vnfs_py.html">lcm\ns_vnfs\biz\verify_vnfs.py</a></td>
+                <td>178</td>
+                <td>154</td>
+                <td>0</td>
+                
+                <td>58</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="24 236">10%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_biz_wait_job_py.html">lcm\ns_vnfs\biz\wait_job.py</a></td>
+                <td>50</td>
+                <td>38</td>
+                <td>0</td>
+                
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 66">18%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_const_py.html">lcm\ns_vnfs\const.py</a></td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 2">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_enum_py.html">lcm\ns_vnfs\enum.py</a></td>
+                <td>17</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 17">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_serializers_grant_vnf_serializer_py.html">lcm\ns_vnfs\serializers\grant_vnf_serializer.py</a></td>
+                <td>211</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="211 211">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_serializers_serializers_py.html">lcm\ns_vnfs\serializers\serializers.py</a></td>
+                <td>161</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="161 161">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_views_views_py.html">lcm\ns_vnfs\views\views.py</a></td>
+                <td>186</td>
+                <td>129</td>
+                <td>0</td>
+                
+                <td>34</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="57 220">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_ns_vnfs_views_vnf_views_py.html">lcm\ns_vnfs\views\vnf_views.py</a></td>
+                <td>59</td>
+                <td>42</td>
+                <td>0</td>
+                
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 75">23%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_base_py.html">lcm\pub\base.py</a></td>
+                <td>13</td>
+                <td>10</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="3 21">14%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_config_config_py.html">lcm\pub\config\config.py</a></td>
+                <td>33</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="33 33">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_database_admin_py.html">lcm\pub\database\admin.py</a></td>
+                <td>80</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="94 94">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_database_migrations_0001_initial_py.html">lcm\pub\database\migrations\0001_initial.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_database_models_py.html">lcm\pub\database\models.py</a></td>
+                <td>302</td>
+                <td>4</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="298 306">97%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_exceptions_py.html">lcm\pub\exceptions.py</a></td>
+                <td>12</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 12">83%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_aai_py.html">lcm\pub\msapi\aai.py</a></td>
+                <td>244</td>
+                <td>206</td>
+                <td>0</td>
+                
+                <td>72</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="38 316">12%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_activiti_py.html">lcm\pub\msapi\activiti.py</a></td>
+                <td>22</td>
+                <td>16</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 28">21%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_catalog_py.html">lcm\pub\msapi\catalog.py</a></td>
+                <td>80</td>
+                <td>60</td>
+                <td>0</td>
+                
+                <td>30</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="20 110">18%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_extsys_py.html">lcm\pub\msapi\extsys.py</a></td>
+                <td>117</td>
+                <td>99</td>
+                <td>0</td>
+                
+                <td>24</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="18 141">13%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_nslcm_py.html">lcm\pub\msapi\nslcm.py</a></td>
+                <td>19</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="27 27">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_resmgr_py.html">lcm\pub\msapi\resmgr.py</a></td>
+                <td>61</td>
+                <td>49</td>
+                <td>0</td>
+                
+                <td>24</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 85">14%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_sdc_run_catalog_py.html">lcm\pub\msapi\sdc_run_catalog.py</a></td>
+                <td>42</td>
+                <td>32</td>
+                <td>0</td>
+                
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 54">19%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_sdncdriver_py.html">lcm\pub\msapi\sdncdriver.py</a></td>
+                <td>49</td>
+                <td>34</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 53">28%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_vnfmdriver_py.html">lcm\pub\msapi\vnfmdriver.py</a></td>
+                <td>62</td>
+                <td>50</td>
+                <td>0</td>
+                
+                <td>18</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 80">15%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_msapi_wso2bpel_py.html">lcm\pub\msapi\wso2bpel.py</a></td>
+                <td>9</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="4 11">36%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_nfvi_vim_const_py.html">lcm\pub\nfvi\vim\const.py</a></td>
+                <td>11</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 11">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_nfvi_vim_lib_syscomm_py.html">lcm\pub\nfvi\vim\lib\syscomm.py</a></td>
+                <td>3</td>
+                <td>1</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 3">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_nfvi_vim_lib_vimexception_py.html">lcm\pub\nfvi\vim\lib\vimexception.py</a></td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 2">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_nfvi_vim_vimadaptor_py.html">lcm\pub\nfvi\vim\vimadaptor.py</a></td>
+                <td>78</td>
+                <td>53</td>
+                <td>0</td>
+                
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="25 90">28%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_redisco_containers_py.html">lcm\pub\redisco\containers.py</a></td>
+                <td>51</td>
+                <td>28</td>
+                <td>0</td>
+                
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="23 59">39%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_enumutil_py.html">lcm\pub\utils\enumutil.py</a></td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_fileutil_py.html">lcm\pub\utils\fileutil.py</a></td>
+                <td>43</td>
+                <td>26</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="19 49">39%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_idutil_py.html">lcm\pub\utils\idutil.py</a></td>
+                <td>5</td>
+                <td>3</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 5">40%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_jobutil_py.html">lcm\pub\utils\jobutil.py</a></td>
+                <td>91</td>
+                <td>25</td>
+                <td>0</td>
+                
+                <td>28</td>
+                <td>6</td>
+                
+                <td class="right" data-ratio="76 119">64%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_restcall_py.html">lcm\pub\utils\restcall.py</a></td>
+                <td>90</td>
+                <td>25</td>
+                <td>0</td>
+                
+                <td>26</td>
+                <td>9</td>
+                
+                <td class="right" data-ratio="76 116">66%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_share_lock_py.html">lcm\pub\utils\share_lock.py</a></td>
+                <td>48</td>
+                <td>40</td>
+                <td>0</td>
+                
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 64">12%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_syscomm_py.html">lcm\pub\utils\syscomm.py</a></td>
+                <td>3</td>
+                <td>1</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 3">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_timeutil_py.html">lcm\pub\utils\timeutil.py</a></td>
+                <td>3</td>
+                <td>1</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 3">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_pub_utils_values_py.html">lcm\pub\utils\values.py</a></td>
+                <td>33</td>
+                <td>25</td>
+                <td>0</td>
+                
+                <td>24</td>
+                <td>2</td>
+                
+                <td class="right" data-ratio="10 57">18%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_samples_serializers_py.html">lcm\samples\serializers.py</a></td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="3 3">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_samples_views_py.html">lcm\samples\views.py</a></td>
+                <td>42</td>
+                <td>27</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 46">33%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_settings_py.html">lcm\settings.py</a></td>
+                <td>48</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>3</td>
+                
+                <td class="right" data-ratio="44 54">81%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_build_in_py.html">lcm\workflows\build_in.py</a></td>
+                <td>198</td>
+                <td>169</td>
+                <td>0</td>
+                
+                <td>68</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="29 266">11%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_flow_flow_py.html">lcm\workflows\graphflow\flow\flow.py</a></td>
+                <td>52</td>
+                <td>38</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 62">23%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_flow_graph_py.html">lcm\workflows\graphflow\flow\graph.py</a></td>
+                <td>50</td>
+                <td>40</td>
+                <td>0</td>
+                
+                <td>38</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 88">11%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_flow_load_py.html">lcm\workflows\graphflow\flow\load.py</a></td>
+                <td>24</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 26">23%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_flow_manager_py.html">lcm\workflows\graphflow\flow\manager.py</a></td>
+                <td>53</td>
+                <td>39</td>
+                <td>0</td>
+                
+                <td>33</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 86">16%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_task_async_rest_task_py.html">lcm\workflows\graphflow\task\async_rest_task.py</a></td>
+                <td>19</td>
+                <td>10</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 21">43%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_task_async_task_py.html">lcm\workflows\graphflow\task\async_task.py</a></td>
+                <td>38</td>
+                <td>22</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="16 42">38%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_task_lcm_async_rest_task_py.html">lcm\workflows\graphflow\task\lcm_async_rest_task.py</a></td>
+                <td>32</td>
+                <td>20</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 42">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_task_lcm_sync_rest_task_py.html">lcm\workflows\graphflow\task\lcm_sync_rest_task.py</a></td>
+                <td>10</td>
+                <td>3</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="7 10">70%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_task_sync_rest_task_py.html">lcm\workflows\graphflow\task\sync_rest_task.py</a></td>
+                <td>20</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 22">41%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_task_sync_task_py.html">lcm\workflows\graphflow\task\sync_task.py</a></td>
+                <td>11</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 11">55%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_graphflow_task_task_py.html">lcm\workflows\graphflow\task\task.py</a></td>
+                <td>28</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 30">43%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcm_workflows_views_py.html">lcm\workflows\views.py</a></td>
+                <td>32</td>
+                <td>20</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 38">32%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="manage_py.html">manage.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="7 8">88%</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <p id="no_rows">
+        No items found using the specified filter.
+    </p>
+</div>
+
+<div id="footer">
+    <div class="content">
+        <p>
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.2</a>,
+            created at 2019-07-24 11:46
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
