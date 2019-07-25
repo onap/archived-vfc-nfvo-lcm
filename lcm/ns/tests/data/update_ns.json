@@ -1,0 +1,9 @@
+{
+    "updateType": "OPERATE_VNF",
+    "OperateVnfData": [{
+        "vnfInstanceId": "test_vnf_001",
+        "changeStateTo": {"OperationalStates": "STOPPED"},
+        "stopType": "GRACEFUL",
+        "gracefulStopTimeout": "2019-01-01"
+    }]
+}
