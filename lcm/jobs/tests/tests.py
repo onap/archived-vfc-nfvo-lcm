@@ -56,6 +56,11 @@ class JobsViewTest(TestCase):
         self.assertIn('jobId', response.data)
         self.assertNotIn('responseDescriptor', response.data)
 
+    def test_query_ns_job_with_error_response_id(self):
+        url = JOB_INSTANCE_URI % self.job_id + "?responseId='zzz'"
+        response = self.client.get(url)
+        self.assertEqual(status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
+
     def test_query_job_with_response_id(self):
         JobModel(jobid=self.job_id,
                  jobtype=JOB_TYPE.NS,
