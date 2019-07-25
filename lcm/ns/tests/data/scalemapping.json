@@ -1,19 +1,20 @@
 {
     "scale_options": [
         {
-            "nsd_id": "23",
+            "nsd_id": "01",
+            "ns_instanceId": "ns_instanceId_01",
             "ns_scale_aspect": "TIC_EDGE_IMS",
-            "ns_scale_info": [
+            "ns_scale_info_list": [
                 {
                     "step": 1,
                     "vnf_scale_info": [
                         {
-                            "vnfd_id": "nf_zte_cscf",
+                            "vnfInstanceId": "nf_zte_cscf",
                             "vnf_scaleAspectId": "gsu",
                             "numberOfSteps": "1"
                         },
                         {
-                            "vnfd_id": "nf_zte_hss",
+                            "vnfInstanceId": "nf_zte_hss",
                             "vnf_scaleAspectId": "gpu",
                             "numberOfSteps": "3"
                         }
@@ -23,12 +24,12 @@
                     "step": 2,
                     "vnf_scale_info": [
                         {
-                            "vnfd_id": "nf_zte_cscf",
+                            "vnfInstanceId": "nf_zte_cscf",
                             "vnf_scaleAspectId": "mpu",
                             "numberOfSteps": "2"
                         },
                         {
-                            "vnfd_id": "nf_zte_hss",
+                            "vnfInstanceId": "nf_zte_hss",
                             "vnf_scaleAspectId": "mpu",
                             "numberOfSteps": "4"
                         }
@@ -37,7 +38,7 @@
             ]
         },
         {
-            "nsd_id": "23",
+            "nsd_id": "02",
             "ns_scale_aspect": "TIC_EDGE_HW",
             "ns_scale_info": [
                 {
@@ -73,9 +74,9 @@
             ]
         },
         {
-            "nsd_id": 235,
+            "nsd_id": "03",
             "ns_scale_aspect": "TIC_EDGE_HW",
-            "ns_scale_info": [
+            "ns_scale_info_list": [
                 {
                     "step": "4",
                     "vnf_scale_info": [
@@ -103,6 +104,27 @@
                             "vnfd_id": "nf_HW_hss",
                             "vnf_scaleAspectId": "gpu",
                             "numberOfSteps": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "nsd_id": "test_ns_manual_scale",
+            "ns_scale_aspect": "test_ns_manual_scale_aspectId",
+            "ns_scale_info": [
+                {
+                    "step": 1,
+                    "vnf_scale_info": [
+                        {
+                            "vnfd_id": "nf_001",
+                            "vnf_scaleAspectId": "gpu",
+                            "numberOfSteps": "123"
+                        },
+                        {
+                            "vnfd_id": "nf_002",
+                            "vnf_scaleAspectId": "gpu",
+                            "numberOfSteps": "456"
                         }
                     ]
                 }
