@@ -40,9 +40,9 @@ class SfcInstance(object):
         if not self.fp_model:
             return
         logger.info("sfc_inst_symmetric %s" % self.fp_model["properties"].get("symmetric"))
-        self.symmetric = self.fp_model["properties"].get("symmetric")
+        self.symmetric = self.fp_model["properties"].get("symmetric", "")
         logger.info("sfc_inst_symmetric %s" % self.symmetric)
-        self.policyinfo = self.fp_model["properties"].get("policy")
+        self.policyinfo = self.fp_model["properties"].get("policy", "")
         self.status = "processing"
         vnffg_database_info = VNFFGInstModel.objects.filter(vnffgdid=self.get_vnffgdid_by_fp_id(),
                                                             nsinstid=self.ns_inst_id).get()

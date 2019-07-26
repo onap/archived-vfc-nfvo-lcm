@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import json
 import logging
 import time
@@ -145,7 +144,7 @@ class SfcView(APIView):
             logger.info("service_function_chain_instanceid : %s" % ignorcase_get(request.data, 'nsInstanceId'))
             logger.info("service_function_chain_sdncontrollerid : %s" % ignorcase_get(request.data, 'sdnControllerId'))
             logger.info("service_function_chain_fpindex : %s" % ignorcase_get(request.data, 'fpindex'))
-            ns_model_data = request.data['context']
+            ns_model_data = json.loads(request.data['context'])
 
             req_serializer = CreateSfcReqSerializer(data=request.data)
             if not req_serializer.is_valid():
@@ -171,11 +170,8 @@ class SfcView(APIView):
         logger.info("Service Function Chain Thread Sleep end: %s" % time.ctime())
         logger.info("Create Service Function Chain end")
 
-        resp_serializer = CreateSfcRespSerializer(data={"jobId": job_id,
-                                                        "sfcInstId": data["fpinstid"]})
+        resp_serializer = CreateSfcRespSerializer(data={"jobId": job_id, "sfcInstId": data["fpinstid"]})
         if not resp_serializer.is_valid():
             logger.error(resp_serializer.errors)
 
-        return Response(data={"jobId": job_id,
-                              "sfcInstId": data["fpinstid"]},
-                        status=status.HTTP_200_OK)
+        return Response(data={"jobId": job_id, "sfcInstId": data["fpinstid"]}, status=status.HTTP_200_OK)

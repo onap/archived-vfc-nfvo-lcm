@@ -16,7 +16,7 @@ import json
 from .test_data import nsd_model, vnfd_model_dict1, vnfd_model_dict2
 from rest_framework import status
 from lcm.pub.utils import restcall
-from lcm.pub.database.models import FPInstModel, NfInstModel
+from lcm.pub.database.models import FPInstModel, NfInstModel, VNFCInstModel, CPInstModel, PortInstModel
 from django.test import Client
 from django.test import TestCase
 
@@ -26,6 +26,7 @@ class TestSfc(TestCase):
         self.client = Client()
         FPInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
+        VNFCInstModel.objects.all().delete()
         NfInstModel(
             nfinstid="vnf_inst_1",
             ns_inst_id="ns_inst_1",
@@ -36,6 +37,34 @@ class TestSfc(TestCase):
             vnf_id="vnf_2",
             ns_inst_id="ns_inst_1",
             vnfd_model=json.dumps(vnfd_model_dict2)).save()
+        VNFCInstModel(nfinstid="vnf_inst_1", vnfcinstanceid="vnfc_instance_id_1").save()
+        VNFCInstModel(nfinstid="vnf_inst_2", vnfcinstanceid="vnfc_instance_id_2").save()
+        CPInstModel(
+            cpinstanceid="cp_instance_id_1",
+            cpdid="cpd_1",
+            cpinstancename="cpinstancename_1",
+            ownertype=3,
+            ownerid="vnfc_instance_id_1",
+            relatedtype=1,
+            relatedvl="relatedvl_1",
+            relatedcp="relatedcp_1",
+            relatedport="relatedport_1",
+            status="ACTIVE"
+        ).save()
+        CPInstModel(
+            cpinstanceid="cp_instance_id_2",
+            cpdid="cpd_2",
+            cpinstancename="cpinstancename_2",
+            ownertype=3,
+            ownerid="vnfc_instance_id_2",
+            relatedtype=1,
+            relatedvl="relatedvl_2",
+            relatedcp="relatedcp_2",
+            relatedport="relatedport_2",
+            status="ACTIVE"
+        ).save()
+        PortInstModel(portid="relatedport_1").save()
+        PortInstModel(portid="relatedport_2").save()
         FPInstModel(
             fpid="fpd_1",
             fpinstid="fp_inst_1",
@@ -59,6 +88,9 @@ class TestSfc(TestCase):
     def tearDown(self):
         FPInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
+        VNFCInstModel.objects.all().delete()
+        CPInstModel.objects.all().delete()
+        PortInstModel.objects.all().delete()
 
     @mock.patch.object(restcall, 'call_req')
     def test_create_port_pair_group_success(self, mock_call_req):

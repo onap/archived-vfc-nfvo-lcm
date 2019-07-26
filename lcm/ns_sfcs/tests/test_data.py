@@ -301,6 +301,11 @@ nsd_model = {
                     "capability": "forwarder2",
                 },
                 {
+                    "type": "vnf",
+                    "node_name": "vnf_2",
+                    "capability": "forwarder3",
+                },
+                {
                     "type": "cp",
                     "node_name": "forwarder_brasDP_dcPort",
                     "capability": "",

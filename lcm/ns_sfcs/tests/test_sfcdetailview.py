@@ -65,7 +65,7 @@ class TestSfcDetailViews(TestCase):
 
     def test_sfc_get_failed(self):
         sfc_inst_id = "10"
-        response = self.client.get("/api/nslcm/v1/ns/ns_sfcs/%s" % sfc_inst_id)
+        response = self.client.get("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
     def test_sfc_get_success(self):
