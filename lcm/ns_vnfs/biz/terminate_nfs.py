@@ -174,7 +174,7 @@ class TerminateVnfs(threading.Thread):
                 vim_id = vm_inst_info.vimid
                 cloud_owner, cloud_region_id = split_vim_to_owner_region(vim_id)
                 # query vim_info from aai, get tenant
-                vim_info = get_vim_by_id(vim_id)
+                vim_info = get_vim_by_id({"cloud_owner": cloud_owner, 'cloud_regionid': cloud_region_id})
                 tenant_id = vim_info["tenantId"]
 
                 # query vserver instance in aai, get resource_version
