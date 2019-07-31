@@ -54,7 +54,7 @@ class TerminateNsService(threading.Thread):
             self.cancel_vl_list()
             self.cancel_pnf_list()
 
-            NSInstModel.objects.filter(id=self.ns_inst_id).update(status='null')
+            NSInstModel.objects.filter(id=self.ns_inst_id).update(status='NOT_INSTANTIATED')
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, "ns terminate ends.", '')
             NsLcmOpOcc.update(self.occ_id, "COMPLETED")
         except NSLCMException as e:
