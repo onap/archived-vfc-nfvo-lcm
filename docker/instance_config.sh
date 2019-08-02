@@ -6,6 +6,12 @@ MSB_PORT=`echo $MSB_ADDR | cut -d: -f 2`
 MR_IP=`echo $MR_ADDR | cut -d: -f 1`
 MR_PORT=`echo $MR_ADDR | cut -d: -f 2`
 
+REG_TO_MSB_WHEN_START=$REG_TO_MSB_WHEN_START
+
+if [ $REG_TO_MSB_WHEN_START ]; then
+    sed -i "s|REG_TO_MSB_WHEN_START = .*|REG_TO_MSB_WHEN_START = '$REG_TO_MSB_WHEN_START'|" vfc/nfvo/lcm/lcm/pub/config/config.py
+fi
+
 if [ $MSB_IP ]; then
     sed -i "s|MSB_SERVICE_IP = .*|MSB_SERVICE_IP = '$MSB_IP'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 fi
