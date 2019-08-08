@@ -20,7 +20,7 @@ For the purposes of the present document, the following abbreviations apply:
 +-------------+-----------------------------------------------+
 |Abbreviation |                                               |
 +-------------+-----------------------------------------------+
-|NFVO         |Network Functions Virtualization Orchestrator  |
+|NFVO         |Network Function Virtualization Orchestrator  |
 +-------------+-----------------------------------------------+
 |VNFM         |Virtual Network Function Manager               |
 +-------------+-----------------------------------------------+
@@ -96,7 +96,7 @@ juju
 |              |            |             |          | manages this resource.                 |
 |              |            |             |          | This attribute shall be supported      |
 |              |            |             |          | and present if VNF-related resource    |
-|              |            |             |          | management in direct applicable.       |
+|              |            |             |          | management is direct applicable.       |
 +--------------+------------+-------------+----------+----------------------------------------+
 | networkId    | M          | 1           | String   | The network UUID of VIM                |
 +--------------+------------+-------------+----------+----------------------------------------+
@@ -596,7 +596,7 @@ VNF filter: vnfInstanceId via url [R1]
 | vduid              | M          | 1           | String      | Defines the id of vdu.          |
 +--------------------+------------+-------------+-------------+---------------------------------+
 | vmname             | M          | 1           |             | Defines  the  name  of  virtual |
-|                    |            |             |             | machines.                       |
+|                    |            |             |             | machine.                        |
 +--------------------+------------+-------------+-------------+---------------------------------+
 
 .. code-block:: json
