@@ -5,7 +5,7 @@ NS LCM Guide Using VF-C
 -----------------------
 
 VF-C supports vCPE use case in R3, all VNFs are deployed through VF-C GVNFM .
-This page describes how to use VF-C to instantiate NS
+This page describe how to use VF-C to instantiate NS
 
 Before you try, please prepare two csar file: 
 * VNF csar
@@ -16,9 +16,9 @@ If you don't have any csar, you can download the simple csar from https://wiki.o
 
 Environment
 +++++++++++
-VF-C components can run as docker, docker service should be installed before install VF-C components.
+VF-C components can run as docker, docker service should be installed before installing VF-C components.
 
-The following scripts show the docker service install commands in centos7.
+The following scripts show the docker service install commands in centos 7.
 
 ::
 
@@ -31,7 +31,7 @@ Steps
 
 
 
-If you want to  try VF-C,  the small project set should include: VF-C , Multicloud, MSB, A&AI.
+If you want to  try VF-C, the small project set should include: VF-C , Multicloud, MSB and A&AI.
 
 VF-C components need to register to MSB when starting, so MSB components should be installed first,you can refer the following link to install MSB.
 
@@ -109,7 +109,7 @@ VF-C R3 support VNF/PNF/NS csar package upload from local csar file. VNF/PNF csa
 Before onboarding a package,  should create one record first. 
 
 
-1. Create VNF package record  in catalog DB
+1. Create VNF package record in catalog DB
 
 ::
 
@@ -241,7 +241,7 @@ Note:
    :width: 5.97047in
    :height: 2.63208in
 
-  c.   before instantiate, you should create one volumntype which called root.
+  c.   before instantiate, you should create one volumntype which is called root.
 
 3. NS Heal
 
