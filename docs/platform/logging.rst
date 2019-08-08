@@ -4,7 +4,7 @@
 Logging & Diagnostic Information
 --------------------------------
 
-In Amsterdam release, VF-Clogs are kept inside the docker containers.
+In Amsterdam release, VF-C logs are kept inside the docker containers.
 You can get the log when the dockers start.
 
 Where to Access Information
