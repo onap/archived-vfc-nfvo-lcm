@@ -13,35 +13,41 @@
 # limitations under the License.
 import json
 import uuid
-
+import time
 import mock
+
 from django.test import TestCase, Client
 from rest_framework import status
 
-from lcm.pub.database.models import NfInstModel, JobModel, NSInstModel, VmInstModel, OOFDataModel, SubscriptionModel
+from lcm.pub.database.models import VLInstModel, NfInstModel, JobModel, NSInstModel, VmInstModel, \
+    OOFDataModel, VNFCInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
-from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_ACTION
+from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_ACTION, JOB_PROGRESS
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
-from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
 from lcm.ns_vnfs.biz.grant_vnf import GrantVnf
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
 from lcm.ns_vnfs.biz.subscribe import SubscriptionDeletion
 from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
-from lcm.ns_vnfs.enum import VNF_STATUS, INST_TYPE
-from lcm.ns_vnfs.biz import create_vnfs
+from lcm.ns_vnfs.enum import VNF_STATUS, LIFE_CYCLE_OPERATION, RESOURCE_CHANGE_TYPE
 from lcm.ns_vnfs.biz.place_vnfs import PlaceVnfs
 from lcm.pub.msapi import resmgr
+from lcm.ns_vnfs.tests.test_data import vnfm_info, vim_info, vnf_place_request
+from lcm.ns_vnfs.tests.test_data import nf_package_info, nsd_model_dict, subscription_response_data
+from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
+from lcm.ns_vnfs.biz import create_vnfs
+from lcm.ns_vnfs.biz.grant_vnfs import GrantVnfs
+from lcm.ns.enum import OWNER_TYPE
 
 
 class TestGetVnfViews(TestCase):
     def setUp(self):
         self.client = Client()
         self.nf_inst_id = str(uuid.uuid4())
-        NfInstModel(nfinstid=self.nf_inst_id, nf_name='vnf1', vnfm_inst_id='1', vnf_id='vnf_id1',
+        NfInstModel(nfinstid=self.nf_inst_id, nf_name="vnf1", vnfm_inst_id="1", vnf_id="vnf_id1",
                     status=VNF_STATUS.ACTIVE, create_time=now_time(), lastuptime=now_time()).save()
 
     def tearDown(self):
@@ -51,208 +57,42 @@ class TestGetVnfViews(TestCase):
         response = self.client.get("/api/nslcm/v1/ns/vnfs/%s" % self.nf_inst_id)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         context = json.loads(response.content)
-        self.assertEqual(self.nf_inst_id, context['vnfInstId'])
-
-
-class TestCreateVnfViews(TestCase):
-    def setUp(self):
-        self.ns_inst_id = str(uuid.uuid4())
-        self.job_id = str(uuid.uuid4())
-        self.data = {
-            "nsInstanceId": self.ns_inst_id,
-            "additionalParamForNs": {
-                "inputs": json.dumps({
-
-                })
-            },
-            "additionalParamForVnf": [
-                {
-                    "vnfprofileid": "VBras",
-                    "additionalparam": {
-                        "inputs": json.dumps({
-                            "vnf_param1": "11",
-                            "vnf_param2": "22"
-                        }),
-                        "vnfminstanceid": "1",
-                        # "vimId": "zte_test"
-                        "vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'
-                    }
-                }
-            ],
-            "vnfIndex": "1"
-        }
-        self.client = Client()
-        NSInstModel(id=self.ns_inst_id, name='ns', nspackage_id='1', nsd_id='nsd_id', description='description',
-                    status='instantiating', nsd_model=json.dumps(nsd_model_dict), create_time=now_time(),
-                    lastuptime=now_time()).save()
-
-    def tearDown(self):
-        NfInstModel.objects.all().delete()
-        JobModel.objects.all().delete()
-
-    @mock.patch.object(CreateVnfs, 'run')
-    def test_create_vnf(self, mock_run):
-        response = self.client.post("/api/nslcm/v1/ns/vnfs", data=self.data)
-        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
-        context = json.loads(response.content)
-        self.assertTrue(NfInstModel.objects.filter(nfinstid=context['vnfInstId']).exists())
-
-    @mock.patch.object(restcall, 'call_req')
-    def test_create_vnf_thread(self, mock_call_req):
-        nf_inst_id, job_id = create_vnfs.prepare_create_params()
-        mock_vals = {
-            "/api/ztevnfmdriver/v1/1/vnfs":
-                [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), '200'],
-            "/api/catalog/v1/vnfpackages/zte_vbras":
-                [0, json.JSONEncoder().encode(nf_package_info), '200'],
-            "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
-                [0, json.JSONEncoder().encode(vnfm_info), '200'],
-            "/api/resmgr/v1/vnf":
-                [0, json.JSONEncoder().encode({}), '200'],
-            "/api/resmgr/v1/vnfinfo":
-                [0, json.JSONEncoder().encode({}), '200'],
-            "/network/generic-vnfs/generic-vnf/%s" % nf_inst_id:
-                [0, json.JSONEncoder().encode({}), '201'],
-            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test?depth=all":
-                [0, json.JSONEncoder().encode(vim_info), '201'],
-            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1":
-                [0, json.JSONEncoder().encode({}), '201'],
-            "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
-                [0, json.JSONEncoder().encode({"jobid": self.job_id,
-                                               "responsedescriptor": {"progress": "100",
-                                                                      "status": JOB_MODEL_STATUS.FINISHED,
-                                                                      "responseid": "3",
-                                                                      "statusdescription": "creating",
-                                                                      "errorcode": "0",
-                                                                      "responsehistorylist": [
-                                                                          {"progress": "0",
-                                                                           "status": JOB_MODEL_STATUS.PROCESSING,
-                                                                           "responseid": "2",
-                                                                           "statusdescription": "creating",
-                                                                           "errorcode": "0"}]}}), '200']}
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-        mock_call_req.side_effect = side_effect
-        data = {
-            'ns_instance_id': ignore_case_get(self.data, 'nsInstanceId'),
-            'additional_param_for_ns': ignore_case_get(self.data, 'additionalParamForNs'),
-            'additional_param_for_vnf': ignore_case_get(self.data, 'additionalParamForVnf'),
-            'vnf_index': ignore_case_get(self.data, 'vnfIndex')
-        }
-        CreateVnfs(data, nf_inst_id, job_id).run()
-        self.assertTrue(NfInstModel.objects.get(nfinstid=nf_inst_id).status, VNF_STATUS.ACTIVE)
-
-    @mock.patch.object(restcall, 'call_req')
-    @mock.patch.object(CreateVnfs, 'build_homing_request')
-    def test_send_homing_request(self, mock_build_req, mock_call_req):
-        nf_inst_id, job_id = create_vnfs.prepare_create_params()
-        OOFDataModel.objects.all().delete()
-        resp = {
-            "requestId": "1234",
-            "transactionId": "1234",
-            "requestStatus": "accepted"
-        }
-        mock_build_req.return_value = {
-            "requestInfo": {
-                "transactionId": "1234",
-                "requestId": "1234",
-                "callbackUrl": "xx",
-                "sourceId": "vfc",
-                "requestType": "create",
-                "numSolutions": 1,
-                "optimizers": ["placement"],
-                "timeout": 600
-            },
-            "placementInfo": {
-                "placementDemands": [
-                    {
-                        "resourceModuleName": "vG",
-                        "serviceResourceId": "1234",
-                        "resourceModelInfo": {
-                            "modelInvariantId": "1234",
-                            "modelVersionId": "1234"
-                        }
-                    }
-                ]
-            },
-            "serviceInfo": {
-                "serviceInstanceId": "1234",
-                "serviceName": "1234",
-                "modelInfo": {
-                    "modelInvariantId": "5678",
-                    "modelVersionId": "7890"
-                }
-            }
-        }
-        mock_call_req.return_value = [0, json.JSONEncoder().encode(resp), '202']
-        data = {
-            'ns_instance_id': ignore_case_get(self.data, 'nsInstanceId'),
-            'additional_param_for_ns': ignore_case_get(self.data, 'additionalParamForNs'),
-            'additional_param_for_vnf': ignore_case_get(self.data, 'additionalParamForVnf'),
-            'vnf_index': ignore_case_get(self.data, 'vnfIndex')
-        }
-        CreateVnfs(data, nf_inst_id, job_id).send_homing_request_to_OOF()
-        ret = OOFDataModel.objects.filter(request_id="1234", transaction_id="1234")
-        self.assertIsNotNone(ret)
+        self.assertEqual(self.nf_inst_id, context["vnfInstId"])
 
 
 class TestTerminateVnfViews(TestCase):
     def setUp(self):
         self.client = Client()
+        self.data = {
+            "terminationType": "forceful",
+            "gracefulTerminationTimeout": "600"
+        }
         self.ns_inst_id = str(uuid.uuid4())
-        self.nf_inst_id = '1'
-        self.vnffg_id = str(uuid.uuid4())
+        self.nf_inst_id = "1"
         self.vim_id = str(uuid.uuid4())
         self.job_id = str(uuid.uuid4())
-        self.nf_uuid = '111'
-        self.tenant = "tenantname"
-        self.vnfd_model = {
-            "metadata": {
-                "vnfdId": "1",
-                "vnfdName": "PGW001",
-                "vnfProvider": "zte",
-                "vnfdVersion": "V00001",
-                "vnfVersion": "V5.10.20",
-                "productType": "CN",
-                "vnfType": "PGW",
-                "description": "PGW VNFD description",
-                "isShared": True,
-                "vnfExtendType": "driver"
-            }
-        }
+        self.nf_uuid = "111"
+        self.vnfd_model = {"metadata": {"vnfdId": "1"}}
         NSInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
         VmInstModel.objects.all().delete()
         NSInstModel(id=self.ns_inst_id, name="ns_name").save()
         NfInstModel.objects.create(nfinstid=self.nf_inst_id,
-                                   nf_name='name_1',
-                                   vnf_id='1',
-                                   vnfm_inst_id='1',
-                                   ns_inst_id='111,2-2-2',
-                                   max_cpu='14',
-                                   max_ram='12296',
-                                   max_hd='101',
-                                   max_shd="20",
-                                   max_net=10,
-                                   status='active',
+                                   vnfm_inst_id="1",
+                                   status="active",
                                    mnfinstid=self.nf_uuid,
-                                   package_id='pkg1',
-                                   vnfd_model=self.vnfd_model)
+                                   vnfd_model=self.vnfd_model
+                                   )
         VmInstModel.objects.create(vmid="1",
-                                   # vimid="zte_test",
                                    vimid='{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}',
-                                   resouceid="1",
-                                   insttype=INST_TYPE.VNF,
-                                   instid=self.nf_inst_id,
-                                   vmname="test",
-                                   hostid='1')
+                                   instid=self.nf_inst_id
+                                   )
 
     def tearDown(self):
         NSInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
 
-    @mock.patch.object(TerminateVnfs, 'run')
+    @mock.patch.object(TerminateVnfs, "run")
     def test_terminate_vnf_url(self, mock_run):
         req_data = {
             "terminationType": "forceful",
@@ -261,267 +101,198 @@ class TestTerminateVnfViews(TestCase):
         response = self.client.post("/api/nslcm/v1/ns/terminatevnf/%s" % self.nf_inst_id, data=req_data)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
 
-    @mock.patch.object(restcall, 'call_req')
-    @mock.patch.object(SubscriptionDeletion, 'send_subscription_deletion_request')
-    def test_terminate_vnf(self, mock_send_subscription_deletion_request, mock_call_req):
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(SubscriptionDeletion, "send_subscription_deletion_request")
+    def test_terminate_vnf(self, mock_send_subscription_deletion_request, mock_call_req, mock_sleep):
         job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.TERMINATE, self.nf_inst_id)
-
-        nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-        if nfinst:
-            self.assertEqual(1, 1)
-        else:
-            self.assertEqual(1, 0)
-
-        notification_types = ["VnfLcmOperationOccurrenceNotification"],
-        operation_types = [
-            "INSTANTIATE",
-            "SCALE",
-            "SCALE_TO_LEVEL",
-            "CHANGE_FLAVOUR",
-            "TERMINATE",
-            "HEAL",
-            "OPERATE",
-            "CHANGE_EXT_CONN",
-            "MODIFY_INFO"
-        ],
-        operation_states = [
-            "STARTING",
-            "PROCESSING",
-            "COMPLETED",
-            "FAILED_TEMP",
-            "FAILED",
-            "ROLLING_BACK",
-            "ROLLED_BACK"
-        ],
-        vnf_instance_subscription_filter = {
-            "vnfdIds": [],
-            "vnfInstanceIds": '1',
-            "vnfInstanceNames": [],
-            "vnfProductsFromProviders": {}
-        }
-        SubscriptionModel.objects.create(
-            subscription_id='1',
-            notification_types=json.dumps(notification_types),
-            operation_types=json.dumps(operation_types),
-            operation_states=json.dumps(operation_states),
-            vnf_instance_filter=json.dumps(vnf_instance_subscription_filter),
-            # callback_uri,
-            # links=json.dumps(...)
-        )
-
-        vnf_info = {
-            "vnf-id": "vnf-id-test111",
-            "vnf-name": "vnf-name-test111",
-            "vnf-type": "vnf-type-test111",
-            "in-maint": True,
-            "is-closed-loop-disabled": False,
-            "resource-version": "1505465356262"
-        }
         job_info = {
             "jobId": job_id,
-            "responsedescriptor": {
-                "progress": "100",
-                "status": JOB_MODEL_STATUS.FINISHED,
-                "responseid": "3",
-                "statusdescription": "creating",
-                "errorcode": "0",
-                "responsehistorylist": [
-                    {
-                        "progress": "0",
-                        "status": JOB_MODEL_STATUS.PROCESSING,
-                        "responseid": "2",
-                        "statusdescription": "creating",
-                        "errorcode": "0"
-                    }
-                ]
-            }
+            "responsedescriptor": {"status": JOB_MODEL_STATUS.FINISHED}
         }
-
         mock_vals = {
             "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
-                [0, json.JSONEncoder().encode(vnfm_info), '200'],
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
             "/api/ztevnfmdriver/v1/1/vnfs/111/terminate":
-                [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-            "/api/resmgr/v1/vnf/1":
-                [0, json.JSONEncoder().encode({"jobId": job_id}), '200'],
-            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test?depth=all":
-                [0, json.JSONEncoder().encode(vim_info), '201'],
-            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1?depth=all":
-                [0, json.JSONEncoder().encode(vserver_info), '201'],
-            "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1?resource-version=1505465356263":
-                [0, json.JSONEncoder().encode({}), '200'],
+                [0, json.JSONEncoder().encode({"jobId": job_id}), "200"],
             "/api/ztevnfmdriver/v1/1/jobs/" + job_id + "?responseId=0":
-                [0, json.JSONEncoder().encode(job_info), '200'],
-            "/network/generic-vnfs/generic-vnf/1?depth=all":
-            [0, json.JSONEncoder().encode(vnf_info), '200'],
-            "/network/generic-vnfs/generic-vnf/1?resource-version=1505465356262":
-            [0, json.JSONEncoder().encode({}), '200']
+                [0, json.JSONEncoder().encode(job_info), "200"],
+            "/api/resmgr/v1/vnf/1":
+                [0, json.JSONEncoder().encode({"jobId": job_id}), "200"]
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+        mock_call_req.side_effect = side_effect
+        TerminateVnfs(self.data, self.nf_inst_id, job_id).run()
+        nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
+        if nfinst:
+            self.assertEqual(1, 0)
+        else:
+            self.assertEqual(1, 1)
+        self.assertEqual(JobModel.objects.get(jobid=job_id).progress, 100)
+
+    def test_terminate_vnf_when_vnf_is_dealing(self):
+        NfInstModel.objects.filter(nfinstid=self.nf_inst_id).update(status=VNF_STATUS.TERMINATING)
+        job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.TERMINATE, self.nf_inst_id)
+        TerminateVnfs(self.data, self.nf_inst_id, job_id).run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.FAILED)
+        self.assertEqual(JobModel.objects.get(jobid=job_id).progress, 255)
+
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(SubscriptionDeletion, "send_subscription_deletion_request")
+    def test_terminate_vnf_when_job_error(self, mock_send_subscription_deletion_request, mock_call_req, mock_sleep):
+        job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.TERMINATE, self.nf_inst_id)
+        job_info = {
+            "jobId": job_id,
+            "responsedescriptor": {"status": JOB_MODEL_STATUS.ERROR}
+        }
+        mock_vals = {
+            "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/1/vnfs/111/terminate":
+                [0, json.JSONEncoder().encode({"jobId": job_id}), "200"],
+            "/api/ztevnfmdriver/v1/1/jobs/" + job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode(job_info), "200"]
         }
 
         def side_effect(*args):
             return mock_vals[args[4]]
 
         mock_call_req.side_effect = side_effect
-
-        req_data = {
-            "terminationType": "forceful",
-            "gracefulTerminationTimeout": "600"
-        }
-
-        TerminateVnfs(req_data, self.nf_inst_id, job_id).run()
-        nfinst = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-        if nfinst:
-            self.assertEqual(1, 0)
-        else:
-            self.assertEqual(1, 1)
+        TerminateVnfs(self.data, self.nf_inst_id, job_id).run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.FAILED)
+        self.assertEqual(JobModel.objects.get(jobid=job_id).progress, 255)
 
 
 class TestScaleVnfViews(TestCase):
     def setUp(self):
         self.client = Client()
-        self.ns_inst_id = str(uuid.uuid4())
         self.nf_inst_id = str(uuid.uuid4())
-        self.vnffg_id = str(uuid.uuid4())
-        self.vim_id = str(uuid.uuid4())
-        self.job_id = str(uuid.uuid4())
-        self.nf_uuid = '111'
-        self.tenant = "tenantname"
-        NSInstModel(id=self.ns_inst_id, name="ns_name").save()
-        NfInstModel.objects.create(nfinstid=self.nf_inst_id, nf_name='name_1', vnf_id='1',
-                                   vnfm_inst_id='1', ns_inst_id='111,2-2-2',
-                                   max_cpu='14', max_ram='12296', max_hd='101', max_shd="20", max_net=10,
-                                   status='active', mnfinstid=self.nf_uuid, package_id='pkg1',
-                                   vnfd_model='{"metadata": {"vnfdId": "1","vnfdName": "PGW001",'
-                                              '"vnfProvider": "zte","vnfdVersion": "V00001","vnfVersion": "V5.10.20",'
-                                              '"productType": "CN","vnfType": "PGW",'
-                                              '"description": "PGW VNFD description",'
-                                              '"isShared":true,"vnfExtendType":"driver"}}')
+        self.url = "/api/nslcm/v1/ns/ns_vnfs/%s/scaling" % self.nf_inst_id
+        self.data = {
+            "scaleVnfData":
+                {
+                    "type": "SCALE_OUT",
+                    "aspectId": "demo_aspect1",
+                    "numberOfSteps": 1,
+                    "additionalParam": {}
+                }
+        }
+        NfInstModel.objects.create(nfinstid=self.nf_inst_id, vnfm_inst_id="vnfm_inst_id_001",
+                                   mnfinstid="m_nf_inst_id_001")
 
     def tearDown(self):
-        NSInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
 
-    def test_scale_vnf(self):
-        vnfd_info = {
-            "vnf_flavours": [{
-                "flavour_id": "flavour1",
-                "description": "",
-                "vdu_profiles": [
-                    {
-                        "vdu_id": "vdu1Id",
-                        "instances_minimum_number": 1,
-                        "instances_maximum_number": 4,
-                        "local_affinity_antiaffinity_rule": [
-                            {
-                                "affinity_antiaffinity": "affinity",
-                                "scope": "node",
-                            }
-                        ]
-                    }
-                ],
-                "scaling_aspects": [
-                    {
-                        "id": "demo_aspect",
-                        "name": "demo_aspect",
-                        "description": "demo_aspect",
-                        "associated_group": "elementGroup1",
-                        "max_scale_level": 5
-                    }
-                ]
-            }],
-            "element_groups": [{
-                "group_id": "elementGroup1",
-                "description": "",
-                "properties": {
-                    "name": "elementGroup1",
-                },
-                "members": ["gsu_vm", "pfu_vm"]
-            }]
+    # def test_scale_vnf_view(self):
+    #     response = self.client.post(self.url, self.data)
+    #     self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    def test_scale_vnf_success(self, mock_call_req, mock_sleep):
+        scale_service = NFManualScaleService(self.nf_inst_id, self.data)
+        job_info = {
+            "jobId": scale_service.job_id,
+            "responsedescriptor": {"status": JOB_MODEL_STATUS.FINISHED}
+        }
+        mock_vals = {
+            "/external-system/esr-vnfm-list/esr-vnfm/vnfm_inst_id_001?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/vnfs/m_nf_inst_id_001/scale":
+                [0, json.JSONEncoder().encode({"jobId": scale_service.job_id}), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/jobs/" + scale_service.job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode(job_info), "200"]
         }
 
+        def side_effect(*args):
+            return mock_vals[args[4]]
+        mock_call_req.side_effect = side_effect
+        scale_service.run()
+        nsIns = NfInstModel.objects.get(nfinstid=self.nf_inst_id)
+        self.assertEqual(nsIns.status, VNF_STATUS.ACTIVE)
+
+        jobs = JobModel.objects.get(jobid=scale_service.job_id)
+        self.assertEqual(JOB_PROGRESS.FINISHED, jobs.progress)
+
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    def test_scale_vnf_when_job_fail(self, mock_call_req, mock_sleep):
+        scale_service = NFManualScaleService(self.nf_inst_id, self.data)
+        job_info = {
+            "jobId": scale_service.job_id,
+            "responsedescriptor": {"status": JOB_MODEL_STATUS.ERROR}
+        }
+        mock_vals = {
+            "/external-system/esr-vnfm-list/esr-vnfm/vnfm_inst_id_001?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/vnfs/m_nf_inst_id_001/scale":
+                [0, json.JSONEncoder().encode({"jobId": scale_service.job_id}), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/jobs/" + scale_service.job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode(job_info), "200"]
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        scale_service.run()
+        nsIns = NfInstModel.objects.get(nfinstid=self.nf_inst_id)
+        self.assertEqual(nsIns.status, VNF_STATUS.ACTIVE)
+        jobs = JobModel.objects.get(jobid=scale_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
+
+    def test_scale_vnf_when_exception(self):
         req_data = {
             "scaleVnfData": [
                 {
                     "type": "SCALE_OUT",
                     "aspectId": "demo_aspect1",
                     "numberOfSteps": 1,
-                    "additionalParam": vnfd_info
                 },
                 {
                     "type": "SCALE_OUT",
                     "aspectId": "demo_aspect2",
                     "numberOfSteps": 1,
-                    "additionalParam": vnfd_info
-                }
-            ]
-        }
-
-        NFManualScaleService(self.nf_inst_id, req_data).run()
-        nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-        self.assertIsNotNone(nsIns)
-
-    @mock.patch.object(NFManualScaleService, "send_nf_scaling_request")
-    def test_scale_vnf_success(self, mock_send_nf_scaling_request):
-        vnfd_info = {
-            "vnf_flavours": [{
-                "flavour_id": "flavour1",
-                "description": "",
-                "vdu_profiles": [
-                    {
-                        "vdu_id": "vdu1Id",
-                        "instances_minimum_number": 1,
-                        "instances_maximum_number": 4,
-                        "local_affinity_antiaffinity_rule": [
-                            {
-                                "affinity_antiaffinity": "affinity",
-                                "scope": "node",
-                            }
-                        ]
-                    }
-                ],
-                "scaling_aspects": [
-                    {
-                        "id": "demo_aspect",
-                        "name": "demo_aspect",
-                        "description": "demo_aspect",
-                        "associated_group": "elementGroup1",
-                        "max_scale_level": 5
-                    }
-                ]
-            }],
-            "element_groups": [{
-                "group_id": "elementGroup1",
-                "description": "",
-                "properties": {
-                    "name": "elementGroup1",
-                },
-                "members": ["gsu_vm", "pfu_vm"]
-            }]
-        }
-
-        req_data = {
-            "scaleVnfData": [
-                {
-                    "type": "SCALE_OUT",
-                    "aspectId": "demo_aspect1",
-                    "numberOfSteps": 1,
-                    "additionalParam": vnfd_info
-                },
-                {
-                    "type": "SCALE_OUT",
-                    "aspectId": "demo_aspect2",
-                    "numberOfSteps": 1,
-                    "additionalParam": vnfd_info
                 }
             ]
         }
         scale_service = NFManualScaleService(self.nf_inst_id, req_data)
         scale_service.run()
-        nsIns = NfInstModel.objects.filter(nfinstid=self.nf_inst_id)
-        self.assertIsNotNone(nsIns)
+        nsIns = NfInstModel.objects.get(nfinstid=self.nf_inst_id)
+        self.assertEqual(nsIns.status, VNF_STATUS.ACTIVE)
 
-        jobs = JobModel.objects.filter(jobid=scale_service.job_id)
-        self.assertIsNotNone(100, jobs[0].progress)
+        jobs = JobModel.objects.get(jobid=scale_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
+
+    def test_scale_vnf_when_nf_instance_does_not_exist(self):
+        req_data = {
+            "scaleVnfData":
+                {
+                    "type": "SCALE_OUT",
+                    "aspectId": "demo_aspect1",
+                    "numberOfSteps": 1,
+                }
+        }
+        scale_service = NFManualScaleService("nf_instance_does_not_exist", req_data)
+        scale_service.run()
+
+        jobs = JobModel.objects.get(jobid=scale_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
+
+    def test_scale_vnf_when_scale_vnf_data_does_not_exist(self):
+        req_data = {
+            "scaleVnfData": {}
+        }
+        scale_service = NFManualScaleService(self.nf_inst_id, req_data)
+        scale_service.run()
+        nsIns = NfInstModel.objects.get(nfinstid=self.nf_inst_id)
+        self.assertEqual(nsIns.status, VNF_STATUS.ACTIVE)
+
+        jobs = JobModel.objects.get(jobid=scale_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
 
 
 class TestHealVnfViews(TestCase):
@@ -529,62 +300,49 @@ class TestHealVnfViews(TestCase):
         self.client = Client()
         self.ns_inst_id = str(uuid.uuid4())
         self.nf_inst_id = str(uuid.uuid4())
-        self.nf_uuid = '111'
-
-        self.job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.HEAL, self.nf_inst_id)
-
+        self.nf_uuid = "111"
+        self.data = {
+            "action": "vmReset",
+            "affectedvm": {
+                "vmid": "1",
+                "vduid": "1",
+                "vmname": "name",
+            },
+            "additionalParams": {
+                "actionvminfo": {
+                    "vmid": "vm_id_001",
+                }
+            }
+        }
         NSInstModel(id=self.ns_inst_id, name="ns_name").save()
-        NfInstModel.objects.create(nfinstid=self.nf_inst_id,
-                                   nf_name='name_1',
-                                   vnf_id='1',
-                                   vnfm_inst_id='1',
-                                   ns_inst_id='111,2-2-2',
-                                   max_cpu='14',
-                                   max_ram='12296',
-                                   max_hd='101',
-                                   max_shd="20",
-                                   max_net=10,
-                                   status='active',
-                                   mnfinstid=self.nf_uuid,
-                                   package_id='pkg1',
-                                   vnfd_model=json.dumps({
-                                       "metadata": {
-                                           "vnfdId": "1",
-                                           "vnfdName": "PGW001",
-                                           "vnfProvider": "zte",
-                                           "vnfdVersion": "V00001",
-                                           "vnfVersion": "V5.10.20",
-                                           "productType": "CN",
-                                           "vnfType": "PGW",
-                                           "description": "PGW VNFD description",
-                                           "isShared": True,
-                                           "vnfExtendType": "driver"
-                                       }
-                                   }))
+        NfInstModel.objects.create(nfinstid=self.nf_inst_id, status=VNF_STATUS.NULL, vnfm_inst_id="vnfm_inst_id_001",
+                                   mnfinstid="m_nf_inst_id_001")
+        NfInstModel.objects.create(nfinstid="non_vud_id", status=VNF_STATUS.NULL, vnfm_inst_id="vnfm_inst_id_001",
+                                   mnfinstid="m_nf_inst_id_001")
+        VNFCInstModel.objects.create(nfinstid=self.nf_inst_id, vmid="vm_id_001", vduid="vdu_id_001")
+        VmInstModel.objects.create(resouceid="vm_id_001", vmname="vm_name_001")
 
     def tearDown(self):
         NSInstModel.objects.all().delete()
         NfInstModel.objects.all().delete()
 
+    @mock.patch.object(time, "sleep")
     @mock.patch.object(restcall, "call_req")
-    def test_heal_vnf(self, mock_call_req):
-
+    def test_heal_vnf_success(self, mock_call_req, mock_sleep):
+        heal_service = NFHealService(self.nf_inst_id, self.data)
         mock_vals = {
-            "/api/ztevnfmdriver/v1/1/vnfs/111/heal":
-                [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/external-system/esr-vnfm-list/esr-vnfm/1":
-                [0, json.JSONEncoder().encode(vnfm_info), '200'],
-            "/api/resmgr/v1/vnf/1":
-                [0, json.JSONEncoder().encode({"jobId": self.job_id}), '200'],
-            "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
+            "/test/bins/1?timeout=15000":
+                [0, json.JSONEncoder().encode(['{"powering-off": "", "instance_id": "vm_id_001", '
+                                               '"display_name": ""}']), "200"],
+            "/external-system/esr-vnfm-list/esr-vnfm/vnfm_inst_id_001?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/vnfs/m_nf_inst_id_001/heal":
+                [0, json.JSONEncoder().encode({"jobId": heal_service.job_id}), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/jobs/" + heal_service.job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({
-                    "jobId": self.job_id,
+                    "jobId": heal_service.job_id,
                     "responsedescriptor": {
-                        "progress": "100",
                         "status": JOB_MODEL_STATUS.FINISHED,
-                        "responseid": "3",
-                        "statusdescription": "creating",
-                        "errorcode": "0",
                         "responsehistorylist": [{
                             "progress": "0",
                             "status": JOB_MODEL_STATUS.PROCESSING,
@@ -593,43 +351,98 @@ class TestHealVnfViews(TestCase):
                             "errorcode": "0"
                         }]
                     }
-                }), '200']}
+                }), "200"]
+        }
 
         def side_effect(*args):
             return mock_vals[args[4]]
 
         mock_call_req.side_effect = side_effect
-
-        req_data = {
-            "action": "vmReset",
-            "affectedvm": {
-                "vmid": "1",
-                "vduid": "1",
-                "vmname": "name",
-            }
-        }
-
-        NFHealService(self.nf_inst_id, req_data).run()
-
+        heal_service.run()
         self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.ACTIVE)
+        jobs = JobModel.objects.get(jobid=heal_service.job_id)
+        self.assertEqual(JOB_PROGRESS.FINISHED, jobs.progress)
 
-    @mock.patch.object(NFHealService, "run")
-    def test_heal_vnf_non_existing_vnf(self, mock_biz):
-        mock_biz.side_effect = NSLCMException("VNF Not Found")
+    def test_heal_vnf_when_non_existing_vnf(self, ):
+        heal_service = NFHealService("on_existing_vnf", self.data)
+        heal_service.run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.NULL)
+        jobs = JobModel.objects.get(jobid=heal_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
 
-        nf_inst_id = "1"
+    def test_heal_vnf_when_additional_params_non_exist(self):
+        data = {"action": "vmReset"}
+        heal_service = NFHealService(self.nf_inst_id, data)
+        heal_service.run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.NULL)
+        jobs = JobModel.objects.get(jobid=heal_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
 
-        req_data = {
-            "action": "vmReset",
-            "affectedvm": {
-                "vmid": "1",
-                "vduid": "1",
-                "vmname": "name",
-            }
+    def test_heal_vnf_when_non_vud_id(self, ):
+        heal_service = NFHealService("non_vud_id", self.data)
+        heal_service.run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid="non_vud_id").status, VNF_STATUS.NULL)
+        jobs = JobModel.objects.get(jobid=heal_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
+
+    @mock.patch.object(restcall, "call_req")
+    def test_heal_vnf_when_no_vnfm_job_id(self, mock_call_req):
+        heal_service = NFHealService(self.nf_inst_id, self.data)
+        mock_vals = {
+            "/test/bins/1?timeout=15000":
+                [0, json.JSONEncoder().encode(['{"powering-off": "", "instance_id": "vm_id_001", '
+                                               '"display_name": ""}']), "200"],
+            "/external-system/esr-vnfm-list/esr-vnfm/vnfm_inst_id_001?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/vnfs/m_nf_inst_id_001/heal":
+                [0, json.JSONEncoder().encode({}), "200"]
         }
 
-        self.assertRaises(NSLCMException, NFHealService(nf_inst_id, req_data).run)
-        self.assertEqual(len(NfInstModel.objects.filter(nfinstid=nf_inst_id)), 0)
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        heal_service.run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.ACTIVE)
+        jobs = JobModel.objects.get(jobid=heal_service.job_id)
+        self.assertEqual(JOB_PROGRESS.FINISHED, jobs.progress)
+
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    def test_heal_vnf_when_job_bot_finish(self, mock_call_req, mock_sleep):
+        heal_service = NFHealService(self.nf_inst_id, self.data)
+        mock_vals = {
+            "/test/bins/1?timeout=15000":
+                [0, json.JSONEncoder().encode(['{"powering-off": "", "instance_id": "vm_id_001", '
+                                               '"display_name": ""}']), "200"],
+            "/external-system/esr-vnfm-list/esr-vnfm/vnfm_inst_id_001?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/vnfs/m_nf_inst_id_001/heal":
+                [0, json.JSONEncoder().encode({"jobId": heal_service.job_id}), "200"],
+            "/api/ztevnfmdriver/v1/vnfm_inst_id_001/jobs/" + heal_service.job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode({
+                    "jobId": heal_service.job_id,
+                    "responsedescriptor": {
+                        "status": JOB_MODEL_STATUS.ERROR,
+                        "responsehistorylist": [{
+                            "progress": "0",
+                            "status": JOB_MODEL_STATUS.PROCESSING,
+                            "responseid": "2",
+                            "statusdescription": "creating",
+                            "errorcode": "0"
+                        }]
+                    }
+                }), "200"]
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        heal_service.run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=self.nf_inst_id).status, VNF_STATUS.HEALING)
+        jobs = JobModel.objects.get(jobid=heal_service.job_id)
+        self.assertEqual(JOB_PROGRESS.ERROR, jobs.progress)
 
 
 class TestGetVnfmInfoViews(TestCase):
@@ -669,7 +482,7 @@ class TestGetVnfmInfoViews(TestCase):
                 ]
             }
         }
-        r1 = [0, json.JSONEncoder().encode(vnfm_info_aai), '200']
+        r1 = [0, json.JSONEncoder().encode(vnfm_info_aai), "200"]
         mock_call_req.side_effect = [r1]
         esr_system_info = ignore_case_get(ignore_case_get(vnfm_info_aai, "esr-system-info-list"), "esr-system-info")
         expect_data = {
@@ -703,7 +516,7 @@ class TestGetVimInfoViews(TestCase):
 
     @mock.patch.object(restcall, "call_req")
     def test_get_vim_info(self, mock_call_req):
-        r1 = [0, json.JSONEncoder().encode(vim_info), '200']
+        r1 = [0, json.JSONEncoder().encode(vim_info), "200"]
         mock_call_req.side_effect = [r1]
         esr_system_info = ignore_case_get(ignore_case_get(vim_info, "esr-system-info-list"), "esr-system-info")
         expect_data = {
@@ -723,7 +536,7 @@ class TestGetVimInfoViews(TestCase):
         }
 
         # response = self.client.get("/api/nslcm/v1/vims/%s" % self.vim_id)
-        response = self.client.get("/api/nslcm/v1/vims/%s/%s" % (self.vim_id['cloud_owner'], self.vim_id['cloud_regionid']))
+        response = self.client.get("/api/nslcm/v1/vims/%s/%s" % (self.vim_id["cloud_owner"], self.vim_id["cloud_regionid"]))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         context = json.loads(response.content)
         self.assertEqual(expect_data["url"], context["url"])
@@ -750,7 +563,7 @@ class TestPlaceVnfViews(TestCase):
     def tearDown(self):
         OOFDataModel.objects.all().delete()
 
-    @mock.patch.object(restcall, 'call_req')
+    @mock.patch.object(restcall, "call_req")
     def test_place_vnf(self, mock_call_req):
         vdu_info_json = [{
             "vduName": "vG_0",
@@ -942,24 +755,114 @@ class TestPlaceVnfViews(TestCase):
         self.assertEqual(db_info[0].vdu_info, "none")
 
 
+class TestGrantVnfsViews(TestCase):
+    def setUp(self):
+        self.vnf_inst_id = str(uuid.uuid4())
+        self.data = {
+            "vnfInstanceId": self.vnf_inst_id,
+            "lifecycleOperation": LIFE_CYCLE_OPERATION.INSTANTIATE,
+            "addResource": [{"type": RESOURCE_CHANGE_TYPE.VDU, "vdu": "vdu_grant_vnf_add_resources"}],
+            "additionalParam": {
+                "vnfmid": "vnfm_inst_id_001",
+                "vimid": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'
+            }
+        }
+        self.client = Client()
+        self.url = "/api/nslcm/v1/ns/grantvnf"
+        NfInstModel(mnfinstid=self.vnf_inst_id, nfinstid="vnf_inst_id_001", package_id="package_id_001",
+                    vnfm_inst_id="vnfm_inst_id_001").save()
+
+    def tearDown(self):
+        OOFDataModel.objects.all().delete()
+        NfInstModel.objects.all().delete()
+
+    # @mock.patch.object(restcall, "call_req")
+    # def test_nf_grant_view(self, mock_call_req):
+    #     mock_vals = {
+    #         "/api/catalog/v1/vnfpackages/package_id_001":
+    #             [0, json.JSONEncoder().encode(nf_package_info), "200"],
+    #         "/api/resmgr/v1/resource/grant":
+    #             [1, json.JSONEncoder().encode({}), "200"],
+    #         "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
+    #             [0, json.JSONEncoder().encode(vim_info), "201"],
+    #     }
+    #
+    #     def side_effect(*args):
+    #         return mock_vals[args[4]]
+    #
+    #     mock_call_req.side_effect = side_effect
+    #     data = {
+    #         "vnfInstanceId": self.vnf_inst_id,
+    #         "lifecycleOperation": LIFE_CYCLE_OPERATION.INSTANTIATE
+    #     }
+    #     response = self.client.post(self.url, data=data)
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    @mock.patch.object(restcall, "call_req")
+    def test_nf_grant_view_when_add_resource(self, mock_call_req):
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/package_id_001":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
+            "/api/resmgr/v1/resource/grant":
+                [1, json.JSONEncoder().encode({}), "200"],
+            "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
+                [0, json.JSONEncoder().encode(vim_info), "201"],
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+        mock_call_req.side_effect = side_effect
+        resp = GrantVnfs(json.dumps(self.data), "").send_grant_vnf_to_resMgr()
+        return_success = {"vim": {"accessInfo": {"tenant": "admin"},
+                                  "vimId": "example-cloud-owner-val-97336_example-cloud-region-id-val-35532"}}
+        self.assertEqual(resp, return_success)
+
+    @mock.patch.object(restcall, "call_req")
+    def test_nf_grant_view_when_remove_resource(self, mock_call_req):
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/package_id_001":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
+            "/api/resmgr/v1/resource/grant":
+                [1, json.JSONEncoder().encode({}), "200"],
+            "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
+                [0, json.JSONEncoder().encode(vim_info), "201"],
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        self.data.pop("addResource")
+        self.data["removeResource"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
+        resp = GrantVnfs(json.dumps(self.data), "").send_grant_vnf_to_resMgr()
+        return_success = {"vim": {"accessInfo": {"tenant": "admin"},
+                                  "vimId": "example-cloud-owner-val-97336_example-cloud-region-id-val-35532"}}
+        self.assertEqual(resp, return_success)
+
+
 class TestGrantVnfViews(TestCase):
     def setUp(self):
         self.vnf_inst_id = str(uuid.uuid4())
         self.data = {
             "vnfInstanceId": self.vnf_inst_id,
-            "vnfLcmOpOccId": "1234",
+            "vnfLcmOpOccId": "vnf_lcm_op_occ_id",
+            "addResources": [{"vdu": "vdu_grant_vnf_add_resources"}],
             "operation": "INSTANTIATE"
         }
-        vdu_info_dict = [{"vduName": "vg", "flavorName": "flavor_1", "flavorId": "12345", "directive": []}]
-        OOFDataModel(request_id='1234', transaction_id='1234', request_status='done', request_module_name='vg',
-                     service_resource_id=self.vnf_inst_id, vim_id='cloudOwner_casa', cloud_owner='cloudOwner',
-                     cloud_region_id='casa', vdu_info=json.dumps(vdu_info_dict)).save()
+        self.client = Client()
+        vdu_info_dict = [{"vduName": "vg", "flavorName": "flavor_1", "flavorId": "flavor_id_001", "directive": []}]
+        OOFDataModel(request_id="request_id_001", transaction_id="transaction_id_001", request_status="done",
+                     request_module_name="vg", service_resource_id=self.vnf_inst_id, vim_id="cloudOwner_casa",
+                     cloud_owner="cloudOwner", cloud_region_id="casa", vdu_info=json.dumps(vdu_info_dict)).save()
+        NfInstModel(mnfinstid=self.vnf_inst_id, nfinstid="vnf_inst_id_001", package_id="package_id_001",
+                    vnfm_inst_id="vnfm_id_001").save()
 
     def tearDown(self):
         OOFDataModel.objects.all().delete()
+        NfInstModel.objects.all().delete()
 
     @mock.patch.object(resmgr, "grant_vnf")
-    def test_exec_grant(self, mock_grant):
+    def test_vnf_grant_view(self, mock_grant):
         resmgr_grant_resp = {
             "vim": {
                 "vimId": "cloudOwner_casa",
@@ -969,854 +872,416 @@ class TestGrantVnfViews(TestCase):
             }
         }
         mock_grant.return_value = resmgr_grant_resp
-        resp = GrantVnf(self.data).exec_grant()
-        self.assertEqual(resp['vimAssets']['computeResourceFlavours'][0]['vimConnectionId'], 'cloudOwner_casa')
-        self.assertEqual(resp['vimAssets']['computeResourceFlavours'][0]['resourceProviderId'], 'vg')
-        self.assertEqual(resp['vimAssets']['computeResourceFlavours'][0]['vimFlavourId'], '12345')
+        self.data.pop("addResources")
+        response = self.client.post("/api/nslcm/v2/grants", data=self.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
+        self.assertEqual(response.data["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
+        self.assertEqual(response.data["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
-
-vnfd_model_dict = {
-    'local_storages': [],
-    'vdus': [
-        {
-            'volumn_storages': [
-
-            ],
-            'nfv_compute': {
-                'mem_size': '',
-                'num_cpus': '2'
-            },
-            'local_storages': [
-
-            ],
-            'vdu_id': 'vdu_omm.001',
-            'image_file': 'opencos_sss_omm_img_release_20150723-1-disk1',
-            'dependencies': [
-
-            ],
-            'vls': [
-
-            ],
-            'cps': [
-
-            ],
-            'properties': {
-                'key_vdu': '',
-                'support_scaling': False,
-                'vdu_type': '',
-                'name': '',
-                'storage_policy': '',
-                'location_info': {
-                    'vimId': '',
-                    'availability_zone': '',
-                    'region': '',
-                    'dc': '',
-                    'host': '',
-                    'tenant': ''
-                },
-                'inject_data_list': [
-
-                ],
-                'watchdog': {
-                    'action': '',
-                    'enabledelay': ''
-                },
-                'local_affinity_antiaffinity_rule': {
-
-                },
-                'template_id': 'omm.001',
-                'manual_scale_select_vim': False
-            },
-            'description': 'singleommvm'
-        },
-        {
-            'volumn_storages': [
-
-            ],
-            'nfv_compute': {
-                'mem_size': '',
-                'num_cpus': '4'
-            },
-            'local_storages': [
-
-            ],
-            'vdu_id': 'vdu_1',
-            'image_file': 'sss',
-            'dependencies': [
-
-            ],
-            'vls': [
-
-            ],
-            'cps': [
-
-            ],
-            'properties': {
-                'key_vdu': '',
-                'support_scaling': False,
-                'vdu_type': '',
-                'name': '',
-                'storage_policy': '',
-                'location_info': {
-                    'vimId': '',
-                    'availability_zone': '',
-                    'region': '',
-                    'dc': '',
-                    'host': '',
-                    'tenant': ''
-                },
-                'inject_data_list': [
-
-                ],
-                'watchdog': {
-                    'action': '',
-                    'enabledelay': ''
-                },
-                'local_affinity_antiaffinity_rule': {
-
-                },
-                'template_id': '1',
-                'manual_scale_select_vim': False
-            },
-            'description': 'ompvm'
-        },
-        {
-            'volumn_storages': [
-
-            ],
-            'nfv_compute': {
-                'mem_size': '',
-                'num_cpus': '14'
-            },
-            'local_storages': [
-
-            ],
-            'vdu_id': 'vdu_2',
-            'image_file': 'sss',
-            'dependencies': [
-
-            ],
-            'vls': [
-
-            ],
-            'cps': [
-
-            ],
-            'properties': {
-                'key_vdu': '',
-                'support_scaling': False,
-                'vdu_type': '',
-                'name': '',
-                'storage_policy': '',
-                'location_info': {
-                    'vimId': '',
-                    'availability_zone': '',
-                    'region': '',
-                    'dc': '',
-                    'host': '',
-                    'tenant': ''
-                },
-                'inject_data_list': [
-
-                ],
-                'watchdog': {
-                    'action': '',
-                    'enabledelay': ''
-                },
-                'local_affinity_antiaffinity_rule': {
-
-                },
-                'template_id': '2',
-                'manual_scale_select_vim': False
-            },
-            'description': 'ompvm'
-        },
-        {
-            'volumn_storages': [
-
-            ],
-            'nfv_compute': {
-                'mem_size': '',
-                'num_cpus': '14'
-            },
-            'local_storages': [
-
-            ],
-            'vdu_id': 'vdu_3',
-            'image_file': 'sss',
-            'dependencies': [
-
-            ],
-            'vls': [
-
-            ],
-            'cps': [
-
-            ],
-            'properties': {
-                'key_vdu': '',
-                'support_scaling': False,
-                'vdu_type': '',
-                'name': '',
-                'storage_policy': '',
-                'location_info': {
-                    'vimId': '',
-                    'availability_zone': '',
-                    'region': '',
-                    'dc': '',
-                    'host': '',
-                    'tenant': ''
-                },
-                'inject_data_list': [
-
-                ],
-                'watchdog': {
-                    'action': '',
-                    'enabledelay': ''
-                },
-                'local_affinity_antiaffinity_rule': {
-
-                },
-                'template_id': '3',
-                'manual_scale_select_vim': False
-            },
-            'description': 'ompvm'
-        },
-        {
-            'volumn_storages': [
-
-            ],
-            'nfv_compute': {
-                'mem_size': '',
-                'num_cpus': '4'
-            },
-            'local_storages': [
-
-            ],
-            'vdu_id': 'vdu_10',
-            'image_file': 'sss',
-            'dependencies': [
-
-            ],
-            'vls': [
-
-            ],
-            'cps': [
-
-            ],
-            'properties': {
-                'key_vdu': '',
-                'support_scaling': False,
-                'vdu_type': '',
-                'name': '',
-                'storage_policy': '',
-                'location_info': {
-                    'vimId': '',
-                    'availability_zone': '',
-                    'region': '',
-                    'dc': '',
-                    'host': '',
-                    'tenant': ''
-                },
-                'inject_data_list': [
-
-                ],
-                'watchdog': {
-                    'action': '',
-                    'enabledelay': ''
-                },
-                'local_affinity_antiaffinity_rule': {
-
-                },
-                'template_id': '10',
-                'manual_scale_select_vim': False
-            },
-            'description': 'ppvm'
-        },
-        {
-            'volumn_storages': [
-
-            ],
-            'nfv_compute': {
-                'mem_size': '',
-                'num_cpus': '14'
-            },
-            'local_storages': [
-
-            ],
-            'vdu_id': 'vdu_11',
-            'image_file': 'sss',
-            'dependencies': [
-
-            ],
-            'vls': [
-
-            ],
-            'cps': [
-
-            ],
-            'properties': {
-                'key_vdu': '',
-                'support_scaling': False,
-                'vdu_type': '',
-                'name': '',
-                'storage_policy': '',
-                'location_info': {
-                    'vimId': '',
-                    'availability_zone': '',
-                    'region': '',
-                    'dc': '',
-                    'host': '',
-                    'tenant': ''
-                },
-                'inject_data_list': [
-
-                ],
-                'watchdog': {
-                    'action': '',
-                    'enabledelay': ''
-                },
-                'local_affinity_antiaffinity_rule': {
-
-                },
-                'template_id': '11',
-                'manual_scale_select_vim': False
-            },
-            'description': 'ppvm'
-        },
-        {
-            'volumn_storages': [
-
-            ],
-            'nfv_compute': {
-                'mem_size': '',
-                'num_cpus': '14'
-            },
-            'local_storages': [
-
-            ],
-            'vdu_id': 'vdu_12',
-            'image_file': 'sss',
-            'dependencies': [
-
-            ],
-            'vls': [
-
-            ],
-            'cps': [
-
-            ],
-            'properties': {
-                'key_vdu': '',
-                'support_scaling': False,
-                'vdu_type': '',
-                'name': '',
-                'storage_policy': '',
-                'location_info': {
-                    'vimId': '',
-                    'availability_zone': '',
-                    'region': '',
-                    'dc': '',
-                    'host': '',
-                    'tenant': ''
-                },
-                'inject_data_list': [
-
-                ],
-                'watchdog': {
-                    'action': '',
-                    'enabledelay': ''
-                },
-                'local_affinity_antiaffinity_rule': {
-
-                },
-                'template_id': '12',
-                'manual_scale_select_vim': False
-            },
-            'description': 'ppvm'
+    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(resmgr, "grant_vnf")
+    def test_exec_grant_when_add_resources_success(self, mock_grant, mock_call_req):
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/package_id_001":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
         }
-    ],
-    'volumn_storages': [
 
-    ],
-    'policies': {
-        'scaling': {
-            'targets': {
+        def side_effect(*args):
+            return mock_vals[args[4]]
 
-            },
-            'policy_id': 'policy_scale_sss-vnf-template',
-            'properties': {
-                'policy_file': '*-vnfd.zip/*-vnf-policy.xml'
-            },
-            'description': ''
-        }
-    },
-    'image_files': [
-        {
-            'description': '',
-            'properties': {
-                'name': 'opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
-                'checksum': '',
-                'disk_format': 'VMDK',
-                'file_url': './zte-cn-sss-main-image/OMM/opencos_sss_omm_img_release_20150723-1-disk1.vmdk',
-                'container_type': 'vm',
-                'version': '',
-                'hypervisor_type': 'kvm'
-            },
-            'image_file_id': 'opencos_sss_omm_img_release_20150723-1-disk1'
-        },
-        {
-            'description': '',
-            'properties': {
-                'name': 'sss.vmdk',
-                'checksum': '',
-                'disk_format': 'VMDK',
-                'file_url': './zte-cn-sss-main-image/NE/sss.vmdk',
-                'container_type': 'vm',
-                'version': '',
-                'hypervisor_type': 'kvm'
-            },
-            'image_file_id': 'sss'
-        }
-    ],
-    'vls': [
-
-    ],
-    'cps': [
-
-    ],
-    'metadata': {
-        'vendor': 'zte',
-        'is_shared': False,
-        'description': '',
-        'domain_type': 'CN',
-        'version': 'v4.14.10',
-        'vmnumber_overquota_alarm': False,
-        'cross_dc': False,
-        'vnf_type': 'SSS',
-        'vnfd_version': 'V00000001',
-        'id': 'sss-vnf-template',
-        'name': 'sss-vnf-template'
-    }
-}
-
-nsd_model_dict = {
-    "vnffgs": [
-
-    ],
-    "inputs": {
-        "externalDataNetworkName": {
-            "default": "",
-            "type": "string",
-            "description": ""
-        }
-    },
-    "pnfs": [
-
-    ],
-    "fps": [
-
-    ],
-    "server_groups": [
-
-    ],
-    "ns_flavours": [
-
-    ],
-    "vnfs": [
-        {
-            "dependency": [
-
-            ],
-            "properties": {
-                "plugin_info": "vbrasplugin_1.0",
-                "vendor": "zte",
-                "is_shared": "False",
-                "request_reclassification": "False",
-                "vnfd_version": "1.0.0",
-                "version": "1.0",
-                "nsh_aware": "True",
-                "cross_dc": "False",
-                "externalDataNetworkName": {
-                    "get_input": "externalDataNetworkName"
-                },
-                "id": "zte_vbras",
-                "name": "vbras"
-            },
-            "vnf_id": "VBras",
-            "networks": [
-
-            ],
-            "description": ""
-        }
-    ],
-    "ns_exposed": {
-        "external_cps": [
-
-        ],
-        "forward_cps": [
-
-        ]
-    },
-    "vls": [
-        {
-            "vl_id": "ext_mnet_network",
-            "description": "",
-            "properties": {
-                "network_type": "vlan",
-                "name": "externalMNetworkName",
-                "dhcp_enabled": False,
-                "location_info": {
-                    "host": True,
-                    "vimid": 2,
-                    "region": True,
-                    "tenant": "admin",
-                    "dc": ""
-                },
-                "end_ip": "190.168.100.100",
-                "gateway_ip": "190.168.100.1",
-                "start_ip": "190.168.100.2",
-                "cidr": "190.168.100.0/24",
-                "mtu": 1500,
-                "network_name": "sub_mnet",
-                "ip_version": 4
+        mock_call_req.side_effect = side_effect
+        resmgr_grant_resp = {
+            "vim": {
+                "vimId": "cloudOwner_casa",
+                "accessInfo": {
+                    "tenant": "tenantA"
+                }
             }
         }
-    ],
-    "cps": [
+        mock_grant.return_value = resmgr_grant_resp
+        resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
-    ],
-    "policies": [
+    def test_exec_grant_when_add_resources_but_no_vnfinst(self):
+        self.data["vnfInstanceId"] = "no_vnfinst"
+        resp = None
+        try:
+            resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        except NSLCMException as e:
+            self.assertEqual(type(e), NSLCMException)
+        finally:
+            self.assertEqual(resp, None)
 
-    ],
-    "metadata": {
-        "invariant_id": "vbras_ns",
-        "description": "vbras_ns",
-        "version": 1,
-        "vendor": "zte",
-        "id": "vbras_ns",
-        "name": "vbras_ns"
-    }
-}
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(resmgr, "grant_vnf")
+    def test_exec_grant_when_add_resources_but_no_off(self, mock_grant, mock_call_req, mock_sleep):
+        NfInstModel(mnfinstid="add_resources_but_no_off", nfinstid="vnf_inst_id_002",
+                    package_id="package_id_002").save()
+        mock_sleep.return_value = None
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/package_id_002":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
+        }
 
-vserver_info = {
-    "vserver-id": "example-vserver-id-val-70924",
-    "vserver-name": "example-vserver-name-val-61674",
-    "vserver-name2": "example-vserver-name2-val-19234",
-    "prov-status": "example-prov-status-val-94916",
-    "vserver-selflink": "example-vserver-selflink-val-26562",
-    "in-maint": True,
-    "is-closed-loop-disabled": True,
-    "resource-version": "1505465356263",
-    "volumes": {
-        "volume": [
-            {
-                "volume-id": "example-volume-id-val-71854",
-                "volume-selflink": "example-volume-selflink-val-22433"
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        resmgr_grant_resp = {
+            "vim": {
+                "vimId": "cloudOwner_casa",
+                "accessInfo": {
+                    "tenant": "tenantA"
+                }
             }
-        ]
-    },
-    "l-interfaces": {
-        "l-interface": [
-            {
-                "interface-name": "example-interface-name-val-24351",
-                "interface-role": "example-interface-role-val-43242",
-                "v6-wan-link-ip": "example-v6-wan-link-ip-val-4196",
-                "selflink": "example-selflink-val-61295",
-                "interface-id": "example-interface-id-val-95879",
-                "macaddr": "example-macaddr-val-37302",
-                "network-name": "example-network-name-val-44254",
-                "management-option": "example-management-option-val-49009",
-                "interface-description": "example-interface-description-val-99923",
-                "is-port-mirrored": True,
-                "in-maint": True,
-                "prov-status": "example-prov-status-val-4698",
-                "is-ip-unnumbered": True,
-                "allowed-address-pairs": "example-allowed-address-pairs-val-5762",
-                "vlans": {
-                    "vlan": [
-                        {
-                            "vlan-interface": "example-vlan-interface-val-58193",
-                            "vlan-id-inner": 54452151,
-                            "vlan-id-outer": 70239293,
-                            "speed-value": "example-speed-value-val-18677",
-                            "speed-units": "example-speed-units-val-46185",
-                            "vlan-description": "example-vlan-description-val-81675",
-                            "backdoor-connection": "example-backdoor-connection-val-44608",
-                            "vpn-key": "example-vpn-key-val-7946",
-                            "orchestration-status": "example-orchestration-status-val-33611",
-                            "in-maint": True,
-                            "prov-status": "example-prov-status-val-8288",
-                            "is-ip-unnumbered": True,
-                            "l3-interface-ipv4-address-list": [
-                                {
-                                    "l3-interface-ipv4-address": "example-l3-interface-ipv4-address-val-25520",
-                                    "l3-interface-ipv4-prefix-length": 69931928,
-                                    "vlan-id-inner": 86628520,
-                                    "vlan-id-outer": 62729236,
-                                    "is-floating": True,
-                                    "neutron-network-id": "example-neutron-network-id-val-64021",
-                                    "neutron-subnet-id": "example-neutron-subnet-id-val-95049"
-                                }
-                            ],
-                            "l3-interface-ipv6-address-list": [
-                                {
-                                    "l3-interface-ipv6-address": "example-l3-interface-ipv6-address-val-64310",
-                                    "l3-interface-ipv6-prefix-length": 57919834,
-                                    "vlan-id-inner": 79150122,
-                                    "vlan-id-outer": 59789973,
-                                    "is-floating": True,
-                                    "neutron-network-id": "example-neutron-network-id-val-31713",
-                                    "neutron-subnet-id": "example-neutron-subnet-id-val-89568"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "sriov-vfs": {
-                    "sriov-vf": [
-                        {
-                            "pci-id": "example-pci-id-val-16747",
-                            "vf-vlan-filter": "example-vf-vlan-filter-val-4613",
-                            "vf-mac-filter": "example-vf-mac-filter-val-68168",
-                            "vf-vlan-strip": True,
-                            "vf-vlan-anti-spoof-check": True,
-                            "vf-mac-anti-spoof-check": True,
-                            "vf-mirrors": "example-vf-mirrors-val-6270",
-                            "vf-broadcast-allow": True,
-                            "vf-unknown-multicast-allow": True,
-                            "vf-unknown-unicast-allow": True,
-                            "vf-insert-stag": True,
-                            "vf-link-status": "example-vf-link-status-val-49266",
-                            "neutron-network-id": "example-neutron-network-id-val-29493"
-                        }
-                    ]
-                },
-                "l-interfaces": {
-                    "l-interface": [
-                        {
-                            "interface-name": "example-interface-name-val-98222",
-                            "interface-role": "example-interface-role-val-78360",
-                            "v6-wan-link-ip": "example-v6-wan-link-ip-val-76921",
-                            "selflink": "example-selflink-val-27117",
-                            "interface-id": "example-interface-id-val-11260",
-                            "macaddr": "example-macaddr-val-60378",
-                            "network-name": "example-network-name-val-16258",
-                            "management-option": "example-management-option-val-35097",
-                            "interface-description": "example-interface-description-val-10475",
-                            "is-port-mirrored": True,
-                            "in-maint": True,
-                            "prov-status": "example-prov-status-val-65203",
-                            "is-ip-unnumbered": True,
-                            "allowed-address-pairs": "example-allowed-address-pairs-val-65028"
-                        }
-                    ]
-                },
-                "l3-interface-ipv4-address-list": [
-                    {
-                        "l3-interface-ipv4-address": "example-l3-interface-ipv4-address-val-72779",
-                        "l3-interface-ipv4-prefix-length": 55956636,
-                        "vlan-id-inner": 98174431,
-                        "vlan-id-outer": 20372128,
-                        "is-floating": True,
-                        "neutron-network-id": "example-neutron-network-id-val-39596",
-                        "neutron-subnet-id": "example-neutron-subnet-id-val-51109"
-                    }
-                ],
-                "l3-interface-ipv6-address-list": [
-                    {
-                        "l3-interface-ipv6-address": "example-l3-interface-ipv6-address-val-95203",
-                        "l3-interface-ipv6-prefix-length": 57454747,
-                        "vlan-id-inner": 53421060,
-                        "vlan-id-outer": 16006050,
-                        "is-floating": True,
-                        "neutron-network-id": "example-neutron-network-id-val-54216",
-                        "neutron-subnet-id": "example-neutron-subnet-id-val-1841"
-                    }
-                ]
+        }
+        mock_grant.return_value = resmgr_grant_resp
+        self.data["vnfInstanceId"] = "add_resources_but_no_off"
+        resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        self.assertEqual(resp["vnfInstanceId"], "add_resources_but_no_off")
+        self.assertEqual(resp["vnfLcmOpOccId"], "vnf_lcm_op_occ_id")
+        vimConnections = [{
+            "id": "cloudOwner_casa",
+            "vimId": "cloudOwner_casa",
+            "vimType": None,
+            "interfaceInfo": None,
+            "accessInfo": {"tenant": "tenantA"},
+            "extra": None
+        }]
+        self.assertEqual(resp["vimConnections"], vimConnections)
+
+    @mock.patch.object(resmgr, "grant_vnf")
+    def test_exec_grant_when_resource_template_in_add_resources(self, mock_grant):
+        resmgr_grant_resp = {
+            "vim": {
+                "vimId": "cloudOwner_casa",
+                "accessInfo": {
+                    "tenant": "tenantA"
+                }
             }
-        ]
-    }
-}
+        }
+        mock_grant.return_value = resmgr_grant_resp
+        self.data["addResources"] = [{"vdu": "vdu_grant_vnf_add_resources"}, "resourceTemplate"]
+        resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
+    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(resmgr, "grant_vnf")
+    def test_exec_grant_when_remove_resources_success(self, mock_grant, mock_call_req):
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/package_id_001":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
+        }
 
-vnfm_info = {
-    "vnfm-id": "example-vnfm-id-val-97336",
-    "vim-id": "zte_test",
-    "certificate-url": "example-certificate-url-val-18046",
-    "resource-version": "example-resource-version-val-42094",
-    "esr-system-info-list": {
-        "esr-system-info": [
-            {
-                "esr-system-info-id": "example-esr-system-info-id-val-7713",
-                "system-name": "example-system-name-val-19801",
-                "type": "ztevnfmdriver",
-                "vendor": "example-vendor-val-50079",
-                "version": "example-version-val-93146",
-                "service-url": "example-service-url-val-68090",
-                "user-name": "example-user-name-val-14470",
-                "password": "example-password-val-84190",
-                "system-type": "example-system-type-val-42773",
-                "protocal": "example-protocal-val-85736",
-                "ssl-cacert": "example-ssl-cacert-val-33989",
-                "ssl-insecure": True,
-                "ip-address": "example-ip-address-val-99038",
-                "port": "example-port-val-27323",
-                "cloud-domain": "example-cloud-domain-val-55163",
-                "default-tenant": "example-default-tenant-val-99383",
-                "resource-version": "example-resource-version-val-15424"
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        resmgr_grant_resp = {
+            "vim": {
+                "vimId": "cloudOwner_casa",
+                "accessInfo": {
+                    "tenant": "tenantA"
+                }
             }
-        ]
-    }
-}
+        }
+        mock_grant.return_value = resmgr_grant_resp
+        self.data.pop("addResources")
+        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
+        self.data["additionalparams"] = {"vnfmid": "vnfm_id_001"}
+        resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
-vim_info = {
-    "cloud-owner": "example-cloud-owner-val-97336",
-    "cloud-region-id": "example-cloud-region-id-val-35532",
-    "cloud-type": "example-cloud-type-val-18046",
-    "owner-defined-type": "example-owner-defined-type-val-9413",
-    "cloud-region-version": "example-cloud-region-version-val-85706",
-    "identity-url": "example-identity-url-val-71252",
-    "cloud-zone": "example-cloud-zone-val-27112",
-    "complex-name": "example-complex-name-val-85283",
-    "sriov-automation": True,
-    "cloud-extra-info": "example-cloud-extra-info-val-90854",
-    "cloud-epa-caps": "example-cloud-epa-caps-val-2409",
-    "resource-version": "example-resource-version-val-42094",
-    "esr-system-info-list": {
-        "esr-system-info": [
-            {
-                "esr-system-info-id": "example-esr-system-info-id-val-7713",
-                "system-name": "example-system-name-val-19801",
-                "type": "example-type-val-24477",
-                "vendor": "example-vendor-val-50079",
-                "version": "example-version-val-93146",
-                "service-url": "example-service-url-val-68090",
-                "user-name": "example-user-name-val-14470",
-                "password": "example-password-val-84190",
-                "system-type": "example-system-type-val-42773",
-                "protocal": "example-protocal-val-85736",
-                "ssl-cacert": "example-ssl-cacert-val-33989",
-                "ssl-insecure": True,
-                "ip-address": "example-ip-address-val-99038",
-                "port": "example-port-val-27323",
-                "cloud-domain": "example-cloud-domain-val-55163",
-                "default-tenant": "admin",
-                "resource-version": "example-resource-version-val-15424"
+    def test_exec_grant_when_remove_resources_no_vnfinst(self):
+        self.data.pop("addResources")
+        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
+        self.data["additionalparams"] = {"vnfmid": "vnfm_id_002"}
+        resp = None
+        try:
+            resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        except NSLCMException as e:
+            self.assertEqual(type(e), NSLCMException)
+        finally:
+            self.assertEqual(resp, None)
+
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(resmgr, "grant_vnf")
+    def test_exec_grant_when_remove_resources_but_no_off(self, mock_grant, mock_call_req, mock_sleep):
+        NfInstModel(mnfinstid="remove_resources_but_no_off", nfinstid="vnf_inst_id_002", package_id="package_id_002",
+                    vnfm_inst_id="vnfm_id_002").save()
+        mock_sleep.return_value = None
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/package_id_002":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        resmgr_grant_resp = {
+            "vim": {
+                "vimId": "cloudOwner_casa",
+                "accessInfo": {
+                    "tenant": "tenantA"
+                }
             }
-        ]
-    }
-}
+        }
+        mock_grant.return_value = resmgr_grant_resp
+        self.data["vnfInstanceId"] = "remove_resources_but_no_off"
+        self.data.pop("addResources")
+        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
+        self.data["additionalparams"] = {"vnfmid": "vnfm_id_002"}
+        resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        self.assertEqual(resp["vnfInstanceId"], "remove_resources_but_no_off")
+        self.assertEqual(resp["vnfLcmOpOccId"], "vnf_lcm_op_occ_id")
+        vimConnections = [{
+            "id": "cloudOwner_casa",
+            "vimId": "cloudOwner_casa",
+            "vimType": None,
+            "interfaceInfo": None,
+            "accessInfo": {"tenant": "tenantA"},
+            "extra": None
+        }]
+        self.assertEqual(resp["vimConnections"], vimConnections)
 
-nf_package_info = {
-    "csarId": "zte_vbras",
-    "packageInfo": {
-        "vnfdId": "1",
-        "vnfPackageId": "zte_vbras",
-        "vnfdProvider": "1",
-        "vnfdVersion": "1",
-        "vnfVersion": "1",
-        "csarName": "1",
-        "vnfdModel": vnfd_model_dict,
-        "downloadUrl": "1"
-    },
-    "imageInfo": []
-}
+    @mock.patch.object(resmgr, "grant_vnf")
+    def test_exec_grant_when_resource_template_in_remove_resources(self, mock_grant):
+        resmgr_grant_resp = {
+            "vim": {
+                "vimId": "cloudOwner_casa",
+                "accessInfo": {
+                    "tenant": "tenantA"
+                }
+            }
+        }
+        mock_grant.return_value = resmgr_grant_resp
+        self.data.pop("addResources")
+        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}, "resourceTemplate"]
+        resp = GrantVnf(json.dumps(self.data)).exec_grant()
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
+        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
-vnf_place_request = {
-    "requestId": "1234",
-    "transactionId": "1234",
-    "statusMessage": "xx",
-    "requestStatus": "completed",
-    "solutions": {
-        "placementSolutions": [
-            [
+
+class TestCreateVnfViews(TestCase):
+    def setUp(self):
+        self.ns_inst_id = str(uuid.uuid4())
+        self.job_id = str(uuid.uuid4())
+        self.data = {
+            "vnfIndex": "1",
+            "nsInstanceId": self.ns_inst_id,
+            # "additionalParamForNs": {"inputs": json.dumps({})},
+            "additionalParamForVnf": [
                 {
-                    "resourceModuleName": "vG",
-                    "serviceResourceId": "1234",
-                    "solution": {
-                        "identifierType": "serviceInstanceId",
-                        "identifiers": [
-                            "xx"
-                        ],
-                        "cloudOwner": "CloudOwner1"
-                    },
-                    "assignmentInfo": [
-                        {"key": "isRehome",
-                         "value": "false"
-                         },
-                        {"key": "locationId",
-                         "value": "DLLSTX1A"
-                         },
-                        {"key": "locationType",
-                         "value": "openstack-cloud"
-                         },
-                        {"key": "vimId",
-                         "value": "CloudOwner1_DLLSTX1A"
-                         },
-                        {"key": "physicalLocationId",
-                         "value": "DLLSTX1223"
-                         },
-                        {"key": "oof_directives",
-                         "value": {
-                             "directives": [
-                                 {
-                                     "id": "vG_0",
-                                     "type": "tosca.nodes.nfv.Vdu.Compute",
-                                     "directives": [
-                                         {
-                                             "type": "flavor_directives",
-                                             "attributes": [
-                                                 {
-                                                     "attribute_name": "flavorName",
-                                                     "attribute_value": "HPA.flavor.1"
-                                                 },
-                                                 {
-                                                     "attribute_name": "flavorId",
-                                                     "attribute_value": "12345"
-                                                 },
-                                             ]
-                                         }
-                                     ]
-                                 },
-                                 {
-                                     "id": "",
-                                     "type": "vnf",
-                                     "directives": [
-                                         {"type": " ",
-                                          "attributes": [
-                                              {
-                                                  "attribute_name": " ",
-                                                  "attribute_value": " "
-                                              }
-                                          ]
-                                          }
-                                     ]
-                                 }
-                             ]
-                         }
-                         }
-                    ]
+                    "vnfprofileid": "VBras",
+                    "additionalparam": {
+                        "inputs": json.dumps({
+                            "vnf_param1": "11",
+                            "vnf_param2": "22"
+                        }),
+                        "vnfminstanceid": "1",
+                        # "vimId": "zte_test",
+                        "vimId": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'
+                    }
                 }
             ]
-        ],
-        "licenseSolutions": [
-            {
-                "resourceModuleName": "string",
-                "serviceResourceId": "string",
-                "entitlementPoolUUID": [
-                    "string"
-                ],
-                "licenseKeyGroupUUID": [
-                    "string"
-                ],
-                "entitlementPoolInvariantUUID": [
-                    "string"
-                ],
-                "licenseKeyGroupInvariantUUID": [
-                    "string"
+        }
+        self.client = Client()
+        NSInstModel(id=self.ns_inst_id, name="ns", nspackage_id="1", nsd_id="nsd_id", description="description",
+                    status="instantiating", nsd_model=json.dumps(nsd_model_dict), create_time=now_time(),
+                    lastuptime=now_time()).save()
+        VLInstModel(vldid="ext_mnet_network", ownertype=OWNER_TYPE.NS, ownerid=self.ns_inst_id,
+                    vimid="{}").save()
+
+    def tearDown(self):
+        NfInstModel.objects.all().delete()
+        JobModel.objects.all().delete()
+
+    @mock.patch.object(CreateVnfs, "run")
+    def test_create_vnf_view(self, mock_run):
+        response = self.client.post("/api/nslcm/v1/ns/vnfs", data=self.data)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        context = json.loads(response.content)
+        self.assertTrue(NfInstModel.objects.filter(nfinstid=context["vnfInstId"]).exists())
+
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    def test_create_vnf_thread_sucess(self, mock_call_req, mock_sleep):
+        mock_sleep.return_value = None
+        nf_inst_id, job_id = create_vnfs.prepare_create_params()
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/zte_vbras":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
+            "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/1/vnfs":
+                [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), "200"],
+            "/api/oof/v1/placement":
+                [0, json.JSONEncoder().encode({}), "202"],
+            "/api/resmgr/v1/vnf":
+                [0, json.JSONEncoder().encode({}), "200"],
+            "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode({"jobid": self.job_id,
+                                               "responsedescriptor": {"progress": "100",
+                                                                      "status": JOB_MODEL_STATUS.FINISHED,
+                                                                      "responseid": "3",
+                                                                      "statusdescription": "creating",
+                                                                      "errorcode": "0",
+                                                                      "responsehistorylist": [
+                                                                          {"progress": "0",
+                                                                           "status": JOB_MODEL_STATUS.PROCESSING,
+                                                                           "responseid": "2",
+                                                                           "statusdescription": "creating",
+                                                                           "errorcode": "0"}]}}), "200"],
+            "api/gvnfmdriver/v1/1/subscriptions":
+                [0, json.JSONEncoder().encode({}), "200"],
+            "/api/resmgr/v1/vnfinfo":
+                [0, json.JSONEncoder().encode(subscription_response_data), "200"],
+
+            # "/network/generic-vnfs/generic-vnf/%s" % nf_inst_id:
+            #     [0, json.JSONEncoder().encode({}), "201"],
+            # "/cloud-infrastructure/cloud-regions/cloud-region/zte/test?depth=all":
+            #     [0, json.JSONEncoder().encode(vim_info), "201"],
+            # "/cloud-infrastructure/cloud-regions/cloud-region/zte/test/tenants/tenant/admin/vservers/vserver/1":
+            #     [0, json.JSONEncoder().encode({}), "201"],
+
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+        mock_call_req.side_effect = side_effect
+        data = {
+            "ns_instance_id": ignore_case_get(self.data, "nsInstanceId"),
+            "additional_param_for_ns": ignore_case_get(self.data, "additionalParamForNs"),
+            "additional_param_for_vnf": ignore_case_get(self.data, "additionalParamForVnf"),
+            "vnf_index": ignore_case_get(self.data, "vnfIndex")
+        }
+        CreateVnfs(data, nf_inst_id, job_id).run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=nf_inst_id).status, VNF_STATUS.ACTIVE)
+        self.assertEqual(JobModel.objects.get(jobid=job_id).progress, JOB_PROGRESS.FINISHED)
+
+    def test_create_vnf_thread_when_the_name_of_vnf_instance_already_exists(self):
+        NfInstModel(nf_name="").save()
+        nf_inst_id, job_id = create_vnfs.prepare_create_params()
+        data = {
+            "ns_instance_id": ignore_case_get(self.data, "nsInstanceId"),
+            "additional_param_for_ns": ignore_case_get(self.data, "additionalParamForNs"),
+            "additional_param_for_vnf": ignore_case_get(self.data, "additionalParamForVnf"),
+            "vnf_index": ignore_case_get(self.data, "vnfIndex")
+        }
+        CreateVnfs(data, nf_inst_id, job_id).run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=nf_inst_id).status, VNF_STATUS.FAILED)
+        self.assertEqual(JobModel.objects.get(jobid=job_id).progress, JOB_PROGRESS.ERROR)
+
+    @mock.patch.object(time, "sleep")
+    @mock.patch.object(restcall, "call_req")
+    def test_create_vnf_thread_when_data_has_vnfd_id(self, mock_call_req, mock_sleep):
+        mock_sleep.return_value = None
+        nf_inst_id, job_id = create_vnfs.prepare_create_params()
+        mock_vals = {
+            "/api/catalog/v1/vnfpackages/data_has_vnfd_id":
+                [0, json.JSONEncoder().encode(nf_package_info), "200"],
+            "/external-system/esr-vnfm-list/esr-vnfm/1?depth=all":
+                [0, json.JSONEncoder().encode(vnfm_info), "200"],
+            "/api/ztevnfmdriver/v1/1/vnfs":
+                [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), "200"],
+            "/api/oof/v1/placement":
+                [0, json.JSONEncoder().encode({}), "202"],
+            "/api/resmgr/v1/vnf":
+                [0, json.JSONEncoder().encode({}), "200"],
+            "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
+                [0, json.JSONEncoder().encode({"jobid": self.job_id,
+                                               "responsedescriptor": {"progress": "100",
+                                                                      "status": JOB_MODEL_STATUS.FINISHED,
+                                                                      "responseid": "3",
+                                                                      "statusdescription": "creating",
+                                                                      "errorcode": "0",
+                                                                      "responsehistorylist": [
+                                                                          {"progress": "0",
+                                                                           "status": JOB_MODEL_STATUS.PROCESSING,
+                                                                           "responseid": "2",
+                                                                           "statusdescription": "creating",
+                                                                           "errorcode": "0"}]}}), "200"],
+            "api/gvnfmdriver/v1/1/subscriptions":
+                [0, json.JSONEncoder().encode({}), "200"],
+            "/api/resmgr/v1/vnfinfo":
+                [0, json.JSONEncoder().encode(subscription_response_data), "200"]
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+        self.data["additionalParamForVnf"][0]["additionalparam"]["vnfdId"] = "data_has_vnfd_id"
+        data = {
+            "ns_instance_id": ignore_case_get(self.data, "nsInstanceId"),
+            "additional_param_for_ns": ignore_case_get(self.data, "additionalParamForNs"),
+            "additional_param_for_vnf": ignore_case_get(self.data, "additionalParamForVnf"),
+            "vnf_index": ignore_case_get(self.data, "vnfIndex")
+        }
+        CreateVnfs(data, nf_inst_id, job_id).run()
+        self.assertEqual(NfInstModel.objects.get(nfinstid=nf_inst_id).status, VNF_STATUS.ACTIVE)
+        self.assertEqual(JobModel.objects.get(jobid=job_id).progress, JOB_PROGRESS.FINISHED)
+
+    @mock.patch.object(restcall, "call_req")
+    @mock.patch.object(CreateVnfs, "build_homing_request")
+    def test_send_homing_request(self, mock_build_req, mock_call_req):
+        nf_inst_id, job_id = create_vnfs.prepare_create_params()
+        OOFDataModel.objects.all().delete()
+        resp = {
+            "requestId": "1234",
+            "transactionId": "1234",
+            "requestStatus": "accepted"
+        }
+        mock_build_req.return_value = {
+            "requestInfo": {
+                "transactionId": "1234",
+                "requestId": "1234",
+                "callbackUrl": "xx",
+                "sourceId": "vfc",
+                "requestType": "create",
+                "numSolutions": 1,
+                "optimizers": ["placement"],
+                "timeout": 600
+            },
+            "placementInfo": {
+                "placementDemands": [
+                    {
+                        "resourceModuleName": "vG",
+                        "serviceResourceId": "1234",
+                        "resourceModelInfo": {
+                            "modelInvariantId": "1234",
+                            "modelVersionId": "1234"
+                        }
+                    }
                 ]
+            },
+            "serviceInfo": {
+                "serviceInstanceId": "1234",
+                "serviceName": "1234",
+                "modelInfo": {
+                    "modelInvariantId": "5678",
+                    "modelVersionId": "7890"
+                }
             }
-        ]
-    }
-}
+        }
+        mock_call_req.return_value = [0, json.JSONEncoder().encode(resp), "202"]
+        data = {
+            "ns_instance_id": ignore_case_get(self.data, "nsInstanceId"),
+            "additional_param_for_ns": ignore_case_get(self.data, "additionalParamForNs"),
+            "additional_param_for_vnf": ignore_case_get(self.data, "additionalParamForVnf"),
+            "vnf_index": ignore_case_get(self.data, "vnfIndex")
+        }
+        CreateVnfs(data, nf_inst_id, job_id).send_homing_request_to_OOF()
+        ret = OOFDataModel.objects.filter(request_id="1234", transaction_id="1234")
+        self.assertIsNotNone(ret)
