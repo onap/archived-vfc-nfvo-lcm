@@ -8,14 +8,14 @@
 **1 Scope**
 =============
 
-The scope of the present document is to describe the GVNFM exposed API specification over Or-Vnfm reference point and Ve-Vnfm-vnf reference point.
+The scope of the this document is to describe the GVNFM exposed API specification over Or-Vnfm reference point and Ve-Vnfm-vnf reference point.
 Some content has been updated, about the API Swagger definition, you can find here 'GVNFM_LCM_APIs<https://gerrit.onap.org/r/gitweb?p=vfc/gvnfm/vnflcm.git;a=blob;f=lcm/lcm/swagger/swagger.json;h=f098d282927d3535f5e9e6950f26b9171e04d30c;hb=HEAD>'.
 
 
 **2 Terms, Definitions and Abbreviations**
 ===========================================
 
- For the purposes of the present document, the following
+ For the purpose of the present document, the following
  abbreviations apply:
 
 +------------------------+-----------------------------------------------------+
@@ -216,13 +216,13 @@ Table 2-1 abbreviations
 +-----------------+-----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------+
 | vimId           | M         | 1           | Identifier   | The identifier of the VIM.                                                                                                               |
 +-----------------+-----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| interfaceInfo   | M         | 0..N        | KeyValuePair | Information about the interface to the VIM, including VIM provider type, API version, and protocol type.                                 |
+| interfaceInfo   | M         | 0..N        | KeyValuePair | Information about the interface to the VIM, including VIM provider type, API version and protocol type.                                 |
 +-----------------+-----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------+
 | accessInfo      | M         | 0..N        | KeyValuePair | Authentication credentials for accessing the VIM. Examples may include those to support different authentication schemes, e.g., OAuth,   |
-|                 |           |             |              | Token, etc.                                                                                                                              |
+|                 |           |             |              | Token etc.                                                                                                                              |
 +-----------------+-----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------+
 | interface       | M         | 1           | String       | Information about the interface endpoint. An example is a URL.                                                                           |
-| Endpoint        |           |             |              | Token, etc.                                                                                                                              |
+| Endpoint        |           |             |              | Token etc.                                                                                                                              |
 +-----------------+-----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------+
 
     **interfaceInfo:**
@@ -232,7 +232,7 @@ Table 2-1 abbreviations
 +==================+===============+======================================+
 | vimType          | String        | The type of the VIM.                 |
 +------------------+---------------+--------------------------------------+
-| apiVersion       | String        | The Version of the api of the VIM.   |
+| apiVersion       | String        | The version of the api of the VIM.   |
 +------------------+---------------+--------------------------------------+
 | protocolType     | String        | http https                           |
 +------------------+---------------+--------------------------------------+

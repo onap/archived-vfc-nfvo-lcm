@@ -9,7 +9,7 @@ VF-C Offered APIs
    :depth: 2
 
 Now VF-C provides the NS life cycle management APIs to UUI,SO,Policy and package management APIs to UUI.
-For VNFM vendor, VF-C also provides the VNFM integration APIs, they can reference these APIs to implmemet their VNFMDriver to integrate with VF-C and ONAP.
+For VNFM vendor, VF-C also provides the VNFM integration APIs, they can reference these APIs to implement their VNFMDriver to integrate with VF-C and ONAP.
 
   |image0|
 
@@ -106,8 +106,8 @@ GVNFM Northbound & Southbound APIs
 ----------------------------------
 
 VF-C provides the Generic VFNM , it can be as the GVNFM reference implementaton.
-Now the Northbound APIs of GVNFM has been compli1t with SOL003 and it now can be integrate with VF-C NFVO.
-In tosca-based vCPE use case, the GVNFM founction have been verified in Casablanca release.
+Now the Northbound APIs of GVNFM has been compete with SOL003 and it now can be integrate with VF-C NFVO.
+In tosca-based vCPE use case, the GVNFM function have been verified in Casablanca release.
 
 GVNFM Northbound & Southbound APIs for VNF Integration
 
