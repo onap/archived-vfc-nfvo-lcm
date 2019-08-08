@@ -214,14 +214,14 @@ class CreateVls(object):
                 "is-provider-network": True,
                 "is-shared-network": True,
                 "is-external-network": True,
-                "subnets": {
-                    "subnet": [
-                        {
-                            "subnet-id": self.related_subnetwork_id,
-                            "dhcp-enabled": False
-                        }
-                    ]
-                },
+                # "subnets": {
+                #     "subnet": [
+                #         {
+                #             "subnet-id": self.related_subnetwork_id,
+                #             "dhcp-enabled": False
+                #         }
+                #     ]
+                # },
                 "relationship-list": {
                     "relationship": [
                         {
