@@ -209,7 +209,7 @@ class CreateVls(object):
             self.service_type = ns_insts[0].service_type
             data = {
                 "network-id": self.vl_inst_id,
-                "network-name": self.vl_inst_name,
+                "network-name": self.vl_inst_id,
                 "is-bound-to-vpn": False,
                 "is-provider-network": True,
                 "is-shared-network": True,
