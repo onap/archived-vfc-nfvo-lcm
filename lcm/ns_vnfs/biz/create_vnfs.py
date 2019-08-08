@@ -262,6 +262,7 @@ class CreateVnfs(Thread):
             # identifiers.append(vim_info[1])
             # cloudOwner = vim_info[0]
             identifiers = list()
+            self.vim_id = json.loads(self.vim_id)
             identifiers.append(self.vim_id['cloud_regionid'])
             cloudOwner = self.vim_id['cloud_owner']
             required_candidate = [
@@ -325,15 +326,17 @@ class CreateVnfs(Thread):
         req_body = self.build_homing_request()
         base_url = OOF_BASE_URL
         resources = "/api/oof/v1/placement"
-        resp = restcall.call_req(
-            base_url=base_url,
-            user=OOF_USER,
-            passwd=OOF_PASSWD,
-            auth_type=restcall.rest_no_auth,
-            resource=resources,
-            method="POST",
-            content=json.dumps(req_body),
-            additional_headers="")
+        resp = restcall.call_req(base_url, OOF_USER, OOF_PASSWD, restcall.rest_no_auth, resources, "POST",
+                                 json.dumps(req_body), "")
+        # resp = restcall.call_req(
+        #     base_url=base_url,
+        #     user=OOF_USER,
+        #     passwd=OOF_PASSWD,
+        #     auth_type=restcall.rest_no_auth,
+        #     resource=resources,
+        #     method="POST",
+        #     content=json.dumps(req_body),
+        #     additional_headers="")
         resp_body = resp[-2]
         resp_status = resp[-1]
         if resp_body:
