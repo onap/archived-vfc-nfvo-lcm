@@ -34,14 +34,14 @@ VF-C as one controller in ONAP includes two components NFV-O and GVNFM.
 	* compliant with ETSI NFV MANO architecture and information model,
 	* providing resource orchestration and full life cycle management and FCAPS for NS,
 	* providing standard south bound interface to VNFMs,
-	* providing north bound interface to SO, to take part in fulfilling the orchestraion and operation of end2end service,
+	* providing north bound interface to SO, to take part in fulfilling the orchestration and operation of end2end service,
 	* providing interface and work with DCAE and Policy for Close Loop Automation.
 
 * GVNFM component
 
 	* compliant with ETSI NFV MANO architecture and information model
 	* providing full life cycle management and FCAPS for VNFs which do not require a vendor VNFM,
-	* providing interface and work with NFV-O component, to take part in fulfiiling the LCM and FCAPS management of NS,
+	* providing interface and work with NFV-O component, to take part in fulfilling the LCM and FCAPS management of NS,
 	* providing interface and work with DCAE and Policy for Close Loop Automation.
 
 
