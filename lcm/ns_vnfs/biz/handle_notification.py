@@ -118,7 +118,7 @@ class HandleVnfLcmOocNotification(object):
 
     def update_Cp(self):
         for cp in self.affectedCps:
-            virtualLinkInstanceId = ignore_case_get(cp, 'id')
+            # virtualLinkInstanceId = ignore_case_get(cp, 'id')
             ownertype = 0
             ownerid = self.vnf_instid
             for extLinkPorts in ignore_case_get(cp, 'extLinkPorts'):
@@ -147,8 +147,7 @@ class HandleVnfLcmOocNotification(object):
                     relatedportId = portid
 
                 CPInstModel(cpinstanceid=cpInstanceId, cpdid=cpdId, ownertype=ownertype, ownerid=ownerid,
-                            vlinstanceid=virtualLinkInstanceId, relatedtype=2, relatedport=relatedportId,
-                            status='active').save()
+                            relatedtype=2, relatedport=relatedportId, status='active').save()
 
     def update_Storage(self):
         pass
