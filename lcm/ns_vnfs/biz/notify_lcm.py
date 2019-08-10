@@ -83,18 +83,18 @@ class NotifyLcm(object):
             vmId = ignore_case_get(vnfc, 'vmId')
             vmName = ignore_case_get(vnfc, 'vmName')
 
-            if changeType == 'added':
+            if changeType == 'ADDED':
                 VNFCInstModel(vnfcinstanceid=vnfcInstanceId, vduid=vduId,
                               nfinstid=self.vnf_instid, vmid=vmId).save()
                 VmInstModel(vmid=vmId, vimid=vimId, resouceid=vmId, insttype=INST_TYPE.VNF,
                             instid=self.vnf_instid, vmname=vmName, hostid='1').save()
                 if REPORT_TO_AAI:
                     self.create_vserver_in_aai(vimId, vmId, vmName)
-            elif changeType == 'removed':
+            elif changeType == 'REMOVED':
                 if REPORT_TO_AAI:
                     self.delete_vserver_in_aai(vimId, vmId, vmName)
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).delete()
-            elif changeType == 'modified':
+            elif changeType == 'MODIFIED':
                 VNFCInstModel.objects.filter(vnfcinstanceid=vnfcInstanceId).update(vduid=vduId,
                                                                                    nfinstid=self.vnf_instid,
                                                                                    vmid=vmId)
@@ -141,12 +141,12 @@ class NotifyLcm(object):
 
             ownerId = self.get_vnfinstid(self.m_vnfInstanceId, self.vnfmid)
 
-            if changeType == 'added':
+            if changeType == 'ADDED':
                 VLInstModel(vlinstanceid=vlInstanceId, vldid=vldid, vlinstancename=resourceName, ownertype=0,
                             ownerid=ownerId, relatednetworkid=resourceId, vltype=0).save()
-            elif changeType == 'removed':
+            elif changeType == 'REMOVED':
                 VLInstModel.objects.filter(vlinstanceid=vlInstanceId).delete()
-            elif changeType == 'modified':
+            elif changeType == 'MODIFIED':
                 VLInstModel.objects.filter(vlinstanceid=vlInstanceId)\
                     .update(vldid=vldid, vlinstancename=resourceName, ownertype=0, ownerid=ownerId,
                             relatednetworkid=resourceId, vltype=0)
@@ -181,15 +181,14 @@ class NotifyLcm(object):
                               sfcencapsulation='gre', direction='unknown', tenant=tenant).save()
                 relatedportId = portid
 
-            if changeType == 'added':
+            if changeType == 'ADDED':
                 CPInstModel(cpinstanceid=cpInstanceId, cpdid=cpdId, ownertype=ownertype, ownerid=ownerid,
                             relatedtype=2, relatedport=relatedportId, status='active').save()
-            elif changeType == 'removed':
+            elif changeType == 'REMOVED':
                 CPInstModel.objects.filter(cpinstanceid=cpInstanceId).delete()
-            elif changeType == 'changed':
+            elif changeType == 'MODIFIED':
                 CPInstModel.objects.filter(cpinstanceid=cpInstanceId).update(cpdid=cpdId, ownertype=ownertype,
                                                                              ownerid=ownerid,
-                                                                             vlinstanceid=virtualLinkInstanceId,
                                                                              relatedtype=2, relatedport=relatedportId)
             else:
                 self.exception('affectedVl struct error: changeType not in {added,removed,modified}')

@@ -147,8 +147,7 @@ class HandleVnfLcmOocNotification(object):
                     relatedportId = portid
 
                 CPInstModel(cpinstanceid=cpInstanceId, cpdid=cpdId, ownertype=ownertype, ownerid=ownerid,
-                            vlinstanceid=virtualLinkInstanceId, relatedtype=2, relatedport=relatedportId,
-                            status='active').save()
+                            relatedtype=2, relatedport=relatedportId, status='active').save()
 
     def update_Storage(self):
         pass
