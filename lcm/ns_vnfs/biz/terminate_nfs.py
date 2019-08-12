@@ -92,6 +92,7 @@ class TerminateVnfs(threading.Thread):
         vnf_inst_info = self.get_vnf_inst()
         if not vnf_inst_info:
             self.add_progress(100, "TERM_VNF_NOT_EXIST_SUCCESS", "finished")
+            return None
         self.add_progress(2, "GET_VNF_INST_SUCCESS")
         self.vnfm_inst_id = vnf_inst_info.vnfm_inst_id
         self.vnf_uuid = vnf_inst_info.mnfinstid

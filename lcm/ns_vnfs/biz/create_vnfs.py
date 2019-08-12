@@ -400,6 +400,8 @@ class CreateVnfs(Thread):
         }
         try:
             SubscriptionCreation(data).do_biz()
+        except NSLCMException as e:
+            logger.error("subscribe failed: %s", e.args[0])
         except Exception as e:
             logger.error("subscribe failed: %s", e.args[0])
 
