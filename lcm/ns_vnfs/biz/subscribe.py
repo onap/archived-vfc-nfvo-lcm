@@ -130,7 +130,7 @@ class SubscriptionDeletion(object):
 
     def send_subscription_deletion_request(self):
         if self.subscription:
-            self.subscription_id = ignore_case_get(self.subscription, 'id')
+            self.subscription_id = ignore_case_get(self.subscription.__dict__, 'id')
             ret = req_by_msb('api/gvnfmdriver/v1/%s/subscriptions/%s' % (self.vnfm_id, self.subscription_id), 'DELETE')
             if ret[0] != 0:
                 logger.error('Status code is %s, detail is %s.', ret[2], ret[1])
