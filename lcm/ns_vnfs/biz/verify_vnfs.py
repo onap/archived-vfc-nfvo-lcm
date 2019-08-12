@@ -104,7 +104,7 @@ class VerifyVnfs(threading.Thread):
         if ret[0] != 0:
             raise NSLCMException("Failed to get func test result: %s" % ret[1])
         rsp_result_data = json.JSONDecoder().decode(ret[1])
-        logger.info("Func test(%s) result: %s", rsp_result_data)
+        logger.info("Func test(%s) result: %s", "do_func_test", rsp_result_data)
         self.update_job(80, "Vnf function test success.")
 
     def do_term_vnf(self):
