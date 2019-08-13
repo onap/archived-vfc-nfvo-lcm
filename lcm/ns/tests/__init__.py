@@ -47,3 +47,4 @@ SUBSCRIPTION_NS_OPERATION_DICT = fileutil.read_json_file(cur_path + '/data/subsc
 SUBSCRIPTION_NS_DELETION_DICT = fileutil.read_json_file(cur_path + '/data/subscription_ns_deletion.json')
 UPDATE_NS_DICT = fileutil.read_json_file(cur_path + '/data/update_ns.json')
 TERMINATE_NS_DICT = fileutil.read_json_file(cur_path + '/data/terminate_ns.json')
+NSD_MODEL_DICT_INST_NS_POST_DEAL_VIEW = fileutil.read_json_file(cur_path + '/data/nsd_mode_inst_ns_post_deal_view.json')

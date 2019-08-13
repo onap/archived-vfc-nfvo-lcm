@@ -1,0 +1,7 @@
+{
+    "policies": [{
+      "properties": [{
+        "drl_file_url": "drl_file_url"
+      }]
+    }]
+}
