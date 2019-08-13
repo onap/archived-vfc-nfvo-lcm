@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '1.3.4'
+project: 'vfc-nfvo-lcm'
+log_dir: 'vfc-nfvo-lcm-maven-stage-master/57/'
