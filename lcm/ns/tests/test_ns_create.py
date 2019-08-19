@@ -80,3 +80,10 @@ class TestNsInstantiate(TestCase):
         response = self.client.post("/api/nslcm/v1/ns", data=self.create_ns_dict, format='json')
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_create_ns_when_ns_csar_no_exist(self, mock_call_req):
+        mock_call_req.return_value = [1, "Failed query ns csar file", 500]
+        response = self.client.post("/api/nslcm/v1/ns", data={"csarId": ''}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertIn("error", response.data)
