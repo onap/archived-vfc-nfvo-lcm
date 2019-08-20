@@ -11,6 +11,79 @@ orchestration and close loop automation by working with SO, DCAE and Policy.
 VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
+
+Version: 1.3.4
+--------------
+
+:Release Date: 2019-08-20
+
+**New Features**
+
+- Functional Enhancement:
+
+1. Upgrade component environments from Python 2 to Python 3 and upgrade package dependencies to stable versions
+2. Good connectivity and stability of information transmission between nslcm drivers and vnflcm
+3. Solving Layer_protocol Protocol Protocol Supporting Uniformity and Increasing Compatibility
+
+- Standard Alignment-SOL005 Alignment
+
+- Maturity Enhancement:
+
+1. Increase read and write stability of AAI interaction
+2. Enhance the stability of vnflcm and nslcm message subscription notification function
+3. Enhance the reliability of MSB registration information and message reading
+
+
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.3.4
+ - vfc-nfvo-catalog 1.3.4
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.3.5
+ - vfc-nfvo-driver-svnfm-ztedriver 1.3.3
+ - vfc-nfvo-db 1.3.1
+GVNFM
+ - vfc-gvnfm-vnflcm 1.3.4
+ - vfc-gvnfm-vnfmgr 1.3.4
+ - vfc-gvnfm-vnfres 1.3.4
+
+**Bug Fixes**
+
+ - Fix bug for failure in creating subscriptions for vnfm
+ - Fix network name conflict problem when creating network writing to AAI
+ - Fix bug for failure in creating ns vl to aai
+ - Fix the bug for table NFVO_NSINST field status update incorrect
+
+**Known Issues**
+
+
+**Security Notes**
+
+VFC code has been formally scanned during build time using NexusIQ and all Critical
+vulnerabilities have been addressed, items that remain open have been assessed
+for risk and determined to be false positive. The VFC open Critical security
+vulnerabilities and their risk assessment have been documented as part
+of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=68542814>`_.
+
+Quick Links:
+
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
+- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=68542814>`_
+
+**Upgrade Notes**
+    NA
+
+**Deprecation Notes**
+    NA
+
+**Other**
+    NA
+
+
+
+
 Version: 1.3.0
 --------------
 
