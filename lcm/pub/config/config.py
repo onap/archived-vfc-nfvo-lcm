@@ -49,6 +49,8 @@ REG_TO_MSB_REG_PARAM = {
         "ttl": 0
     }]
 }
+MSB_SVC_URL = "/api/microservices/v1/services/nslcm/version/%s"
+
 
 # [aai config]
 AAI_BASE_URL = "http://10.0.14.1:80/aai/v11"

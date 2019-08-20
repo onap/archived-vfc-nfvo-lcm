@@ -16,7 +16,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from lcm.pub.config.config import DEPLOY_WORKFLOW_WHEN_START
-from lcm.pub.config.config import REG_TO_MSB_WHEN_START, REG_TO_MSB_REG_URL, REG_TO_MSB_REG_PARAM
+from lcm.pub.config.config import REG_TO_MSB_WHEN_START, REG_TO_MSB_REG_URL, REG_TO_MSB_REG_PARAM, MSB_SVC_URL
 
 
 urlpatterns = [
@@ -36,7 +36,10 @@ urlpatterns = [
 if REG_TO_MSB_WHEN_START:
     import json
     from lcm.pub.utils.restcall import req_by_msb
+    req_by_msb(MSB_SVC_URL % "v1", "DELETE")
     req_by_msb(REG_TO_MSB_REG_URL, "POST", json.JSONEncoder().encode(REG_TO_MSB_REG_PARAM))
+
+    req_by_msb(MSB_SVC_URL % "v2", "DELETE")
     v2_param = REG_TO_MSB_REG_PARAM.copy()
     v2_param["version"] = "v2"
     v2_param["url"] = v2_param["url"].replace("v1", "v2")
