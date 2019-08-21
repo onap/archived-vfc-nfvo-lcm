@@ -18,7 +18,7 @@ from lcm.pub.utils import fileutil
 
 cur_path = os.path.dirname(os.path.abspath(__file__))
 CREATE_NS_DICT = fileutil.read_json_file(cur_path + '/data/create_ns.json')
-NS_INFO_AAI_DICT = fileutil.read_json_file(cur_path + '/data/ns_info_aai.json')
+NS_INFO_AAI_DICT = fileutil.read_json_file(cur_path + '/data/ns_info_from_aai.json')
 VNFD_MODEL_DICT = fileutil.read_json_file(cur_path + '/data/vnfd_model.json')
 HEAL_NS_DICT = fileutil.read_json_file(cur_path + '/data/heal_ns.json')
 HEAL_VNF_DICT = fileutil.read_json_file(cur_path + '/data/heal_vnf.json')
