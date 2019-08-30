@@ -77,9 +77,9 @@ class InstantNSService(object):
             else:
                 params_json = json.JSONEncoder().encode({})
 
-            location_constraints = []
-            if 'locationConstraints' in self.req_data:
-                location_constraints = self.req_data['locationConstraints']
+            location_constraints = [] if not self.req_data.get('locationConstraints')\
+                else self.req_data['locationConstraints']
+            vnf_vim = self.get_vnf_vim_info(location_constraints)
 
             JobUtil.add_job_status(job_id, 5, 'Start query nsd(%s)' % ns_inst.nspackage_id)
             dst_plan = sdc_run_catalog.parse_nsd(ns_inst.nspackage_id, input_parameters)
@@ -91,12 +91,11 @@ class InstantNSService(object):
             plan_dict = json.JSONDecoder().decode(dst_plan)
             for vnf in ignore_case_get(plan_dict, "vnfs"):
                 vnfd_id = vnf['properties']['id']
-                vnfm_type_temp = vnf['properties'].get("vnfm_info", "undefined")
-                logger.debug("vnfd_id: %s, vnfm_type : %s", vnfd_id, vnfm_type_temp)
-                vnfm_type = vnfm_type_temp
-                if isinstance(vnfm_type_temp, list):
-                    vnfm_type = vnfm_type_temp[0]
-                vimid = self.get_vnf_vim_id(vim_id, location_constraints, vnfd_id)
+                vnfm_type = vnf['properties'].get("vnfm_info", "undefined")
+                logger.debug("vnfd_id: %s, vnfm_type : %s", vnfd_id, vnfm_type)
+                if isinstance(vnfm_type, list):
+                    vnfm_type = vnfm_type[0]
+                vimid = self.get_vnf_vim_id(vim_id, vnf_vim, vnfd_id)
                 s_vimid = "%s_%s" % (vimid["cloud_owner"], vimid["cloud_regionid"])
                 vnfm_info = extsys.select_vnfm(vnfm_type=vnfm_type, vim_id=s_vimid)
 
@@ -111,7 +110,7 @@ class InstantNSService(object):
                     }
                 })
 
-            self.set_vl_vim_id(vim_id, location_constraints, plan_dict)
+            self.set_vl_vim_id(vim_id, vnf_vim, plan_dict)
             dst_plan = json.JSONEncoder().encode(plan_dict)
             logger.debug('tosca plan dest add vimid:%s' % dst_plan)
             NSInstModel.objects.filter(id=self.ns_inst_id).update(nsd_model=dst_plan)
@@ -222,39 +221,18 @@ class InstantNSService(object):
         return dict(data={'jobId': job_id}, status=status.HTTP_200_OK, occ_id=occ_id)
 
     @staticmethod
-    def get_vnf_vim_id(vim_id, location_constraints, vnfdid):
-        for location in location_constraints:
-            if "vnfProfileId" in location and vnfdid == location["vnfProfileId"]:
-                # if 'vimId' in location['locationConstraints']:
-                if len(location['locationConstraints']) == 1:
-                    cloud_owner = location['locationConstraints']["vimId"].split('_')[0]
-                    cloud_regionid = location['locationConstraints']["vimId"].split('_')[1]
-                    vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
-                elif len(location['locationConstraints']) == 2:
-                    cloud_owner = location['locationConstraints']["cloudOwner"]
-                    cloud_regionid = location['locationConstraints']["cloudRegionId"]
-                    vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
-                return vim_id
-        if vim_id:
-            return vim_id
+    def get_vnf_vim_id(vim_id, vnf_vim, vnfdid):
+        new_vim_id = vnf_vim.get(vnfdid) if vnf_vim.get(vnfdid) else vim_id
+        if new_vim_id:
+            return new_vim_id
         raise NSLCMException("No Vim info is found for vnf(%s)." % vnfdid)
 
     @staticmethod
-    def set_vl_vim_id(vim_id, location_constraints, plan_dict):
-        if "vls" not in plan_dict:
-            logger.debug("No vl is found in nsd.")
-            return
-        vl_vnf = {}
-        for vnf in ignore_case_get(plan_dict, "vnfs"):
-            if "dependencies" in vnf:
-                for depend in vnf["dependencies"]:
-                    vl_vnf[depend["vl_id"]] = vnf['properties']['id']
+    def get_vnf_vim_info(location_constraints):
         vnf_vim = {}
-
         for location in location_constraints:
             if "vnfProfileId" in location:
                 vnfd_id = location["vnfProfileId"]
-                # if 'vimId' in location["locationConstraints"]:
                 if len(location['locationConstraints']) == 1:
                     cloud_owner = location["locationConstraints"]["vimId"].split('_')[0]
                     cloud_regionid = location["locationConstraints"]["vimId"].split('_')[1]
@@ -265,6 +243,18 @@ class InstantNSService(object):
                     cloud_regionid = location["locationConstraints"]["cloudRegionId"]
                     vim_id = {"cloud_owner": cloud_owner, "cloud_regionid": cloud_regionid}
                     vnf_vim[vnfd_id] = vim_id
+        return vnf_vim
+
+    @staticmethod
+    def set_vl_vim_id(vim_id, vnf_vim, plan_dict):
+        if "vls" not in plan_dict:
+            logger.debug("No vl is found in nsd.")
+            return
+        vl_vnf = {}
+        for vnf in ignore_case_get(plan_dict, "vnfs"):
+            if "dependencies" in vnf:
+                for depend in vnf["dependencies"]:
+                    vl_vnf[depend["vl_id"]] = vnf['properties']['id']
         for vl in plan_dict["vls"]:
             vnfdid = ignore_case_get(vl_vnf, vl["vl_id"])
             vimid = ignore_case_get(vnf_vim, vnfdid)
@@ -281,7 +271,7 @@ class InstantNSService(object):
         sfcs = len(data.get('fps', []))
         vnfs = len(data.get('vnfs', []))
         pnfs = len(data.get('pnfs', []))
-        return {'vlCount': str(vls), 'sfcCount': str(sfcs), 'vnfCount': str(vnfs), 'pnfCount': str(pnfs)}
+        return {'vlCount': vls, 'sfcCount': sfcs, 'vnfCount': vnfs, 'pnfCount': pnfs}
 
     def init_pnf_para(self, plan_dict):
         pnfs_in_input = ignore_case_get(self.req_data, "addpnfData", [])
