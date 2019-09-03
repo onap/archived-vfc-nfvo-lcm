@@ -920,10 +920,10 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
         choices=enum_to_list(VNF_NOTIFICATION_TYPE),
         required=True
     )
-    subscriptionId = serializers.CharField(
-        help_text="Identifier of the subscription that this notification relates to.",
-        required=True
-    )
+#     subscriptionId = serializers.CharField(
+#         help_text="Identifier of the subscription that this notification relates to.",
+#         required=True
+#     )
     timeStamp = serializers.CharField(
         help_text="Date-time of the generation of the notification.",
         required=True
@@ -970,11 +970,11 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
         many=True,
         required=False
     )
-    changedInfo = VnfInfoModificationsSerializer(
-        help_text="Information about the changed VNF instance information, including changed VNF configurable properties.",
-        required=False,
-        allow_null=True
-    )
+#     changedInfo = VnfInfoModificationsSerializer(
+#         help_text="Information about the changed VNF instance information, including changed VNF configurable properties.",
+#         required=False,
+#         allow_null=True
+#     )
     changedExtConnectivity = ExtVirtualLinkInfoSerializer(
         help_text="Information about changed external connectivity.",
         many=True,
@@ -985,50 +985,50 @@ class VnfLcmOperationOccurrenceNotificationSerializer(serializers.Serializer):
         required=False,
         allow_null=True
     )
-    _links = LccnLinksSerializer(
-        help_text="Links to resources related to this notification.",
-        required=False,
-        allow_null=True
-    )
-
-
-class VnfIdentifierCreationNotificationSerializer(serializers.Serializer):
-    id = serializers.CharField(
-        help_text="Identifier of this notification. \
-        If a notification is sent multiple times due to multiple subscriptions, \
-        the id attribute of all these notifications shall have the same value.",
-        required=True,
-        allow_null=False,
-        allow_blank=False
-    )
-    notificationType = serializers.ChoiceField(
-        help_text="Discriminator for the different notification types.",
-        choices=enum_to_list(VNF_NOTIFICATION_TYPE),
-        required=True
-    )
-    subscriptionId = serializers.CharField(
-        help_text="Identifier of the subscription that this notification relates to.",
-        required=False,
-        allow_null=True,
-        allow_blank=True
-    )
-    timeStamp = serializers.DateTimeField(
-        help_text="Date-time of the generation of the notification.",
-        required=True,
-        allow_null=False,
-    )
-    vnfInstanceId = serializers.CharField(
-        help_text="The created VNF instance identifier.",
-        required=True,
-        allow_null=False,
-        allow_blank=False
-    )
-    _links = LccnLinksSerializer(
-        help_text="Links to resources related to this notification.",
-        required=True,
-        allow_null=False
-    )
-
+#     _links = LccnLinksSerializer(
+#         help_text="Links to resources related to this notification.",
+#         required=False,
+#         allow_null=True
+#     )
+#
+#
+# class VnfIdentifierCreationNotificationSerializer(serializers.Serializer):
+#     id = serializers.CharField(
+#         help_text="Identifier of this notification. \
+#         If a notification is sent multiple times due to multiple subscriptions, \
+#         the id attribute of all these notifications shall have the same value.",
+#         required=True,
+#         allow_null=False,
+#         allow_blank=False
+#     )
+#     notificationType = serializers.ChoiceField(
+#         help_text="Discriminator for the different notification types.",
+#         choices=enum_to_list(VNF_NOTIFICATION_TYPE),
+#         required=True
+#     )
+#     subscriptionId = serializers.CharField(
+#         help_text="Identifier of the subscription that this notification relates to.",
+#         required=False,
+#         allow_null=True,
+#         allow_blank=True
+#     )
+#     timeStamp = serializers.DateTimeField(
+#         help_text="Date-time of the generation of the notification.",
+#         required=True,
+#         allow_null=False,
+#     )
+#     vnfInstanceId = serializers.CharField(
+#         help_text="The created VNF instance identifier.",
+#         required=True,
+#         allow_null=False,
+#         allow_blank=False
+#     )
+#     _links = LccnLinksSerializer(
+#         help_text="Links to resources related to this notification.",
+#         required=True,
+#         allow_null=False
+#     )
+#
 
 class VnfIdentifierDeletionNotificationSerializer(serializers.Serializer):
     id = serializers.CharField(

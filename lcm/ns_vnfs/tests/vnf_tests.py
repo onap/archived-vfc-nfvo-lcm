@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import django
+django.setup()
 import unittest
 import json
 import mock
@@ -20,6 +22,7 @@ from rest_framework import status
 from lcm.ns_vnfs.tests.const import GRANT_DATA, VNF_LCM_OP_OCC_NOTIFICATION_DATA, \
     VNF_IDENTIFIER_CREATION_NOTIFICATION_DATA, VNF_IDENTIFIER_DELETION_NOTIFICATION_DATA
 from lcm.pub.database.models import NfInstModel
+from lcm.pub.msapi import aai
 from lcm.pub.utils import restcall
 
 
@@ -198,3 +201,53 @@ class VnfGrantViewTest(unittest.TestCase):
                                     data=VNF_IDENTIFIER_DELETION_NOTIFICATION_DATA,
                                     format='json')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+    # @mock.patch.object()
+    # def test_notify_test_notification_type_data_not_valid (self):
+    #     request_data = {'id': 'd29c131d-b38c-416a-b084-b75ebabd694f', 'notificationType':
+    #         'VnfLcmOperationOccurrenceNotification', 'timeStamp': '2019-08-28 09:07:35',
+    #                     'notificationStatus': 'START', 'operationState': 'STARTING',
+    #                     'vnfInstanceId': '7386a7a8-99c2-4822-9f27-5f51154fa992',
+    #                     'operation': 'INSTANTIATE', 'isAutomaticInvocation': False,
+    #                     'vnfLcmOpOccId': 'NF-INSTANTIATE-7386a7a8-99c2-4822-9f27-5f51154fa992-43c69474'
+    #                                      '-c973-11e9-b7f3-faa53ad2ac20', 'affectedVnfcs': [],
+    #                     'affectedVirtualLinks': [], 'affectedVirtualStorages': [], 'changedExtConnectivity'
+    #                     : [], 'error': '', '_links': {'vnfInstance': {'href': 'http://msb-iag:80/api/vnflcm/'
+    #                                                                           'v1/vnf_instances/7386a7a8-'
+    #                                                                           '99c2-4822-9f27-5f51154fa992'},
+    #                                                   'vnfLcmOpOcc': {'href': 'http://msb-iag:80/api/vnflcm/'
+    #                                                                           'v1/vnf_lcm_op_occs/NF-'
+    #                                                                           'INSTANTIATE-7386a7a8-99c2-'
+    #                                                                           '4822-9f27-5f51154fa992-43c6947'
+    #                                                                           '4-c973-11e9-b7f3-faa53ad2ac20'}
+    #             , 'subscription': {'href': '/api/vnflcm/v1/subscriptions/0b7dc296-c851-45f3-8cee-1d4e921f'
+    #                                        '9403'}}, 'subscriptionId': '0b7dc296-c851-45f3-8cee-1d4e921f9403'}
+
+    @mock.patch.object(aai, 'create_network_aai')
+    def test_create_network_no_id(self, mock_create_network_aai):
+        data = {
+            "network-id": '',
+            "network-name": 'vlInstanceId',
+            "is-bound-to-vpn": False,
+            "is-provider-network": True,
+            "is-shared-network": True,
+            "is-external-network": True,
+            "relationship-list": {
+                "relationship": [
+                    {
+                        "related-to": "generic-vnf",
+                        "relationship-data": [
+                            {
+                                "relationship-key": "generic-vnf.vnf-id",
+                                "relationship-value": 'ownerId'
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+        mock_create_network_aai.return_value(1, "Failed to create network in aai", 500)
+        response = self.client.post('/network/l3-networks/l3-network/', data=data, format=json)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+

@@ -1,0 +1,7 @@
+{
+    "python.pythonPath": "D:\\acaonda\\python.exe",
+    "python.autoComplete.extraPaths": [
+        "${env:SPARK_HOME}\\python",
+        "${env:SPARK_HOME}\\python\\pyspark"
+    ]
+}

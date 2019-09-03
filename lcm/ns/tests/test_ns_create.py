@@ -18,6 +18,7 @@ import uuid
 from django.test import TestCase
 from lcm.pub.database.models import NSInstModel
 from lcm.ns.biz.ns_create import CreateNSService
+from lcm.pub.msapi import aai
 from lcm.pub.utils import restcall
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -87,3 +88,31 @@ class TestNsInstantiate(TestCase):
         response = self.client.post("/api/nslcm/v1/ns", data={"csarId": ''}, format='json')
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
         self.assertIn("error", response.data)
+
+    @mock.patch.object(restcall, 'call_req')
+    def test_create_network_no_id(self, mock_call_req):
+        data ={}
+        # data = {
+        #     "network-id": '',
+        #     "network-name": 'vlInstanceId',
+        #     "is-bound-to-vpn": False,
+        #     "is-provider-network": True,
+        #     "is-shared-network": True,
+        #     "is-external-network": True,
+        #     "relationship-list": {
+        #         "relationship": [
+        #             {
+        #                 "related-to": "generic-vnf",
+        #                 "relationship-data": [
+        #                     {
+        #                         "relationship-key": "generic-vnf.vnf-id",
+        #                         "relationship-value": 'ownerId'
+        #                     }
+        #                 ]
+        #             }
+        #         ]
+        #     }
+        # }
+        mock_call_req.return_value(1, "Failed to create network in aai", 500)
+        response = self.client.post('/network/l3-networks/l3-network/', data=data, format=json)
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
