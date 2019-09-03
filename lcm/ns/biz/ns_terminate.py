@@ -133,6 +133,11 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
             vnf_jobs.append((vnfinst.nfinstid, vnf_job_id))
 
+        thread = threading.Thread(target=self.wait_delete_vnfs,
+                                  args=(vnf_jobs, cur_progress, step_progress,))
+        thread.start()
+
+    def wait_delete_vnfs(self, vnf_jobs, cur_progress, step_progress):
         for vnfinstid, vnfjobid in vnf_jobs:
             try:
                 cur_progress += step_progress
