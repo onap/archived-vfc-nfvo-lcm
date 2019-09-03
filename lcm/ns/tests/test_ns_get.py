@@ -23,6 +23,9 @@ class TestNsQuery(TestCase):
         NSInstModel(id=1, nsd_id=11, name='test01').save()
         NSInstModel(id=2, nsd_id=22, name='test02').save()
 
+    def tearDown(self):
+        NSInstModel.objects.all().delete()
+
     def test_query_ns_by_nsinstance_id(self):
         response = self.client.get("/api/nslcm/v1/ns/1")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
