@@ -17,7 +17,7 @@ import threading
 import time
 import traceback
 
-from lcm.ns.biz.scaleaspect import get_scale_vnf_data_info_list
+from lcm.ns.biz.scale_aspect import get_scale_vnf_data_info_list
 from lcm.ns.enum import NS_INST_STATUS
 from lcm.pub.database.models import JobModel, NSInstModel
 from lcm.pub.exceptions import NSLCMException
@@ -56,7 +56,7 @@ class NSManualScaleService(threading.Thread):
             self.update_ns_status(NS_INST_STATUS.ACTIVE)
 
     def do_biz(self):
-        self.update_job(1, desc='ns scale start')
+        self.update_job(JOB_PROGRESS.STARTED, desc='ns scale start')
         self.update_ns_status(NS_INST_STATUS.SCALING)
         self.check_and_set_params()
         self.do_vnfs_scale()
