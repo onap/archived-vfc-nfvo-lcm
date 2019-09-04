@@ -17,7 +17,7 @@ import os
 from django.test import TestCase
 from lcm.pub.database.models import NSInstModel, NfInstModel
 from lcm.ns_vnfs.enum import VNF_STATUS
-from lcm.ns.biz.scaleaspect import mapping_conv, get_vnf_instance_id_list, check_scale_list, get_scale_vnf_data, \
+from lcm.ns.biz.scale_aspect import mapping_conv, get_vnf_instance_id_list, check_scale_list, get_scale_vnf_data, \
     get_nsdId, check_and_set_params, get_scale_vnf_data_info_list, get_vnf_scale_info, get_scale_vnf_data_from_json
 
 
