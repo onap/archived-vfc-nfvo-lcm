@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4f5fbf7_59242484",
+        "filename": "resources/testscripts/ns/msb_create.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-09-06T03:10:08Z",
+      "side": 1,
+      "message": "Missing License Hearder",
+      "revId": "d7b47097ce93f7cfd394bafb012ccf8590f5d4a4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63897eb2_828f78ef",
+        "filename": "resources/testscripts/ns/msb_del.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2019-09-06T03:10:08Z",
+      "side": 1,
+      "message": "File name is not match the codes",
+      "revId": "d7b47097ce93f7cfd394bafb012ccf8590f5d4a4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
