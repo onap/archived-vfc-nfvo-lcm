@@ -9,6 +9,10 @@ At this time, the msb_upload script is opened, the file path is changed to the p
 you want to upload vnf. Then the msb_upload script is executed and the ID is placed after the
 command is executed, and the ID is automatically passed in.
 
+# msb_onboard
+You can access the catalog interface by executing the script to implement the onboard of VNF packages.
+
+
 # msb_get
 If you want to query the registration status in msb, you can execute the msb_get script directly.
 

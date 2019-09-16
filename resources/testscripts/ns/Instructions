@@ -9,6 +9,10 @@ change the file path to the path where you want to upload the ns CSAR package,
 then execute the msb_upload script and place the ID after executing the command,
 and the ID will be automatically passed in.
 
+# msb_onboard
+
+You can access the catalog interface by executing the script to implement the onboard of NS packages.
+
 # msb_get
 If you want to query the registration status in msb, you can execute the msb_get script directly.
 

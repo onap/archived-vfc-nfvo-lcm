@@ -45,4 +45,5 @@ The instance ID is also required to execute this process.
 The completion of this process indicates the end of an instance creation termination process.
 
 Note: IP address for MSB service
-      Ns cannot be created repeatedly
+      NS cannot be created repeatedly
+      Update test scripts of ns_instance
