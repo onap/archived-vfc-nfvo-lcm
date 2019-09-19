@@ -677,7 +677,9 @@ class NsInstanceSerializer(serializers.Serializer):
         required=True)
     nsInstanceDescription = serializers.CharField(
         help_text="Human readable description of the NS instance.",
-        required=True)
+        required=True,
+        allow_null=True,
+        allow_blank=True)
     nsdId = serializers.CharField(
         help_text="Identifier of the NSD on which the NS instance is based.",
         required=True)

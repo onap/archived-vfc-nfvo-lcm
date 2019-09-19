@@ -28,4 +28,5 @@ class CreateNsRequestSerializer(serializers.Serializer):
     nsDescription = serializers.CharField(
         help_text="Description of NS",
         required=True,
-        allow_null=True)
+        allow_null=True,
+        allow_blank=True)
