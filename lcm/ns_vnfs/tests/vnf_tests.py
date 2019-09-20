@@ -14,13 +14,18 @@
 
 import unittest
 import json
+
 import mock
 from rest_framework.test import APIClient
 from rest_framework import status
+
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION
+from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
 from lcm.ns_vnfs.tests.const import GRANT_DATA, VNF_LCM_OP_OCC_NOTIFICATION_DATA, \
     VNF_IDENTIFIER_CREATION_NOTIFICATION_DATA, VNF_IDENTIFIER_DELETION_NOTIFICATION_DATA
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.utils import restcall
+from lcm.pub.utils.jobutil import JobUtil
 
 
 class VnfGrantViewTest(unittest.TestCase):
@@ -198,3 +203,18 @@ class VnfGrantViewTest(unittest.TestCase):
                                     data=VNF_IDENTIFIER_DELETION_NOTIFICATION_DATA,
                                     format='json')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+    @mock.patch.object(TerminateVnfs, 'run')
+    def test_vnf_terminate(self, mock_run):
+        vnf_instance_id = '628fd152-0089-4c20-b549-f35cb2fd4933'
+        data = {
+            'terminationType': 'FORCEFUL',
+            'gracefulTerminationTimeout': 600
+        }
+        job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.TERMINATE, vnf_instance_id)
+        data = {
+            "terminationType": "forceful",
+            "gracefulTerminationTimeout": "600"}
+
+        response = self.client.post("/api/nslcm/v1/ns/terminatevnf/%s" % vnf_instance_id, data=data)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code, response.data)
