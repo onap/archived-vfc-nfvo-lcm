@@ -16,12 +16,16 @@ import mock
 import uuid
 
 from django.test import TestCase
-from lcm.pub.database.models import NSInstModel
+
+from lcm.jobs.enum import JOB_TYPE, JOB_ACTION, JOB_PROGRESS
+from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
+from lcm.pub.database.models import NSInstModel, JobModel, NfInstModel
 from lcm.ns.biz.ns_create import CreateNSService
 from lcm.pub.utils import restcall
 from rest_framework import status
 from rest_framework.test import APIClient
 from lcm.ns.tests import CREATE_NS_DICT
+from lcm.pub.utils.jobutil import JobUtil
 
 
 class TestNsInstantiate(TestCase):
