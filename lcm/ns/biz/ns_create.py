@@ -58,7 +58,7 @@ class CreateNSService(object):
         logger.debug("CreateNSService::check_nsd_valid::ns_package_id=%s,nsd_id=%s", self.ns_package_id, self.nsd_id)
 
     def check_ns_inst_name_exist(self):
-        is_exist = NSInstModel.objects.filter(name=self.ns_name).exists()
+        is_exist = NSInstModel.objects.filter(name=self.ns_name).exclude(status='null').exists()
         logger.debug("CreateNSService::check_ns_inst_name_exist::is_exist=%s" % is_exist)
         if is_exist:
             raise NSLCMException("ns(%s) already existed." % self.ns_name)
