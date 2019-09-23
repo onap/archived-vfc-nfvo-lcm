@@ -122,7 +122,7 @@ class GetNSInfoService(object):
                     'nsVirtualLinkProfileId': vl.vldid,
                     'vlInstanceName': vl.vlinstancename,
                     'resourceHandle': [{
-                        'vimId': vl.vimid,
+                        'vimConnectionId': vl.vimid,
                         'resourceId': vl.relatednetworkid,
                         'vimLevelResourceType': vl.vltype
                     }],
