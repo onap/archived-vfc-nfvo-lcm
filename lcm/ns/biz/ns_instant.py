@@ -35,6 +35,7 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.workflows import build_in
 from lcm.ns.biz.ns_instantiate_flow import run_ns_instantiate
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
+from lcm.ns.enum import NS_INST_STATUS
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,7 @@ class InstantNSService(object):
     def do_biz(self):
         job_id = JobUtil.create_job("NS", "NS_INST", self.ns_inst_id)
         occ_id = NsLcmOpOcc.create(self.ns_inst_id, "INSTANTIATE", "PROCESSING", False, self.req_data)
+        NSInstModel.objects.filter(id=self.ns_inst_id).update(status=NS_INST_STATUS.INSTANTIATING)
 
         try:
             logger.debug('ns-instant(%s) workflow starting...' % self.ns_inst_id)
@@ -176,6 +178,7 @@ class InstantNSService(object):
             logger.error("ns-instant(%s) workflow error:%s" % (self.ns_inst_id, e.args[0]))
             NsLcmOpOcc.update(occ_id, operationState="FAILED", error=e.args[0])
             JobUtil.add_job_status(job_id, 255, 'NS instantiation failed')
+            build_in.post_deal(self.ns_inst_id, "false")
             return dict(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def start_wso2_workflow(self, job_id, ns_inst, plan_input, occ_id):

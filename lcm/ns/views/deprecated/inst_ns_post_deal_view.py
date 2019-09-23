@@ -26,6 +26,7 @@ from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
+from lcm.ns.enum import NS_INST_STATUS
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,7 @@ class NSInstPostDealView(APIView):
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstPostDealView::post %s, %s", request.data, ns_instance_id)
         ns_post_status = ignore_case_get(request.data, 'status')
-        ns_status = 'ACTIVE' if ns_post_status == 'true' else 'FAILED'
+        ns_status = NS_INST_STATUS.ACTIVE if ns_post_status == 'true' else NS_INST_STATUS.FAILED
         ns_opr_status = 'success' if ns_post_status == 'true' else 'failed'
         try:
             req_serializer = _InstNsPostDealReqSerializer(data=request.data)
