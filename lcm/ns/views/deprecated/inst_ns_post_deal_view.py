@@ -26,6 +26,7 @@ from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
 from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
+from .common import view_safe_call_with_log
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ class NSInstPostDealView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
         logger.debug("Enter NSInstPostDealView::post %s, %s", request.data, ns_instance_id)
         ns_post_status = ignore_case_get(request.data, 'status')
