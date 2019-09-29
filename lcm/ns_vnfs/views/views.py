@@ -49,8 +49,46 @@ from lcm.ns_vnfs.biz.verify_vnfs import VerifyVnfs
 from lcm.ns_vnfs.serializers.serializers import VimInfoRespSerializer
 from lcm.ns_vnfs.serializers.serializers import VnfmInfoRespSerializer
 from lcm.ns_vnfs.biz import create_vnfs
+from lcm.pub.exceptions import BadRequestException
 
 logger = logging.getLogger(__name__)
+
+
+def view_safe_call_with_log(logger):
+    def view_safe_call(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except BadRequestException as e:
+                logger.error(e.args[0])
+                return make_error_resp(
+                    detail=e.args[0],
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except NSLCMException as e:
+                logger.error(e.args[0])
+                return make_error_resp(
+                    detail=e.args[0],
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            except Exception as e:
+                logger.error(e.args[0])
+                logger.error(traceback.format_exc())
+                return make_error_resp(
+                    detail='Unexpected exception',
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        return wrapper
+    return view_safe_call
+
+
+def make_error_resp(status, detail):
+    return Response(
+        data={
+            'error': detail
+        },
+        status=status
+    )
 
 
 class NfView(APIView):
@@ -241,12 +279,13 @@ class NfScaleView(APIView):
             status.HTTP_409_CONFLICT: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger)
     def post(self, request, vnfinstid):
         logger.debug("NfScaleView--post::> %s" % request.data)
         try:
             req_serializer = ScaleVnfReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise Exception(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
             NFManualScaleService(vnfinstid, request.data).start()
             return Response(data={}, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
@@ -262,13 +301,14 @@ class NfVerifyView(APIView):
             status.HTTP_409_CONFLICT: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger)
     def post(self, request):
         job_id = "VNFSDK_" + str(uuid.uuid4())
         logger.debug("NfVerifyView--post::%s> %s", job_id, request.data)
         try:
             req_serializer = VerifyVnfReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise Exception(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
 
             VerifyVnfs(request.data, job_id).start()
 
