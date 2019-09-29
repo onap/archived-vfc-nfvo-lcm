@@ -74,6 +74,7 @@ class JobView(APIView):
             status.HTTP_202_ACCEPTED: JobUpdRespSerializer()
         }
     )
+    @view_safe_call_with_log(logger=logger)
     def post(self, request, job_id):
         try:
             logger.debug("Enter JobView:post, job_id=%s, request=%s", job_id, request.data)
@@ -104,3 +105,39 @@ class JobView(APIView):
             job_update_resp = JobUpdResp('error', e.args[0])
             resp_serializer = JobUpdRespSerializer(job_update_resp)
             return Response(data=resp_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def view_safe_call_with_log(logger):
+    def view_safe_call(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except BadRequestException as e:
+                logger.error(e.args[0])
+                return make_error_resp(
+                    detail=e.args[0],
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except NSLCMException as e:
+                logger.error(e.args[0])
+                return make_error_resp(
+                    detail=e.args[0],
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            except Exception as e:
+                logger.error(e.args[0])
+                logger.error(traceback.format_exc())
+                return make_error_resp(
+                    detail='Unexpected exception',
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        return wrapper
+    return view_safe_call
+
+def make_error_resp(status, detail):
+    return Response(
+        data={
+            'error': detail
+        },
+        status=status
+    )
