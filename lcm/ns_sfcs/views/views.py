@@ -32,10 +32,48 @@ from lcm.ns_sfcs.biz.sfc_instance import SfcInstance
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from lcm.pub.exceptions import BadRequestException, NSLCMException
 
 from lcm.ns_sfcs.biz.utils import get_fp_id, ignorcase_get
 
 logger = logging.getLogger(__name__)
+
+
+def view_safe_call_with_log(logger):
+    def view_safe_call(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except BadRequestException as e:
+                logger.error(e.args[0])
+                return make_error_resp(
+                    detail=e.args[0],
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except NSLCMException as e:
+                logger.error(e.args[0])
+                return make_error_resp(
+                    detail=e.args[0],
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            except Exception as e:
+                logger.error(e.args[0])
+                logger.error(traceback.format_exc())
+                return make_error_resp(
+                    detail='Unexpected exception',
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        return wrapper
+    return view_safe_call
+
+
+def make_error_resp(status, detail):
+    return Response(
+        data={
+            'error': detail
+        },
+        status=status
+    )
 
 
 class SfcInstanceView(APIView):
@@ -46,11 +84,12 @@ class SfcInstanceView(APIView):
             status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
         }
     )
+    @view_safe_call_with_log(logger)
     def post(self, request):
         try:
             req_serializer = CreateSfcInstReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise Exception(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
 
             data = {
                 'nsinstid': request.data['nsInstanceId'],
@@ -62,7 +101,7 @@ class SfcInstanceView(APIView):
 
             resp_serializer = CreateSfcInstRespSerializer(data=rsp)
             if not resp_serializer.is_valid():
-                raise Exception(resp_serializer.errors)
+                raise NSLCMException(resp_serializer.errors)
 
             return Response(data=rsp, status=status.HTTP_200_OK)
         except Exception as e:
@@ -135,6 +174,7 @@ class SfcView(APIView):
             status.HTTP_200_OK: CreateSfcRespSerializer()
         }
     )
+    @view_safe_call_with_log(logger)
     def post(self, request):
         try:
             logger.info("Create Service Function Chain start")
@@ -148,7 +188,7 @@ class SfcView(APIView):
 
             req_serializer = CreateSfcReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise Exception(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
         except Exception as e:
             logger.error("Exception occurs: %s", e.args[0])
             logger.error(traceback.format_exc())
