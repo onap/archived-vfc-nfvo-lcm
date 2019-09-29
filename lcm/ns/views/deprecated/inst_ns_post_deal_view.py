@@ -23,7 +23,7 @@ from rest_framework.views import APIView
 
 from lcm.ns.serializers.deprecated.ns_serializers import _InstNsPostDealReqSerializer
 from lcm.pub.database.models import NSInstModel, ServiceBaseInfoModel
-from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import BadRequestException
 from lcm.pub.utils.restcall import req_by_msb
 from lcm.pub.utils.values import ignore_case_get
 
@@ -46,7 +46,7 @@ class NSInstPostDealView(APIView):
         try:
             req_serializer = _InstNsPostDealReqSerializer(data=request.data)
             if not req_serializer.is_valid():
-                raise NSLCMException(req_serializer.errors)
+                raise BadRequestException(req_serializer.errors)
             NSInstModel.objects.filter(id=ns_instance_id).update(status=ns_status)
             ServiceBaseInfoModel.objects.filter(service_id=ns_instance_id).update(
                 active_status=ns_status, status=ns_opr_status)
