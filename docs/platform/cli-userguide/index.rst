@@ -13,8 +13,8 @@ Reference manual:
 
 Note:
 
-The config. JSON included in the folder is a data guarantee for the example in the guidance manual, which will be converted into Python recognizable object body through the json. load method. Use "parameters" to receive the converted results. (parameters = json. load (config))
-
+1. The config. JSON included in the folder is a data guarantee for the example in the guidance manual, which will be converted into Python recognizable object body through the json. load method. Use "parameters" to receive the converted results. (parameters = json. load (config))
+2. You should go to the pod of the CLI environment in the corresponding test environment to execute the command action steps
 
 .. contents::
    :depth: 2

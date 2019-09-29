@@ -53,5 +53,6 @@ VF-C as one controller in ONAP includes two components NFV-O and GVNFM.
    consumedapis.rst
    delivery.rst
    logging.rst
-   installation/index
+   installation/inde
+   cli-userguide/index
    administration.rst

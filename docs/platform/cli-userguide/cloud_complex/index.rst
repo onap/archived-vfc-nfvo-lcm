@@ -31,3 +31,41 @@ Cli cloud complex Command Guide
                           parameters["complex_name"], parameters["country"], parameters["elevation"], \
                           parameters["identity_url"], parameters["aai_url"], parameters["aai_username"], \
                           parameters["aai_password"])
+
+2. complex-list
+-----------------
+
+::
+
+
+    usage: oclip complex-list
+    List the configured complexes
+    Options:
+    [-m | --host-url] [-C | --no-catalog] [-f | --format]
+    [-h | --help] [-V | --verify] [-t | --no-title]
+    [-d | --debug] [-v | --version] [-s | --long]
+    [-D | --context] [-u | --host-username] [-a | --no-auth]
+    [-p | --host-password]
+    For example:
+    "oclip complex-list -m {} -u {} -p {}".format(parameters["aai_url"], parameters["aai_username"], \
+                          parameters["aai_password"])
+
+
+3. complex-delete
+-----------------
+
+::
+
+
+    usage: oclip complex-delete
+    Delete a complex from Onap
+    Options:
+    [-m | --host-url] [-C | --no-catalog] [-f | --format]
+    [-h | --help] [-V | --verify] [-t | --no-title]
+    [-d | --debug] [-v | --version] [-y | --resource-version]
+    [-s | --long] [-D | --context] [-x | --complex-name]
+    [-u | --host-username] [-a | --no-auth] [-p | --host-password]
+    For example:
+    oclip complex-delete -m https://159.138.61.203:30233 -u AAI -p AAI -x clli1 -y 1568444028429
+    Note:
+    complex-name and resource-version is the result returned after executing the complex-list command(command 2)

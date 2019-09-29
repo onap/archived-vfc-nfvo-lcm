@@ -73,3 +73,21 @@ Cli VFC part Command Guide
     On error, it prints <STATUS CODE>::<ERROR CODE>::<ERROR MESSAGE>
     For example:
     'oclip vfc-nslcm-delete -m {} -c {}'.format(parameters["vfc-url"], ns_instance_id)
+
+
+5. VFC nslcm get
+----------------
+
+::
+
+    usage: oclip vfc-nslcm-get
+    vfc nsclm get the status of creating ns
+    Options:
+    [-m | --host-url] [-C | --no-catalog] [-f | --format]
+    [-h | --help] [-V | --verify] [-t | --no-title]
+    [-d | --debug] [-v | --version] [-s | --long]
+    [-D | --context] [-c | --ns-instance-id]
+    Error:
+    On error, it prints <STATUS CODE>::<ERROR CODE>::<ERROR MESSAGE>
+    For example:
+    'oclip vfc-nslcm-delete -m {} -c {}'.format(parameters["vfc-url"], ns_instance_id)
