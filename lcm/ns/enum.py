@@ -194,3 +194,10 @@ VNF_STATE = enum(
     STARTED="STARTED",
     STOPPED="STOPPED"
 )
+CROSSINGDIRECTION_Type = enum(
+    UP="UP",
+    DOWN="DOWN"
+)
+threshold_Type = enum(
+    SIMPLE="Single-valued static threshold"
+)
