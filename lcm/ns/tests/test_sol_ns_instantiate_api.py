@@ -53,6 +53,7 @@ class TestInstantiateNsApi(TestCase):
     def test_ns_instantiate_when_succeed_to_enter_workflow(self, mock_run, mock_call_req):
         config.WORKFLOW_OPTION = "buildin"
         mock_call_req.side_effect = [
+            [0, None, '202'],
             [0, self.vnfms, '200'],
             [0, self.vnfm, '200']
         ]

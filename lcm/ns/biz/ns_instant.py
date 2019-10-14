@@ -87,6 +87,7 @@ class InstantNSService(object):
             dst_plan = sdc_run_catalog.parse_nsd(ns_inst.nspackage_id, input_parameters)
             logger.debug('tosca plan dest: %s' % dst_plan)
             logger.debug('Start query nsd(%s)' % ns_inst.nspackage_id)
+            sdc_run_catalog.modify_nsd_state(ns_inst.nspackage_id)
             NSInstModel.objects.filter(id=self.ns_inst_id).update(nsd_model=dst_plan)
 
             params_vnf = []
