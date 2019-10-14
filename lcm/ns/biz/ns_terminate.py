@@ -28,6 +28,8 @@ from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.database.models import PNFInstModel
 from lcm.ns.biz.ns_lcm_op_occ import NsLcmOpOcc
 from lcm.jobs.enum import JOB_PROGRESS
+from lcm.ns.enum import NS_INST_STATUS
+from lcm.workflows import build_in
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +50,7 @@ class TerminateNsService(threading.Thread):
                 NsLcmOpOcc.update(self.occ_id, "COMPLETED")
                 return
             JobUtil.add_job_status(self.job_id, 10, "Starting terminate...", '')
+            NSInstModel.objects.filter(id=self.ns_inst_id).update(status=NS_INST_STATUS.TERMINATING)
 
             self.cancel_sfc_list()
             self.cancel_vnf_list()
@@ -60,11 +63,13 @@ class TerminateNsService(threading.Thread):
         except NSLCMException as e:
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, e.args[0])
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.args[0])
+            build_in.post_deal(self.ns_inst_id, "false")
         except Exception as e:
             logger.error(e.args[0])
             logger.error(traceback.format_exc())
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, "ns terminate fail.")
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.args[0])
+            build_in.post_deal(self.ns_inst_id, "false")
 
     def cancel_vl_list(self):
         array_vlinst = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=self.ns_inst_id)
