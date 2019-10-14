@@ -67,3 +67,11 @@ def query_pnf_descriptor(filter=None):
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to query pnf descriptor(%s) from catalog." % pnfdId)
     return json.JSONDecoder().decode(ret[1])
+
+
+def modify_nsd_state(csar_id):
+    req_param = json.JSONEncoder().encode({"usageState": 1})
+    ret = req_by_msb("/api/catalog/v1/ns_descriptors/%s" % csar_id, "PUT", req_param)
+    if ret[0] != 0:
+        logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
+        raise NSLCMException("Failed to modify nsd state of CSAR(%s) from catalog." % csar_id)
