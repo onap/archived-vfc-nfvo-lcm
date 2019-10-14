@@ -55,7 +55,8 @@ class TestNsInstant(TestCase):
     def test_ns_instantiate_when_succeed_to_enter_workflow(self, mock_run, mock_call_req):
         config.WORKFLOW_OPTION = "buildin"
         mock_call_req.side_effect = [
-            [0, {"model": json.dumps(NSD_MODEL_DICT)}, '200'],
+            [0, {"model": json.dumps(NSD_MODEL_DICT)}, '200']
+            [0, None, '202'],
             [0, VNFM_LIST_IN_AAI_DICT, '200'],
             [0, VNFM_IN_AAI_DICT, '200']
         ]
@@ -109,6 +110,8 @@ class TestNsInstant(TestCase):
                 [0, json.JSONEncoder().encode(items), "200"],
             "/api/wso2bpel/v1/process/instance":
                 [0, json.JSONEncoder().encode(ret), "200"],
+            "/api/catalog/v1/ns_descriptors/1":
+                [0, None, "202"],
         }
 
         def side_effect(*args):
@@ -131,6 +134,8 @@ class TestNsInstant(TestCase):
         mock_vals = {
             "api/workflow/v1/process/instance":
                 [0, json.JSONEncoder().encode(ret), "200"],
+            "/api/catalog/v1/ns_descriptors/1":
+                [0, None, "202"],
         }
 
         def side_effect(*args):
