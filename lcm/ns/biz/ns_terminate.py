@@ -21,6 +21,7 @@ from lcm.jobs.const import JOB_INSTANCE_RESPONSE_ID_URI
 from lcm.pub.database.models import NSInstModel, VLInstModel, FPInstModel, NfInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.nslcm import call_from_ns_cancel_resource
+from lcm.pub.msapi import sdc_run_catalog
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.utils import restcall
@@ -57,6 +58,7 @@ class TerminateNsService(threading.Thread):
             self.cancel_vl_list()
             self.cancel_pnf_list()
 
+            self.modify_package_state()
             NSInstModel.objects.filter(id=self.ns_inst_id).update(status='NOT_INSTANTIATED')
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, "ns terminate ends.", '')
             NsLcmOpOcc.update(self.occ_id, "COMPLETED")
@@ -70,6 +72,12 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.ERROR, "ns terminate fail.")
             NsLcmOpOcc.update(self.occ_id, operationState="FAILED", error=e.args[0])
             build_in.post_deal(self.ns_inst_id, "false")
+
+    def modify_package_state(self):
+        ns_inst = NSInstModel.objects.filter(id=self.ns_inst_id)
+        ns_insts = NSInstModel.objects.filter(nspackage_id=ns_inst[0].nspackage_id)
+        if len(ns_insts) == 1:
+            sdc_run_catalog.modify_nsd_state(ns_inst.nspackage_id, 0)
 
     def cancel_vl_list(self):
         array_vlinst = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=self.ns_inst_id)

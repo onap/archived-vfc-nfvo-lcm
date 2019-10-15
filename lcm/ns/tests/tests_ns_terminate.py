@@ -84,7 +84,10 @@ class TestTerminateNsViews(TestCase):
                                                                            "status": JOB_MODEL_STATUS.PROCESSING,
                                                                            "responseid": "2",
                                                                            "statusdescription": "creating",
-                                                                           "errorcode": "0"}]}}), '200']}
+                                                                           "errorcode": "0"}]}}), '200'],
+            "/api/catalog/v1/ns_descriptors/1":
+                [0, json.JSONEncoder().encode({}), '202'],
+        }
 
         def side_effect(*args):
             return mock_vals[args[4]]
