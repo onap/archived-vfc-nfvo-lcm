@@ -194,10 +194,39 @@ VNF_STATE = enum(
     STARTED="STARTED",
     STOPPED="STOPPED"
 )
-CROSSINGDIRECTION_Type = enum(
+CROSSINGDIRECTION_TYPE = enum(
     UP="UP",
     DOWN="DOWN"
 )
-threshold_Type = enum(
+THRESHOLD_TYPE = enum(
     SIMPLE="Single-valued static threshold"
+)
+NOTIFICATION_TYPES = enum(
+    AlarmNotification="AlarmNotification",
+    AlarmClearedNotification="AlarmClearedNotification",
+    AlarmListRebuiltNotification="AlarmListRebuiltNotification"
+)
+EVENT_TYPE = enum(
+    COMMUNICATIONS_ALARM="COMMUNICATIONS_ALARM",
+    PROCESSING_ERROR_ALARM="PROCESSING_ERROR_ALARM",
+    ENVIRONMENTAL_ALARM="ENVIRONMENTAL_ALARM",
+    QOS_ALARM="QOS_ALARM",
+    EQUIPMENT_ALARM="EQUIPMENT_ALARM"
+)
+PERCEIVED_SEVERITY_TYPE = enum(
+    CRITICAL="CRITICAL",
+    MAJOR="MAJOR",
+    MINOR="MINOR",
+    WARNING="WARNING",
+    INDETERMINATE="INDETERMINATE",
+    CLEARED="CLEARED"
+)
+FAULTY_RESOURCE_TYPE = enum(
+    COMPUTE="COMPUTE",
+    STORAGE="STORAGE",
+    NETWORK="NETWORK"
+)
+ACK_STATE = enum(
+    UNACKNOWLEDGED="UNACKNOWLEDGED",
+    ACKNOWLEDGED="ACKNOWLEDGED"
 )

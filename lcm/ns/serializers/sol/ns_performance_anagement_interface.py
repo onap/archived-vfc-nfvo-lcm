@@ -16,7 +16,7 @@ from rest_framework import serializers
 
 
 # PmSubscriptionRequest
-from lcm.ns.enum import CROSSINGDIRECTION_Type, threshold_Type
+from lcm.ns.enum import CROSSINGDIRECTION_TYPE, THRESHOLD_TYPE
 from lcm.pub.utils.enumutil import enum_to_list
 
 
@@ -111,7 +111,7 @@ class ThresholdCrossedNotificationSerializer(serializers.Serializer):
                                                         "in upward or downward direction.",
                                               child=serializers.ChoiceField(
                                                   required=True,
-                                                  choices=enum_to_list(CROSSINGDIRECTION_Type)),
+                                                  choices=enum_to_list(CROSSINGDIRECTION_TYPE)),
                                               required=True, allow_null=False)
     objectInstanceId = serializers.CharField(help_text="Identifier that identifies a NS instance.",
                                              required=True, allow_null=False)
@@ -184,7 +184,7 @@ class ThresholdCriteriaSerializer(serializers.Serializer):
                                                         "threshold", required=True, allow_null=False)
     thresholdType = serializers.ListField(help_text="Type of threshold.",
                                           child=serializers.ChoiceField(
-                                              required=True, choices=enum_to_list(threshold_Type)),
+                                              required=True, choices=enum_to_list(THRESHOLD_TYPE)),
                                           required=True, allow_null=False)
 
 
