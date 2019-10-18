@@ -22,7 +22,7 @@ from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import VLInstModel, NSInstModel, VNFFGInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import extsys, resmgr
-from lcm.pub.msapi.aai import create_network_aai
+from lcm.pub.msapi.aai import create_network_aai, create_subnet_aai
 from lcm.pub.nfvi.vim import const
 from lcm.pub.nfvi.vim import vimadaptor
 from lcm.pub.utils.values import ignore_case_get
@@ -58,7 +58,7 @@ class CreateVls(object):
             self.create_vl_to_resmgr()
             self.save_vl_to_db()
             if REPORT_TO_AAI:
-                self.create_network_and_subnet_in_aai()
+                self.create_network_aai()
             return {"result": 0, "detail": "instantiation vl success", "vlId": self.vl_inst_id}
         except NSLCMException as e:
             return self.exception_handle(e)
@@ -201,7 +201,7 @@ class CreateVls(object):
         # do_biz_with_share_lock("create-vllist-in-vnffg-%s" % self.owner_id, self.create_vl_inst_id_in_vnffg)
         self.create_vl_inst_id_in_vnffg()
 
-    def create_network_and_subnet_in_aai(self):
+    def create_network_aai(self):
         logger.debug("CreateVls::create_network_in_aai::report network[%s] to aai." % self.vl_inst_id)
         try:
             ns_insts = NSInstModel.objects.filter(id=self.owner_id)
@@ -248,5 +248,26 @@ class CreateVls(object):
             logger.debug("Success to create network[%s] to aai: [%s].", self.vl_inst_id, resp_status)
         except NSLCMException as e:
             logger.debug("Fail to create network[%s] to aai, detail message: %s" % (self.vl_inst_id, e.args[0]))
+        except:
+            logger.error(traceback.format_exc())
+
+    def create_subnet_in_aai(self):
+        logger.debug("CreateVls::create_subnet_in_aai::report subnet[%s] to aai." % self.related_subnetwork_id)
+        try:
+            data = {
+                "subnets": {
+                    "subnet": [
+                        {
+                            "subnet-id": self.related_subnetwork_id,
+                            "dhcp-enabled": False
+                        }
+                    ]
+                },
+            }
+            resp_data, resp_status = create_subnet_aai(self.vl_inst_id, self.related_subnetwork_id, data)
+            logger.debug("Success to create subnet[%s] to aai: [%s].", self.related_subnetwork_id, resp_status)
+        except NSLCMException as e:
+            logger.debug("Fail to create subnet[%s] to aai, detail message: %s" % (
+                self.related_subnetwork_id, e.args[0]))
         except:
             logger.error(traceback.format_exc())
