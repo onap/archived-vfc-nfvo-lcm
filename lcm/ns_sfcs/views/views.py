@@ -184,7 +184,6 @@ class SfcView(APIView):
             logger.info("service_function_chain_instanceid : %s" % ignorcase_get(request.data, 'nsInstanceId'))
             logger.info("service_function_chain_sdncontrollerid : %s" % ignorcase_get(request.data, 'sdnControllerId'))
             logger.info("service_function_chain_fpindex : %s" % ignorcase_get(request.data, 'fpindex'))
-            ns_model_data = json.loads(request.data['context'])
 
             req_serializer = CreateSfcReqSerializer(data=request.data)
             if not req_serializer.is_valid():
@@ -192,6 +191,7 @@ class SfcView(APIView):
         except Exception as e:
             logger.error("Exception occurs: %s", e.args[0])
             logger.error(traceback.format_exc())
+        ns_model_data = json.loads(request.data['context'])
         data = {
             'nsinstid': ignorcase_get(request.data, 'nsInstanceId'),
             "ns_model_data": ns_model_data,
