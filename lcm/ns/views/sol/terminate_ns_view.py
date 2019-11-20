@@ -55,7 +55,7 @@ class TerminateNsView(APIView):
         terminate_ns_service = TerminateNsService(ns_instance_id, job_id, request.data)
         terminate_ns_service.start()
         logger.debug("Location: %s" % terminate_ns_service.occ_id)
-        response = Response(data={}, status=status.HTTP_202_ACCEPTED)
+        response = Response(data={'jobId': job_id}, status=status.HTTP_202_ACCEPTED)
         response["Location"] = NS_OCC_BASE_URI % terminate_ns_service.occ_id
         logger.debug("Leave TerminateNSView")
         return response
