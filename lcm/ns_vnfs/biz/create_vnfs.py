@@ -262,7 +262,8 @@ class CreateVnfs(Thread):
             # identifiers.append(vim_info[1])
             # cloudOwner = vim_info[0]
             identifiers = list()
-            self.vim_id = json.loads(self.vim_id)
+            if type(self.vim_id) == str:
+                self.vim_id = json.loads(self.vim_id)
             identifiers.append(self.vim_id['cloud_regionid'])
             cloudOwner = self.vim_id['cloud_owner']
             required_candidate = [
