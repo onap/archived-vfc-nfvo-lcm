@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+import time
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -47,6 +48,7 @@ class NSTerminateView(APIView):
             raise BadRequestException(req_serializer.errors)
 
         job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.TERMINATE, ns_instance_id)
+        time.sleep(2)
         TerminateNsService(ns_instance_id, job_id, request.data).start()
 
         resp_serializer = _NsOperateJobSerializer(data={'jobId': job_id})
