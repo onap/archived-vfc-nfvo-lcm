@@ -140,7 +140,7 @@ class TerminateVnfs(threading.Thread):
 
     def delete_subscription(self):
         try:
-            SubscriptionDeletion(self.vnfm_inst_id, self.vnf_inst_id).do_biz()
+            SubscriptionDeletion(self.vnfm_inst_id, self.vnf_uuid).do_biz()
         except Exception as e:
             logger.error("delete_subscription failed: %s", e.args[0])
 
