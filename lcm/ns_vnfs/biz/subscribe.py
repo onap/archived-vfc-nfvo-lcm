@@ -19,7 +19,6 @@ from lcm.pub.database.models import SubscriptionModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.extsys import get_vnfm_by_id
 from lcm.pub.utils.restcall import req_by_msb
-from lcm.pub.utils.values import ignore_case_get
 from lcm.pub.config import config as pub_config
 
 logger = logging.getLogger(__name__)
@@ -130,7 +129,7 @@ class SubscriptionDeletion(object):
 
     def send_subscription_deletion_request(self):
         if self.subscription:
-            self.subscription_id = ignore_case_get(self.subscription.__dict__, 'id')
+            self.subscription_id = self.subscription.subscription_id
             ret = req_by_msb('api/gvnfmdriver/v1/%s/subscriptions/%s' % (self.vnfm_id, self.subscription_id), 'DELETE')
             if ret[0] != 0:
                 logger.error('Status code is %s, detail is %s.', ret[2], ret[1])
