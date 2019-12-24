@@ -30,5 +30,8 @@ class NSLCMException(BaseException):
     pass
 
 
+class RequestException(BaseException):
+    pass
+
 class SeeOtherException(BaseException):
     pass

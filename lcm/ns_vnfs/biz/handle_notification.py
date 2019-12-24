@@ -16,6 +16,7 @@ import logging
 import traceback
 import uuid
 
+
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -23,7 +24,7 @@ from lcm.ns_vnfs.enum import INST_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import (CPInstModel, NfInstModel, PortInstModel,
                                      VLInstModel, VmInstModel, VNFCInstModel)
-from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import NSLCMException, RequestException
 from lcm.pub.msapi.aai import (create_network_aai, create_vserver_aai,
                                delete_network_aai, delete_vserver_aai,
                                query_network_aai, query_vserver_aai)
@@ -216,12 +217,15 @@ class HandleVnfLcmOocNotification(object):
         try:
             # query network in aai, get resource_version
             customer_info = query_network_aai(vlInstanceId)
-            resource_version = customer_info["resource-version"]
+            if customer_info:
+                resource_version = customer_info["resource-version"]
 
-            # delete network from aai
-            resp_data, resp_status = delete_network_aai(vlInstanceId, resource_version)
-            logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
+                # delete network from aai
+                resp_data, resp_status = delete_network_aai(vlInstanceId, resource_version)
+                logger.debug("Success to delete network[%s] from aai, resp_status: [%s]."
                          % (vlInstanceId, resp_status))
+        except RequestException as r:
+            logger.debug("Vserver has been delted in aai")
         except NSLCMException as e:
             logger.debug("Fail to delete network[%s] to aai, detail message: %s" % (vlInstanceId, e.args[0]))
         except:
@@ -286,6 +290,8 @@ class HandleVnfLcmOocNotification(object):
                 "Success to delete vserver instance[%s] from aai, resp_status: [%s]." %
                 (vserver_id, resp_status))
             logger.debug("delete_vserver_in_aai end!")
+        except RequestException as r:
+            logger.debug("Vserver has been deleted from aai")
         except NSLCMException as e:
             logger.debug("Fail to delete vserver from aai, detail message: %s" % e.args[0])
         except:
