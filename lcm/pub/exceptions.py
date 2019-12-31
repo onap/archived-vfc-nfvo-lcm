@@ -26,6 +26,10 @@ class BadRequestException(BaseException):
     pass
 
 
+class RequestException(BaseException):
+    pass
+
+
 class NSLCMException(BaseException):
     pass
 
