@@ -17,7 +17,7 @@ import logging
 import uuid
 
 from lcm.pub.config.config import AAI_BASE_URL, AAI_USER, AAI_PASSWD
-from lcm.pub.exceptions import NSLCMException
+from lcm.pub.exceptions import NSLCMException, RequestException
 from lcm.pub.utils import restcall
 
 
@@ -230,6 +230,9 @@ def delete_vserver_aai(cloud_owner, cloud_region_id, tenant_id, vserver_id, reso
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Vserver delete exception in AAI")
+    if ret[2] == 404:
+        logger.error("Vserver has been deleted in aai")
+        raise RequestException("Vserver delete exception in AAI")
     return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
@@ -283,6 +286,9 @@ def delete_network_aai(network_id, resource_version=""):
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Network delete exception in AAI")
+    if ret[2] == 404:
+        logger.error("Network has been deleted in aai")
+        raise RequestException("Network delete exception in AAI")
     return json.JSONDecoder().decode(ret[1]) if ret[1] else ret[1], ret[2]
 
 
