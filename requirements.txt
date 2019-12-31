@@ -1,6 +1,6 @@
 # rest framework
-Django==2.1.10
-djangorestframework==3.9.4
+Django==2.2
+djangorestframework==3.10.0
 
 # for access MySQL
 PyMySQL==0.9.3
@@ -27,7 +27,7 @@ unittest_xml_reporting==1.12.0
 
 # for swagger
 ruamel.yaml==0.15.97
-drf-yasg==1.14.0
+drf-yasg==1.17.0
 
 # for the validation feature
 flex>=6.11.1
