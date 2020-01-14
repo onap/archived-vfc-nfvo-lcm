@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3196b7ad_164a38b7",
+        "filename": "lcm/ns_vnfs/biz/subscribe.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5327
+      },
+      "writtenOn": "2020-01-14T09:35:34Z",
+      "side": 1,
+      "message": "i think pub_config.MSB_SERVICE_IP and pub_config.MSB_SERVICE_PORT will be better that replaced by pub_config.MSB_BASE_URL, Other files also.",
+      "range": {
+        "startLine": 45,
+        "startChar": 20,
+        "endLine": 45,
+        "endChar": 34
+      },
+      "revId": "924bf18ab0aa5549a188c3e0c41028e8b6d35106",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
