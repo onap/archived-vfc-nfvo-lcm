@@ -42,7 +42,7 @@ class SubscriptionCreation(object):
 
     def prepare_lccn_subscription_request_data(self):
         vnfm_info = get_vnfm_by_id(self.vnfm_id)
-        call_back = "http://%s:%s/api/gvnfmdriver/v1/vnfs/lifecyclechangesnotification" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
+        call_back = "https://%s:%s/api/gvnfmdriver/v1/vnfs/lifecyclechangesnotification" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
         self.subscription_request_data = {
             "filter": {
                 "notificationTypes": ["VnfLcmOperationOccurrenceNotification"],
