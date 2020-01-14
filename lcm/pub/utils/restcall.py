@@ -23,7 +23,7 @@ import uuid
 import httplib2
 import requests
 
-from lcm.pub.config.config import MSB_SERVICE_IP, MSB_SERVICE_PORT
+from lcm.pub.config.config import MSB_BASE_URL
 
 rest_no_auth, rest_oneway_auth, rest_bothway_auth = 0, 1, 2
 HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_202_ACCEPTED = '200', '201', '204', '202'
@@ -90,13 +90,13 @@ def call_req(base_url, user, passwd, auth_type, resource, method, content='', ad
 
 def req_by_msb(resource, method, content=''):
     logger.debug("resource: %s, method: %s, content: %s" % (resource, method, content))
-    base_url = "http://%s:%s/" % (MSB_SERVICE_IP, MSB_SERVICE_PORT)
+    base_url = MSB_BASE_URL
     return call_req(base_url, "", "", rest_no_auth, resource, method, content)
 
 
 def upload_by_msb(resource, method, file_data):
     headers = {'accept': 'application/json'}
-    full_url = "http://%s:%s/%s" % (MSB_SERVICE_IP, MSB_SERVICE_PORT, resource)
+    full_url = "%s/%s" % (MSB_BASE_URL, resource)
     r = requests.post(full_url, files=file_data, headers=headers)
     resp_status, resp_body = str(r.status_code), r.text
     if resp_status not in status_ok_list:
