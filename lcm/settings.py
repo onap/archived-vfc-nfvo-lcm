@@ -133,8 +133,8 @@ TIME_ZONE = 'UTC'
 
 STATIC_URL = '/static/'
 
-pub_config.AAI_BASE_URL = "http://%s:%s/aai/v11" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
-pub_config.SDC_BASE_URL = "http://%s:%s/api" % (pub_config.MSB_SERVICE_IP, pub_config.MSB_SERVICE_PORT)
+pub_config.AAI_BASE_URL = "%s/aai/v11" % pub_config.MSB_BASE_URL
+pub_config.SDC_BASE_URL = "%s/api" % pub_config.MSB_BASE_URL
 
 if platform.system() == 'Windows' or 'test' in sys.argv:
     LOGGING = {
