@@ -178,8 +178,12 @@ if 'test' in sys.argv:
     pub_config.REPORT_TO_AAI = False
     DATABASES = {}
     DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DB_NAME,
+        'HOST': DB_IP,
+        'PORT': DB_PORT,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWD,
     }
     REST_FRAMEWORK = {}
 
