@@ -31,7 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.sources>.</sonar.sources>
         <sonar.junit.reportsPath>xunit-results.xml</sonar.junit.reportsPath>
-        <sonar.python.coverage.reportPath>coverage.xml</sonar.python.coverage.reportPath>
+        <sonar.python.coverage.reportPaths>coverage.xml</sonar.python.coverage.reportPaths>
         <sonar.language>py</sonar.language>
         <sonar.pluginname>python</sonar.pluginname>
         <sonar.inclusions>**/**.py</sonar.inclusions>
