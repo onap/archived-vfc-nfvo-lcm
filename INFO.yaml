@@ -144,6 +144,16 @@ committers:
       company: 'Intel'
       id: 'Ruoyu'
       timezone: 'Asia/ShangHai'
+    - name: 'YuanHong Deng'
+      email: 'dengyuanhong@chinamobile.com'
+      company: 'China Mobile'
+      id: 'dengyh'
+      timezone: 'Asia/ShangHai'
+    - name: 'HongYu Zhao'
+      email: 'zhao.hongyu@zte.com.cn'
+      company: 'ZTE'
+      id: 'hongyuzhao'
+      timezone: 'Asia/ShangHai'
 
 tsc:
     approval: 'https://lists.onap.org/pipermail/onap-tsc'
