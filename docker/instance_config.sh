@@ -1,5 +1,6 @@
 #!/bin/bash
 
+MSB_PROTO=`echo $MSB_PROTO`
 MSB_IP=`echo $MSB_ADDR | cut -d: -f 1`
 MSB_PORT=`echo $MSB_ADDR | cut -d: -f 2`
 
@@ -10,6 +11,10 @@ REG_TO_MSB_WHEN_START=$REG_TO_MSB_WHEN_START
 
 if [ $REG_TO_MSB_WHEN_START ]; then
     sed -i "s|REG_TO_MSB_WHEN_START = .*|REG_TO_MSB_WHEN_START = '$REG_TO_MSB_WHEN_START'|" vfc/nfvo/lcm/lcm/pub/config/config.py
+fi
+
+if [ $MSB_PROTO ]; then
+    sed -i "s|MSB_SERVICE_PROTOCOL = .*|MSB_SERVICE_PROTOCOL = '$MSB_PROTO'|" vfc/nfvo/lcm/lcm/pub/config/config.py
 fi
 
 if [ $MSB_IP ]; then
