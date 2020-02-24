@@ -1,0 +1,51 @@
+This process is ns instantiation process
+When the NS and vnf packages are uploaded and the MSB is registered successfully.
+the instantiation operation begins.
+This process mainly includes ns creation, instantiation, information query acquisition,
+instance termination and data deletion after termination.
+
+# create
+
+Prepare the data before instance creation according to your needs,
+and replace the CSAR ID generated after uploading package management.
+When the execution is completed, an instance ID and other data are returned.
+
+# instance
+
+This process also prepares the data according to the requirement of creating the instance itself,
+returns the instance ID after executing the create script,
+and then executes the script after executing the script command. At this point,
+the instance ID will be passed into the script, and a series of instantiation operations will be started,
+and the virtual machine will be created.
+
+# get
+
+If you want to get some data generated during instance creation, you can execute the script
+The script can query all the instance information in the database.
+
+# get_one
+
+If you want to get some instance data during instance creation, you can execute the script
+The script only queries the content of an instance information,
+executes the script command and puts the created instance ID after the command,
+then the query can be completed.
+
+# terminate
+
+After the instantiation process is successfully created,
+if you want to terminate the instantiation, execute the script.
+The virtual machine generated after the script execution will also stop,
+as well as some data deletion, termination of services.
+After the script command is executed, the instance ID needs to be added after the command.
+
+# delete
+
+Some data will remain after termination. Execute the script to clear the data in the database.
+The instance ID is also required to execute this process.
+The completion of this process indicates the end of an instance creation termination process.
+
+Note: You should configure the IP and CSAR file path of MSB in const file
+      IP address for MSB service
+      NS cannot be created repeatedly
+      Update test scripts of ns_instance
+      The request mode of MSB is HTTPS, and the port of public IP is 30283

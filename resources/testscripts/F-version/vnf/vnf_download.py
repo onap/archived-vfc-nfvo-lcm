@@ -3,9 +3,10 @@ import sys
 
 from testscripts.const import MSB_BASE_URL, VNF_CSAR_PATH
 
-id = sys.argv[1]
-
 requests.packages.urllib3.disable_warnings()
+id = sys.argv[1]
 url = MSB_BASE_URL + '/api/vnfpkgm/v1/vnf_packages/' + id + '/package_content'
-resp = requests.put(url, files={'file': open(VNF_CSAR_PATH, 'rb')}, verify=False)
-print(resp.status_code)
+resp = requests.get(url, verify=False)
+local_file = open(VNF_CSAR_PATH, 'wb')
+local_file.write(resp.content)
+local_file.close()

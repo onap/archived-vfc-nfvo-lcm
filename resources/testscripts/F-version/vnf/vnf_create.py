@@ -1,7 +1,9 @@
 import json
 import httplib2
 
-full_url = 'https://192.168.235.89:30283/api/vnfpkgm/v1/vnf_packages'
+from testscripts.const import MSB_BASE_URL
+
+full_url = MSB_BASE_URL + '/api/vnfpkgm/v1/vnf_packages'
 ud_data = {'userDefinedData': {"key2": "value2"}}
 headers = {'content-type': 'application/json', 'accept': 'application/json'}
 ca_certs = None

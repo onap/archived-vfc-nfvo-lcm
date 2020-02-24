@@ -1,0 +1,27 @@
+
+# msb_create
+The Python script in this folder is used to register vnf to msb.
+It mainly includes the creation, upload, query acquisition and deletion of msb.
+
+# msb_upload
+When the msb_create script is executed, an ID is obtained.
+At this time, the msb_upload script is opened, the file path is changed to the path of the CSAR package
+you want to upload vnf. Then the msb_upload script is executed and the ID is placed after the
+command is executed, and the ID is automatically passed in.
+
+# msb_download
+
+By executing this script, you can access the catalog parsing interface and get the parsing content of the
+ uploaded vnf package
+
+# msb_get
+If you want to query the registration status in msb, you can execute the msb_get script directly.
+
+# msb_delete
+If you want to delete an MSB record, you can execute the msb_del script and put the ID
+generated at the time of creation after execution of the command.
+
+Note: You should configure the IP and CSAR file path of MSB in const file
+      IP address for MSB service
+      MSB cannot be created repeatedly
+      The request mode of MSB is HTTPS, and the port of public IP is 30283
