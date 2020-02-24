@@ -1,0 +1,27 @@
+
+# msb_create
+The Python script in this folder is used to register ns to msb.
+It mainly includes the creation, upload, query acquisition and deletion of msb.
+
+# msb_upload
+When you execute the msb_create script, you get an ID. At this time, you open the msb_upload script,
+change the file path to the path where you want to upload the ns CSAR package,
+then execute the msb_upload script and place the ID after executing the command,
+and the ID will be automatically passed in.
+
+# msb_download
+
+By executing this script, you can access the catalog parsing interface and get the parsing content of the
+ uploaded ns package
+
+# msb_get
+If you want to query the registration status in msb, you can execute the msb_get script directly.
+
+# msb_delete
+If you want to delete an MSB record, you can execute the msb_del script and put the ID generated
+at the time of creation after execution of the command.
+
+Note: You should configure the IP and CSAR file path of MSB in const file
+      IP address for MSB service
+      MSB cannot be created repeatedly
+      The request mode of MSB is HTTPS, and the port of public IP is 30283

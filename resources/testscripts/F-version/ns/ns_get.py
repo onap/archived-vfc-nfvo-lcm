@@ -1,5 +1,7 @@
 import requests
 
+from testscripts.const import MSB_IP
+
 requests.packages.urllib3.disable_warnings()
-resp = requests.get('https://192.168.235.89:30283/api/nsd/v1/ns_descriptors', verify=False)
+resp = requests.get(MSB_IP + '/api/nsd/v1/ns_descriptors', verify=False)
 print(resp.status_code, resp.json())

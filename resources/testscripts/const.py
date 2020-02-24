@@ -1,0 +1,10 @@
+MSB_IP = "You should change it according to yourself "
+NS_CSAR_PATH = r"You should change it according to yourself "
+VNF_CSAR_PATH = r"You should change it according to yourself "
+GLOBAL_CUSTOMER_Id = 'You should change it according to yourself'
+SERVICE_TYPE = "You should change it according to yourself"
+CSAR_ID = "You should change it according toyourself"
+NS_NAME = "You should change it according to yourself"
+DESCRIPTION = "description"
+VNF_PROFILE_ID = "You should change it according to yourself"
+VIM_ID = "You should change it according to yourself"

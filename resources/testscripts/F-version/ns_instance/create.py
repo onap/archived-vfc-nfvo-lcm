@@ -1,17 +1,19 @@
 import json
 import httplib2
 
+from testscripts.const import MSB_IP, GLOBAL_CUSTOMER_Id, SERVICE_TYPE, CSAR_ID, NS_NAME, DESCRIPTION
+
 data = {
     "context": {
-        "globalCustomerId": "global-customer-id-test1",
-        "serviceType": "service-type-test1"
+        "globalCustomerId": GLOBAL_CUSTOMER_Id,
+        "serviceType": SERVICE_TYPE
     },
-    "csarId": "d5d678dc-80ef-461e-8630-d105f43b0a18",
-    "nsName": "ns_vsn",
-    "description": "description"
+    "csarId": CSAR_ID,
+    "nsName": NS_NAME,
+    "description": DESCRIPTION
 }
 
-full_url = 'https://192.168.235.89:30283/api/nslcm/v1/ns'
+full_url = MSB_IP + '/api/nslcm/v1/ns'
 headers = {'content-type': 'application/json', 'accept': 'application/json'}
 ca_certs = None
 auth_type = "rest_no_auth"
