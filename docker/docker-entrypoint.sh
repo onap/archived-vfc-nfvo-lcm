@@ -24,7 +24,7 @@ echo "MYSQL_ADDR=$MYSQL_ADDR"
 echo "Wait for MSB initialization"
 for i in {1..5}; do
     curl -sS -m 1 $MSB_PROTO:$MSB_ADDR/msb -k > /dev/null
-    res=$i?
+    res=$?
     if [ $res -ne 0 ]; then
         break
     fi
