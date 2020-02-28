@@ -4,9 +4,9 @@
 MYSQL_IP=`echo $MYSQL_ADDR | cut -d: -f 1`
 MYSQL_PORT=`echo $MYSQL_ADDR | cut -d: -f 2`
 
-if [ $MYSQL_AUTH ]; then
-    MYSQL_ROOT_USER=`echo $MYSQL_AUTH | cut -d: -f 1`
-    MYSQL_ROOT_PASSWORD=`echo $MYSQL_AUTH | cut -d: -f 2`
+if [ $MYSQL_ROOT_USER ] && [ $MYSQL_ROOT_PASSWORD ]; then
+    MYSQL_ROOT_USER=$MYSQL_ROOT_USER
+    MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
 else
     MYSQL_ROOT_USER="root"
     MYSQL_ROOT_PASSWORD="root"
