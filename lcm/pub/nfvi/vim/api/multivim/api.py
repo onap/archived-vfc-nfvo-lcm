@@ -347,6 +347,8 @@ class MultiVimApi:
             if "ip_version" in subnet and subnet["ip_version"]:
                 subnet_data["ipVersion"] = int(subnet["ip_version"])
             if "enable_dhcp" in subnet and subnet["enable_dhcp"]:
+                if isinstance(subnet["enable_dhcp"], str):
+                    subnet["enable_dhcp"] = (subnet["enable_dhcp"]).strip().lower() in "true"
                 subnet_data["enableDhcp"] = int(subnet["enable_dhcp"]) == const.ENABLE_DHCP
             if "gateway_ip" in subnet and subnet["gateway_ip"]:
                 subnet_data["gatewayIp"] = subnet["gateway_ip"]
