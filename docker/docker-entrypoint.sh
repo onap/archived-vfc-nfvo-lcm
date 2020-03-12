@@ -1,8 +1,5 @@
 #!/bin/bash
 
-sudo chown onap:onap -R /service
-find  /service -name '*.sh'|xargs chmod a+x
-
 if [ -z "$SERVICE_IP" ]; then
     export SERVICE_IP=`hostname -i`
 fi

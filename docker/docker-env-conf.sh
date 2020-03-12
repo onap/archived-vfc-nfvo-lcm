@@ -10,27 +10,23 @@ install_sf(){
     rm -rf vfc-nfvo-lcm.zip && \
     pip install --upgrade setuptools pip && \
     pip install --pre -r /service/vfc/nfvo/lcm/requirements.txt
+    find  /service -name '*.sh'|xargs chmod a+x
 }
 
 add_user(){
 
-    apk --no-cache add sudo
     addgroup -g 1000 -S onap && \
     adduser onap -D -G onap -u 1000 && \
-	
-    chmod u+w /etc/sudoers && \
-    sed -i '/User privilege/a\\onap    ALL=(ALL:ALL) NOPASSWD:ALL' /etc/sudoers && \
-    chmod u-x /etc/sudoers && \
-    sudo chown onap:onap -R /service
+    chown onap:onap -R /service
 }
 
 config_logdir(){
 
     if [ ! -d "/var/log/onap" ]; then
-       sudo mkdir /var/log/onap
-    fi 
-   
-    sudo chown onap:onap -R /var/log/onap
+       mkdir /var/log/onap
+    fi
+
+    chown onap:onap -R /var/log/onap
     chmod g+s /var/log/onap
     
 }
