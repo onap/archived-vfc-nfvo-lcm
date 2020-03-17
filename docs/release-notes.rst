@@ -12,6 +12,89 @@ VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
 
+
+Version: 1.3.7
+--------------
+
+:Release Date: 2020-03-17
+
+**New Features**
+
+- Functional Enhancement:
+
+1. Using the common database (MariaDB) and encrypting the database password.
+2. Remove the root permission and change the user of VFC project to ONAP.
+3. Add the function of auto register MSB switch for startup project.
+4. Increase the communication access form between components through the HTTPS encrypted access form of MSB.
+5. SOL005 compliance NS instantiation, query and termination commands have been added to cli.
+
+- Standard Alignment-SOL005 Alignment
+
+- Maturity Enhancement:
+
+1. Enhance the security of database access
+2. Enhance the stability of instantiation process and improve efficiency and productivity.
+3. Improve the stability of instance termination process and deletion process, and improve the success rate of subscription record deletion.
+4. Adapt to MSB https for microservice service registration and access.
+
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.3.7
+ - vfc-nfvo-catalog 1.3.8
+ - vfc-nfvo-resmanagement 1.3.1
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.3.8
+ - vfc-nfvo-driver-gvnfm-juju 1.3.8
+ - vfc-nfvo-driver-svnfm-ztedriver 1.3.6
+ - vfc-nfvo-driver-svnfm-huawei 1.3.6
+ - vfc-nfvo-driver-svnfm-Nokia2 1.3.6
+ - vfc-nfvo-db 1.3.3
+ - vfc-nfvo-sfc 1.3.1
+ - vfc-nfvo-ems 1.3.1
+ - vfc-nfvo-multivimproxy 1.3.1
+ - vfc-nfvo-wfengine-mgrservice 1.3.3
+ - vfc-nfvo-wfengine-activiti 1.3.3
+
+GVNFM
+ - vfc-gvnfm-vnflcm 1.3.7
+ - vfc-gvnfm-vnfmgr 1.3.8
+ - vfc-gvnfm-vnfres 1.3.7
+
+**Bug Fixes**
+
+ - Fix bug for duplication query and delete vserver and network in AAI resource during terminating ns.
+ - Fix terminate ns API is unstable.
+ - Fix bug for fail to delete subscription for vnfm during terminating ns.
+ - Fix the bug for fail parse contextArray, initial it to [].
+ - Fix the deduplication AAI resource issues.
+ - Fix the bug of vim_id data type error when creating vnfs.
+ - Fix the failure of parsing the acquired data format during SFC creation.
+
+**Known Issues**
+
+
+**Security Notes**
+    NA
+
+Quick Links:
+
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
+- `CLI command about VFC operation <https://onap.readthedocs.io/en/latest/submodules/vfc/nfvo/lcm.git/docs/platform/cli-userguide/index.html#vfc-part>`_
+
+**Upgrade Notes**
+    NA
+
+**Deprecation Notes**
+    NA
+
+**Other**
+    NA
+
+
+
+
 Version: 1.3.4
 --------------
 
