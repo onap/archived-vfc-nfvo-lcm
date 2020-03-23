@@ -10,7 +10,7 @@ VF-C includes the following components in R1.
 
 VF-C includes several components in ONAP R1.
 
-* Catalog is used to store the package distributed by SDC, it is a runtime catalog.
+
 
 * Workflow includes two micro service: workflow manage service and workflow-activity engine service, this two services will onboard workflow to workflow engine and parse workflow.
 
