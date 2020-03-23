@@ -30,8 +30,6 @@ Now VF-C have the following repos in https://gerrit.onap.org/r/#/admin/projects/
 +--------------------------+-----------------------------------------------------+
 |org.onap.vfc.nfvo.wfengine|     Work flow engine                                |
 +--------------------------+-----------------------------------------------------+
-|vfc/nfvo/catalog          |     NS and VNF catalog                              |
-+--------------------------+-----------------------------------------------------+
 |EMS-driver                |     VNF fcaps collect                               |
 +--------------------------+-----------------------------------------------------+
 |vfc/gvnfm/vnflcm          |     Generic VNFM VNF LCM                            |
@@ -60,7 +58,6 @@ VF-C Docker Images
 
   docker run -d -p 3306:3306 -p 6379:6379 --name vfc-db -v /var/lib/mysql nexus3.onap.org:10001/onap/vfc/db
   we use  ${VFC_DB_IP} as the IP of vfc-db component.
-  nexus3.onap.org:10001/onap/vfc/catalog:1.3.0
   nexus3.onap.org:10001/onap/vfc/db:1.3.0
   nexus3.onap.org:10001/onap/vfc/emsdriver:1.3.0
   nexus3.onap.org:10001/onap/vfc/gvnfmdriver:1.3.0
@@ -118,7 +115,7 @@ eg.
 
 ::
 	
-	oom/kubernetes/vfc/charts/vfc-catalog/values.yaml
+	oom/kubernetes/vfc/charts/vfc-nslcm/values.yaml
 
 	#################################################################
 	# Global configuration defaults.
@@ -137,7 +134,7 @@ eg.
 	flavor: small
 
 	repository: nexus3.onap.org:10001
-	image: onap/vfc/catalog:1.2.1
+	image: onap/vfc/nslcm:1.3.7
 	pullPolicy: Always
 	
 
@@ -181,7 +178,6 @@ You will see all the pod is runing
 ::
 
 	cd oom/kubernetes
-	dev-vfc-vfc-catalog-64774ccbc6-vw7wn                          2/2       Running            53         79d
 	dev-vfc-vfc-db-6c57b4fd47-7kbnj                               1/1       Running            2          79d
 	dev-vfc-vfc-ems-driver-65bd9bf5b-65gtg                        1/1       Running            48         79d
 	dev-vfc-vfc-generic-vnfm-driver-698c8d6698-2ctlg              2/2       Running            4          79d
@@ -211,8 +207,6 @@ These swagger API will also show the APIs VF-C provided.
 |     **Component Name**   |     health check API                                                      |
 +==========================+===========================================================================+
 |     vfc/nfvo/lcm         |     http://ClusterIP:8403/api/nslcm/v1/swagger.yaml                       |
-+--------------------------+---------------------------------------------------------------------------+
-|vfc/nfvo/catalog          |     http://ClusterIP:8806/api/catalog/v1/swagger.yaml                     |
 +--------------------------+---------------------------------------------------------------------------+
 |vfc/gvnfm/vnflcm          |     http://ClusterIP:8801/api/vnflcm/v1/swagger.yaml                      |
 +--------------------------+---------------------------------------------------------------------------+
@@ -262,11 +256,11 @@ You can visit the http://172.60.2.39:30280/api/vnflcm/v1/swagger.json in the bro
 When you are doing the testing and would like to replace some new file like binary or some script and want to check the new resut.
 Before you replace the file to the running pod,you need to close the pod livenessProbe and readinessProbe first to avoid the pod restart.
 
-Take vfc-catalog pod as an example:
+Take vfc-nslcm pod as an example:
 
 ::
 
-    kubectl -n onap edit deployment dev-vfc-vfc-catalog 
+    kubectl -n onap edit deployment dev-vfc-vfc-nslcm
 
     spec:
       containers:
@@ -275,7 +269,7 @@ Take vfc-catalog pod as an example:
           value: msb-iag:80
         - name: MYSQL_ADDR
           value: vfc-db:3306
-        image: 172.30.1.66:10001/onap/vfc/catalog:1.2.1
+        image: 172.30.1.66:10001/onap/vfc/nslcm:1.3.7
         imagePullPolicy: Always
         #livenessProbe:
           #failureThreshold: 3
@@ -285,7 +279,7 @@ Take vfc-catalog pod as an example:
           #tcpSocket:
             #port: 8806
           #timeoutSeconds: 1
-        name: vfc-catalog
+        name: vfc-nslcm
         ports:
         - containerPort: 8806
           protocol: TCP
@@ -333,9 +327,9 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
       
     Check the docker's name , return two dockers' name after execution, -c specifie the docker that needed ti go in.     
             
-    kubectl -n onap get pod dev-vfc-catalog-68cb7c9878-v4kt2 -o jsonpath={.spec.containers[*].name}
+    kubectl -n onap get pod dev-vfc-nslcm-68cb7c9878-v4kt2 -o jsonpath={.spec.containers[*].name}
                 
-    kubectl -n onap exec -it dev-vfc-catalog-68cb7c9878-v4kt2 -c vfc-catalog /bin/bash
+    kubectl -n onap exec -it dev-vfc-nslcm-68cb7c9878-v4kt2 -c vfc-nslcm /bin/bash
             
 * Copy files (take the catlog example). When the data copy is lost after the pod is restarted or migrated, the multi-copy pod copy operation only exists for the current pod
 
@@ -343,25 +337,25 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
     
     Copy from local to dockers in pod
 
-    kubectl -n onap cp copy_test.sh  dev-vfc-catalog-68cb7c9878-v4kt2: -c vfc-catalog                
+    kubectl -n onap cp copy_test.sh  dev-vfc-nslcm-68cb7c9878-v4kt2: -c vfc-nslcm
                 
-    Copy pod's content to local£º
+    Copy pod's content to localï¿½ï¿½
                 
-    kubectl -n onap cp dev-vfc-catalog-68cb7c9878-v4kt2:copy_test.sh -c vfc-catalog /tmp/copy_test.sh
+    kubectl -n onap cp dev-vfc-nslcm-68cb7c9878-v4kt2:copy_test.sh -c vfc-nslcm /tmp/copy_test.sh
                 
 * Remote command (to see the current path of the container as an example)
 
 ::
     
-    kubectl -n onap exec -it dev-vfc-catalog-68cb7c9878-v4kt2 -c vfc-catalog pwd
+    kubectl -n onap exec -it dev-vfc-nslcm-68cb7c9878-v4kt2 -c vfc-nslcm pwd
                 
 * View pod basic information and logs (no -c parameter added for single container pod)
 
 ::
                 
-    kubectl  -n onap describe  pod dev-vfc-catalog-68cb7c9878-v4kt2
+    kubectl  -n onap describe  pod dev-vfc-nslcm-68cb7c9878-v4kt2
                   
-    kubectl -n onap logs dev-vfc-catalog-68cb7c9878-v4kt2 -c vfc-catalog
+    kubectl -n onap logs dev-vfc-nslcm-68cb7c9878-v4kt2 -c vfc-nslcm
   
 * Check the service listener port and manually expose the port, which is commonly used for testing, such as nginx under test namespace
 
@@ -405,13 +399,13 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
                   
     1>To determine whether the pod is a stateful application (efullset) or a stateful application (deployment)
                     
-        kubectl  -n onap describe  pod dev-vfc-catalog-68cb7c9878-v4kt2 |grep Controlled
+        kubectl  -n onap describe  pod dev-vfc-nslcm-68cb7c9878-v4kt2 |grep Controlled
                     
     2>Stateless application deployment              
                     
-        kubectl  -n onap get deploy |grep  catalog                    
+        kubectl  -n onap get deploy |grep  nslcm
                     
-        kubectl -n onap edit deploy  dev-vfc-catalog-68cb7c9878-v4kt2
+        kubectl -n onap edit deploy  dev-vfc-nslcm-68cb7c9878-v4kt2
             
     3>Stateful application statefulset
                     
@@ -424,7 +418,7 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
 
 ::
                  
-    kubectl -n onap delete pod dev-vfc-catalog-68cb7c9878-v4kt2 -c vfc-catalog
+    kubectl -n onap delete pod dev-vfc-nslcm-68cb7c9878-v4kt2 -c vfc-nslcm
               
 
 * View the virtual machine where the portal-app resides in order to add host resolution          
@@ -435,14 +429,14 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
                     
     kubectl -n onap get svc  |grep portal-app  
                     
-    portal-app                 LoadBalancer   10.43.181.163   10.0.0.13     8989:30215/TCP,8006:30213/TCP,8010:30214/TCP,8443:30225/TCP  
+    portal-app                 LoadBalancer   10.43.181.163   10.0.0.13     8989:30215/TCP,8403:30213/TCP,8010:30214/TCP,8443:30225/TCP
                     
 * pod expansion and shrinkage
 
 ::
     
-    pod expansion£ºkubectl  scale deployment nginx --replicas 3
+    pod expansionï¿½ï¿½kubectl  scale deployment nginx --replicas 3
 
-    pod shrinkage£º kubectl  scale deployment nginx --replicas 1
+    pod shrinkageï¿½ï¿½ kubectl  scale deployment nginx --replicas 1
     
     
