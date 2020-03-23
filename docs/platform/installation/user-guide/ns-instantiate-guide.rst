@@ -54,11 +54,11 @@ Note: In the following steps, we use ${MSB_IP} as the IP of msb_apigateway compo
   docker run -d -p 8403:8403 --name vfc-nslcm -e MSB_ADDR=${MSB_IP}:80 -e MYSQL_ADDR=${VFC_DB_IP}:3306
   nexus3.onap.org:10001/onap/vfc/nslcm
 
-3. Install vfc-nfvo-catalog component.
+3. Install modeling-etsicatalog component.
 
 ::
 
-  docker run -d -p 8806:8806 --name vfc-catalog -e MSB_ADDR=${MSB_IP}:80 -e MYSQL_ADDR=${VFC_DB_IP}:3306 nexus3.onap.org:10001/onap/vfc/catalog
+  docker run -d -p 8806:8806 --name vfc-etsicatalog -e MSB_ADDR=${MSB_IP}:80 -e MYSQL_ADDR=${VFC_DB_IP}:3306 nexus3.onap.org:10001/onap/vfc/catalog
 
 4. Install vfc-nfvo-gvnfmdriver component.
 

@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 def parse_nsd(csar_id, input_parameters=[]):
     req_param = json.JSONEncoder().encode({"csarId": csar_id, "inputs": input_parameters})
-    ret = req_by_msb("/api/catalog/v1/parsernsd", "POST", req_param)
+    ret = req_by_msb("/api/parser/v1/parsernsd", "POST", req_param)
     if ret[0] != 0:
         logger.error("Status code is %s, detail is %s.", ret[2], ret[1])
         raise NSLCMException("Failed to parsernsd of CSAR(%s) from catalog." % csar_id)

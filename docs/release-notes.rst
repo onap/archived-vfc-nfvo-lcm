@@ -42,7 +42,6 @@ Released components:
 
 NFVO
  - vfc-nfvo-lcm 1.3.7
- - vfc-nfvo-catalog 1.3.8
  - vfc-nfvo-resmanagement 1.3.1
  - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.3.8
  - vfc-nfvo-driver-gvnfm-juju 1.3.8
