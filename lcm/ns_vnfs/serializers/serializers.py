@@ -25,11 +25,10 @@ class InstVnfReqSerializer(serializers.Serializer):
     nsInstanceId = serializers.CharField(
         help_text="ID of NS instance",
         required=True)
-    additionalParamForVnf = serializers.CharField(
-        help_text="Additional param for VNF",
+    additionalParamForVnf = serializers.ListField(
+        child=(serializers.DictField(help_text="Additional param for VNF")),
         required=False,
-        allow_null=True,
-        allow_blank=True)
+        allow_null=True)
 
 
 class InstVnfRespSerializer(serializers.Serializer):
@@ -42,7 +41,7 @@ class InstVnfRespSerializer(serializers.Serializer):
 
 
 class VnfVmsSerializer(serializers.Serializer):
-    vmID = serializers.CharField(
+    vmId = serializers.CharField(
         help_text="ID of VM",
         required=True)
     vmName = serializers.CharField(
