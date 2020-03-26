@@ -13,7 +13,7 @@ with multi vendor VNFMs via drivers.
 
 
 
-Version: 1.3.7
+Version: 1.3.8
 --------------
 
 :Release Date: 2020-03-17
@@ -22,13 +22,13 @@ Version: 1.3.7
 
 - Functional Enhancement:
 
-1. Using the common database (MariaDB) and encrypting the database password.
-2. Remove the root permission and change the user of VFC project to ONAP.
-3. Add the function of auto register MSB switch for startup project.
-4. Increase the communication access form between components through the HTTPS encrypted access form of MSB.
-5. SOL005 compliance NS instantiation, query and termination commands have been added to cli.
+1. Migrate VF-C catalog to Modeling etsicatalog 
+2. Using the common database (MariaDB) and encrypting the database password.
+3. Remove the root permission and change the user of VFC project to ONAP.
+4. Add the function of auto register MSB switch for startup project.
+5. Increase the communication access form between components through the HTTPS encrypted access form of MSB.
+6. SOL005 compliance NS instantiation, query and termination commands have been added to cli.
 
-- Standard Alignment-SOL005 Alignment
 
 - Maturity Enhancement:
 
@@ -41,8 +41,7 @@ Version: 1.3.7
 Released components:
 
 NFVO
- - vfc-nfvo-lcm 1.3.7
- - vfc-nfvo-catalog 1.3.8
+ - vfc-nfvo-lcm 1.3.8
  - vfc-nfvo-resmanagement 1.3.1
  - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.3.8
  - vfc-nfvo-driver-gvnfm-juju 1.3.8
@@ -57,7 +56,7 @@ NFVO
  - vfc-nfvo-wfengine-activiti 1.3.3
 
 GVNFM
- - vfc-gvnfm-vnflcm 1.3.7
+ - vfc-gvnfm-vnflcm 1.3.8
  - vfc-gvnfm-vnfmgr 1.3.8
  - vfc-gvnfm-vnfres 1.3.7
 

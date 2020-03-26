@@ -9,7 +9,6 @@ NFVO consumed interfaces:
 
  - VNF LCM Interface from Generic VNFM controller, SVNFM 
  - Inventory Service Interface from Available and Active Inventory
- - Catalog Synchronization Interface from SDC
  - Generic VIM Interface from Multi-cloud
  - Data report Interface from DCAE
  - Tosca parser Interface from Modeling
@@ -19,7 +18,6 @@ NFVO consumed interfaces:
  
 GVNFM consumed interfaces:
 
- - Catalog and notification Interface from NFVO
  - Inventory Interface from A&AI
  - Tosca parser Interface from Modeling
  - Generic VIM Interface from Multi-cloud

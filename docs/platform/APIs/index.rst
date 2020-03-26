@@ -117,12 +117,3 @@ GVNFM Northbound & Southbound APIs for VNF Integration
    VNFLCM_API/index
 
 
-CATALOG  APIs
--------------
-
-CATALOG APIs for VNF Integration
-
-.. toctree::
-   :maxdepth: 1
-
-   CATALOG_API/index   

@@ -39,33 +39,27 @@ http://onap.readthedocs.io/en/latest/submodules/msb/apigateway.git/docs/platform
 
 Note: In the following steps, we use ${MSB_IP} as the IP of msb_apigateway component.
 
-1. Install vfc-nfvo-db component
 
-::
-
-  docker run -d -p 3306:3306 -p 6379:6379 --name vfc-db -v /var/lib/mysql nexus3.onap.org:10001/onap/vfc/db
-  we use  ${VFC_DB_IP} as the IP of vfc-db component.
-
-2. Install vfc-nfvo-lcm component.
+1. Install vfc-nfvo-lcm component.
 
 ::
 
   docker run -d -p 8403:8403 --name vfc-nslcm -e MSB_ADDR=${MSB_IP}:80 -e MYSQL_ADDR=${VFC_DB_IP}:3306
   nexus3.onap.org:10001/onap/vfc/nslcm
 
-3. Install vfc-nfvo-catalog component.
+2. Install modeling-etsicatalog component.
 
 ::
 
-  docker run -d -p 8806:8806 --name vfc-catalog -e MSB_ADDR=${MSB_IP}:80 -e MYSQL_ADDR=${VFC_DB_IP}:3306 nexus3.onap.org:10001/onap/vfc/catalog
+  docker run -d -p 8806:8806 --name modeling-etsicatalog -e MSB_ADDR=${MSB_IP}:80 -e MYSQL_ADDR=${VFC_DB_IP}:3306 nexus3.onap.org:10001/onap/modeling/etsicatalog
 
-4. Install vfc-nfvo-gvnfmdriver component.
+3. Install vfc-nfvo-gvnfmdriver component.
 
 ::
 
   docker run -d -p 8484:8484 --name vfc-gvnfmdriver -e MSB_ADDR=${MSB_IP}:80 nexus3.onap.org:10001/onap/vfc/gvnfmdriver
 
-5. Install vfc-gvnfm-vnflcm component.
+4. Install vfc-gvnfm-vnflcm component.
 
 ::
 
@@ -109,7 +103,7 @@ VF-C R3 support VNF/PNF/NS csar package upload from local csar file. VNF/PNF csa
 Before onboarding a package,  should create one record first. 
 
 
-1. Create VNF package record in catalog DB
+1. Create VNF package record in etsicatalog DB
 
 ::
 
@@ -127,7 +121,7 @@ Note:
   a. 172.30.3.104:30280 is the node IP and exposed port where the msb-iag pod is located. 
   b. userDefinedData is the key value pair which defined for the vnf package we created
 
-2. Upload VNF package to VF-C catalog
+2. Upload VNF package to modeling etsicatalog
 
 ::
 
@@ -143,7 +137,7 @@ Note:
   a.  38037a12-a0d4-4aa4-ac50-cd6b05ce0b24  is the vnf_pkg_id which we get from the first step.
   b.  -F is used to specify the local vnf package file
 
-3. Create NS package record in catalog DB
+3. Create NS package record in etsicatalog DB
 
 ::
 
@@ -159,7 +153,7 @@ Note:
 Note:
   a. userDefinedData is the key value pair which defined for the ns package we created
 
-4. Upload NS package to VF-C catalog
+4. Upload NS package to modeling etsicatalog
 
 ::
 
@@ -205,7 +199,7 @@ VF-C R3 healing only suport restart a vm of an VNF.
 
 Note:
   a.  globalCustomerId  and serviceType is defined in A&AI.
-  b. csar Id is the NS package id  which is consistent with the catalog ns package id.
+  b. csar Id is the NS package id  which is consistent with the etsicatalog ns package id.
   c. nsName is the NS name 
 
 2. NS Instantiate
