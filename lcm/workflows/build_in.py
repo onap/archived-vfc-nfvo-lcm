@@ -60,7 +60,7 @@ def run_ns_instantiate(input_data, occ_id):
     vnf_count = int(ignore_case_get(input_data, "vnfCount", 0))
     sfc_count = int(ignore_case_get(input_data, "sfcCount", 0))
     sdnc_id = ignore_case_get(input_data, "sdnControllerId")
-    g_jobs_status[job_id] = [1 for i in range(vnf_count)]
+    g_jobs_status[job_id] = [1 for i in range(vnf_count)] #为啥五次都为1
     try:
         update_job(job_id, 10, JOB_ERROR_CODE.NO_ERROR, "Start to create VL")
         for i in range(vl_count):

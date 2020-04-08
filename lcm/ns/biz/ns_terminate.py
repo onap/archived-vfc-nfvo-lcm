@@ -145,11 +145,7 @@ class TerminateNsService(threading.Thread):
             job_msg = "Delete vnfinst:[%s] %s." % (vnfinst.nfinstid, delete_result)
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
             vnf_jobs.append((vnfinst.nfinstid, vnf_job_id))
-
-        thread = threading.Thread(
-            target=self.wait_delete_vnfs,
-            args=(vnf_jobs, cur_progress, step_progress,))
-        thread.start()
+        self.wait_delete_vnfs(vnf_jobs, cur_progress, step_progress)
 
     def wait_delete_vnfs(self, vnf_jobs, cur_progress, step_progress):
         for vnfinstid, vnfjobid in vnf_jobs:
@@ -173,7 +169,7 @@ class TerminateNsService(threading.Thread):
         }
         if self.terminate_timeout:
             term_param["gracefulTerminationTimeout"] = int(self.terminate_timeout)
-        ret = call_from_ns_cancel_resource('vnf', nf_instid, term_param)
+        ret = call_from_ns_cancel_resource('vnf', nf_instid, term_param) # 从这开始进入ns——vnfs开始真正terminate vnfs
         if ret[0] != 0:
             logger.error("Terminate VNF(%s) failed: %s", nf_instid, ret[1])
             return ''

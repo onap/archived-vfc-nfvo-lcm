@@ -186,6 +186,7 @@ def select_vnfm(vnfm_type, vim_id):
     vnfms = ignore_case_get(vnfms, "esr-vnfm")
     for vnfm in vnfms:
         vnfm_info = get_vnfm_by_id(vnfm.get("vnfm-id"))
+        logger.debug('LTX----------------------vnfm_info: %s', vnfm_info)
         vnfmtype = ignore_case_get(vnfm_info, "type")
         vimid = ignore_case_get(vnfm_info, "vimId")
         if vnfmtype == vnfm_type and vimid == vim_id:
