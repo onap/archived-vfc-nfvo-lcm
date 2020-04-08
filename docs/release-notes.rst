@@ -1,5 +1,6 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
+.. _release_notes:
 
 
 VF-C Release Notes
@@ -175,7 +176,7 @@ Version: 1.3.0
 
 - Functional Enhancement: 
 
-1. Upgrade Multicloud API to support consistent identification of cloud region functional requirement 
+1. Upgrade Multicloud API to support consistent identification of cloud region functional requirement 
 2. OOF Integration Optimization.Optimize the methodology for VNF(vdu) placement, add the process for placement with selected candidates(VIM)
 3. Align VNFD SOL2.5.1 and model multi-version support
 
