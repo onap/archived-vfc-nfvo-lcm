@@ -86,7 +86,7 @@ class CreateVnfs(Thread):
             if REPORT_TO_AAI:
                 self.create_vnf_in_aai()
             self.check_nf_package_valid()
-            self.send_nf_init_request_to_vnfm()
+            self.send_nf_init_request_to_vnfm() #调用gvnfm接口，然后转发到vnflcm
             self.send_homing_request_to_OOF()
             self.send_get_vnfm_request_to_extsys()
             self.send_create_vnf_request_to_resmgr()

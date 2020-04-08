@@ -100,7 +100,7 @@ class FPInstModel(models.Model):
     portpairgroups = models.TextField(db_column='PORTPAIRGROUPS', max_length=65535)
 
 
-class VNFFGInstModel(models.Model):
+class VNFFGInstModel(models.Model): #forward graph
     class Meta:
         db_table = 'NFVO_VNFFGINST'
 
@@ -305,7 +305,7 @@ class ServiceBaseInfoModel(models.Model):
     status = models.CharField(db_column='status', max_length=20)
     creator = models.CharField(db_column='creator', max_length=50)
     create_time = models.BigIntegerField(db_column='createTime')
-
+s
 
 class WFPlanModel(models.Model):
     class Meta:
