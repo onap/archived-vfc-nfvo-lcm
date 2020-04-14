@@ -14,7 +14,7 @@ with multi vendor VNFMs via drivers.
 
 
 
-Version: 1.3.8
+Version: 1.3.9
 --------------
 
 :Release Date: 2020-03-17
@@ -42,10 +42,10 @@ Version: 1.3.8
 Released components:
 
 NFVO
- - vfc-nfvo-lcm 1.3.8
+ - vfc-nfvo-lcm 1.3.9
  - vfc-nfvo-resmanagement 1.3.1
- - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.3.8
- - vfc-nfvo-driver-gvnfm-juju 1.3.8
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.3.9
+ - vfc-nfvo-driver-gvnfm-juju 1.3.9
  - vfc-nfvo-driver-svnfm-ztedriver 1.3.6
  - vfc-nfvo-driver-svnfm-huawei 1.3.6
  - vfc-nfvo-driver-svnfm-Nokia2 1.3.6
@@ -57,7 +57,7 @@ NFVO
  - vfc-nfvo-wfengine-activiti 1.3.3
 
 GVNFM
- - vfc-gvnfm-vnflcm 1.3.8
+ - vfc-gvnfm-vnflcm 1.3.9
  - vfc-gvnfm-vnfmgr 1.3.8
  - vfc-gvnfm-vnfres 1.3.7
 
@@ -70,6 +70,7 @@ GVNFM
  - Fix the deduplication AAI resource issues.
  - Fix the bug of vim_id data type error when creating vnfs.
  - Fix the failure of parsing the acquired data format during SFC creation.
+ - Fix the failure of blocking due to multithreading during instantiation.
 
 **Known Issues**
 
