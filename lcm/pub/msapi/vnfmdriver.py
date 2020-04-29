@@ -34,9 +34,16 @@ def send_nf_init_request(vnfm_inst_id, req_param):
 def send_nf_terminate_request(vnfm_inst_id, vnf_inst_id, req_param):
     vnfm = get_vnfm_by_id(vnfm_inst_id)
     uri = '/api/%s/v1/%s/vnfs/%s/terminate' % (vnfm["type"], vnfm_inst_id, vnf_inst_id)
-    ret = req_by_msb(uri, "POST", req_param)
-    if ret[0] > 0:
-        logger.error("Failed to send nf terminate req:%s,%s", ret[2], ret[1])
+    retry_time = 3
+    while retry_time > 0:
+        ret = req_by_msb(uri, "POST", req_param)
+        if ret[0] > 0:
+            logger.warning("Failed to send nf terminate req:%s,%s[retry_time:%s]", ret[2], ret[1], retry_time)
+            retry_time -= 1
+        else:
+            break
+    if retry_time <= 0:
+        logger.error(ret[1])
         raise NSLCMException('Failed to send nf terminate request to VNFM(%s)' % vnfm_inst_id)
     return json.JSONDecoder().decode(ret[1]) if ret[1] else {}
 
