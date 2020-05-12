@@ -133,18 +133,22 @@ class HandleVnfLcmOocNotification(object):
                     vimId = ignore_case_get(portResource, 'vimConnectionId')
                     resourceId = ignore_case_get(portResource, 'resourceId')
                     resourceName = ignore_case_get(portResource, 'resourceId')  # replaced with resouceId temporarily
-                    # tenant = ignore_case_get(portResource, 'tenant')
-                    # ipAddress = ignore_case_get(portResource, 'ipAddress')
-                    # macAddress = ignore_case_get(portResource, 'macAddress')
-                    # instId = ignore_case_get(portResource, 'instId')
-                    portid = str(uuid.uuid4())
+                    tenant = ignore_case_get(portResource, 'tenant')
+                    ipAddress = ignore_case_get(portResource, 'ipAddress')
+                    macAddress = ignore_case_get(portResource, 'macAddress')
+                    instId = ignore_case_get(portResource, 'instId')
+                    portid = ignore_case_get(portResource, 'portId')
+                    networkId = ignore_case_get(portResource, 'networkId')
+                    subnetId = ignore_case_get(portResource, 'subnetId')
 
-                    PortInstModel(portid=portid, networkid='unknown', subnetworkid='unknown', vimid=vimId,
-                                  resourceid=resourceId, name=resourceName, instid="unknown", cpinstanceid=cpInstanceId,
-                                  bandwidth='unknown', operationalstate='active', ipaddress="unkown",
-                                  macaddress='unknown',
+                    # portid = str(uuid.uuid4())
+
+                    PortInstModel(portid=portid, networkid=networkId, subnetworkid=subnetId, vimid=vimId,
+                                  resourceid=resourceId, name=resourceName, instid=instId, cpinstanceid=cpInstanceId,
+                                  bandwidth='unknown', operationalstate='active', ipaddress=ipAddress,
+                                  macaddress=macAddress,
                                   floatipaddress='unknown', serviceipaddress='unknown', typevirtualnic='unknown',
-                                  sfcencapsulation='gre', direction='unknown', tenant="unkown").save()
+                                  sfcencapsulation='gre', direction='unknown', tenant=tenant).save()
                     relatedportId = portid
 
                 CPInstModel(cpinstanceid=cpInstanceId, cpdid=cpdId, ownertype=ownertype, ownerid=ownerid,

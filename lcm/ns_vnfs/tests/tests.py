@@ -2270,7 +2270,13 @@ class TestVnfNotifyView(TestCase):
                                                           "id": "cpd_id",
                                                           "resourceHandle": {
                                                               "vimConnectionId": "vim_connection_id",
-                                                              "resourceId": "resource_id"
+                                                              "resourceId": "resource_id",
+                                                              "tenant": "tenant",
+                                                              "ipAddress": "ipAddress",
+                                                              "macAddress": "macAddress",
+                                                              "instId": "instId",
+                                                              "networkId": "networkId",
+                                                              "subnetId": "subnetId"
                                                           }
                                                           }],
                                         }]
@@ -2307,13 +2313,13 @@ class TestVnfNotifyView(TestCase):
                                           vlinstancename="resource_id", ownertype=0, ownerid=self.nf_inst_id,
                                           relatednetworkid="resource_id", vltype=0)
         self.assertIsInstance(vl_inst, VLInstModel)
-        port_inst = PortInstModel.objects.get(networkid='unknown', subnetworkid='unknown', vimid="vim_connection_id",
-                                              resourceid="resource_id", name="resource_id", instid="unknown",
+        port_inst = PortInstModel.objects.get(networkid='networkId', subnetworkid='subnetId', vimid="vim_connection_id",
+                                              resourceid="resource_id", name="resource_id", instid="instId",
                                               cpinstanceid="cp_instance_id", bandwidth='unknown',
-                                              operationalstate='active', ipaddress="unkown", macaddress='unknown',
+                                              operationalstate='active', ipaddress="ipAddress", macaddress='macAddress',
                                               floatipaddress='unknown', serviceipaddress='unknown',
                                               typevirtualnic='unknown', sfcencapsulation='gre', direction='unknown',
-                                              tenant="unkown")
+                                              tenant="tenant")
         self.assertIsInstance(port_inst, PortInstModel)
         cp_inst = CPInstModel.objects.get(cpinstanceid="cp_instance_id", cpdid="cpd_id", ownertype=0,
                                           ownerid=self.nf_inst_id, relatedtype=2, status='active')
@@ -2406,7 +2412,13 @@ class TestVnfNotifyView(TestCase):
                                                           "id": "cpd_id",
                                                           "resourceHandle": {
                                                               "vimConnectionId": "vim_connection_id",
-                                                              "resourceId": "resource_id"
+                                                              "resourceId": "resource_id",
+                                                              "tenant": "tenant",
+                                                              "ipAddress": "ipAddress",
+                                                              "macAddress": "macAddress",
+                                                              "instId": "instId",
+                                                              "networkId": "networkId",
+                                                              "subnetId": "subnetId"
                                                           }
                                                           }],
                                         }]
@@ -2419,13 +2431,13 @@ class TestVnfNotifyView(TestCase):
                                           vlinstancename="resource_id", ownertype=0, ownerid=self.nf_inst_id,
                                           relatednetworkid="resource_id", vltype=0)
         self.assertIsInstance(vl_inst, VLInstModel)
-        port_inst = PortInstModel.objects.get(networkid='unknown', subnetworkid='unknown', vimid="vim_connection_id",
-                                              resourceid="resource_id", name="resource_id", instid="unknown",
+        port_inst = PortInstModel.objects.get(networkid='networkId', subnetworkid='subnetId', vimid="vim_connection_id",
+                                              resourceid="resource_id", name="resource_id", instid="instId",
                                               cpinstanceid="cp_instance_id", bandwidth='unknown',
-                                              operationalstate='active', ipaddress="unkown", macaddress='unknown',
+                                              operationalstate='active', ipaddress="ipAddress", macaddress='macAddress',
                                               floatipaddress='unknown', serviceipaddress='unknown',
                                               typevirtualnic='unknown', sfcencapsulation='gre', direction='unknown',
-                                              tenant="unkown")
+                                              tenant="tenant")
         self.assertIsInstance(port_inst, PortInstModel)
         cp_inst = CPInstModel.objects.get(cpinstanceid="cp_instance_id", cpdid="cpd_id", ownertype=0,
                                           ownerid=self.nf_inst_id, relatedtype=2, status='active')
