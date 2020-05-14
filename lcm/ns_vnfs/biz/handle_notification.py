@@ -132,7 +132,7 @@ class HandleVnfLcmOocNotification(object):
                 if portResource:
                     vimId = ignore_case_get(portResource, 'vimConnectionId')
                     resourceId = ignore_case_get(portResource, 'resourceId')
-                    resourceName = ignore_case_get(portResource, 'resourceId')  # replaced with resouceId temporarily
+                    resourceName = ignore_case_get(portResource, 'resourceProviderId')
                     tenant = ignore_case_get(portResource, 'tenant')
                     ipAddress = ignore_case_get(portResource, 'ipAddress')
                     macAddress = ignore_case_get(portResource, 'macAddress')
