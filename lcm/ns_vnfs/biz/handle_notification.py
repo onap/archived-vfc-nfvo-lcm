@@ -27,7 +27,9 @@ from lcm.pub.database.models import (CPInstModel, NfInstModel, PortInstModel,
 from lcm.pub.exceptions import NSLCMException, RequestException
 from lcm.pub.msapi.aai import (create_network_aai, create_vserver_aai,
                                delete_network_aai, delete_vserver_aai,
-                               query_network_aai, query_vserver_aai)
+                               query_network_aai, query_vserver_aai, create_l_interface_aai,
+                               create_l3_interface_ipv4_address_list_aai, query_l_interface_aai,
+                               delete_l_interface_aai)
 from lcm.pub.msapi.extsys import get_vim_by_id, split_vim_to_owner_region
 from lcm.pub.utils.values import ignore_case_get
 
@@ -54,6 +56,7 @@ class HandleVnfLcmOocNotification(object):
             self.update_Storage()
             if REPORT_TO_AAI:
                 self.update_network_in_aai()
+                self.update_ip_addr_in_aai()
             logger.debug("notify lcm end")
         except NSLCMException as e:
             exception(e.args[0])
@@ -132,7 +135,7 @@ class HandleVnfLcmOocNotification(object):
                 if portResource:
                     vimId = ignore_case_get(portResource, 'vimConnectionId')
                     resourceId = ignore_case_get(portResource, 'resourceId')
-                    resourceName = ignore_case_get(portResource, 'resourceProviderId')  # replaced with resouceId temporarily
+                    resourceName = ignore_case_get(portResource, 'resourceProviderId')
                     tenant = ignore_case_get(portResource, 'tenant')
                     ipAddress = ignore_case_get(portResource, 'ipAddress')
                     macAddress = ignore_case_get(portResource, 'macAddress')
@@ -156,6 +159,71 @@ class HandleVnfLcmOocNotification(object):
 
     def update_Storage(self):
         pass
+
+    def del_l_interface_from_aai(self, vnf_id, l_interface_name):
+        logger.debug("Delete l_interface::delete_l_interface_in_aai[%s] in aai.", l_interface_name)
+        try:
+            l_interface_info = query_l_interface_aai(vnf_id, l_interface_name)
+            resource_version = l_interface_info.get("resource-version", '')
+            resp_data, resp_status = delete_l_interface_aai(vnf_id, l_interface_name, resource_version)
+            logger.debug("Delete l_interface[%s] from aai successfully, status: %s", l_interface_name,
+                         resp_status)
+
+        except NSLCMException as e:
+            logger.debug("Fail to delete l_interface[%s] from aai: %s", l_interface_name, e.args[0])
+        except Exception as e:
+            logger.error("Exception occurs when delete l_interface[%s] from aai: %s", l_interface_name,
+                         e.args[0])
+            logger.error(traceback.format_exc())
+
+    def create_l_interface_aai(self, vnf_instid, l_interfaces_name):
+        logger.debug("Createl_interface::createl_interface_aai::report l_interface[%s] to aai." % l_interfaces_name)
+        try:
+
+            resp_data, resp_status = create_l_interface_aai(vnf_instid, l_interfaces_name)
+            logger.debug("Success to create l_interface[%s] to aai: [%s].", l_interfaces_name, resp_status)
+        except NSLCMException as e:
+            logger.debug(
+                "Fail to create l_interfaces_name[%s] to aai, detail message: %s" % (l_interfaces_name, e.args[0]))
+        except:
+            logger.error(traceback.format_exc())
+
+    def create_l3_interface_ipv4_address_list_aai(self, vnf_instid, l_interfaces_name, ip):
+        logger.debug(
+            "Create l3_interface_ipv4_address_list::create_l3_interface_ipv4_address_list_aai::report "
+            "l_interface[%s]::ip_list[%s] to aai." % (l_interfaces_name, ip))
+        try:
+            resp_data, resp_status = create_l3_interface_ipv4_address_list_aai(vnf_instid, l_interfaces_name, ip)
+            logger.debug("Success to create l_interface_ip_list[%s] to aai: [%s].", ip, resp_status)
+        except NSLCMException as e:
+            logger.debug(
+                "Fail to create ip_list[%s] to aai, detail message: %s" % (l_interfaces_name, e.args[0]))
+        except:
+            logger.error(traceback.format_exc())
+
+    def update_ip_addr_in_aai(self):
+        logger.debug("update ip addr in aai::begin to report ip to aai.")
+        try:
+            for ext in self.affectedCps:
+                extLinkPorts = ignore_case_get(ext, 'extLinkPorts')
+                changeType = ignore_case_get(ext, 'changeType')
+                for res in extLinkPorts:
+                    resourceHandle = ignore_case_get(res, 'resourceHandle')
+                    l_interfaces_name = ignore_case_get(resourceHandle, 'resourceProviderId')
+                    print(l_interfaces_name)
+                    ip = ignore_case_get(resourceHandle, 'ipAddress')
+                    if changeType in ['ADDED', 'MODIFIED']:
+                        self.create_l_interface_aai(self.vnf_instid, l_interfaces_name)
+                        self.create_l3_interface_ipv4_address_list_aai(self.vnf_instid, l_interfaces_name, ip)
+                    elif changeType == 'REMOVED':
+                        self.del_l_interface_from_aai(self.vnf_instid, l_interfaces_name)
+                    else:
+                        logger.error('update ip addr struct error: changeType not in'
+                                     ' {ADDED, REMOVED, MODIFIED, TEMPORARY}')
+        except Exception as e:
+            logger.debug("Fail to update ip addr to aai, detail message: %s" % e.args[0])
+        except:
+            logger.error(traceback.format_exc())
 
     def update_network_in_aai(self):
         logger.debug("update_network_in_aai::begin to report network to aai.")
