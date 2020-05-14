@@ -2271,6 +2271,7 @@ class TestVnfNotifyView(TestCase):
                                                           "resourceHandle": {
                                                               "vimConnectionId": "vim_connection_id",
                                                               "resourceId": "resource_id",
+                                                              "resourceProviderId": "resourceProviderId",
                                                               "tenant": "tenant",
                                                               "ipAddress": "ipAddress",
                                                               "macAddress": "macAddress",
@@ -2314,7 +2315,7 @@ class TestVnfNotifyView(TestCase):
                                           relatednetworkid="resource_id", vltype=0)
         self.assertIsInstance(vl_inst, VLInstModel)
         port_inst = PortInstModel.objects.get(networkid='networkId', subnetworkid='subnetId', vimid="vim_connection_id",
-                                              resourceid="resource_id", name="resource_id", instid="instId",
+                                              resourceid="resource_id", name="resourceProviderId", instid="instId",
                                               cpinstanceid="cp_instance_id", bandwidth='unknown',
                                               operationalstate='active', ipaddress="ipAddress", macaddress='macAddress',
                                               floatipaddress='unknown', serviceipaddress='unknown',
@@ -2413,6 +2414,7 @@ class TestVnfNotifyView(TestCase):
                                                           "resourceHandle": {
                                                               "vimConnectionId": "vim_connection_id",
                                                               "resourceId": "resource_id",
+                                                              "resourceProviderId": "resourceProviderId",
                                                               "tenant": "tenant",
                                                               "ipAddress": "ipAddress",
                                                               "macAddress": "macAddress",
@@ -2432,7 +2434,7 @@ class TestVnfNotifyView(TestCase):
                                           relatednetworkid="resource_id", vltype=0)
         self.assertIsInstance(vl_inst, VLInstModel)
         port_inst = PortInstModel.objects.get(networkid='networkId', subnetworkid='subnetId', vimid="vim_connection_id",
-                                              resourceid="resource_id", name="resource_id", instid="instId",
+                                              resourceid="resource_id", name="resourceProviderId", instid="instId",
                                               cpinstanceid="cp_instance_id", bandwidth='unknown',
                                               operationalstate='active', ipaddress="ipAddress", macaddress='macAddress',
                                               floatipaddress='unknown', serviceipaddress='unknown',
