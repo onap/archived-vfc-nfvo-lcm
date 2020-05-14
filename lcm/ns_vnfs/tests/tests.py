@@ -32,8 +32,8 @@ from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
 from lcm.ns_vnfs.biz.subscribe import SubscriptionDeletion
 from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
-from lcm.ns_vnfs.enum import VNF_STATUS, LIFE_CYCLE_OPERATION, RESOURCE_CHANGE_TYPE, VNFC_CHANGE_TYPE, INST_TYPE, \
-    NETWORK_RESOURCE_TYPE
+from lcm.ns_vnfs.enum import VNF_STATUS, LIFE_CYCLE_OPERATION, RESOURCE_CHANGE_TYPE, VNFC_CHANGE_TYPE, \
+    INST_TYPE, NETWORK_RESOURCE_TYPE
 from lcm.ns_vnfs.biz.place_vnfs import PlaceVnfs
 from lcm.pub.msapi import resmgr
 from lcm.ns_vnfs.tests.test_data import vnfm_info, vim_info, vnf_place_request
@@ -567,8 +567,10 @@ class TestGetVnfmInfoViews(TestCase):
         }
 
         response = self.client.get("/api/nslcm/v1/vnfms/%s" % self.vnfm_id)
+        print(response)
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.content)
         context = json.loads(response.content)
+        print(context)
         self.assertEqual(expect_data, context)
 
 
@@ -2484,3 +2486,81 @@ class TestVnfNotifyView(TestCase):
             self.assertEqual(1, 0)
         except Exception:
             self.assertEqual(1, 1)
+
+    @mock.patch.object(restcall, "call_req")
+    def test_update_ip_addr_in_aai(self, mock_call_req):
+        l_interface_info_aai = {
+            "interface-name": "resourceProviderId",
+            "is-port-mirrored": False,
+            "resource-version": "1589506153510",
+            "in-maint": False,
+            "is-ip-unnumbered": False
+        }
+        l3_interface_ipv4_address_list = {
+            "l3-interface-ipv4-address": "ipAddress",
+            "resource-version": "1589527363970"
+        }
+        mock_vals = {
+            "/network/generic-vnfs/generic-vnf/%s/l-interfaces/l-interface/%s"
+            % ("test_vnf_notify", "resourceProviderId"):
+                [0, json.JSONEncoder().encode(l_interface_info_aai), "200"],
+            "/network/generic-vnfs/generic-vnf/%s/l-interfaces/l-interface/%s/l3-interface-ipv4-address-list/%s"
+            % ("test_vnf_notify", "resourceProviderId", "ipAddress"):
+                [0, json.JSONEncoder().encode(l3_interface_ipv4_address_list), "200"],
+            "/network/l3-networks/l3-network/%s" % "vl_instance_id":
+                [0, json.JSONEncoder().encode({}), "200"],
+
+        }
+
+        def side_effect(*args):
+            return mock_vals[args[4]]
+
+        mock_call_req.side_effect = side_effect
+
+        data = {
+            "id": "1111",
+            "notificationType": "VnfLcmOperationOccurrenceNotification",
+            "subscriptionId": "1111",
+            "timeStamp": "1111",
+            "notificationStatus": "START",
+            "operationState": "STARTING",
+            "vnfInstanceId": self.nf_inst_id,
+            "operation": "INSTANTIATE",
+            "isAutomaticInvocation": "1111",
+            "vnfLcmOpOccId": "1111",
+            "affectedVnfcs": [{"id": "vnfc_instance_id",
+                               "vduId": "vdu_id",
+                               "changeType": VNFC_CHANGE_TYPE.MODIFIED,
+                               "computeResource": {
+                                   "vimConnectionId": "vim_connection_id",
+                                   "resourceId": "resource_id"
+                               }}],
+            "affectedVirtualLinks": [{"id": "vl_instance_id",
+                                      "virtualLinkDescId": "virtual_link_desc_id",
+                                      "changeType": VNFC_CHANGE_TYPE.MODIFIED,
+                                      "networkResource": {
+                                          "vimLevelResourceType": "network",
+                                          "resourceId": "resource_id"
+                                      }}],
+            "changedExtConnectivity": [{"id": "virtual_link_instance_id",
+                                        "extLinkPorts": [{"cpInstanceId": "cp_instance_id",
+                                                          "id": "cpd_id",
+                                                          "resourceHandle": {
+                                                              "vimConnectionId": "vim_connection_id",
+                                                              "resourceId": "resource_id",
+                                                              "resourceProviderId": "resourceProviderId",
+                                                              "tenant": "tenant",
+                                                              "ipAddress": "ipAddress",
+                                                              "macAddress": "macAddress",
+                                                              "instId": "instId",
+                                                              "networkId": "networkId",
+                                                              "subnetId": "subnetId"
+                                                          }
+                                                          }],
+                                        "changeType": VNFC_CHANGE_TYPE.MODIFIED
+                                        }]
+        }
+        HandleVnfLcmOocNotification(self.vnfm_inst_id, self.m_nf_inst_id, data).do_biz()
+        url = '/api/nslcm/v2/ns/%s/vnfs/%s/Notify' % (self.vnfm_inst_id, self.m_nf_inst_id)
+        response = self.client.get(url)
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.content)
