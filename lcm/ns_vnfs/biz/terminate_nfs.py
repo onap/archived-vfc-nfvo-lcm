@@ -18,7 +18,7 @@ import threading
 import traceback
 
 from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.database.models import NfInstModel, VmInstModel, OOFDataModel
+from lcm.pub.database.models import NfInstModel, VmInstModel, OOFDataModel, PortInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi import resmgr
 from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai, query_vserver_aai, delete_vserver_aai
@@ -145,6 +145,7 @@ class TerminateVnfs(threading.Thread):
             logger.error("delete_subscription failed: %s", e.args[0])
 
     def delete_data_from_db(self):
+        PortInstModel.objects.filter( instid=self.vnf_inst_id ).delete()
         NfInstModel.objects.filter(nfinstid=self.vnf_inst_id).delete()
         VmInstModel.objects.filter(instid=self.vnf_inst_id).delete()
         OOFDataModel.objects.filter(service_resource_id=self.vnf_inst_id).delete()
