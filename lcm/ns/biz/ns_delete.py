@@ -15,7 +15,8 @@ import logging
 import traceback
 
 from lcm.pub.config.config import REPORT_TO_AAI
-from lcm.pub.database.models import DefPkgMappingModel, InputParamMappingModel, ServiceBaseInfoModel
+from lcm.pub.database.models import DefPkgMappingModel, InputParamMappingModel, ServiceBaseInfoModel, \
+    NfInstModel, PortInstModel
 from lcm.pub.database.models import NSInstModel
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import query_ns_aai, delete_ns_aai
@@ -36,6 +37,7 @@ class DeleteNsService(object):
             logger.error(traceback.format_exc())
 
     def delete_ns(self):
+            
         logger.debug("delele NSInstModel(%s)", self.ns_inst_id)
         NSInstModel.objects.filter(id=self.ns_inst_id).delete()
 

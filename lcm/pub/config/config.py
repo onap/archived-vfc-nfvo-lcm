@@ -24,11 +24,11 @@ REDIS_PORT = '6379'
 REDIS_PASSWD = ''
 
 # [mysql]
-DB_IP = "127.0.0.1"
-DB_PORT = 3306
+DB_IP = "192.168.235.77"
+DB_PORT = 30003
 DB_NAME = "vfcnfvolcm"
-DB_USER = "vfcnfvolcm"
-DB_PASSWD = "vfcnfvolcm"
+DB_USER = "root"
+DB_PASSWD = "MetaGope8:Citt"
 
 # [MDC]
 SERVICE_NAME = "nslcm"
