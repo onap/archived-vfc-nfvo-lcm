@@ -163,7 +163,7 @@ class HandleVnfLcmOocNotification(object):
     def del_l_interface_from_aai(self, vnf_id, l_interface_name):
         logger.debug("Delete l_interface::delete_l_interface_in_aai[%s] in aai.", l_interface_name)
         try:
-            l_interface_info = query_l_interface_aai(vnf_id, l_interface_name)
+            l_interface_info = query_l_interface_aai(vnf_id, l_interface_name)[0]
             resource_version = l_interface_info.get("resource-version", '')
             resp_data, resp_status = delete_l_interface_aai(vnf_id, l_interface_name, resource_version)
             logger.debug("Delete l_interface[%s] from aai successfully, status: %s", l_interface_name,
