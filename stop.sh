@@ -12,5 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-ps auxww | grep "manage.py runserver 0.0.0.0:8403" | awk '{print $1}' | xargs kill -9
+# ps auxww | grep "manage.py runserver 0.0.0.0:8403" | awk '{print $1}' | xargs kill -9
 # ps auxww |grep 'uwsgi --http' |awk '{print $1}' |xargs kill -9
+if [ "${SSL_ENABLED}" = "true" ]; then
+   ps auxww |grep 'uwsgi --https :8403' |awk '{print $1}' |xargs kill -9
+else
+   ps auxww |grep 'uwsgi --http :8403' |awk '{print $1}' |xargs kill -9
+fi
