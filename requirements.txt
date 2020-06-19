@@ -37,4 +37,4 @@ swagger-spec-validator>=2.1.0
 onappylog==1.0.9
 
 # uwsgi for parallel processing
-# uwsgi
+uwsgi
