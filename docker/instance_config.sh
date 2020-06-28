@@ -38,7 +38,7 @@ if [ $SERVICE_IP ]; then
 fi
 
 if [ $SSL_ENABLED ]; then
-    sed -i "s|SSL_ENABLED.*|SSL_ENABLED = '$SSL_ENABLED'|"  vfc/nfvo/lcm/lcm/pub/config/config.py
+    sed -i "s|SSL_ENABLED = .*|SSL_ENABLED = '$SSL_ENABLED'|"  vfc/nfvo/lcm/lcm/pub/config/config.py
 fi
 
 # Configure MYSQL
