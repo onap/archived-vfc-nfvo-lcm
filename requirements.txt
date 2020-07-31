@@ -26,7 +26,7 @@ unittest_xml_reporting==1.12.0
 # nfv-toscaparser>=0.5.0
 
 # for swagger
-ruamel.yaml==0.15.97
+ruamel.yaml==0.16.10
 drf-yasg==1.17.0
 
 # for the validation feature
