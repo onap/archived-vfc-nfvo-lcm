@@ -11,24 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
+
+env_dict = os.environ
 
 # [MSB]
-MSB_SERVICE_PROTOCOL = 'http'
-MSB_SERVICE_IP = '10.0.14.1'
-MSB_SERVICE_PORT = '443'
-MSB_BASE_URL = "%s://%s:%s" % (MSB_SERVICE_PROTOCOL, MSB_SERVICE_IP, MSB_SERVICE_PORT)
-
-# [REDIS]
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = '6379'
-REDIS_PASSWD = ''
+MSB_BASE_URL = env_dict.get("MSB_HOST", "http://127.0.0.1:80")
+MSB_ENABLED = env_dict.get("MSB_ENABLED", True)
 
 # [mysql]
-DB_IP = "127.0.0.1"
-DB_PORT = 3306
+DB_IP = env_dict.get("MYSQL_ADDR", "127.0.0.1:3306").split(':')[0]
+DB_PORT = env_dict.get("MYSQL_ADDR", "127.0.0.1:3306").split(':')[1]
 DB_NAME = "vfcnfvolcm"
 DB_USER = "vfcnfvolcm"
 DB_PASSWD = "vfcnfvolcm"
+
+# [REDIS]
+REDIS_HOST = env_dict.get("REDIS_HOST", DB_IP)
+REDIS_PORT = '6379'
+REDIS_PASSWD = ''
 
 # [MDC]
 SERVICE_NAME = "nslcm"
@@ -36,17 +37,13 @@ FORWARDED_FOR_FIELDS = ["HTTP_X_FORWARDED_FOR", "HTTP_X_FORWARDED_HOST",
                         "HTTP_X_FORWARDED_SERVER"]
 
 # [register]
-REG_TO_MSB_WHEN_START = True
-SSL_ENABLED = "true"
+REG_TO_MSB_WHEN_START = env_dict.get("REG_TO_MSB_WHEN_START", "false")
+SSL_ENABLED = env_dict.get("SSL_ENABLED", "false")
 REG_TO_MSB_REG_URL = "/api/microservices/v1/services"
-if SSL_ENABLED == "true":
-    enable_ssl = "true"
-else:
-    enable_ssl = "false"
 REG_TO_MSB_REG_PARAM = {
     "serviceName": "nslcm",
     "version": "v1",
-    "enable_ssl": enable_ssl,
+    "enable_ssl": SSL_ENABLED,
     "url": "/api/nslcm/v1",
     "protocol": "REST",
     "visualRange": "1",
@@ -57,7 +54,6 @@ REG_TO_MSB_REG_PARAM = {
     }]
 }
 MSB_SVC_URL = "/api/microservices/v1/services/nslcm/version/%s"
-
 
 # [aai config]
 AAI_BASE_URL = "http://10.0.14.1:80/aai/v11"
