@@ -1,7 +1,7 @@
 ---
 project: 'vfc-nfvo-lcm'
 project_creation_date: '2017-06-28'
-lifecycle_state: 'Incubation'
+lifecycle_state: 'Mature'
 project_lead: &onap_releng_ptl
     name: 'Yuanhong Deng'
     email: 'dengyuanhong@chinamobile.com'
