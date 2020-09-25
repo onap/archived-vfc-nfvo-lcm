@@ -33,7 +33,7 @@ urlpatterns = [
 ]
 
 # regist to MSB when startup
-if REG_TO_MSB_WHEN_START:
+if REG_TO_MSB_WHEN_START == "true":
     import json
     from lcm.pub.utils.restcall import req_by_msb
     req_by_msb(MSB_SVC_URL % "v1", "DELETE")
