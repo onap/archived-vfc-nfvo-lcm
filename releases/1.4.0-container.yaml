@@ -1,0 +1,10 @@
+distribution_type: 'container'
+container_release_tag: '1.4.0'
+project: 'vfc-nfvo-lcm'
+container_pull_registry: nexus3.onap.org:10003
+container_push_registry: nexus3.onap.org:10002
+log_dir: 'vfc-nfvo-lcm-master-docker-java-version-shell-daily/1282/'
+ref: 'af9ef7fa6e33caae869f4334c20f3ce5f3c0d7b5'
+containers:
+    - name: 'vfc/nslcm'
+      version: '1.4.0-STAGING-20200929T013946'
