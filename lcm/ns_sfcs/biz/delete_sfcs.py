@@ -36,7 +36,7 @@ class DeleteSfcs(object):
                 return {"result": 0, "detail": "sfc is not exist or has been already deleted"}
             self.ns_inst_id = sfc_inst_info[0].nsinstid
             self.delete_sfc_from_driver(sfc_inst_info[0])
-            self.delete_sfc_from_resmgr()
+            # self.delete_sfc_from_resmgr()
             self.delete_sfc_from_db(sfc_inst_info)
             return {"result": 0, "detail": "delete sfc success"}
         except NSLCMException as e:

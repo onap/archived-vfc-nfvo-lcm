@@ -73,7 +73,7 @@ def call_req(base_url, user, passwd, auth_type, resource, method, content='', ad
                 raise ex
     except urllib.error.URLError as err:
         ret = [2, str(err), resp_status, resp_Location]
-    except Exception as ex:
+    except Exception:
         logger.error(traceback.format_exc())
         logger.error("[%s]ret=%s" % (callid, str(sys.exc_info())))
         res_info = str(sys.exc_info())

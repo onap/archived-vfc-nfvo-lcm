@@ -44,7 +44,7 @@ class DeleteVls(object):
             subnetwork_id_list = vl_inst_info[0].relatedsubnetworkid.split(",")
             network_id = vl_inst_info[0].relatednetworkid
             self.delete_vl_from_vim(vim_id, subnetwork_id_list, network_id)
-            self.delete_vl_from_resmgr()
+            # self.delete_vl_from_resmgr()
             if REPORT_TO_AAI:
                 self.delete_network_and_subnet_in_aai()
             self.delete_vl_from_db(vl_inst_info)

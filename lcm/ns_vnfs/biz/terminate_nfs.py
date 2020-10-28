@@ -57,7 +57,7 @@ class TerminateVnfs(threading.Thread):
             self.check_nf_valid()
             self.send_nf_terminate_to_vnfmDriver()
             self.wait_vnfm_job_finish()
-            self.send_terminate_vnf_to_resMgr()
+            # self.send_terminate_vnf_to_resMgr()
             if REPORT_TO_AAI:
                 self.delete_vserver_in_aai()
                 self.delete_vnf_in_aai()
