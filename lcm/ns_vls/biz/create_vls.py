@@ -55,7 +55,7 @@ class CreateVls(object):
         try:
             self.get_data()
             self.create_vl_to_vim()
-            self.create_vl_to_resmgr()
+            # self.create_vl_to_resmgr()
             self.save_vl_to_db()
             if REPORT_TO_AAI:
                 self.create_network_aai()

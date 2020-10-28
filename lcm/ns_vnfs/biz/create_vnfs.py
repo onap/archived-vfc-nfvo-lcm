@@ -89,10 +89,10 @@ class CreateVnfs(Thread):
             self.send_nf_init_request_to_vnfm()
             self.send_homing_request_to_OOF()
             self.send_get_vnfm_request_to_extsys()
-            self.send_create_vnf_request_to_resmgr()
+            # self.send_create_vnf_request_to_resmgr()
             self.wait_vnfm_job_finish()
             self.subscribe()
-            self.write_vnf_creation_info()
+            # self.write_vnf_creation_info()
             self.save_info_to_db()
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, 'vnf instantiation success', JOB_ERROR_CODE.NO_ERROR)
         except NSLCMException as e:
