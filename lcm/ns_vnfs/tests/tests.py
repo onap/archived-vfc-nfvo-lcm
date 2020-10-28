@@ -1013,7 +1013,14 @@ class TestGrantVnfViews(TestCase):
         resp = GrantVnf(json.dumps(self.data)).exec_grant()
         self.assertEqual(resp["vnfInstanceId"], "add_resources_but_no_off")
         self.assertEqual(resp["vnfLcmOpOccId"], "vnf_lcm_op_occ_id")
-        vimConnections = []
+        vimConnections = [{
+            "id": "cloudOwner_casa",
+            "vimId": "cloudOwner_casa",
+            "vimType": None,
+            "interfaceInfo": None,
+            "accessInfo": {"tenant": "tenantA"},
+            "extra": None
+        }]
         self.assertEqual(resp["vimConnections"], vimConnections)
 
     @mock.patch.object(resmgr, "grant_vnf")
@@ -1106,7 +1113,14 @@ class TestGrantVnfViews(TestCase):
         resp = GrantVnf(json.dumps(self.data)).exec_grant()
         self.assertEqual(resp["vnfInstanceId"], "remove_resources_but_no_off")
         self.assertEqual(resp["vnfLcmOpOccId"], "vnf_lcm_op_occ_id")
-        vimConnections = []
+        vimConnections = [{
+            "id": "cloudOwner_casa",
+            "vimId": "cloudOwner_casa",
+            "vimType": None,
+            "interfaceInfo": None,
+            "accessInfo": {"tenant": "tenantA"},
+            "extra": None
+        }]
         self.assertEqual(resp["vimConnections"], vimConnections)
 
     @mock.patch.object(resmgr, "grant_vnf")

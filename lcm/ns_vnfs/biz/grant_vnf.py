@@ -18,6 +18,7 @@ import uuid
 import time
 from lcm.pub.database.models import NfInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
+from lcm.pub.msapi import resmgr
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import SCALAR_UNIT_DICT
@@ -89,17 +90,17 @@ class GrantVnf(object):
                         break
                 req_param[grant_type].append(grant_res)
             self.data = req_param
-        # tmp = resmgr.grant_vnf(self.data)
-        # vimConnections.append(
-        #     {
-        #         "id": tmp["vim"]["vimId"],
-        #         "vimId": tmp["vim"]["vimId"],
-        #         "vimType": None,
-        #         "interfaceInfo": None,
-        #         "accessInfo": tmp["vim"]["accessInfo"],
-        #         "extra": None
-        #     }
-        # )
+        tmp = resmgr.grant_vnf(self.data)
+        vimConnections.append(
+            {
+                "id": tmp["vim"]["vimId"],
+                "vimId": tmp["vim"]["vimId"],
+                "vimType": None,
+                "interfaceInfo": None,
+                "accessInfo": tmp["vim"]["accessInfo"],
+                "extra": None
+            }
+        )
 
         grant_resp = {
             "id": str(uuid.uuid4()),
