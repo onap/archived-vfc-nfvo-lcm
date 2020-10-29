@@ -13,6 +13,70 @@ VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
 
+Version: 1.4.1
+--------------
+
+:Release Date: 2020-10-29
+
+**New Features**
+
+- Functional Enhancement:
+
+1. Improve Instance storage function
+2. Remove components which are no longer used or maintained.
+
+- Maturity Enhancement:
+
+1. Update to Java 11
+2. Optimize docker image
+3. Update dependency lib
+4. Increase code coverage
+
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.4.1
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.4.0
+ - vfc-nfvo-driver-svnfm-ztedriver 1.3.8
+ - vfc-nfvo-driver-svnfm-huawei 1.3.8
+ - vfc-nfvo-db 1.3.4
+
+GVNFM
+ - vfc-gvnfm-vnflcm 1.4.0
+ - vfc-gvnfm-vnfmgr 1.3.9
+ - vfc-gvnfm-vnfres 1.3.8
+
+**Known Issues**
+
+  Though VFC itself has migrated to python 3, however, the deployment of VFC still has python 2.7 pods since it uses public mariadb image. Please refer to: https://jira.onap.org/browse/VFC-1740 for details.
+
+
+**Security Notes**
+    NA
+
+Quick Links:
+
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
+
+**Upgrade Notes**
+    NA
+
+**Deprecation Notes**
+
+ The following components are not in the scope of the Guilin release since they are no longer used or maintained.
+
+ - vfc/nfvo/driver/ems
+ - vfc/nfvo/multivimproxy
+ - vfc/nfvo/driver/vnfm/gvnfm/juju
+ - vfc/nfvo/driver/vnfm/svnfm/nokia
+ - vfc/nfvo/wfengine
+ - vfc/nfvo/driver/sfc
+
+**Other**
+    NA
+
 
 Version: 1.3.9
 --------------
