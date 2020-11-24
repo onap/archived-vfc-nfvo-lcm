@@ -22,7 +22,7 @@ Version: 1.4.1
 
 - Functional Enhancement:
 
-1. Improve Instance storage function
+1. Improve instance storage function
 2. Remove components which are no longer used or maintained.
 
 - Maturity Enhancement:
