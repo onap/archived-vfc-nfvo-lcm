@@ -22,16 +22,15 @@ from lcm.ns.enum import OWNER_TYPE
 from lcm.ns_vnfs.const import NFVO_VNF_INST_TIMEOUT_SECOND
 from lcm.ns_vnfs.biz.subscribe import SubscriptionCreation
 from lcm.ns_vnfs.biz.wait_job import wait_job_finish
-from lcm.ns_vnfs.enum import VNF_STATUS, INST_TYPE
+from lcm.ns_vnfs.enum import VNF_STATUS
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.config.config import REG_TO_MSB_REG_PARAM, OOF_BASE_URL, OOF_PASSWD, OOF_USER
 from lcm.pub.config.config import CUST_NAME, CUST_LAT, CUST_LONG
-from lcm.pub.database.models import NfInstModel, NSInstModel, VmInstModel, VNFFGInstModel, VLInstModel, OOFDataModel
+from lcm.pub.database.models import NfInstModel, NSInstModel, VNFFGInstModel, VLInstModel, OOFDataModel
 from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_ACTION, JOB_PROGRESS, JOB_ERROR_CODE, JOB_TYPE
 from lcm.pub.exceptions import NSLCMException
 from lcm.pub.msapi.aai import create_vnf_aai
 from lcm.pub.msapi.extsys import get_vnfm_by_id
-from lcm.pub.msapi.resmgr import create_vnf, create_vnf_creation_info
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.msapi.vnfmdriver import send_nf_init_request
 from lcm.pub.utils import restcall
@@ -89,10 +88,8 @@ class CreateVnfs(Thread):
             self.send_nf_init_request_to_vnfm()
             self.send_homing_request_to_OOF()
             self.send_get_vnfm_request_to_extsys()
-            # self.send_create_vnf_request_to_resmgr()
             self.wait_vnfm_job_finish()
             self.subscribe()
-            # self.write_vnf_creation_info()
             self.save_info_to_db()
             JobUtil.add_job_status(self.job_id, JOB_PROGRESS.FINISHED, 'vnf instantiation success', JOB_ERROR_CODE.NO_ERROR)
         except NSLCMException as e:
@@ -363,26 +360,6 @@ class CreateVnfs(Thread):
         resp_body = get_vnfm_by_id(self.vnfm_inst_id)
         self.vnfm_inst_name = ignore_case_get(resp_body, 'name')
 
-    def send_create_vnf_request_to_resmgr(self):
-        pkg_vnfd = self.vnfd_model
-        data = {
-            'nf_inst_id': self.nf_inst_id,
-            'vnfm_nf_inst_id': self.vnfm_nf_inst_id,
-            'vnf_inst_name': self.vnf_inst_name,
-            'ns_inst_id': self.ns_inst_id,
-            'ns_inst_name': self.ns_inst_name,
-            'nf_inst_name': self.vnf_inst_name,
-            'vnfm_inst_id': self.vnfm_inst_id,
-            'vnfm_inst_name': self.vnfm_inst_name,
-            'vnfd_name': pkg_vnfd['metadata'].get('name', 'undefined'),
-            'vnfd_id': self.vnfd_id,
-            'job_id': self.job_id,
-            'nf_inst_status': VNF_STATUS.INSTANTIATING,
-            'vnf_type': pkg_vnfd['metadata'].get('vnf_type', 'undefined'),
-            'nf_package_id': ignore_case_get(self.nf_package_info, "vnfPackageId")
-        }
-        create_vnf(data)
-
     def wait_vnfm_job_finish(self):
         ret = wait_job_finish(
             vnfm_id=self.vnfm_inst_id,
@@ -405,18 +382,6 @@ class CreateVnfs(Thread):
             logger.error("subscribe failed: %s", e.args[0])
         except Exception as e:
             logger.error("subscribe failed: %s", e.args[0])
-
-    def write_vnf_creation_info(self):
-        logger.debug("write_vnf_creation_info start")
-        vm_inst_infos = VmInstModel.objects.filter(insttype=INST_TYPE.VNF, instid=self.nf_inst_id)
-        data = {
-            'nf_inst_id': self.nf_inst_id,
-            'ns_inst_id': self.ns_inst_id,
-            'vnfm_inst_id': self.vnfm_inst_id,
-            'vms': [{'vmId': vm_inst_info.resouceid, 'vmName': vm_inst_info.vmname, 'vmStatus': 'ACTIVE'} for vm_inst_info in vm_inst_infos]
-        }
-        create_vnf_creation_info(data)
-        logger.debug("write_vnf_creation_info end")
 
     def save_info_to_db(self):
         logger.debug("save_info_to_db start")
