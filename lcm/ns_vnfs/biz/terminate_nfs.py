@@ -20,7 +20,6 @@ import traceback
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import NfInstModel, VmInstModel, OOFDataModel, PortInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import resmgr
 from lcm.pub.msapi.aai import query_vnf_aai, delete_vnf_aai, query_vserver_aai, delete_vserver_aai
 from lcm.pub.msapi.extsys import split_vim_to_owner_region, get_vim_by_id
 from lcm.pub.msapi.vnfmdriver import send_nf_terminate_request
@@ -57,7 +56,6 @@ class TerminateVnfs(threading.Thread):
             self.check_nf_valid()
             self.send_nf_terminate_to_vnfmDriver()
             self.wait_vnfm_job_finish()
-            # self.send_terminate_vnf_to_resMgr()
             if REPORT_TO_AAI:
                 self.delete_vserver_in_aai()
                 self.delete_vnf_in_aai()
@@ -120,9 +118,6 @@ class TerminateVnfs(threading.Thread):
             'gracefulTerminationTimeout': self.gracefulTerminationTimeout})
         rsp = send_nf_terminate_request(self.vnfm_inst_id, self.vnf_uuid, req_param)
         self.vnfm_job_id = ignore_case_get(rsp, 'jobId')
-
-    def send_terminate_vnf_to_resMgr(self):
-        resmgr.terminate_vnf(self.vnf_inst_id)
 
     def wait_vnfm_job_finish(self):
         if not self.vnfm_job_id:

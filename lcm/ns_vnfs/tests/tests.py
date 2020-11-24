@@ -40,7 +40,6 @@ from lcm.ns_vnfs.tests.test_data import vnfm_info, vim_info, vnf_place_request
 from lcm.ns_vnfs.tests.test_data import nf_package_info, nsd_model_dict, subscription_response_data
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
 from lcm.ns_vnfs.biz import create_vnfs
-from lcm.ns_vnfs.biz.grant_vnfs import GrantVnfs
 from lcm.ns_vnfs.biz.update_vnfs import NFOperateService
 from lcm.ns_vnfs.biz.verify_vnfs import VerifyVnfs
 from lcm.ns.enum import OWNER_TYPE
@@ -866,47 +865,6 @@ class TestGrantVnfsViews(TestCase):
     #     }
     #     response = self.client.post(self.url, data=data)
     #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    @mock.patch.object(restcall, "call_req")
-    def test_nf_grant_view_when_add_resource(self, mock_call_req):
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_001":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-            "/api/resmgr/v1/resource/grant":
-                [1, json.JSONEncoder().encode({}), "200"],
-            "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
-                [0, json.JSONEncoder().encode(vim_info), "201"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-        mock_call_req.side_effect = side_effect
-        resp = GrantVnfs(json.dumps(self.data), "").send_grant_vnf_to_resMgr()
-        return_success = {"vim": {"accessInfo": {"tenant": "admin"},
-                                  "vimId": "example-cloud-owner-val-97336_example-cloud-region-id-val-35532"}}
-        self.assertEqual(resp, return_success)
-
-    @mock.patch.object(restcall, "call_req")
-    def test_nf_grant_view_when_remove_resource(self, mock_call_req):
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_001":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-            "/api/resmgr/v1/resource/grant":
-                [1, json.JSONEncoder().encode({}), "200"],
-            "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
-                [0, json.JSONEncoder().encode(vim_info), "201"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
-        self.data.pop("addResource")
-        self.data["removeResource"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
-        resp = GrantVnfs(json.dumps(self.data), "").send_grant_vnf_to_resMgr()
-        return_success = {"vim": {"accessInfo": {"tenant": "admin"},
-                                  "vimId": "example-cloud-owner-val-97336_example-cloud-region-id-val-35532"}}
-        self.assertEqual(resp, return_success)
 
 
 class TestGrantVnfViews(TestCase):
