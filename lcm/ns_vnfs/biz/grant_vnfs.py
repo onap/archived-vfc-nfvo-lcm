@@ -12,14 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import logging
-
-from lcm.pub.database.models import NfInstModel
-from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import resmgr
-from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
-from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import SCALAR_UNIT_DICT
 
 logger = logging.getLogger(__name__)
@@ -32,63 +25,6 @@ class GrantVnfs(object):
         self.vnf_uuid = ''
         self.vnfm_job_id = ''
         self.data = data
-
-    def send_grant_vnf_to_resMgr(self):
-        logger.debug("grant data from vnfm:%s", self.data)
-        if isinstance(self.data, str):
-            self.data = json.JSONDecoder().decode(self.data)
-        has_res_tpl = False
-        grant_type = None
-        if ignore_case_get(self.data, "addResource"):
-            grant_type = "addResource"
-        elif ignore_case_get(self.data, "removeResource"):
-            grant_type = "removeResource"
-        else:
-            has_res_tpl = True
-
-        for res in ignore_case_get(self.data, grant_type):
-            if "resourceTemplate" in res:
-                has_res_tpl = True
-                break
-
-        if not has_res_tpl:
-            m_vnf_inst_id = ignore_case_get(self.data, "vnfInstanceId")
-            additional_param = ignore_case_get(self.data, "additionalparam")
-            vnfm_inst_id = ignore_case_get(additional_param, "vnfmid")
-            vim_id = ignore_case_get(additional_param, "vimid")
-
-            vnfinsts = NfInstModel.objects.filter(
-                mnfinstid=m_vnf_inst_id, vnfm_inst_id=vnfm_inst_id)
-            if not vnfinsts:
-                raise NSLCMException("Vnfinst(%s) is not found in vnfm(%s)" % (
-                    m_vnf_inst_id, vnfm_inst_id))
-
-            vnf_pkg_id = vnfinsts[0].package_id
-            nfpackage_info = query_vnfpackage_by_id(vnf_pkg_id)
-            vnf_pkg = nfpackage_info["packageInfo"]
-
-            vnfd = json.JSONDecoder().decode(vnf_pkg["vnfdModel"])
-
-            req_param = {
-                "vnfInstanceId": m_vnf_inst_id,
-                "vimId": vim_id,
-                "additionalParam": additional_param,
-                grant_type: []
-            }
-            for res in ignore_case_get(self.data, grant_type):
-                vdu_name = ignore_case_get(res, "vdu")
-                grant_res = {
-                    "resourceDefinitionId": ignore_case_get(res, "resourceDefinitionId"),
-                    "type": ignore_case_get(res, "type"),
-                    "vdu": vdu_name
-                }
-                for vdu in vnfd["vdus"]:
-                    if vdu_name in (vdu["vdu_id"], vdu["properties"].get("name", "")):
-                        grant_res["resourceTemplate"] = self.get_res_tpl(vdu, vnfd)
-                        break
-                req_param[grant_type].append(grant_res)
-            self.data = req_param
-        return resmgr.grant_vnf(self.data)
 
     def get_res_tpl(self, vdu, vnfd):
         storage_size = 0

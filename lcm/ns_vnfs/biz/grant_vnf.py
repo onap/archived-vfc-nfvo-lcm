@@ -18,7 +18,6 @@ import uuid
 import time
 from lcm.pub.database.models import NfInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import resmgr
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import SCALAR_UNIT_DICT
@@ -31,6 +30,7 @@ class GrantVnf(object):
         self.data = grant_data
 
     def exec_grant(self):
+        global vim_id
         logger.debug("grant data from vnfm:%s", self.data)
         if isinstance(self.data, str):
             self.data = json.JSONDecoder().decode(self.data)
@@ -90,18 +90,35 @@ class GrantVnf(object):
                         break
                 req_param[grant_type].append(grant_res)
             self.data = req_param
-        tmp = resmgr.grant_vnf(self.data)
+        if "vimId" in self.data:
+            vim_id = self.data.get("vimId", None)
+        elif "additionalparam" in self.data and "vimid" in self.data["additionalparam"]:
+            vim_id = self.data.get("additionalparam", None).get("vimid", None)
+        elif "additionalParams" in self.data and "vimid" in self.data["additionalParams"]:
+            vim_id = self.data.get("additionalparam", None).get("vimid", None)
+        try:
+            from lcm.pub.msapi import extsys
+            vim = extsys.get_vim_by_id(vim_id)
+            if isinstance(vim, list):
+                vim = vim[0]
+                vim_id = vim["vimId"]
+            if "vimId" in vim:
+                vim_id = vim["vimId"]
+            logger.debug("vimConnections info=%s" % vim)
+        except:
+            raise NSLCMException('Failed to  get info from vim')
         vimConnections.append(
             {
-                "id": tmp["vim"]["vimId"],
-                "vimId": tmp["vim"]["vimId"],
+                "id": vim_id,
+                "vimId": vim_id,
                 "vimType": None,
                 "interfaceInfo": None,
-                "accessInfo": tmp["vim"]["accessInfo"],
+                "accessInfo": {
+                    "tenant": vim["tenant"]
+                },
                 "extra": None
             }
         )
-
         grant_resp = {
             "id": str(uuid.uuid4()),
             "vnfInstanceId": ignore_case_get(self.data, 'vnfInstanceId'),

@@ -19,7 +19,7 @@ import traceback
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import VLInstModel, VNFFGInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import resmgr, extsys
+from lcm.pub.msapi import extsys
 from lcm.pub.msapi.aai import query_network_aai, delete_network_aai
 from lcm.pub.nfvi.vim import vimadaptor
 
@@ -44,7 +44,6 @@ class DeleteVls(object):
             subnetwork_id_list = vl_inst_info[0].relatedsubnetworkid.split(",")
             network_id = vl_inst_info[0].relatednetworkid
             self.delete_vl_from_vim(vim_id, subnetwork_id_list, network_id)
-            # self.delete_vl_from_resmgr()
             if REPORT_TO_AAI:
                 self.delete_network_and_subnet_in_aai()
             self.delete_vl_from_db(vl_inst_info)
@@ -73,9 +72,6 @@ class DeleteVls(object):
         for subnetwork_id in subnetwork_id_list:
             vim_api.delete_subnet(subnet_id=subnetwork_id)
         vim_api.delete_network(network_id=network_id)
-
-    def delete_vl_from_resmgr(self):
-        resmgr.delete_vl(self.vl_inst_id)
 
     def delete_vl_inst_id_in_vnffg(self):
         for vnffg_info in VNFFGInstModel.objects.filter(nsinstid=self.ns_inst_id):
