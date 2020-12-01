@@ -18,7 +18,7 @@ import traceback
 
 from lcm.pub.database.models import FPInstModel, VNFFGInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import extsys, resmgr, sdncdriver
+from lcm.pub.msapi import extsys, sdncdriver
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,6 @@ class DeleteSfcs(object):
                 return {"result": 0, "detail": "sfc is not exist or has been already deleted"}
             self.ns_inst_id = sfc_inst_info[0].nsinstid
             self.delete_sfc_from_driver(sfc_inst_info[0])
-            # self.delete_sfc_from_resmgr()
             self.delete_sfc_from_db(sfc_inst_info)
             return {"result": 0, "detail": "delete sfc success"}
         except NSLCMException as e:
@@ -77,9 +76,6 @@ class DeleteSfcs(object):
         # do_biz_with_share_lock("delete-sfclist-in-vnffg-%s" % self.ns_inst_id, self.delete_sfc_inst_id_in_vnffg)
         self.delete_sfc_inst_id_in_vnffg()
         sfc_inst_info.delete()
-
-    def delete_sfc_from_resmgr(self):
-        resmgr.delete_sfc(self.sfc_inst_id)
 
     def delete_sfc_inst_id_in_vnffg(self):
         for vnffg_info in VNFFGInstModel.objects.filter(nsinstid=self.ns_inst_id):

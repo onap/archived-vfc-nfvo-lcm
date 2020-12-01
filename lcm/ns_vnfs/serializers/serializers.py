@@ -101,37 +101,6 @@ class ResourceChangeSerializer(serializers.Serializer):
         allow_blank=True)
 
 
-class GrantVnfReqSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(
-        help_text="ID of VNF instance",
-        required=True)
-    vnfDescriptorId = serializers.CharField(
-        help_text="ID of VNF Descriptor",
-        required=False,
-        allow_null=True,
-        allow_blank=True)
-    lifecycleOperation = serializers.ChoiceField(
-        help_text="Lifecycle Operation",
-        choices=enum_to_list(LIFE_CYCLE_OPERATION),
-        required=True)
-    jobId = serializers.CharField(
-        help_text="ID of Job",
-        required=False,
-        allow_null=True,
-        allow_blank=True)
-    addResource = ResourceChangeSerializer(
-        help_text="Add resources",
-        many=True)
-    removeResource = ResourceChangeSerializer(
-        help_text="Remove resources",
-        many=True)
-    additionalParam = serializers.DictField(
-        help_text="Additional parameters passed to the NFVO, specific to the VNF and the LCM operation. The currently interpreted keys are the following: vimId",
-        child=serializers.CharField(help_text="Additional parameters", allow_blank=True),
-        required=False,
-        allow_null=True)
-
-
 class AccessinfoSerializer(serializers.Serializer):
     tenant = serializers.CharField(
         help_text="Name of tenant",
@@ -148,17 +117,6 @@ class VimSerializer(serializers.Serializer):
     accessInfo = AccessinfoSerializer(
         help_text="Access Info",
         required=False)
-
-
-class GrantVnfRespSerializer(serializers.Serializer):
-    vnfInstanceId = serializers.CharField(
-        help_text="ID of VNF instance",
-        required=False,
-        allow_null=True,
-        allow_blank=True)
-    vim = VimSerializer(
-        help_text="VIM Info",
-        required=True)
 
 
 class AffectedVnfcLcmSerializer(serializers.Serializer):

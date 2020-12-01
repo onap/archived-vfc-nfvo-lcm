@@ -28,9 +28,6 @@ from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
 from lcm.ns_vnfs.biz.get_vnfs import GetVnf, GetVnfVms
 from lcm.ns_vnfs.serializers.serializers import GetVnfRespSerializer
-from lcm.ns_vnfs.serializers.serializers import GrantVnfReqSerializer
-from lcm.ns_vnfs.serializers.serializers import GrantVnfRespSerializer
-from lcm.ns_vnfs.biz.grant_vnfs import GrantVnfs
 from lcm.ns_vnfs.serializers.serializers import InstVnfReqSerializer
 from lcm.ns_vnfs.serializers.serializers import InstVnfRespSerializer
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
@@ -186,45 +183,6 @@ class NfTerminate(APIView):
             logger.error(resp_serializer.errors)
 
         return Response(data=rsp, status=status.HTTP_202_ACCEPTED)
-
-
-class NfGrant(APIView):
-    @swagger_auto_schema(
-        request_body=GrantVnfReqSerializer(),
-        responses={
-            status.HTTP_201_CREATED: GrantVnfRespSerializer(),
-            status.HTTP_409_CONFLICT: "Inner error"
-        }
-    )
-    def post(self, request):
-        logger.debug("NfGrant--post::> %s" % request.data)
-        try:
-            req_serializer = GrantVnfReqSerializer(data=request.data)
-            if not req_serializer.is_valid():
-                raise Exception(req_serializer.errors)
-
-            vnf_inst_id = ignore_case_get(request.data, 'vnfInstanceId')
-            job_id = JobUtil.create_job(JOB_TYPE.VNF, JOB_ACTION.GRANT, vnf_inst_id)
-            rsp = GrantVnfs(request.data, job_id).send_grant_vnf_to_resMgr()
-            """
-            rsp = {
-                "vim": {
-                    "vimid": ignore_case_get(ignore_case_get(request.data, 'additionalparam'), 'vimid'),
-                    "accessinfo": {
-                        "tenant": "admin"
-                    }
-                }
-            }
-            """
-            # resp_serializer = GrantVnfRespSerializer(data=rsp)
-            # if not resp_serializer.is_valid():
-            # raise Exception(resp_serializer.errors)
-
-            return Response(data=rsp, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            logger.error(e.args[0])
-            logger.error(traceback.format_exc())
-            return Response(data={'error': '%s' % e.args[0]}, status=status.HTTP_409_CONFLICT)
 
 
 class NfPlacement(APIView):
