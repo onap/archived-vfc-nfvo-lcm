@@ -19,7 +19,6 @@ from django.test import TestCase, Client
 from rest_framework import status
 from lcm.pub.msapi import sdncdriver
 from lcm.pub.database.models import FPInstModel
-from lcm.pub.msapi import resmgr
 
 
 class TestSfcDetailViews(TestCase):
@@ -37,30 +36,6 @@ class TestSfcDetailViews(TestCase):
         response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % "notExist")
         expect_resp_data = {"result": 0, "detail": "sfc is not exist or has been already deleted"}
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
-        self.assertEqual(expect_resp_data, response.data)
-
-    @mock.patch.object(extsys, "get_sdn_controller_by_id")
-    @mock.patch.object(sdncdriver, "delete_port_chain")
-    @mock.patch.object(sdncdriver, "delete_flow_classifier")
-    @mock.patch.object(sdncdriver, "delete_port_pair_group")
-    @mock.patch.object(sdncdriver, "delete_port_pair")
-    @mock.patch.object(resmgr, "delete_sfc")
-    def test_sfc_delete_success(self, mock_delete_sfc, mock_delete_port_pair, mock_delete_port_pair_group, mock_delete_flow_classifier, mock_delete_port_chain, mock_get_sdn_controller_by_id):
-        mock_delete_port_chain.return_value = None
-        mock_delete_flow_classifier.return_value = None
-        mock_delete_port_pair_group.return_value = None
-        mock_delete_port_pair.return_value = None
-        mock_delete_sfc.return_value = None
-        mock_get_sdn_controller_by_id.return_value = json.loads('{"test":"test_name","url":"url_add"}')
-        sfc_inst_id = "10"
-
-        FPInstModel(fpid="1", fpinstid="10", fpname="2", nsinstid="3", vnffginstid="4",
-                    symmetric="5", policyinfo="6", forworderpaths="7", status="8", sdncontrollerid="9",
-                    sfcid="10", flowclassifiers="11",
-                    portpairgroups=json.JSONEncoder().encode([{"groupid": "98", "portpair": "99"}])
-                    ).save()
-        response = self.client.delete("/api/nslcm/v1/ns/sfcs/%s" % sfc_inst_id)
-        expect_resp_data = {"result": 0, "detail": "delete sfc success"}
         self.assertEqual(expect_resp_data, response.data)
 
     def test_sfc_get_failed(self):

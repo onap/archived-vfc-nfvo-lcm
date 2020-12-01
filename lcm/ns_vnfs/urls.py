@@ -15,15 +15,14 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from lcm.ns_vnfs.views.views import LcmNotify, NfScaleView, NfVerifyView
-from lcm.ns_vnfs.views.views import NfView, NfDetailView, NfGrant, NfPlacement, NfTerminate
+from lcm.ns_vnfs.views.views import NfView, NfDetailView, NfPlacement, NfTerminate
 from lcm.ns_vnfs.views.views import NfVnfmInfoView, NfVimInfoView
-from lcm.ns_vnfs.views.vnf_views import VnfGrantView, VnfNotifyView
+from lcm.ns_vnfs.views.vnf_views import VnfNotifyView
 
 urlpatterns = [
     url(r'^api/nslcm/v1/ns/vnfs$', NfView.as_view()),
     url(r'^api/nslcm/v1/ns/vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)$', NfDetailView.as_view()),
     url(r'^api/nslcm/v1/ns/terminatevnf/(?P<vnfinstid>[0-9a-zA-Z_-]+)$', NfTerminate.as_view()),
-    url(r'^api/nslcm/v1/ns/grantvnf$', NfGrant.as_view()),
     url(r'^api/nslcm/v1/ns/placevnf$', NfPlacement.as_view()),
     url(r'^api/nslcm/v1/ns/(?P<vnfmid>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$', LcmNotify.as_view()),
     url(r'^api/nslcm/v1/ns/ns_vnfs/(?P<vnfinstid>[0-9a-zA-Z_-]+)/scaling$', NfScaleView.as_view()),
@@ -31,7 +30,6 @@ urlpatterns = [
     url(r'^api/nslcm/v1/vnfms/(?P<vnfmid>[0-9a-zA-Z_-]+)$', NfVnfmInfoView.as_view()),
     # url(r'^api/nslcm/v1/vims/(?P<vimid>[0-9a-zA-Z_-]+)', NfVimInfoView.as_view()),
     url(r'^api/nslcm/v1/vims/(?P<cloudowner>[0-9a-zA-Z_-]+)/(?P<cloudregionid>[0-9a-zA-Z_-]+)$', NfVimInfoView.as_view()),
-    url(r'^api/nslcm/v2/grants$', VnfGrantView.as_view()),
     url(r'^api/nslcm/v2/ns/(?P<vnfmId>[0-9a-zA-Z_-]+)/vnfs/(?P<vnfInstanceId>[0-9a-zA-Z_-]+)/Notify$', VnfNotifyView.as_view()),
 ]
 

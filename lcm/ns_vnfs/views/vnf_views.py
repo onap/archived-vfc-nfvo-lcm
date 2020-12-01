@@ -20,43 +20,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from lcm.ns_vnfs.biz.grant_vnf import GrantVnf
-from lcm.ns_vnfs.serializers.grant_vnf_serializer import GrantRequestSerializer
-from lcm.ns_vnfs.serializers.grant_vnf_serializer import GrantSerializer
 from lcm.ns_vnfs.biz.handle_notification import HandleVnfLcmOocNotification, HandleVnfIdentifierCreationNotification, HandleVnfIdentifierDeletionNotification
 from lcm.ns_vnfs.serializers.grant_vnf_serializer import VnfLcmOperationOccurrenceNotificationSerializer, VnfIdentifierCreationNotificationSerializer, VnfIdentifierDeletionNotificationSerializer
 
 logger = logging.getLogger(__name__)
-
-
-class VnfGrantView(APIView):
-    @swagger_auto_schema(
-        request_body=GrantRequestSerializer(),
-        responses={
-            status.HTTP_201_CREATED: GrantSerializer(
-                help_text="The grant was created successfully (synchronous mode)."
-            ),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: "Inner error"
-        }
-    )
-    def post(self, request):
-        logger.debug("VnfGrantView Post: %s" % request.data)
-        try:
-            grant_request = GrantRequestSerializer(data=request.data)
-            if not grant_request.is_valid():
-                raise Exception(grant_request.errors)
-
-            grant_resp = GrantVnf(request.data).exec_grant()
-
-            resp_serializer = GrantSerializer(data=grant_resp)
-            if not resp_serializer.is_valid():
-                raise Exception(grant_resp)
-
-            return Response(data=grant_resp, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            logger.error("Exception in VnfGrant: %s", e.args[0])
-            return Response(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class VnfNotifyView(APIView):

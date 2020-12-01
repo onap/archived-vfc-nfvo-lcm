@@ -21,26 +21,22 @@ from rest_framework import status
 
 from lcm.pub.database.models import VLInstModel, NfInstModel, JobModel, NSInstModel, VmInstModel, \
     OOFDataModel, VNFCInstModel, PortInstModel, CPInstModel, SubscriptionModel
-from lcm.pub.exceptions import NSLCMException
 from lcm.pub.utils import restcall
 from lcm.jobs.enum import JOB_MODEL_STATUS, JOB_TYPE, JOB_ACTION, JOB_PROGRESS
 from lcm.pub.utils.jobutil import JobUtil
 from lcm.pub.utils.timeutil import now_time
 from lcm.pub.utils.values import ignore_case_get
-from lcm.ns_vnfs.biz.grant_vnf import GrantVnf
 from lcm.ns_vnfs.biz.heal_vnfs import NFHealService
 from lcm.ns_vnfs.biz.scale_vnfs import NFManualScaleService
 from lcm.ns_vnfs.biz.subscribe import SubscriptionDeletion
 from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
-from lcm.ns_vnfs.enum import VNF_STATUS, LIFE_CYCLE_OPERATION, RESOURCE_CHANGE_TYPE, VNFC_CHANGE_TYPE, \
+from lcm.ns_vnfs.enum import VNF_STATUS, VNFC_CHANGE_TYPE, \
     INST_TYPE, NETWORK_RESOURCE_TYPE
 from lcm.ns_vnfs.biz.place_vnfs import PlaceVnfs
-from lcm.pub.msapi import resmgr
 from lcm.ns_vnfs.tests.test_data import vnfm_info, vim_info, vnf_place_request
 from lcm.ns_vnfs.tests.test_data import nf_package_info, nsd_model_dict, subscription_response_data
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
 from lcm.ns_vnfs.biz import create_vnfs
-from lcm.ns_vnfs.biz.grant_vnfs import GrantVnfs
 from lcm.ns_vnfs.biz.update_vnfs import NFOperateService
 from lcm.ns_vnfs.biz.verify_vnfs import VerifyVnfs
 from lcm.ns.enum import OWNER_TYPE
@@ -125,8 +121,6 @@ class TestTerminateVnfViews(TestCase):
                 [0, json.JSONEncoder().encode({"jobId": job_id}), "200"],
             "/api/ztevnfmdriver/v1/1/jobs/" + job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode(job_info), "200"],
-            "/api/resmgr/v1/vnf/1":
-                [0, json.JSONEncoder().encode({"jobId": job_id}), "200"],
             "api/gvnfmdriver/v1/1/subscriptions/":
                 [0, json.JSONEncoder().encode({}), "200"]
         }
@@ -169,8 +163,6 @@ class TestTerminateVnfViews(TestCase):
                 [0, json.JSONEncoder().encode({"jobId": job_id}), "200"],
             "/api/ztevnfmdriver/v1/2/jobs/" + job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode(job_info), "200"],
-            "/api/resmgr/v1/vnf/%s" % nf_inst_id:
-                [0, json.JSONEncoder().encode({"jobId": job_id}), "200"]
         }
 
         def side_effect(*args):
@@ -824,91 +816,6 @@ class TestPlaceVnfViews(TestCase):
         self.assertEqual(db_info[0].vdu_info, "none")
 
 
-class TestGrantVnfsViews(TestCase):
-    def setUp(self):
-        self.vnf_inst_id = str(uuid.uuid4())
-        self.data = {
-            "vnfInstanceId": self.vnf_inst_id,
-            "lifecycleOperation": LIFE_CYCLE_OPERATION.INSTANTIATE,
-            "addResource": [{"type": RESOURCE_CHANGE_TYPE.VDU, "vdu": "vdu_grant_vnf_add_resources"}],
-            "additionalParam": {
-                "vnfmid": "vnfm_inst_id_001",
-                "vimid": '{"cloud_owner": "VCPE", "cloud_regionid": "RegionOne"}'
-            }
-        }
-        self.client = Client()
-        self.url = "/api/nslcm/v1/ns/grantvnf"
-        NfInstModel(mnfinstid=self.vnf_inst_id, nfinstid="vnf_inst_id_001", package_id="package_id_001",
-                    vnfm_inst_id="vnfm_inst_id_001").save()
-
-    def tearDown(self):
-        OOFDataModel.objects.all().delete()
-        NfInstModel.objects.all().delete()
-
-    # @mock.patch.object(restcall, "call_req")
-    # def test_nf_grant_view(self, mock_call_req):
-    #     mock_vals = {
-    #         "/api/catalog/v1/vnfpackages/package_id_001":
-    #             [0, json.JSONEncoder().encode(nf_package_info), "200"],
-    #         "/api/resmgr/v1/resource/grant":
-    #             [1, json.JSONEncoder().encode({}), "200"],
-    #         "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
-    #             [0, json.JSONEncoder().encode(vim_info), "201"],
-    #     }
-    #
-    #     def side_effect(*args):
-    #         return mock_vals[args[4]]
-    #
-    #     mock_call_req.side_effect = side_effect
-    #     data = {
-    #         "vnfInstanceId": self.vnf_inst_id,
-    #         "lifecycleOperation": LIFE_CYCLE_OPERATION.INSTANTIATE
-    #     }
-    #     response = self.client.post(self.url, data=data)
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    @mock.patch.object(restcall, "call_req")
-    def test_nf_grant_view_when_add_resource(self, mock_call_req):
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_001":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-            "/api/resmgr/v1/resource/grant":
-                [1, json.JSONEncoder().encode({}), "200"],
-            "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
-                [0, json.JSONEncoder().encode(vim_info), "201"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-        mock_call_req.side_effect = side_effect
-        resp = GrantVnfs(json.dumps(self.data), "").send_grant_vnf_to_resMgr()
-        return_success = {"vim": {"accessInfo": {"tenant": "admin"},
-                                  "vimId": "example-cloud-owner-val-97336_example-cloud-region-id-val-35532"}}
-        self.assertEqual(resp, return_success)
-
-    @mock.patch.object(restcall, "call_req")
-    def test_nf_grant_view_when_remove_resource(self, mock_call_req):
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_001":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-            "/api/resmgr/v1/resource/grant":
-                [1, json.JSONEncoder().encode({}), "200"],
-            "/cloud-infrastructure/cloud-regions/cloud-region/VCPE/RegionOne?depth=all":
-                [0, json.JSONEncoder().encode(vim_info), "201"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
-        self.data.pop("addResource")
-        self.data["removeResource"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
-        resp = GrantVnfs(json.dumps(self.data), "").send_grant_vnf_to_resMgr()
-        return_success = {"vim": {"accessInfo": {"tenant": "admin"},
-                                  "vimId": "example-cloud-owner-val-97336_example-cloud-region-id-val-35532"}}
-        self.assertEqual(resp, return_success)
-
-
 class TestGrantVnfViews(TestCase):
     def setUp(self):
         self.vnf_inst_id = str(uuid.uuid4())
@@ -929,217 +836,6 @@ class TestGrantVnfViews(TestCase):
     def tearDown(self):
         OOFDataModel.objects.all().delete()
         NfInstModel.objects.all().delete()
-
-    @mock.patch.object(resmgr, "grant_vnf")
-    def test_vnf_grant_view(self, mock_grant):
-        resmgr_grant_resp = {
-            "vim": {
-                "vimId": "cloudOwner_casa",
-                "accessInfo": {
-                    "tenant": "tenantA"
-                }
-            }
-        }
-        mock_grant.return_value = resmgr_grant_resp
-        self.data.pop("addResources")
-        response = self.client.post("/api/nslcm/v2/grants", data=self.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
-        self.assertEqual(response.data["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
-        self.assertEqual(response.data["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
-
-    @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
-    def test_exec_grant_when_add_resources_success(self, mock_grant, mock_call_req):
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_001":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
-        resmgr_grant_resp = {
-            "vim": {
-                "vimId": "cloudOwner_casa",
-                "accessInfo": {
-                    "tenant": "tenantA"
-                }
-            }
-        }
-        mock_grant.return_value = resmgr_grant_resp
-        resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
-
-    def test_exec_grant_when_add_resources_but_no_vnfinst(self):
-        self.data["vnfInstanceId"] = "no_vnfinst"
-        resp = None
-        try:
-            resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        except NSLCMException as e:
-            self.assertEqual(type(e), NSLCMException)
-        finally:
-            self.assertEqual(resp, None)
-
-    @mock.patch.object(time, "sleep")
-    @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
-    def test_exec_grant_when_add_resources_but_no_off(self, mock_grant, mock_call_req, mock_sleep):
-        NfInstModel(mnfinstid="add_resources_but_no_off", nfinstid="vnf_inst_id_002",
-                    package_id="package_id_002").save()
-        mock_sleep.return_value = None
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_002":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
-        resmgr_grant_resp = {
-            "vim": {
-                "vimId": "cloudOwner_casa",
-                "accessInfo": {
-                    "tenant": "tenantA"
-                }
-            }
-        }
-        mock_grant.return_value = resmgr_grant_resp
-        self.data["vnfInstanceId"] = "add_resources_but_no_off"
-        resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        self.assertEqual(resp["vnfInstanceId"], "add_resources_but_no_off")
-        self.assertEqual(resp["vnfLcmOpOccId"], "vnf_lcm_op_occ_id")
-        vimConnections = [{
-            "id": "cloudOwner_casa",
-            "vimId": "cloudOwner_casa",
-            "vimType": None,
-            "interfaceInfo": None,
-            "accessInfo": {"tenant": "tenantA"},
-            "extra": None
-        }]
-        self.assertEqual(resp["vimConnections"], vimConnections)
-
-    @mock.patch.object(resmgr, "grant_vnf")
-    def test_exec_grant_when_resource_template_in_add_resources(self, mock_grant):
-        resmgr_grant_resp = {
-            "vim": {
-                "vimId": "cloudOwner_casa",
-                "accessInfo": {
-                    "tenant": "tenantA"
-                }
-            }
-        }
-        mock_grant.return_value = resmgr_grant_resp
-        self.data["addResources"] = [{"vdu": "vdu_grant_vnf_add_resources"}, "resourceTemplate"]
-        resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
-
-    @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
-    def test_exec_grant_when_remove_resources_success(self, mock_grant, mock_call_req):
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_001":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
-        resmgr_grant_resp = {
-            "vim": {
-                "vimId": "cloudOwner_casa",
-                "accessInfo": {
-                    "tenant": "tenantA"
-                }
-            }
-        }
-        mock_grant.return_value = resmgr_grant_resp
-        self.data.pop("addResources")
-        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
-        self.data["additionalparams"] = {"vnfmid": "vnfm_id_001"}
-        resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
-
-    def test_exec_grant_when_remove_resources_no_vnfinst(self):
-        self.data.pop("addResources")
-        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
-        self.data["additionalparams"] = {"vnfmid": "vnfm_id_002"}
-        resp = None
-        try:
-            resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        except NSLCMException as e:
-            self.assertEqual(type(e), NSLCMException)
-        finally:
-            self.assertEqual(resp, None)
-
-    @mock.patch.object(time, "sleep")
-    @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
-    def test_exec_grant_when_remove_resources_but_no_off(self, mock_grant, mock_call_req, mock_sleep):
-        NfInstModel(mnfinstid="remove_resources_but_no_off", nfinstid="vnf_inst_id_002", package_id="package_id_002",
-                    vnfm_inst_id="vnfm_id_002").save()
-        mock_sleep.return_value = None
-        mock_vals = {
-            "/api/catalog/v1/vnfpackages/package_id_002":
-                [0, json.JSONEncoder().encode(nf_package_info), "200"],
-        }
-
-        def side_effect(*args):
-            return mock_vals[args[4]]
-
-        mock_call_req.side_effect = side_effect
-        resmgr_grant_resp = {
-            "vim": {
-                "vimId": "cloudOwner_casa",
-                "accessInfo": {
-                    "tenant": "tenantA"
-                }
-            }
-        }
-        mock_grant.return_value = resmgr_grant_resp
-        self.data["vnfInstanceId"] = "remove_resources_but_no_off"
-        self.data.pop("addResources")
-        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}]
-        self.data["additionalparams"] = {"vnfmid": "vnfm_id_002"}
-        resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        self.assertEqual(resp["vnfInstanceId"], "remove_resources_but_no_off")
-        self.assertEqual(resp["vnfLcmOpOccId"], "vnf_lcm_op_occ_id")
-        vimConnections = [{
-            "id": "cloudOwner_casa",
-            "vimId": "cloudOwner_casa",
-            "vimType": None,
-            "interfaceInfo": None,
-            "accessInfo": {"tenant": "tenantA"},
-            "extra": None
-        }]
-        self.assertEqual(resp["vimConnections"], vimConnections)
-
-    @mock.patch.object(resmgr, "grant_vnf")
-    def test_exec_grant_when_resource_template_in_remove_resources(self, mock_grant):
-        resmgr_grant_resp = {
-            "vim": {
-                "vimId": "cloudOwner_casa",
-                "accessInfo": {
-                    "tenant": "tenantA"
-                }
-            }
-        }
-        mock_grant.return_value = resmgr_grant_resp
-        self.data.pop("addResources")
-        self.data["removeResources"] = [{"vdu": "vdu_grant_vnf_remove_resources"}, "resourceTemplate"]
-        resp = GrantVnf(json.dumps(self.data)).exec_grant()
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimConnectionId"], "cloudOwner_casa")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["resourceProviderId"], "vg")
-        self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
 
 class TestCreateVnfViews(TestCase):
@@ -1197,8 +893,6 @@ class TestCreateVnfViews(TestCase):
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), "200"],
             "/api/oof/v1/placement":
                 [0, json.JSONEncoder().encode({}), "202"],
-            "/api/resmgr/v1/vnf":
-                [0, json.JSONEncoder().encode({}), "200"],
             "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
@@ -1213,8 +907,6 @@ class TestCreateVnfViews(TestCase):
                                                                            "statusdescription": "creating",
                                                                            "errorcode": "0"}]}}), "200"],
             "api/gvnfmdriver/v1/1/subscriptions":
-                [0, json.JSONEncoder().encode(subscription_response_data), "200"],
-            "/api/resmgr/v1/vnfinfo":
                 [0, json.JSONEncoder().encode(subscription_response_data), "200"],
 
             # "/network/generic-vnfs/generic-vnf/%s" % nf_inst_id:
@@ -1266,8 +958,6 @@ class TestCreateVnfViews(TestCase):
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), "200"],
             "/api/oof/v1/placement":
                 [0, json.JSONEncoder().encode({}), "202"],
-            "/api/resmgr/v1/vnf":
-                [0, json.JSONEncoder().encode({}), "200"],
             "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
@@ -1283,8 +973,6 @@ class TestCreateVnfViews(TestCase):
                                                                            "errorcode": "0"}]}}), "200"],
             "api/gvnfmdriver/v1/1/subscriptions":
                 [0, json.JSONEncoder().encode({}), "200"],
-            "/api/resmgr/v1/vnfinfo":
-                [0, json.JSONEncoder().encode(subscription_response_data), "200"]
         }
 
         def side_effect(*args):
@@ -1369,8 +1057,6 @@ class TestCreateVnfViews(TestCase):
                 [0, json.JSONEncoder().encode({"jobId": self.job_id, "vnfInstanceId": 3}), "200"],
             "/api/oof/v1/placement":
                 [0, json.JSONEncoder().encode({}), "202"],
-            "/api/resmgr/v1/vnf":
-                [0, json.JSONEncoder().encode({}), "200"],
             "/api/ztevnfmdriver/v1/1/jobs/" + self.job_id + "?responseId=0":
                 [0, json.JSONEncoder().encode({"jobid": self.job_id,
                                                "responsedescriptor": {"progress": "100",
@@ -1386,8 +1072,6 @@ class TestCreateVnfViews(TestCase):
                                                                            "errorcode": "0"}]}}), "200"],
             "api/gvnfmdriver/v1/1/subscriptions":
                 [1, json.JSONEncoder().encode(subscription_response_data), "200"],
-            "/api/resmgr/v1/vnfinfo":
-                [0, json.JSONEncoder().encode(subscription_response_data), "200"],
         }
 
         def side_effect(*args):
