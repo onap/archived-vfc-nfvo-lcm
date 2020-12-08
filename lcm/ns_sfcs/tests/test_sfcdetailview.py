@@ -19,7 +19,6 @@ from django.test import TestCase, Client
 from rest_framework import status
 from lcm.pub.msapi import sdncdriver
 from lcm.pub.database.models import FPInstModel
-from lcm.pub.msapi import resmgr
 
 
 class TestSfcDetailViews(TestCase):
@@ -44,13 +43,11 @@ class TestSfcDetailViews(TestCase):
     @mock.patch.object(sdncdriver, "delete_flow_classifier")
     @mock.patch.object(sdncdriver, "delete_port_pair_group")
     @mock.patch.object(sdncdriver, "delete_port_pair")
-    @mock.patch.object(resmgr, "delete_sfc")
-    def test_sfc_delete_success(self, mock_delete_sfc, mock_delete_port_pair, mock_delete_port_pair_group, mock_delete_flow_classifier, mock_delete_port_chain, mock_get_sdn_controller_by_id):
+    def test_sfc_delete_success(self, mock_delete_port_pair, mock_delete_port_pair_group, mock_delete_flow_classifier, mock_delete_port_chain, mock_get_sdn_controller_by_id):
         mock_delete_port_chain.return_value = None
         mock_delete_flow_classifier.return_value = None
         mock_delete_port_pair_group.return_value = None
         mock_delete_port_pair.return_value = None
-        mock_delete_sfc.return_value = None
         mock_get_sdn_controller_by_id.return_value = json.loads('{"test":"test_name","url":"url_add"}')
         sfc_inst_id = "10"
 

@@ -18,7 +18,6 @@ import uuid
 import time
 from lcm.pub.database.models import NfInstModel, OOFDataModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import resmgr
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.utils.values import ignore_case_get
 from lcm.ns_vnfs.const import SCALAR_UNIT_DICT
@@ -90,18 +89,19 @@ class GrantVnf(object):
                         break
                 req_param[grant_type].append(grant_res)
             self.data = req_param
-        tmp = resmgr.grant_vnf(self.data)
+        res = vim_connections_get(self.data)
         vimConnections.append(
             {
-                "id": tmp["vim"]["vimId"],
-                "vimId": tmp["vim"]["vimId"],
+                "id": res["vim"]["vimId"],
+                "vimId": res["vim"]["vimId"],
                 "vimType": None,
                 "interfaceInfo": None,
-                "accessInfo": tmp["vim"]["accessInfo"],
+                "accessInfo": {
+                    "tenant": res["vim"]["accessInfo"]["tenant"]
+                },
                 "extra": None
             }
         )
-
         grant_resp = {
             "id": str(uuid.uuid4()),
             "vnfInstanceId": ignore_case_get(self.data, 'vnfInstanceId'),
@@ -112,7 +112,8 @@ class GrantVnf(object):
         logger.debug("action_type=%s" % action_type)
         if action_type == 'INSTANTIATE':
             for i in range(18):
-                offs = OOFDataModel.objects.filter(service_resource_id=ignore_case_get(self.data, "vnfInstanceId"))
+                offs = OOFDataModel.objects.filter(
+                    service_resource_id=ignore_case_get(self.data, "vnfInstanceId"))
                 if not (offs.exists() and offs[0].vdu_info):
                     logger.debug("Cannot find oof data, retry%s" % (i + 1))
                     time.sleep(5)
@@ -145,7 +146,8 @@ class GrantVnf(object):
                     "numVirtualCpu": int(vdu["virtual_compute"]["virtual_cpu"]["num_virtual_cpu"])
                 },
                 "virtualMemory": {
-                    "virtualMemSize": parse_unit(vdu["virtual_compute"]["virtual_memory"]["virtual_mem_size"], "MB")
+                    "virtualMemSize": parse_unit(
+                        vdu["virtual_compute"]["virtual_memory"]["virtual_mem_size"], "MB")
                 }
             },
             "virtualStorageDescriptor": {
@@ -172,3 +174,33 @@ def parse_unit(val, base_unit):
         return val.strip()
     num, unit = num_unit[0], num_unit[1]
     return int(num) * SCALAR_UNIT_DICT[unit.upper()] / SCALAR_UNIT_DICT[base_unit.upper()]
+
+
+def vim_connections_get(req_param):
+    vim_id = ""
+    if "vimId" in req_param:
+        vim_id = req_param["vimId"]
+    elif "additionalparam" in req_param and "vimid" in req_param["additionalparam"]:
+        vim_id = req_param["additionalparam"]["vimid"]
+    elif "additionalParams" in req_param and "vimid" in req_param["additionalParams"]:
+        vim_id = req_param["additionalParams"]["vimid"]
+    try:
+        from lcm.pub.msapi import extsys
+        vim = extsys.get_vim_by_id(vim_id)
+        if isinstance(vim, list):
+            vim = vim[0]
+            vim_id = vim["vimId"]
+        if "vimId" in vim:
+            vim_id = vim["vimId"]
+        rsp = {
+            "vim": {
+                "vimId": vim_id,
+                "accessInfo": {
+                    "tenant": vim["tenant"]
+                }
+            }
+        }
+        logger.debug("rsp=%s" % rsp)
+        return rsp
+    except:
+        raise NSLCMException('Failed to get vimConnections info')

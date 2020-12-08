@@ -19,6 +19,7 @@ import mock
 from django.test import TestCase, Client
 from rest_framework import status
 
+from lcm.ns_vnfs.biz.grant_vnfs import GrantVnfs
 from lcm.pub.database.models import VLInstModel, NfInstModel, JobModel, NSInstModel, VmInstModel, \
     OOFDataModel, VNFCInstModel, PortInstModel, CPInstModel, SubscriptionModel
 from lcm.pub.exceptions import NSLCMException
@@ -35,12 +36,10 @@ from lcm.ns_vnfs.biz.terminate_nfs import TerminateVnfs
 from lcm.ns_vnfs.enum import VNF_STATUS, LIFE_CYCLE_OPERATION, RESOURCE_CHANGE_TYPE, VNFC_CHANGE_TYPE, \
     INST_TYPE, NETWORK_RESOURCE_TYPE
 from lcm.ns_vnfs.biz.place_vnfs import PlaceVnfs
-from lcm.pub.msapi import resmgr
 from lcm.ns_vnfs.tests.test_data import vnfm_info, vim_info, vnf_place_request
 from lcm.ns_vnfs.tests.test_data import nf_package_info, nsd_model_dict, subscription_response_data
 from lcm.ns_vnfs.biz.create_vnfs import CreateVnfs
-from lcm.ns_vnfs.biz import create_vnfs
-from lcm.ns_vnfs.biz.grant_vnfs import GrantVnfs
+from lcm.ns_vnfs.biz import create_vnfs, grant_vnf
 from lcm.ns_vnfs.biz.update_vnfs import NFOperateService
 from lcm.ns_vnfs.biz.verify_vnfs import VerifyVnfs
 from lcm.ns.enum import OWNER_TYPE
@@ -866,7 +865,6 @@ class TestGrantVnfsViews(TestCase):
     #     }
     #     response = self.client.post(self.url, data=data)
     #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
     @mock.patch.object(restcall, "call_req")
     def test_nf_grant_view_when_add_resource(self, mock_call_req):
         mock_vals = {
@@ -930,7 +928,7 @@ class TestGrantVnfViews(TestCase):
         OOFDataModel.objects.all().delete()
         NfInstModel.objects.all().delete()
 
-    @mock.patch.object(resmgr, "grant_vnf")
+    @mock.patch.object(grant_vnf, "vim_connections_get")
     def test_vnf_grant_view(self, mock_grant):
         resmgr_grant_resp = {
             "vim": {
@@ -949,7 +947,7 @@ class TestGrantVnfViews(TestCase):
         self.assertEqual(response.data["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
     @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
+    @mock.patch.object(grant_vnf, "vim_connections_get")
     def test_exec_grant_when_add_resources_success(self, mock_grant, mock_call_req):
         mock_vals = {
             "/api/catalog/v1/vnfpackages/package_id_001":
@@ -986,7 +984,7 @@ class TestGrantVnfViews(TestCase):
 
     @mock.patch.object(time, "sleep")
     @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
+    @mock.patch.object(grant_vnf, "vim_connections_get")
     def test_exec_grant_when_add_resources_but_no_off(self, mock_grant, mock_call_req, mock_sleep):
         NfInstModel(mnfinstid="add_resources_but_no_off", nfinstid="vnf_inst_id_002",
                     package_id="package_id_002").save()
@@ -1023,7 +1021,7 @@ class TestGrantVnfViews(TestCase):
         }]
         self.assertEqual(resp["vimConnections"], vimConnections)
 
-    @mock.patch.object(resmgr, "grant_vnf")
+    @mock.patch.object(grant_vnf, "vim_connections_get")
     def test_exec_grant_when_resource_template_in_add_resources(self, mock_grant):
         resmgr_grant_resp = {
             "vim": {
@@ -1041,7 +1039,7 @@ class TestGrantVnfViews(TestCase):
         self.assertEqual(resp["vimAssets"]["computeResourceFlavours"][0]["vimFlavourId"], "flavor_id_001")
 
     @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
+    @mock.patch.object(grant_vnf, "vim_connections_get")
     def test_exec_grant_when_remove_resources_success(self, mock_grant, mock_call_req):
         mock_vals = {
             "/api/catalog/v1/vnfpackages/package_id_001":
@@ -1083,7 +1081,7 @@ class TestGrantVnfViews(TestCase):
 
     @mock.patch.object(time, "sleep")
     @mock.patch.object(restcall, "call_req")
-    @mock.patch.object(resmgr, "grant_vnf")
+    @mock.patch.object(grant_vnf, "vim_connections_get")
     def test_exec_grant_when_remove_resources_but_no_off(self, mock_grant, mock_call_req, mock_sleep):
         NfInstModel(mnfinstid="remove_resources_but_no_off", nfinstid="vnf_inst_id_002", package_id="package_id_002",
                     vnfm_inst_id="vnfm_id_002").save()
@@ -1123,7 +1121,7 @@ class TestGrantVnfViews(TestCase):
         }]
         self.assertEqual(resp["vimConnections"], vimConnections)
 
-    @mock.patch.object(resmgr, "grant_vnf")
+    @mock.patch.object(grant_vnf, "vim_connections_get")
     def test_exec_grant_when_resource_template_in_remove_resources(self, mock_grant):
         resmgr_grant_resp = {
             "vim": {
