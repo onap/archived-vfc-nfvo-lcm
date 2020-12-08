@@ -13,13 +13,16 @@
 # limitations under the License.
 
 import json
+
 import logging
 
+from lcm.ns_vnfs.biz.grant_vnf import vim_connections_get
 from lcm.pub.database.models import NfInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import resmgr
+
 from lcm.pub.msapi.sdc_run_catalog import query_vnfpackage_by_id
 from lcm.pub.utils.values import ignore_case_get
+
 from lcm.ns_vnfs.const import SCALAR_UNIT_DICT
 
 logger = logging.getLogger(__name__)
@@ -88,7 +91,7 @@ class GrantVnfs(object):
                         break
                 req_param[grant_type].append(grant_res)
             self.data = req_param
-        return resmgr.grant_vnf(self.data)
+        return vim_connections_get(self.data)
 
     def get_res_tpl(self, vdu, vnfd):
         storage_size = 0

@@ -21,7 +21,7 @@ from lcm.ns.enum import OWNER_TYPE
 from lcm.pub.config.config import REPORT_TO_AAI
 from lcm.pub.database.models import VLInstModel, NSInstModel, VNFFGInstModel
 from lcm.pub.exceptions import NSLCMException
-from lcm.pub.msapi import extsys, resmgr
+from lcm.pub.msapi import extsys
 from lcm.pub.msapi.aai import create_network_aai, create_subnet_aai
 from lcm.pub.nfvi.vim import const
 from lcm.pub.nfvi.vim import vimadaptor
@@ -55,7 +55,6 @@ class CreateVls(object):
         try:
             self.get_data()
             self.create_vl_to_vim()
-            # self.create_vl_to_resmgr()
             self.save_vl_to_db()
             if REPORT_TO_AAI:
                 self.create_network_aai()
@@ -139,40 +138,6 @@ class CreateVls(object):
             logger.error("Send post vl request to vim failed, detail is %s" % vl_ret[1])
             raise NSLCMException("Send post vl request to vim failed.")
         return vl_ret[1]
-
-    def create_vl_to_resmgr(self):
-        self.vim_id = json.JSONDecoder().decode(self.vim_id) if isinstance(self.vim_id, str) else self.vim_id
-        vim_id = self.vim_id['cloud_owner'] + self.vim_id['cloud_regionid']
-        req_param = {
-            "vlInstanceId": self.vl_inst_id,
-            "name": self.vl_profile.get("networkName", ""),
-            "backendId": str(self.related_network_id),
-            "isPublic": "True",
-            "dcName": "",
-            "vimId": str(vim_id),
-            "vimName": self.vim_name,
-            "physicialNet": self.vl_profile.get("physicalNetwork", ""),
-            "nsId": self.owner_id,
-            "nsName": self.ns_name,
-            "description": self.description,
-            "networkType": self.vl_profile.get("networkType", ""),
-            "segmentation": str(self.vl_profile.get("segmentationId", "")),
-            "mtu": str(self.vl_profile.get("mtu", "")),
-            "vlanTransparent": str(self.vl_profile.get("vlanTransparent", "")),
-            "routerExternal": self.route_external,
-            "resourceProviderType": "",
-            "resourceProviderId": "",
-            "subnet_list": [{
-                "subnet_name": self.vl_profile.get("networkName", ""),  # self.vl_profile.get("initiationParameters").get("name", ""),
-                "cidr": self.vl_profile.get("cidr", "192.168.0.0/24"),
-                "ip_version": self.vl_profile.get("ip_version", const.IPV4),
-                "enable_dhcp": self.vl_profile.get("dhcpEnabled", False),
-                "gateway_ip": self.vl_profile.get("gatewayIp", ""),
-                "dns_nameservers": self.vl_profile.get("dns_nameservers", ""),
-                "host_routes": self.vl_profile.get("host_routes", "")
-            }]
-        }
-        resmgr.create_vl(req_param)
 
     def create_vl_inst_id_in_vnffg(self):
         if "vnffgs" in self.context:
