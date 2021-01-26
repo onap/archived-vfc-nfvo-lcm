@@ -5,82 +5,96 @@
    **VFC Installation over OOM**
    **V0.1**
 
-**1 Scope**
+1 **Scope**
 =============
 
 This is a guide to help developer or tester to try to install VF-C over OOM
 
-**2 Component & function**
+2 **Component & function**
 ==========================
 
-Now VF-C have the following repos in https://gerrit.onap.org/r/#/admin/projects/?filter=vfc
+Repos:
+~~~~~~
 
-+--------------------------+-----------------------------------------------------+
-|     **Repo Name**        |     Description                                     |
-+==========================+=====================================================+
-|     vfc/nfvo/lcm         |      NS life cycle management                       |
-+--------------------------+-----------------------------------------------------+
-| vfc/nfvo/resmanagement   |      NS Resource Management                         |
-+--------------------------+-----------------------------------------------------+
-|vfc/nfvo/driver/vnfm/svnfm|     Specific VNFM drivers                           |
-+--------------------------+-----------------------------------------------------+
-|vfc/nfvo/driver/vnfm/gvnfm|     Generic VNFM drivers                            |
-+--------------------------+-----------------------------------------------------+
-|vfc/nfvo/driver/sfc       |     SFC Driver                                      |
-+--------------------------+-----------------------------------------------------+
-|org.onap.vfc.nfvo.wfengine|     Work flow engine                                |
-+--------------------------+-----------------------------------------------------+
-|EMS-driver                |     VNF fcaps collect                               |
-+--------------------------+-----------------------------------------------------+
-|vfc/gvnfm/vnflcm          |     Generic VNFM VNF LCM                            |
-+--------------------------+-----------------------------------------------------+
-|vfc/gvnfm/vnfmgr          |     Generic VNFM VNF Mgr                            |
-+--------------------------+-----------------------------------------------------+
-|vfc/gvnfm/vnfres          |     Generic VNFM VNF Resource Management            |
-+--------------------------+-----------------------------------------------------+
-|vfc/nfvo/multivimproxy    | Multi-vim proxy, provide the multivim indirect mode |
-|                          | proxy which can forward virtual resource requests to|
-|						   | multivim and do some resource checking              |
-+--------------------------+-----------------------------------------------------+
-|vfc/nfvo/db               | Stand-alone database microservice, provides the     |
-|                          |   database services for each VF-C component         |
-+--------------------------+-----------------------------------------------------+
+Now VF-C have the following repos in https://gerrit.onap.org/r/admin/repos/q/filter:vfc
 
-Note:
-  a. vfc/nfvo/driver/sfc it migrate from Open-O seed code and now haven't been used in any usecase in ONAP. 
-  b. vfc/nfvo/resmanagement is used to do the resource granting, but now VF-C has been integrated with OOF, this component will be deprecated in the future release.
-  c. vfc/nfvo/db provide the stand-alone database microservice in casablanca release, but now VF-C leverages OOM shared MariaDB-Gelera cluster. This repo still has redis to be used by VF-C component.
+.. list-table::
+   :widths: 30 60 10
+   :header-rows: 1
 
+   * - URL
+     - Method
+     - Description
+   * - vfc/nfvo/lcm
+     - NS life cycle management
+     -
+   * - vfc/nfvo/driver/vnfm/svnfm
+     - Specific VNFM drivers
+     -
+   * - vfc/nfvo/driver/vnfm/gvnfm
+     - Generic VNFM drivers
+     -
+   * - vfc/nfvo/db
+     - Stand-alone database microservice, provides the database service for each VF-C component
+     -
+   * - vfc/nfvo/driver/ems
+     - VNF fcaps collect
+     - Deprecated
+   * - vfc/nfvo/driver/sfc
+     - SFC Driver
+     - Deprecated
+   * - vfc/nfvo/resmanagement
+     - NS Resource Management
+     - Deprecated
+   * - vfc/nfvo/wfengine
+     - Work flow engine
+     - Deprecated
+   * - vfc/nfvo/multivimproxy
+     - Multi-vim proxy provides the multivim indirect mode proxy
+     - Deprecated
+   * - vfc/gvnfm/vnflcm
+     - Generic VNFM VNF LCM
+     -
+   * - vfc/gvnfm/vnfmgr
+     - Generic VNFM VNF Mgr
+     -
+   * - vfc/gvnfm/vnfres
+     - Generic VNFM VNF Resource Management
+     -
 
-VF-C Docker Images
+VF-C Docker Images:
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
-  docker run -d -p 3306:3306 -p 6379:6379 --name vfc-db -v /var/lib/mysql nexus3.onap.org:10001/onap/vfc/db
-  we use  ${VFC_DB_IP} as the IP of vfc-db component.
-  nexus3.onap.org:10001/onap/vfc/db:1.3.0
-  nexus3.onap.org:10001/onap/vfc/emsdriver:1.3.0
-  nexus3.onap.org:10001/onap/vfc/gvnfmdriver:1.3.0
-  nexus3.onap.org:10001/onap/vfc/jujudriver:1.3.0
-  nexus3.onap.org:10001/onap/vfc/multivimproxy:1.3.0
-  nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/huawei:1.3.0
-  nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/nokia:1.3.0
-  nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/nokiav2:1.3.0
-  nexus3.onap.org:10001/onap/vfc/nslcm:1.3.0
-  nexus3.onap.org:10001/onap/vfc/resmanagement:1.3.0
-  nexus3.onap.org:10001/onap/vfc/vnflcm:1.3.0
-  nexus3.onap.org:10001/onap/vfc/vnfmgr:1.3.0
-  nexus3.onap.org:10001/onap/vfc/vnfres:1.3.0
-  nexus3.onap.org:10001/onap/vfc/wfengine-activiti:1.3.0
-  nexus3.onap.org:10001/onap/vfc/wfengine-mgrservice:1.3.0
-  nexus3.onap.org:10001/onap/vfc/ztesdncdriver:1.3.0
-  nexus3.onap.org:10001/onap/vfc/ztevnfmdriver:1.3.0
-  
+  nexus3.onap.org:10001/onap/vfc/nslcm
+  nexus3.onap.org:10001/onap/vfc/db
+  nexus3.onap.org:10001/onap/vfc/gvnfmdriver
+  nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/huawei
+  nexus3.onap.org:10001/onap/vfc/ztevnfmdriver
+  nexus3.onap.org:10001/onap/vfc/vnflcm
+  nexus3.onap.org:10001/onap/vfc/vnfmgr
+  nexus3.onap.org:10001/onap/vfc/vnfres
+
+
+Deprecated from Guilin Release:
+::
+
+  nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/nokia
+  nexus3.onap.org:10001/onap/vfc/nfvo/svnfm/nokiav2
+  nexus3.onap.org:10001/onap/vfc/emsdriver
+  nexus3.onap.org:10001/onap/vfc/jujudriver
+  nexus3.onap.org:10001/onap/vfc/multivimproxy
+  nexus3.onap.org:10001/onap/vfc/resmanagement
+  nexus3.onap.org:10001/onap/vfc/wfengine-activiti
+  nexus3.onap.org:10001/onap/vfc/wfengine-mgrservice
+  nexus3.onap.org:10001/onap/vfc/ztesdncdriver
+
 
 **3 VF-C Deployment**
 =====================
 
-For initialization of docker there are 2 deployment options currently adpoted in ONAP:
+For initialization of docker there are 2 deployment options currently used in ONAP:
 - using heat template
 - using OOM
 
@@ -88,8 +102,9 @@ From Casablanca release, OOM is the recommended way, so here mainly give the ste
 
 For OOM deployment you can refer to the below links:
 
-https://onap.readthedocs.io/en/latest/submodules/oom.git/docs/oom_setup_kubernetes_rancher.html
-https://onap.readthedocs.io/en/latest/submodules/oom.git/docs/oom_quickstart_guide.html#quick-start-label
+* https://docs.onap.org/projects/onap-oom/en/latest/oom_user_guide.html#oom-user-guide
+
+* https://docs.onap.org/projects/onap-oom/en/latest/oom_quickstart_guide.html#oom-quickstart-guide
 
 1. First ensure VF-C is marked true against field enabled in the oom/kubernetes/onap/values.yaml for successful deployment.
 
@@ -115,27 +130,17 @@ eg.
 
 ::
 	
-	oom/kubernetes/vfc/charts/vfc-nslcm/values.yaml
+    oom/kubernetes/vfc/charts/vfc-nslcm/values.yaml
 
-	#################################################################
-	# Global configuration defaults.
-	#################################################################
-	global:
-		nodePortPrefix: 302
-		readinessRepository: oomk8s
-		readinessImage: readiness-check:2.0.0
-		loggingRepository: docker.elastic.co
-		loggingImage: beats/filebeat:5.5.0
+    #################################################################
+    # Application configuration defaults.
+    #################################################################
+    # application image
+    flavor: small
 
-	#################################################################
-	# Application configuration defaults.
-	#################################################################
-	# application image
-	flavor: small
-
-	repository: nexus3.onap.org:10001
-	image: onap/vfc/nslcm:1.3.7
-	pullPolicy: Always
+    repository: nexus3.onap.org:10001
+    image: onap/vfc/nslcm:1.4.1
+    pullPolicy: Always
 	
 
 3. Rebuild all repos in helm
@@ -156,51 +161,44 @@ Step2: Build ONAP repo
 	cd oom/kubernetes
 	make onap(here can also execute make all)
 
-Step3: Delete teh existing pods already deployed
+Step3: Delete the release already deployed
 
 ::
 
 	cd oom/kubernetes
-	helm del dev-vfc --purge
+	helm delete dev-vfc --purge
 
 Step4: Deploy the new pods
 
 ::
 
 	cd oom/kubernetes
-	helm instal local/vfc --namespace onap --name dev-vfc
+	helm install local/vfc --namespace onap --name dev-vfc
 
 
 Now VF-C will be upgraded with the new image version 
 
-You will see all the pod is runing 
+You will see all the pods are running
 	
 ::
 
-	cd oom/kubernetes
-	dev-vfc-vfc-db-6c57b4fd47-7kbnj                               1/1       Running            2          79d
-	dev-vfc-vfc-ems-driver-65bd9bf5b-65gtg                        1/1       Running            48         79d
-	dev-vfc-vfc-generic-vnfm-driver-698c8d6698-2ctlg              2/2       Running            4          79d
-	dev-vfc-vfc-huawei-vnfm-driver-6d5db69469-277vb               2/2       Running            7          79d
-	dev-vfc-vfc-juju-vnfm-driver-68d4556dfd-hncrm                 2/2       Running            4          79d
-	dev-vfc-vfc-multivim-proxy-74d8fc568d-gn8gp                   1/1       Running            6          79d
-	dev-vfc-vfc-nokia-v2vnfm-driver-759687787f-fdfsg              1/1       Running            2          79d
-	dev-vfc-vfc-nokia-vnfm-driver-9cbcb9697-z7hp4                 2/2       Running            6          79d
-	dev-vfc-vfc-nslcm-97c97759f-x9r9h                             2/2       Running            9          79d
-	dev-vfc-vfc-resmgr-84b9b579c9-b7cbj                           2/2       Running            7          79d
-	dev-vfc-vfc-vnflcm-7cbdfcfd9b-bqwz8                           2/2       Running            13         79d
-	dev-vfc-vfc-vnfmgr-54bdfb84c4-kwbds                           2/2       Running            6          79d
-	dev-vfc-vfc-vnfres-7fdbc88945-t9nhd                           2/2       Running            5          79d
-	dev-vfc-vfc-workflow-5b745cf488-7z7nd                         1/1       Running            2          79d
-	dev-vfc-vfc-workflow-engine-6d5d8ffc7c-pjpmc                  1/1       Running            2          79d
-	dev-vfc-vfc-zte-sdnc-driver-6554df5856-ctjxh                  1/1       Running            7          79d
-	dev-vfc-vfc-zte-vnfm-driver-7dbd4f887-thvvg                   2/2       Running            8          79d
+    dev-vfc-generic-vnfm-driver-6fcf454665-6pmfv       2/2     Running            0          11d
+    dev-vfc-huawei-vnfm-driver-6f6c465c76-ktpch        2/2     Running            0          11d
+    dev-vfc-mariadb-0                                  2/2     Running            0          11d
+    dev-vfc-mariadb-1                                  2/2     Running            2          11d
+    dev-vfc-mariadb-2                                  2/2     Running            0          11d
+    dev-vfc-nslcm-6dd99f94f4-vxdkc                     2/2     Running            0          11d
+    dev-vfc-redis-5d7d494fdf-crv8c                     1/1     Running            0          11d
+    dev-vfc-vnflcm-5497c66465-f5mh7                    2/2     Running            0          11d
+    dev-vfc-vnfmgr-5459b488d9-6vg75                    2/2     Running            0          11d
+    dev-vfc-vnfres-5577d674cf-g9fz7                    2/2     Running            0          11d
+    dev-vfc-zte-vnfm-driver-6685b74f95-r5phc           2/2     Running            2          11d
 
 
 **4 VF-C health check**
 ========================
 
-When VF-C pod is up, if you want to check the service status, you can visit the following APIs in K8S cluster to check.
+When VF-C pods are up, if you want to check the service status, you can visit the following APIs in K8S cluster to check.
 These swagger API will also show the APIs VF-C provided.
 
 +--------------------------+---------------------------------------------------------------------------+
@@ -215,22 +213,24 @@ These swagger API will also show the APIs VF-C provided.
 |vfc/gvnfm/vnfres          |     http://ClusterIP:8802/api/vnfres/v1/swagger.yaml                      |
 +--------------------------+---------------------------------------------------------------------------+
 
-Here are only a few componnets as an example.
+Here are only a few components as an example.
 
-Take vnflcm as an example, you can visit the api as follow:
+Take vnflcm as an example, you can visit the API as follow:
 
 ::
 
     ubuntu@oom-mr01-rancher:~$ kubectl -n onap get svc|grep vnflcm
-	vfc-vnflcm                         ClusterIP      10.43.71.4      <none>                                 8801/TCP                                                      87d
-	ubuntu@oom-mr01-rancher:~$ curl http://10.43.71.4:8801/api/vnflcm/v1/swagger.json
-	{"swagger": "2.0", "info": {"title": "vnflcm API", "description": "\n\nThe `swagger-ui` view can be found [here](/api/vnflcm/v1/swagger).\n
-	The `ReDoc` view can be found [here](/api/vnflcm/v1/redoc).\nThe swagger YAML document can be found [here](/api/vnflcm/v1/swagger.yaml).\n
-	The swagger JSON document can be found [here](/api/vnflcm/v1/swagger.json)."........
+    vfc-vnflcm                         ClusterIP      10.43.71.4      <none>                                 8801/TCP                                                      87d
+    ubuntu@oom-mr01-rancher:~$ curl http://10.43.71.4:8801/api/vnflcm/v1/swagger.json
+    {"swagger": "2.0", "info": {"title": "vnflcm API", "description": "\n\nThe `swagger-ui` view can be found [here](/api/vnflcm/v1/swagger).\n
+    The `ReDoc` view can be found [here](/api/vnflcm/v1/redoc).\nThe swagger YAML document can be found [here](/api/vnflcm/v1/swagger.yaml).\n
+    The swagger JSON document can be found [here](/api/vnflcm/v1/swagger.json)."........
 	
 	
-Because VF-C expose service by ClusterIP, so that you can only visit the APIs in K8S cluster. 
+Because VF-C expose service by ClusterIP, so that you can only visit the APIs in K8S cluster.
+
 If you want to visit VF-C APIs outside of K8S cluster, you can visit these APIs via MSB, because all VF-C APIs have been registered to MSB.
+
 You can execute the following steps:
 
 ::
@@ -253,47 +253,58 @@ You can visit the http://172.60.2.39:30280/api/vnflcm/v1/swagger.json in the bro
 **5 Debug and Testing in running Pod**
 ======================================
 
-When you are doing the testing and would like to replace some new file like binary or some script and want to check the new resut.
-Before you replace the file to the running pod,you need to close the pod livenessProbe and readinessProbe first to avoid the pod restart.
+When you are doing the testing and would like to replace some new file like binary or some script and want to check the new result.
 
 Take vfc-nslcm pod as an example:
 
 ::
 
-    kubectl -n onap edit deployment dev-vfc-vfc-nslcm
+    kubectl -n onap edit deployment dev-vfc-nslcm
 
     spec:
       containers:
-      - env:
-        - name: MSB_ADDR
-          value: msb-iag:80
+      - args:
+        - -c
+        - MYSQL_AUTH=${MYSQL_ROOT_USER}:${MYSQL_ROOT_PASSWORD} ./docker-entrypoint.sh
+        command:
+        - sh
+        env:
+        - name: MSB_HOST
+          value: https://msb-iag:443
+        - name: SSL_ENABLED
+          value: "false"
         - name: MYSQL_ADDR
-          value: vfc-db:3306
-        image: 172.30.1.66:10001/onap/vfc/nslcm:1.3.7
-        imagePullPolicy: Always
-        #livenessProbe:
-          #failureThreshold: 3
-          #initialDelaySeconds: 120
-          #periodSeconds: 10
-          #successThreshold: 1
-          #tcpSocket:
-            #port: 8806
-          #timeoutSeconds: 1
+          value: vfc-mariadb:3306
+        - name: MYSQL_ROOT_USER
+          value: root
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: dev-vfc-db-root-pass
+        - name: REDIS_HOST
+          value: vfc-redis
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REG_TO_MSB_WHEN_START
+          value: "false"
+        image: 192.168.235.22:10001/onap/vfc/nslcm:1.4.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8403
+          timeoutSeconds: 1
         name: vfc-nslcm
         ports:
-        - containerPort: 8806
+        - containerPort: 8403
           protocol: TCP
-        #readinessProbe:
-          #failureThreshold: 3
-          #initialDelaySeconds: 10
-          #periodSeconds: 10
-          #successThreshold: 1
-          #tcpSocket:
-            #port: 8806
-          #timeoutSeconds: 1
-		  
+        readinessProbe:
 
-Then you can replace the file into the pod. 
+Then you can replace the value into the pod.
 
 
 **6 Kubectl basic command**
@@ -317,10 +328,8 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
 
 ::
                      
-    kubectl get pod -o wide
-                
-    kubectl get pod -n onap
-                
+    kubectl get pod -o wide -n onap
+
 * Connected to the docker in pod
 
 ::
@@ -331,7 +340,7 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
                 
     kubectl -n onap exec -it dev-vfc-nslcm-68cb7c9878-v4kt2 -c vfc-nslcm /bin/bash
             
-* Copy files (take the catlog example). When the data copy is lost after the pod is restarted or migrated, the multi-copy pod copy operation only exists for the current pod
+* Copy files (take the catalog example). When the data copy is lost after the pod is restarted or migrated, the multi-copy pod copy operation only exists for the current pod
 
 ::
     
@@ -339,7 +348,7 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
 
     kubectl -n onap cp copy_test.sh  dev-vfc-nslcm-68cb7c9878-v4kt2: -c vfc-nslcm
                 
-    Copy pod's content to local��
+    Copy pod's content to local machine
                 
     kubectl -n onap cp dev-vfc-nslcm-68cb7c9878-v4kt2:copy_test.sh -c vfc-nslcm /tmp/copy_test.sh
                 
@@ -353,11 +362,11 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
 
 ::
                 
-    kubectl  -n onap describe  pod dev-vfc-nslcm-68cb7c9878-v4kt2
+    kubectl -n onap describe pod dev-vfc-nslcm-68cb7c9878-v4kt2
                   
     kubectl -n onap logs dev-vfc-nslcm-68cb7c9878-v4kt2 -c vfc-nslcm
   
-* Check the service listener port and manually expose the port, which is commonly used for testing, such as nginx under test namespace
+* Check the service listening port and manually expose the port, which is commonly used for testing, such as nginx under test namespace
 
 ::
                  
@@ -431,12 +440,12 @@ Basic operation of kubernests cluster(Take the namespace of onap in linux client
                     
     portal-app                 LoadBalancer   10.43.181.163   10.0.0.13     8989:30215/TCP,8403:30213/TCP,8010:30214/TCP,8443:30225/TCP
                     
-* pod expansion and shrinkage
+* Pod expansion and shrinkage
 
-::
-    
-    pod expansion��kubectl  scale deployment nginx --replicas 3
+  pod expansion::
 
-    pod shrinkage�� kubectl  scale deployment nginx --replicas 1
-    
-    
+    kubectl scale deployment nginx --replicas=3
+
+  pod shrinkage::
+
+    kubectl scale deployment nginx --replicas=1
