@@ -44,28 +44,23 @@ Workflow
  - workflow-engine-mgr-service
  - activity-extension
  
-VF-C support VolTE use case in R1 and R2, following are the vVoLTE releated Workflow in VF-C.
+Since the Guilin release,  VF-C includes the following components:
 
-* VoLTE Use Case Instantiation In VF-C
-
-|image1|
-
-.. |image1| image:: Instantiation.png
-   :width: 5.97047in
-   :height: 5.63208in
-
-* VoLTE Use Case Termination in VF-C
-
-|image2|
-
-.. |image2| image:: Termination.png
-   :width: 5.97047in
-   :height: 5.63208in
-   
-* VoLTE Use Case Auto-healing in VF-C
-
-|image3|
-
-.. |image3| image:: Auto-healing.png
-   :width: 5.97047in
-   :height: 5.63208in
+NFVO
+ - vfc-nfvo-lcm
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter
+ - vfc-nfvo-driver-svnfm-ztedriver
+ - vfc-nfvo-driver-svnfm-huaweidriver
+GVNFM
+ - vfc-gvnfm-vnflcm
+ - vfc-gvnfm-vnfmgr
+ - vfc-gvnfm-vnfres
+Deprecated components:
+ - vfc-nfvo-catalog
+ - vfc-nfvo-resmgr
+ - vfc-nfvo-driver-emsdriver
+ - vfc-nfvo-driver-gvnfm-jujudriver
+ - vfc-nfvo-driver-svnfm-nokiadriver
+ - vfc-nfvo-driver-sfc-ztesfcdriver
+ - workflow-engine-mgr-service
+ - activity-extension
