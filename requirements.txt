@@ -33,8 +33,7 @@ drf-yasg==1.17.0
 flex>=6.11.1
 swagger-spec-validator>=2.1.0
 
-# for onap logging
-onappylog==1.0.9
-
 # uwsgi for parallel processing
 uwsgi
+
+PyYAML==5.3.1

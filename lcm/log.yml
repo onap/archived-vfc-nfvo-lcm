@@ -26,7 +26,7 @@ handlers:
             "logging.handlers.RotatingFileHandler"
         filename: "/var/log/onap/vfc/nslcm/runtime_nslcm.log"
         formatter:
-            "mdcFormat"
+            "standard"
         maxBytes: 52428800
         backupCount: 10
     django_handler:
@@ -42,9 +42,3 @@ formatters:
     standard:
         format:
             "%(asctime)s:[%(name)s]:[%(filename)s]-[%(lineno)d] [%(levelname)s]:%(message)s"
-    mdcFormat:
-        format:
-            "%(asctime)s|||||%(name)s||%(thread)s||%(funcName)s||%(levelname)s||%(message)s||||%(mdc)s \t"
-        mdcfmt: "{requestID} {invocationID} {serviceName} {serviceIP}"
-        datefmt: "%Y-%m-%d %H:%M:%S"
-        (): onaplogging.mdcformatter.MDCFormatter
