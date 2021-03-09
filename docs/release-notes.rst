@@ -13,6 +13,32 @@ VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
 
+Version: 1.4.2
+--------------
+
+:Release Date: 2021-03-08
+
+**New Features**
+
+1. Refactor logging to remove dependency on onaplogging component
+2. Update to Python 3.8
+3. Update documents
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.4.2
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.4.1
+ - vfc-nfvo-driver-svnfm-ztedriver 1.3.9
+ - vfc-nfvo-driver-svnfm-huawei 1.3.8
+ - vfc-nfvo-db 1.3.4
+
+GVNFM
+ - vfc-gvnfm-vnflcm 1.4.1
+ - vfc-gvnfm-vnfmgr 1.4.0
+ - vfc-gvnfm-vnfres 1.3.9
+
+
 Version: 1.4.1
 --------------
 
