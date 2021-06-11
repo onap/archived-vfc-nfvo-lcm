@@ -13,7 +13,7 @@ redis==2.10.5
 django-redis-cache==0.13.1
 
 # for call rest api
-httplib2==0.12.3
+httplib2==0.19.1
 
 # for unit test
 coverage==4.2
