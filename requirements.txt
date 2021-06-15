@@ -36,4 +36,4 @@ swagger-spec-validator>=2.1.0
 # uwsgi for parallel processing
 uwsgi
 
-PyYAML==5.3.1
+PyYAML==5.4.1
