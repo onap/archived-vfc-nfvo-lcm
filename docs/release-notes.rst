@@ -13,6 +13,32 @@ VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
 
+Version: 1.4.4
+--------------
+
+:Release Date: 2021-09-02
+
+**New Features**
+
+1. Packages upgrades in direct dependencies, such as PyYAML & httplib2
+2. Remove Python 2.7 from docker image of huawei vnfm driver
+3. Optimize the docker image of VFC db
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.4.4
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.4.2
+ - vfc-nfvo-driver-svnfm-ztedriver 1.4.1
+ - vfc-nfvo-driver-svnfm-huawei 1.4.1
+ - vfc-nfvo-db 1.3.5
+
+GVNFM
+ - vfc-gvnfm-vnflcm 1.4.2
+ - vfc-gvnfm-vnfmgr 1.4.1
+ - vfc-gvnfm-vnfres 1.4.0
+
+
 Version: 1.4.3
 --------------
 
