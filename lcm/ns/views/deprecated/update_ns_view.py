@@ -42,6 +42,12 @@ class NSUpdateView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        Updates a NS instance
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter UpdateNSView::post %s, %s", request.data, ns_instance_id)
         req_serializer = UpdateNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():

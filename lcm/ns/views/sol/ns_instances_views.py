@@ -33,6 +33,10 @@ logger = logging.getLogger(__name__)
 
 
 class NSInstancesView(APIView):
+    """
+    This resource represents NS instances.
+    """
+
     @swagger_auto_schema(
         request_body=None,
         responses={
@@ -42,6 +46,11 @@ class NSInstancesView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def get(self, request):
+        """
+        Query multiple NS instances
+        :param request:
+        :return:
+        """
         logger.debug(request.query_params)
 
         logger.debug("CreateNSView::get")
@@ -61,6 +70,11 @@ class NSInstancesView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request):
+        """
+        Create a NS instance resource
+        :param request:
+        :return:
+        """
         logger.debug("Enter NSInstancesView::POST ns_instances: Header:%s, Body: %s" % (request.META, request.data))
 
         globalCustomerId = request.META.get("HTTP_GLOBALCUSTOMERID", None)
@@ -95,6 +109,10 @@ class NSInstancesView(APIView):
 
 
 class IndividualNsInstanceView(APIView):
+    """
+    This resource represents an individual NS instance.
+    """
+
     @swagger_auto_schema(
         request_body=None,
         responses={
@@ -104,7 +122,12 @@ class IndividualNsInstanceView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def get(self, request, ns_instance_id):
-
+        """
+        The GET method retrieves information about a NS instance by reading an individual NS instance resource.
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter NSDetailView::get ns(%s)", ns_instance_id)
         ns_filter = {"ns_inst_id": ns_instance_id}
         ret = GetNSInfoService(ns_filter).get_ns_info(is_sol=True)
@@ -125,7 +148,12 @@ class IndividualNsInstanceView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def delete(self, request, ns_instance_id):
-
+        """
+        This method deletes an individual NS instance resource.
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter NSDetailView::delete ns(%s)", ns_instance_id)
         DeleteNsService(ns_instance_id).do_biz()
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)

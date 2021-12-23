@@ -40,6 +40,12 @@ class NSManualScaleView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        Scale a NS instance
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter NSManualScaleView::post %s, %s", request.data, ns_instance_id)
         req_serializer = _ManualScaleNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():

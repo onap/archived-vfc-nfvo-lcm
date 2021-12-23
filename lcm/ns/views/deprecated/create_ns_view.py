@@ -32,6 +32,9 @@ logger = logging.getLogger(__name__)
 
 
 class CreateNSView(APIView):
+    """
+
+    """
     @swagger_auto_schema(
         request_body=None,
         responses={
@@ -41,6 +44,11 @@ class CreateNSView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def get(self, request):
+        """
+        Query multiple NS instances
+        :param request:
+        :return:
+        """
         logger.debug("CreateNSView::get")
         ret = GetNSInfoService().get_ns_info()
         logger.debug("CreateNSView::get::ret=%s", ret)
@@ -59,6 +67,11 @@ class CreateNSView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request):
+        """
+        Create a NS instance resource
+        :param request:
+        :return:
+        """
         logger.debug("Enter CreateNS: %s", request.data)
         req_serializer = _CreateNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():

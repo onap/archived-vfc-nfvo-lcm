@@ -32,6 +32,10 @@ logger = logging.getLogger(__name__)
 
 
 class TerminateNsView(APIView):
+    """
+    This task resource represents the "Terminate NS" operation.
+    The client can use this resource to terminate a NS instance.
+    """
 
     @swagger_auto_schema(
         request_body=TerminateNsReqSerializer(),
@@ -42,6 +46,14 @@ class TerminateNsView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        The POST method terminates a NS instance.
+        This method can only be used with a NS instance in the INSTANTIATEDstate.
+        Terminating a NS instance does not delete the NS instance identifier, but rather transitions the NS into the NOT_INSTANTIATED state.
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.TERMINATE, ns_instance_id)
 
         logger.debug("Enter TerminateNSView::post %s", request.data)

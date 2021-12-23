@@ -32,6 +32,10 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateNSView(APIView):
+    """
+    This task resource represents the "Update NS" operation.
+    The client can use this resource to update a NS instance.
+    """
     @swagger_auto_schema(
         request_body=UpdateNsReqSerializer(),
         responses={
@@ -41,6 +45,12 @@ class UpdateNSView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        The POST method requests to update a NS instance resource.
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         job_id = JobUtil.create_job(JOB_TYPE.NS, JOB_ACTION.UPDATE, ns_instance_id)
 
         logger.debug("Enter UpdateNSView::post %s, %s", request.data, ns_instance_id)

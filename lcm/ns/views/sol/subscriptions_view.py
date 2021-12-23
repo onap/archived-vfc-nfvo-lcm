@@ -54,7 +54,10 @@ def get_problem_details_serializer(status_code, error_message):
 
 
 class SubscriptionsView(APIView):
-
+    """
+    This resource represents subscriptions.
+    The client can use this resource to subscribe to notifications related to NS lifecycle management, and to query its subscriptions.
+    """
     @swagger_auto_schema(
         request_body=LccnSubscriptionRequestSerializer(),
         responses={
@@ -65,6 +68,11 @@ class SubscriptionsView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request):
+        """
+        The POST method creates a new subscription.
+        :param request:
+        :return:
+        """
         logger.debug("SubscribeNotification--post::> %s" % request.data)
 
         lccn_subscription_request_serializer = LccnSubscriptionRequestSerializer(
@@ -106,6 +114,12 @@ class SubscriptionsView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def get(self, request):
+        """
+        The GET method queries the list of active subscriptions of the functional block that invokes the method.
+        It can be used e.g. for resynchronization after error situations.
+        :param request:
+        :return:
+        """
         logger.debug("SubscribeNotification--get::> %s" % request.query_params)
 
         if request.query_params and not set(request.query_params).issubset(set(VALID_FILTERS)):

@@ -38,6 +38,12 @@ class NSInstView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        Instantiate a NS
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter NSInstView::post::ns_instance_id=%s", ns_instance_id)
         logger.debug("request.data=%s", request.data)
         req_serializer = _InstantNsReqSerializer(data=request.data)

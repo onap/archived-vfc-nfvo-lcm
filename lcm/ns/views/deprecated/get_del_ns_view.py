@@ -38,6 +38,12 @@ class NSDetailView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def get(self, request, ns_instance_id):
+        """
+        Read an individual NS instance resource
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter NSDetailView::get ns(%s)", ns_instance_id)
         ns_filter = {"ns_inst_id": ns_instance_id}
         ret = GetNSInfoService(ns_filter).get_ns_info()

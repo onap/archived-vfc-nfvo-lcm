@@ -29,6 +29,10 @@ logger = logging.getLogger(__name__)
 
 
 class InstantiateNsView(APIView):
+    """
+    This task resource represents the "Instantiate NS" operation. The client can use this resource to instantiate a NS
+    instance.
+    """
     @swagger_auto_schema(
         request_body=InstantNsReqSerializer(),
         responses={
@@ -38,6 +42,12 @@ class InstantiateNsView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        The POST method requests to instantiate a NS instance resource.
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter InstantiateNsView::post::ns_instance_id=%s", ns_instance_id)
         logger.debug("request.data=%s", request.data)
 

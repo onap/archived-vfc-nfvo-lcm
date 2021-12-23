@@ -68,7 +68,8 @@ class QueryMultiNsLcmOpOccs(APIView):
         logger.debug("QueryMultiNsLcmOpOccs--get::> %s" % request.query_params)
 
         if request.query_params and not set(request.query_params).issubset(set(VALID_FILTERS)):
-            problem_details_serializer = get_problem_details_serializer(status.HTTP_400_BAD_REQUEST, "Not a valid filter")
+            problem_details_serializer = get_problem_details_serializer(status.HTTP_400_BAD_REQUEST,
+                                                                        "Not a valid filter")
             return Response(data=problem_details_serializer.data, status=status.HTTP_400_BAD_REQUEST)
         resp_data = QueryNsLcmOpOcc(request.query_params).query_multi_ns_lcm_op_occ()
         if len(resp_data) == 0:
@@ -87,6 +88,11 @@ class QueryMultiNsLcmOpOccs(APIView):
 
 
 class QuerySingleNsLcmOpOcc(APIView):
+    """
+    This resource represents NS lifecycle management operation occurrences.
+    The client can use this resource to query status information about multiple NS lifecycle management operation occurrences.
+    """
+
     @swagger_auto_schema(
         responses={
             status.HTTP_200_OK: NSLCMOpOccSerializer(),
@@ -95,6 +101,12 @@ class QuerySingleNsLcmOpOcc(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def get(self, request, lcmopoccid):
+        """
+        The client can use this method to query status information about multiple NS lifecycle management operation occurrences.
+        :param request:
+        :param lcmopoccid:
+        :return:
+        """
         logger.debug("QuerySingleNsLcmOpOcc--get::> %s" % request.query_params)
 
         resp_data = QueryNsLcmOpOcc(request.query_params,

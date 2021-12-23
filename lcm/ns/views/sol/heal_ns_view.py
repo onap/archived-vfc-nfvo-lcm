@@ -30,6 +30,10 @@ logger = logging.getLogger(__name__)
 
 
 class HealNSView(APIView):
+    """
+    This task resource represents the "Heal NS" operation.
+    The client can use this resource to request healing a NS instance.
+    """
     @swagger_auto_schema(
         request_body=HealNsReqSerializer(),
         responses={
@@ -39,6 +43,12 @@ class HealNSView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        The POST method requests to heal a NS instance resource.
+        :param request: 
+        :param ns_instance_id: 
+        :return: 
+        """
         logger.debug("Enter HealNSView::post nsInstanceId:%s, request.data:%s" % (ns_instance_id, request.data))
         req_serializer = HealNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():

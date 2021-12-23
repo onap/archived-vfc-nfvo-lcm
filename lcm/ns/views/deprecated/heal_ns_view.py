@@ -40,6 +40,12 @@ class NSHealView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        Heal a NS instance
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter HealNSView::post %s, %s", ns_instance_id, request.data)
         req_serializer = _HealNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():

@@ -30,6 +30,10 @@ logger = logging.getLogger(__name__)
 
 
 class ScaleNSView(APIView):
+    """
+    This task resource represents the "Scale NS" operation.
+    The client can use this resource to request to scale a NS instance.
+    """
     @swagger_auto_schema(
         request_body=ScaleNsRequestSerializer(help_text="NS Scale"),
         responses={
@@ -39,6 +43,12 @@ class ScaleNSView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        The POST method requests to scale a NS instance resource.
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter ScaleNSView::post %s, %s", request.data, ns_instance_id)
 
         req_serializer = ScaleNsRequestSerializer(data=request.data)

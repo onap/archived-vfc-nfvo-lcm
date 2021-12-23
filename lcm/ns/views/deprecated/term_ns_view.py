@@ -42,6 +42,12 @@ class NSTerminateView(APIView):
     )
     @view_safe_call_with_log(logger=logger)
     def post(self, request, ns_instance_id):
+        """
+        Terminate a NS instance
+        :param request:
+        :param ns_instance_id:
+        :return:
+        """
         logger.debug("Enter TerminateNSView::post %s", request.data)
         req_serializer = _TerminateNsReqSerializer(data=request.data)
         if not req_serializer.is_valid():
