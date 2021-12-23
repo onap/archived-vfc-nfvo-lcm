@@ -31,6 +31,10 @@ logger = logging.getLogger(__name__)
 
 
 class NSHealService(threading.Thread):
+    """
+    Heal the NS instance
+    """
+
     def __init__(self, ns_instance_id, request_data, job_id):
         super(NSHealService, self).__init__()
         self.ns_instance_id = ns_instance_id

@@ -28,6 +28,10 @@ logger = logging.getLogger(__name__)
 
 
 class CreateNSService(object):
+    """
+    This class for NS instance Model create
+    """
+
     def __init__(self, csar_id, ns_name, description, context):
         self.csar_id = csar_id
         self.ns_name = ns_name
@@ -38,6 +42,10 @@ class CreateNSService(object):
         self.ns_package_id = ''
 
     def do_biz(self):
+        """
+        Create NS instance model
+        :return:
+        """
         self.check_nsd_valid()
         self.check_ns_inst_name_exist()
         self.create_ns_inst()
@@ -47,6 +55,10 @@ class CreateNSService(object):
         return self.ns_inst_id
 
     def check_nsd_valid(self):
+        """
+        Check the validation of NSD
+        :return:
+        """
         logger.debug("CreateNSService::check_nsd_valid::csar_id=%s" % self.csar_id)
         ns_package_info = query_nspackage_by_id(self.csar_id)
         if not ns_package_info:
@@ -58,12 +70,20 @@ class CreateNSService(object):
         logger.debug("CreateNSService::check_nsd_valid::ns_package_id=%s,nsd_id=%s", self.ns_package_id, self.nsd_id)
 
     def check_ns_inst_name_exist(self):
+        """
+        Check if the ns instance with same name exists
+        :return:
+        """
         is_exist = NSInstModel.objects.filter(name=self.ns_name).exclude(status='null').exists()
         logger.debug("CreateNSService::check_ns_inst_name_exist::is_exist=%s" % is_exist)
         if is_exist:
             raise NSLCMException("ns(%s) already existed." % self.ns_name)
 
     def create_ns_inst(self):
+        """
+        Create NS instance Model
+        :return:
+        """
         self.ns_inst_id = str(uuid.uuid4())
         logger.debug("CreateNSService::create_ns_inst::ns_inst_id=%s" % self.ns_inst_id)
         NSInstModel(id=self.ns_inst_id,
@@ -78,6 +98,10 @@ class CreateNSService(object):
                     service_type=self.service_type).save()
 
     def create_ns_in_aai(self):
+        """
+        Create NS instance record in AAI
+        :return:
+        """
         logger.debug("CreateNSService::create_ns_in_aai::report ns instance[%s] to aai." % self.ns_inst_id)
         try:
             data = {

@@ -53,6 +53,9 @@ NS_FILTER_TYPE = [
 
 
 class CreateSubscription:
+    """
+    Subscription Create process
+    """
 
     def __init__(self, data):
         self.data = data
@@ -80,6 +83,10 @@ class CreateSubscription:
         )
 
     def check_callback_uri(self):
+        """
+        Check if the callback Uri can access
+        :return:
+        """
         logger.debug("SubscribeNotification-post::> Sending GET request to %s" % self.callback_uri)
         try:
             response = requests.get(self.callback_uri, timeout=2)
@@ -102,6 +109,10 @@ class CreateSubscription:
         return subscription
 
     def check_filter_types(self):
+        """
+        Validate operationTypes and operationStates if exists
+        :return:
+        """
         logger.debug("SubscribeNotification--post::> Validating operationTypes and operationStates if exists")
         occ_notification = NOTIFICATION_TYPE.NSLCM_OPERATION_OCCURRENCE_NOTIFICATION
         if self.operation_types and occ_notification not in self.notification_types:
@@ -112,6 +123,10 @@ class CreateSubscription:
             raise NSLCMException(except_message % occ_notification)
 
     def check_valid_auth_info(self):
+        """
+        Validate Auth details if provided
+        :return:
+        """
         logger.debug("SubscribeNotification--post::> Validating Auth details if provided")
         auth_type = self.authentication.get("authType")
         params_basic = self.authentication.get("paramsBasic")
@@ -125,21 +140,25 @@ class CreateSubscription:
         # Check the notificationTypes, operationTypes, operationStates
         for filter_type in FILTER_TYPE:
             if not is_filter_type_equal(
-                getattr(self, filter_type),
-                ast.literal_eval(getattr(sub, filter_type))
+                    getattr(self, filter_type),
+                    ast.literal_eval(getattr(sub, filter_type))
             ):
                 return False
         # If all the above types are same then check ns instance filters
         ns_filter = json.loads(sub.ns_instance_filter)
         for ns_filter_type in NS_FILTER_TYPE:
             if not is_filter_type_equal(
-                self.ns_filter.get(ns_filter_type, []),
-                ns_filter.get(ns_filter_type, [])
+                    self.ns_filter.get(ns_filter_type, []),
+                    ns_filter.get(ns_filter_type, [])
             ):
                 return False
         return True
 
     def check_valid(self):
+        """
+         Check DB if callbackUri already exists
+        :return:
+        """
         logger.debug("SubscribeNotification--post::> Checking DB if callbackUri already exists")
         subscriptions = SubscriptionModel.objects.filter(callback_uri=self.callback_uri)
         if not subscriptions.exists():
@@ -150,7 +169,12 @@ class CreateSubscription:
         return False
 
     def save_db(self):
-        logger.debug("SubscribeNotification--post::> Saving the subscription(%s) to the database" % self.subscription_id)
+        """
+        Save the subscription(%s) to the database
+        :return:
+        """
+        logger.debug(
+            "SubscribeNotification--post::> Saving the subscription(%s) to the database" % self.subscription_id)
         links = {
             "self": {
                 "href": const.SUBSCRIPTION_ROOT_URI % self.subscription_id

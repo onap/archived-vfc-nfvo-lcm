@@ -51,6 +51,10 @@ class BuildInWorkflowThread(Thread):
 
 
 class InstantNSService(object):
+    """
+    Instantiate NS
+    """
+
     def __init__(self, ns_inst_id, plan_content):
         self.ns_inst_id = ns_inst_id
         self.req_data = plan_content
@@ -79,7 +83,7 @@ class InstantNSService(object):
             else:
                 params_json = json.JSONEncoder().encode({})
 
-            location_constraints = [] if not self.req_data.get('locationConstraints')\
+            location_constraints = [] if not self.req_data.get('locationConstraints') \
                 else self.req_data['locationConstraints']
             vnf_vim = self.get_vnf_vim_info(location_constraints)
 
@@ -183,6 +187,14 @@ class InstantNSService(object):
             return dict(data={'error': e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def start_wso2_workflow(self, job_id, ns_inst, plan_input, occ_id):
+        """
+        Start WSO2 workflow
+        :param job_id:
+        :param ns_inst:
+        :param plan_input:
+        :param occ_id:
+        :return:
+        """
         # todo occ_id
         servicetemplate_id = get_servicetemplate_id(ns_inst.nsd_id)
         process_id = get_process_id('init', servicetemplate_id)
@@ -198,6 +210,13 @@ class InstantNSService(object):
         return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def start_activiti_workflow(self, job_id, plan_input, occ_id):
+        """
+        Start activiti workflow
+        :param job_id:
+        :param plan_input:
+        :param occ_id:
+        :return:
+        """
         # todo occ_id
         plans = WFPlanModel.objects.filter()
         if not plans:
@@ -215,6 +234,13 @@ class InstantNSService(object):
         return dict(data={'error': ret['message']}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def start_buildin_workflow(self, job_id, plan_input, occ_id):
+        """
+        Start buildin workflow
+        :param job_id:
+        :param plan_input:
+        :param occ_id:
+        :return:
+        """
         JobUtil.add_job_status(job_id, 10, 'NS inst(%s) buildin workflow started.' % self.ns_inst_id)
         BuildInWorkflowThread(plan_input, occ_id).start()
         return dict(data={'jobId': job_id}, status=status.HTTP_200_OK, occ_id=occ_id)

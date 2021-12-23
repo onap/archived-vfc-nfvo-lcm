@@ -36,6 +36,10 @@ logger = logging.getLogger(__name__)
 
 
 class TerminateNsService(threading.Thread):
+    """
+    Terminate the NS instance
+    """
+
     def __init__(self, ns_inst_id, job_id, request_data):
         threading.Thread.__init__(self)
         self.terminate_type = request_data.get('terminationType', 'GRACEFUL')
@@ -74,12 +78,20 @@ class TerminateNsService(threading.Thread):
             build_in.post_deal(self.ns_inst_id, "false")
 
     def modify_package_state(self):
+        """
+        Update the state of NS instance model
+        :return:
+        """
         ns_inst = NSInstModel.objects.filter(id=self.ns_inst_id)
         ns_insts = NSInstModel.objects.filter(nspackage_id=ns_inst[0].nspackage_id)
         if len(ns_insts) == 1:
             sdc_run_catalog.modify_nsd_state(ns_inst[0].nspackage_id, 0)
 
     def cancel_vl_list(self):
+        """
+        Delete list of VL related
+        :return:
+        """
         array_vlinst = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=self.ns_inst_id)
         if not array_vlinst:
             logger.info("[cancel_vl_list] no vlinst attatch to ns_inst_id: %s" % self.ns_inst_id)
@@ -102,6 +114,10 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
 
     def cancel_sfc_list(self):
+        """
+        Delete SFC list
+        :return:
+        """
         array_sfcinst = FPInstModel.objects.filter(nsinstid=self.ns_inst_id)
         if not array_sfcinst:
             logger.info("[cancel_sfc_list] no sfcinst attatch to ns_inst_id: %s" % self.ns_inst_id)
@@ -124,6 +140,10 @@ class TerminateNsService(threading.Thread):
             JobUtil.add_job_status(self.job_id, cur_progress, job_msg)
 
     def cancel_vnf_list(self):
+        """
+        Delete VNF instance list
+        :return:
+        """
         array_vnfinst = NfInstModel.objects.filter(ns_inst_id=self.ns_inst_id)
         if not array_vnfinst:
             logger.info("[cancel_vnf_list] no vnfinst attatch to ns_inst_id: %s" % self.ns_inst_id)
@@ -154,7 +174,7 @@ class TerminateNsService(threading.Thread):
                 if not vnfjobid:
                     continue
                 is_job_ok = self.wait_delete_vnf_job_finish(vnfjobid)
-                msg = "%s to delete VNF(%s)" %\
+                msg = "%s to delete VNF(%s)" % \
                       ("Succeed" if is_job_ok else "Failed", vnfinstid)
                 logger.debug(msg)
                 JobUtil.add_job_status(self.job_id, cur_progress, msg)
@@ -164,6 +184,11 @@ class TerminateNsService(threading.Thread):
                 JobUtil.add_job_status(self.job_id, cur_progress, msg)
 
     def delete_vnf(self, nf_instid):
+        """
+        Delete VNF instance
+        :param nf_instid:
+        :return:
+        """
         term_param = {
             "terminationType": self.terminate_type
         }
@@ -215,6 +240,10 @@ class TerminateNsService(threading.Thread):
         return job_end_normal
 
     def cancel_pnf_list(self):
+        """
+        Delete PNF list
+        :return:
+        """
         pnfinst_list = PNFInstModel.objects.filter(nsInstances__contains=self.ns_inst_id)
         if len(pnfinst_list) > 0:
             cur_progress = 90

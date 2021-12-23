@@ -33,12 +33,19 @@ NS_INSTANCE_FILTERS = {
 
 
 class QuerySubscription:
+    """
+    Search subscription record
+    """
 
     def __init__(self, data, subscription_id=''):
         self.subscription_id = subscription_id
         self.params = data
 
     def query_multi_subscriptions(self):
+        """
+        Get multiple subscriptions
+        :return:
+        """
         query_data = {}
         logger.debug(
             "QueryMultiSubscriptions--get--biz::> Check for filters in query params" % self.params)

@@ -33,6 +33,10 @@ logger = logging.getLogger(__name__)
 
 
 class NSManualScaleService(threading.Thread):
+    """
+    Scale the NS instance
+    """
+
     def __init__(self, ns_instance_id, request_data, job_id):
         super(NSManualScaleService, self).__init__()
         self.ns_instance_id = ns_instance_id
@@ -76,6 +80,10 @@ class NSManualScaleService(threading.Thread):
             raise NSLCMException('Failed to get scaleVnfData parameter')
 
     def do_vnfs_scale(self):
+        """
+        Scale VNF instance
+        :return:
+        """
         for i in range(len(self.scale_vnf_data)):
             vnf_scale_params = self.prepare_vnf_scale_params(
                 self.scale_vnf_data[i])
@@ -89,11 +97,16 @@ class NSManualScaleService(threading.Thread):
                 self.update_job(
                     progress_range[1],
                     desc='nf[%s] scale handle end' %
-                    vnf_scale_params.get('vnfInstanceId'))
+                         vnf_scale_params.get('vnfInstanceId'))
             else:
                 raise NSLCMException('VNF scale failed')
 
     def prepare_vnf_scale_params(self, vnf_data):
+        """
+        Prepare parameters for VNF instance scale
+        :param vnf_data:
+        :return:
+        """
         return {
             "vnfInstanceId": ignore_case_get(vnf_data, 'vnfInstanceId'),
             "scaleVnfData": ignore_case_get(vnf_data, 'scaleByStepData'),
@@ -101,13 +114,19 @@ class NSManualScaleService(threading.Thread):
         }
 
     def do_vnf_scale(self, vnf_scale_params, progress_range):
+        """
+        Scale VNF instance
+        :param vnf_scale_params:
+        :param progress_range:
+        :return:
+        """
         nf_inst_id = vnf_scale_params.get('vnfInstanceId')
         nf_service = NFManualScaleService(nf_inst_id, vnf_scale_params)
         nf_service.start()
         self.update_job(
             progress_range[0],
             desc='nf[%s] scale handle start' %
-            nf_inst_id)
+                 nf_inst_id)
         status = self.wait_job_finish(nf_service.job_id)
         return status
 
@@ -126,9 +145,20 @@ class NSManualScaleService(threading.Thread):
         return JOB_MODEL_STATUS.TIMEOUT
 
     def update_job(self, progress, desc=''):
+        """
+        Update the information of job
+        :param progress:
+        :param desc:
+        :return:
+        """
         JobUtil.add_job_status(self.job_id, progress, desc)
 
     def update_ns_status(self, status):
+        """
+        Update NS instance status
+        :param status:
+        :return:
+        """
         NSInstModel.objects.filter(
             id=self.ns_instance_id).update(
             status=status)

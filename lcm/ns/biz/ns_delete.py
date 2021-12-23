@@ -24,6 +24,10 @@ logger = logging.getLogger(__name__)
 
 
 class DeleteNsService(object):
+    """
+    Class to delete NS instance
+    """
+
     def __init__(self, ns_inst_id):
         self.ns_inst_id = ns_inst_id
 
@@ -36,6 +40,10 @@ class DeleteNsService(object):
             logger.error(traceback.format_exc())
 
     def delete_ns(self):
+        """
+        Delete NS instance model
+        :return:
+        """
         logger.debug("delele NSInstModel(%s)", self.ns_inst_id)
         NSInstModel.objects.filter(id=self.ns_inst_id).delete()
 
@@ -49,6 +57,10 @@ class DeleteNsService(object):
         ServiceBaseInfoModel.objects.filter(service_id=self.ns_inst_id).delete()
 
     def delete_ns_in_aai(self):
+        """
+        Delete NS instance record from AAI
+        :return:
+        """
         logger.debug("DeleteNsService::delete_ns_in_aai::delete ns instance[%s] in aai." % self.ns_inst_id)
         try:
             ns_insts = NSInstModel.objects.filter(id=self.ns_inst_id)

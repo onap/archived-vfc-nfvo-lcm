@@ -28,10 +28,19 @@ logger = logging.getLogger(__name__)
 
 
 class GetNSInfoService(object):
+    """
+    Get NS instance Model
+    """
+
     def __init__(self, ns_filter=None):
         self.ns_filter = ns_filter
 
     def get_ns_info(self, is_sol=False):
+        """
+        Get all the ns instance models
+        :param is_sol:
+        :return:
+        """
         if self.ns_filter and "ns_inst_id" in self.ns_filter:
             ns_inst_id = self.ns_filter["ns_inst_id"]
             ns_insts = NSInstModel.objects.filter(id=ns_inst_id)
@@ -44,6 +53,12 @@ class GetNSInfoService(object):
         return result
 
     def get_single_ns_info(self, ns_inst, is_sol=False):
+        """
+        Get a ns instance model
+        :param ns_inst:
+        :param is_sol:
+        :return:
+        """
         if is_sol:
             nsInstance = {}
             nsInstance['id'] = ns_inst.id
@@ -94,6 +109,12 @@ class GetNSInfoService(object):
 
     @staticmethod
     def get_vnf_infos(ns_inst_id, is_sol):
+        """
+        VNF info
+        :param ns_inst_id:
+        :param is_sol:
+        :return:
+        """
         vnfs = NfInstModel.objects.filter(ns_inst_id=ns_inst_id)
         if is_sol:
             return [{
@@ -113,6 +134,12 @@ class GetNSInfoService(object):
             'vnfProfileId': vnf.vnf_id} for vnf in vnfs]
 
     def get_vl_infos(self, ns_inst_id, is_sol):
+        """
+        VL info
+        :param ns_inst_id:
+        :param is_sol:
+        :return:
+        """
         vls = VLInstModel.objects.filter(ownertype=OWNER_TYPE.NS, ownerid=ns_inst_id)
         if is_sol:
             return [
@@ -139,6 +166,11 @@ class GetNSInfoService(object):
 
     @staticmethod
     def get_cp_infos(vl_inst_id):
+        """
+        CP info
+        :param vl_inst_id:
+        :return:
+        """
         cps = CPInstModel.objects.filter(relatedvl__icontains=vl_inst_id)
         return [{
             'cpInstanceId': cp.cpinstanceid,
@@ -146,6 +178,13 @@ class GetNSInfoService(object):
             'cpdId': cp.cpdid} for cp in cps]
 
     def get_vnffg_infos(self, ns_inst_id, nsd_model, is_sol):
+        """
+        VNFFG info
+        :param ns_inst_id:
+        :param nsd_model:
+        :param is_sol:
+        :return:
+        """
         vnffgs = VNFFGInstModel.objects.filter(nsinstid=ns_inst_id)
         return [{
             'vnffgInstanceId': vnffg.vnffginstid,
@@ -157,6 +196,11 @@ class GetNSInfoService(object):
 
     @staticmethod
     def get_pnf_ids(nsd_model):
+        """
+        PNF ids
+        :param nsd_model:
+        :return:
+        """
         context = json.loads(nsd_model)
         pnfs = context['pnfs']
         return [pnf['pnf_id'] for pnf in pnfs]
@@ -169,5 +213,10 @@ class GetNSInfoService(object):
 
     @staticmethod
     def get_pnf_infos(ns_instance_id):
+        """
+        PNF infos
+        :param ns_instance_id:
+        :return:
+        """
         pnfs = PNFInstModel.objects.filter(nsInstances__contains=ns_instance_id)
         return [pnf.__dict__ for pnf in pnfs]

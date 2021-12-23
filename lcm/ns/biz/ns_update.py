@@ -30,6 +30,10 @@ logger = logging.getLogger(__name__)
 
 
 class NSUpdateService(threading.Thread):
+    """
+    Update NS instance model
+    """
+
     def __init__(self, ns_instance_id, request_data, job_id):
         super(NSUpdateService, self).__init__()
         self.ns_instance_id = ns_instance_id
