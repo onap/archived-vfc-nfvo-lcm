@@ -1,11 +1,11 @@
 jsonschema==3.2.0
 
 # rest framework
-Django==2.1.10
-djangorestframework==3.10.0
+Django==3.1.14
+djangorestframework==3.12.4
 
 # for access MySQL
-PyMySQL==0.9.3
+PyMySQL==1.0.2
 
 # redis cache
 redis==2.10.5
@@ -29,7 +29,7 @@ cryptography==36.0.1
 
 # for swagger
 ruamel.yaml==0.17.1
-drf-yasg==1.17.0
+drf-yasg==1.20.0
 
 # for the validation feature
 flex>=6.11.1
