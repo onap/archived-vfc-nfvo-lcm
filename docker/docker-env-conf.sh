@@ -9,7 +9,7 @@ install_sf(){
     unzip vfc-nfvo-lcm.zip && \
     rm -rf vfc-nfvo-lcm.zip && \
     pip install --upgrade setuptools pip && \
-    pip install --pre -r /service/vfc/nfvo/lcm/requirements.txt
+    pip install -r /service/vfc/nfvo/lcm/requirements.txt
     find  /service -name '*.sh'|xargs chmod a+x
 }
 
