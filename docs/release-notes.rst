@@ -12,6 +12,30 @@ orchestration and close loop automation by working with SO, DCAE and Policy.
 VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
+Version: 1.4.5
+--------------
+
+:Release Date: 2022-03-31
+
+**New Features**
+
+- update Django version to 3.1.4
+- Update the vulnerable direct dependencies
+- Update Docker image to fix CSIT Failure
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.4.5
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.4.4
+ - vfc-nfvo-driver-svnfm-ztedriver 1.4.1
+ - vfc-nfvo-driver-svnfm-huawei 1.4.1
+ - vfc-nfvo-db 1.3.5
+
+GVNFM
+ - vfc-gvnfm-vnflcm 1.4.3
+ - vfc-gvnfm-vnfmgr 1.4.2
+ - vfc-gvnfm-vnfres 1.4.1
 
 Version: 1.4.4
 --------------
