@@ -50,9 +50,9 @@ run_tox_test()
   if [[ ${CURDIR} =~ "-sonar" ]]
   then
     echo "====Sonar job, need execute tox."
-    TOXINIS=$(find . -name "tox.ini")
+    TOXINIS=($(find . -name "tox.ini"))
     for TOXINI in "${TOXINIS[@]}"; do
-      DIR=$(echo "$TOXINI" | rev | cut -f3- -d'/' | rev)
+      DIR=$(dirname "$TOXINI")
       cd "${CURDIR}/${DIR}"
       rm -rf ./venv-tox ./.tox
       virtualenv ./venv-tox
