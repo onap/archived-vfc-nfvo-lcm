@@ -12,6 +12,29 @@ orchestration and close loop automation by working with SO, DCAE and Policy.
 VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
+Version: 1.4.6
+--------------
+
+:Release Date: 2022-04-13
+
+**Bug Fixes**
+
+- Fix tox test loop in mvn-phase-script.sh
+
+Released components:
+
+NFVO
+ - vfc-nfvo-lcm 1.4.6
+ - vfc-nfvo-driver-gvnfm-gvnfmadapter 1.4.4
+ - vfc-nfvo-driver-svnfm-ztedriver 1.4.1
+ - vfc-nfvo-driver-svnfm-huawei 1.4.1
+ - vfc-nfvo-db 1.3.5
+
+GVNFM
+ - vfc-gvnfm-vnflcm 1.4.3
+ - vfc-gvnfm-vnfmgr 1.4.2
+ - vfc-gvnfm-vnfres 1.4.1
+
 Version: 1.4.5
 --------------
 
