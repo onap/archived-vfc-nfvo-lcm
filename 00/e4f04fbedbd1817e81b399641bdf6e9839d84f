@@ -1,0 +1,8 @@
+Code-Review+1: Thomas Kulik <thomas.kulik@telekom.de>
+Code-Review+2: Yuanhong Deng <dengyuanhong@chinamobile.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Submitted-by: Yuanhong Deng <dengyuanhong@chinamobile.com>
+Submitted-at: Thu, 21 Apr 2022 08:08:00 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/vfc/nfvo/lcm/+/128647
+Project: vfc/nfvo/lcm
+Branch: refs/heads/master
