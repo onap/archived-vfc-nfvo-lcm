@@ -12,6 +12,8 @@ orchestration and close loop automation by working with SO, DCAE and Policy.
 VF-C also provides standard southbound interface to VNFMs and can integrate
 with multi vendor VNFMs via drivers.
 
+R11 / Kohn: No changes in this release
+
 Version: 1.4.7
 --------------
 
