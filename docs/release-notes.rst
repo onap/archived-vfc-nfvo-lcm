@@ -245,9 +245,10 @@ GVNFM
 
 Quick Links:
 
-- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
-- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
-- `CLI command about VFC operation <https://onap.readthedocs.io/en/latest/submodules/vfc/nfvo/lcm.git/docs/platform/cli-userguide/index.html#vfc-part>`_
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`__
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`__
+
+.. - `CLI command about VFC operation <https://onap.readthedocs.io/en/latest/submodules/vfc/nfvo/lcm.git/docs/platform/cli-userguide/index.html#vfc-part>`__
 
 **Upgrade Notes**
     NA
@@ -317,9 +318,9 @@ of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=68542814>`_.
 
 Quick Links:
 
-- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
-- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
-- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=68542814>`_
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`__
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`__
+- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=68542814>`__
 
 **Upgrade Notes**
     NA
@@ -392,13 +393,13 @@ VFC code has been formally scanned during build time using NexusIQ and all Criti
 vulnerabilities have been addressed, items that remain open have been assessed
 for risk and determined to be false positive. The VFC open Critical security
 vulnerabilities and their risk assessment have been documented as part
-of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=51282550>`_.
+of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=51282550>`__.
 
 Quick Links:
 
-- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
-- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
-- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=51282550>`_
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`__
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`__
+- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=51282550>`__
 
 **Upgrade Notes**
 	NA
@@ -459,13 +460,13 @@ VFC code has been formally scanned during build time using NexusIQ and all Criti
 vulnerabilities have been addressed, items that remain open have been assessed
 for risk and determined to be false positive. The VFC open Critical security
 vulnerabilities and their risk assessment have been documented as part
-of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=45298878>`_.
+of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=45298878>`__.
 
 Quick Links:
 
-- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
-- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
-- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=45298878>`_
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`__
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`__
+- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=45298878>`__
 
 **Upgrade Notes**
 	NA
@@ -526,13 +527,13 @@ VFC code has been formally scanned during build time using NexusIQ and all Criti
 vulnerabilities have been addressed, items that remain open have been assessed
 for risk and determined to be false positive. The VFC open Critical security
 vulnerabilities and their risk assessment have been documented as part
-of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`_.
+of the `project <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`__.
 
 Quick Links:
 
-- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`_
-- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`_
-- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`_
+- `VFC project page <https://wiki.onap.org/display/DW/Virtual+Function+Controller+Project>`__
+- `Passing Badge information for VFC <https://bestpractices.coreinfrastructure.org/en/projects/1608>`__
+- `Project Vulnerability Review Table for VFC <https://wiki.onap.org/pages/viewpage.action?pageId=25437810>`__
 
 **Upgrade Notes**
 	NA

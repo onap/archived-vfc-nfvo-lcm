@@ -7,14 +7,18 @@ VFC-Test Cli Command Guide
 
 Reference manual:
 
-1. https://onap.readthedocs.io/en/dublin/submodules/cli.git/docs/cmd_help_onap_dublin.html
+.. 1. https://onap.readthedocs.io/en/dublin/submodules/cli.git/docs/cmd_help_onap_dublin.html
 
 2. https://git.onap.org/cli/tree/products/onap-dublin
 
 Note:
 
-1. The config. JSON included in the folder is a data guarantee for the example in the guidance manual, which will be converted into Python recognizable object body through the json. load method. Use "parameters" to receive the converted results. (parameters = json. load (config))
-2. You should go to the pod of the CLI environment in the corresponding test environment to execute the command action steps
+1. The config. JSON included in the folder is a data guarantee for the example
+   in the guidance manual, which will be converted into Python recognizable
+   object body through the json. load method. Use "parameters" to receive the
+   converted results. (parameters = json. load (config))
+2. You should go to the pod of the CLI environment in the corresponding test
+   environment to execute the command action steps
 
 .. contents::
    :depth: 2
@@ -68,7 +72,8 @@ More Cli command defination and reference can be found in the following page:
    create_csar_sdc/index
 
 Create csar file(by local)
-------------------------
+--------------------------
+
 More Cli command defination and reference can be found in the following page:
 
 .. toctree::
@@ -77,7 +82,7 @@ More Cli command defination and reference can be found in the following page:
    create_csar_local/index
 
 VFC part
------------
+--------
 More Cli command defination and reference can be found in the following page:
 
 .. toctree::
