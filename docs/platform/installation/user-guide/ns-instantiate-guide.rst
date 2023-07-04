@@ -34,9 +34,10 @@ Steps
 
 If you want to  try VF-C,  the small project set should include: VF-C , Multicloud, MSB, A&AI.
 
-VF-C components need to register to MSB when starting, so MSB components should be installed first,you can refer the following link to install MSB.
+VF-C components need to register to MSB when starting, so MSB components should be installed first.
 
-http://onap.readthedocs.io/en/latest/submodules/msb/apigateway.git/docs/platform/installation.html
+.. ,you can refer the following link to install MSB.
+.. http://onap.readthedocs.io/en/latest/submodules/msb/apigateway.git/docs/platform/installation.html
 
 Note: In the following steps, we use ${MSB_IP} as the IP of msb_apigateway component.
 
