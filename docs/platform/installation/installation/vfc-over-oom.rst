@@ -100,11 +100,10 @@ For initialization of docker there are 2 deployment options currently used in ON
 
 From Casablanca release, OOM is the recommended way, so here mainly give the steps for OOM based deployment
 
-For OOM deployment you can refer to the below links:
+For OOM deployment you can refer to the OOM section in ONAP documentation.
 
-* https://docs.onap.org/projects/onap-oom/en/latest/oom_user_guide.html#oom-user-guide
-
-* https://docs.onap.org/projects/onap-oom/en/latest/oom_quickstart_guide.html#oom-quickstart-guide
+.. * https://docs.onap.org/projects/onap-oom/en/latest/oom_user_guide.html#oom-user-guide
+.. * https://docs.onap.org/projects/onap-oom/en/latest/oom_quickstart_guide.html#oom-quickstart-guide
 
 1. First ensure VF-C is marked true against field enabled in the oom/kubernetes/onap/values.yaml for successful deployment.
 
